@@ -37,7 +37,6 @@ import net.sf.ij.vtk.AnisotropicDiffusion2D;
 public class Anisotropic_Diffusion implements PlugInFilter {
 
   private static AnisotropicDiffusion2D adFilter;
-  private static String vtkLoadError = null;
 
 
   /**  Constructor for the Anisotropic_Diffusion object */
@@ -62,12 +61,12 @@ public class Anisotropic_Diffusion implements PlugInFilter {
    * @param  ip  Description of the Parameter
    */
   public void run(ImageProcessor ip) {
-    if (vtkLoadError != null) {
-      IJ.showMessage("VTK setup error",
-          "Unable to load VTK libraries.\n" + vtkLoadError + "\n" +
-          "To use this plugin you need to install VTK with Java bindings from www.vtk.org.");
-      return;
-    }
+//    if (vtkLoadError != null) {
+//      IJ.showMessage("VTK setup error",
+//          "Unable to load VTK libraries.\n" + vtkLoadError + "\n" +
+//          "To use this plugin you need to install VTK with Java bindings from www.vtk.org.");
+//      return;
+//    }
 
     if (adFilter == null) {
       adFilter = new AnisotropicDiffusion2D();
@@ -100,21 +99,5 @@ public class Anisotropic_Diffusion implements PlugInFilter {
 
     ImageProcessor output = adFilter.getOutput();
     new ImagePlus("Anisotropic Diffusion", output).show();
-  }
-
-  static {
-    // Load VTK libraries
-    try {
-      System.loadLibrary("vtkCommonJava");
-      System.loadLibrary("vtkFilteringJava");
-      System.loadLibrary("vtkIOJava");
-      System.loadLibrary("vtkImagingJava");
-      System.loadLibrary("vtkGraphicsJava");
-      System.loadLibrary("vtkRenderingJava");
-      vtkLoadError = null;
-    }
-    catch (UnsatisfiedLinkError ex) {
-      vtkLoadError = ex.toString();
-    }
   }
 }
