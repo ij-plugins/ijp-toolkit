@@ -29,7 +29,7 @@ import ij.process.ImageProcessor;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class IntensityShiftPlugin implements PlugInFilter {
     final private static String PLUGIN_NAME = "Intensity shift";
@@ -51,7 +51,6 @@ public class IntensityShiftPlugin implements PlugInFilter {
     public void run(ImageProcessor ip) {
 
         final GenericDialog dialog = new GenericDialog(PLUGIN_NAME);
-        dialog.addMessage(ABOUT_MESSAGE);
         dialog.addNumericField("Intensity shift", shift, 0);
         dialog.showDialog();
 
