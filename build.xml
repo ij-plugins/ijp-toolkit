@@ -1,116 +1,123 @@
 <project name="ij-plugins" default="dist" basedir=".">
-    <description>
-        ij-plugins
-    </description>
+  <description>
+    ij-plugins
+  </description>
 
-    <!--
-      @TODO: Toolkit creation targets.
-      @TODO: Plugins build file
-      @TODO: Plugins build creation targets
-      @TODO: Readme files for the distribution.
-      @TODO: Package the binary distribution.
-    -->
+  <!--
+    @TODO: Toolkit creation targets.
+    @TODO: Plugins build file
+    @TODO: Plugins build creation targets
+    @TODO: Readme files for the distribution.
+    @TODO: Package the binary distribution.
+  -->
 
-    <!-- Set property to the location of package vtk, e.g, vtk.jar -->
-    <property name="vtk.classpath" location="my_vtk_path/vtk.jar"/>
+  <!-- Set property to the location of package vtk, e.g, vtk.jar -->
+  <property name="vtk.classpath" location="my_vtk_path/vtk.jar"/>
 
-    <!-- Set default properties for this build -->
-    <target name="setProps" unless="setProps">
-        <property name="sourceDir" location="."/>
-        <property name="outputDir" location="output"/>
-        <property name="distDir" location="dist"/>
-        <property name="lib.dir" location="lib"/>
-        <path id="base.classpath">
-            <pathelement location="${lib.dir}/ij.jar"/>
-            <pathelement location="${vtk.classpath}"/>
-        </path>
-        <property name="pluginsDir" location="${outputDir}/build/plugins"/>
-        <path id="plugins.classpath">
-            <path refid="base.classpath"/>
-            <pathelement location="${pluginsDir}/ij-plugins-toolkit.jar"/>
-            <pathelement location="${vtk.classpath}"/>
-        </path>
-        <property name="setProps" value="true"/>
-    </target>
+  <property name="source.dir" location="."/>
+  <property name="output.dir" location="output"/>
+  <property name="dist.dir" location="dist"/>
+  <property name="lib.dir" location="lib"/>
+  <path id="toolkit.classpath">
+    <pathelement location="${lib.dir}/ij.jar"/>
+    <pathelement location="${vtk.classpath}"/>
+  </path>
 
-    <!-- Initialize  -->
-    <target name="init" depends="setProps">
-        <!-- Create the time stamp -->
-        <tstamp/>
-    </target>
+  <property name="plugins.dir" location="${output.dir}/build/plugins"/>
+  <path id="plugins.classpath">
+    <path refid="toolkit.classpath"/>
+    <pathelement location="${plugins.dir}/ij-plugins-toolkit.jar"/>
+    <pathelement location="${vtk.classpath}"/>
+  </path>
 
-    <target name="prepare" depends="init">
-        <mkdir dir="${pluginsDir}/3D IO"/>
-        <mkdir dir="${pluginsDir}/3D Toolkit"/>
-    </target>
+  <!-- Initialize  -->
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+  </target>
 
-    <target name="build" depends="prepare" description="Build the toolkit and plugin binaries">
+  <target name="prepare" depends="init">
+    <mkdir dir="${plugins.dir}/3D IO"/>
+    <mkdir dir="${plugins.dir}/3D Toolkit"/>
+  </target>
 
-        <!-- toolkit.jar -->
-        <ant dir="./Toolkit" target="package">
-            <property name="outputDir" value="${pluginsDir}"/>
-            <reference refid="base.classpath" torefid="classpath"/>
-            <property name="setProps" value="true"/>
-        </ant>
+  <target name="prepareCVSBuild" depends="prepare">
+    <mkdir dir="${output.dir}/source"/>
+  </target>
 
-        <!-- 3D IO plugins -->
-        <ant dir="./Plugins/3D IO" target="compile">
-            <property name="outputDir" value="${pluginsDir}/3D IO"/>
-            <reference refid="plugins.classpath" torefid="classpath"/>
-            <property name="setProps" value="true"/>
-        </ant>
+  <target name="build" depends="prepare" description="Build the toolkit and plugin binaries">
 
-        <!-- 3D Toolkit plugins -->
-        <ant dir="./Plugins/3D Toolkit" target="compile">
-            <property name="outputDir" value="${pluginsDir}/3D Toolkit"/>
-            <reference refid="plugins.classpath" torefid="classpath"/>
-            <property name="setProps" value="true"/>
-        </ant>
+    <!-- toolkit.jar -->
+    <ant dir="./Toolkit" target="package">
+      <property name="output.dir" value="${plugins.dir}"/>
+      <reference refid="toolkit.classpath" torefid="classpath"/>
+    </ant>
 
-        <!-- VTK Filters plugins -->
-        <ant dir="./Plugins/VTK Filters" target="compile">
-            <property name="outputDir" value="${pluginsDir}/VTK Filters"/>
-            <reference refid="plugins.classpath" torefid="classpath"/>
-            <property name="setProps" value="true"/>
-        </ant>
-    </target>
+    <!-- 3D IO plugins -->
+    <ant dir="./Plugins/3D IO" target="compile">
+      <property name="output.dir" value="${plugins.dir}/3D IO"/>
+      <reference refid="plugins.classpath" torefid="classpath"/>
+      <property name="setProps" value="true"/>
+    </ant>
 
-    <!-- Checkout sources from CVS -->
-    <target name="checkout" depends="init" description="Checkout sources from CVS repository">
+    <!-- 3D Toolkit plugins -->
+    <ant dir="./Plugins/3D Toolkit" target="compile">
+      <property name="output.dir" value="${plugins.dir}/3D Toolkit"/>
+      <reference refid="plugins.classpath" torefid="classpath"/>
+      <property name="setProps" value="true"/>
+    </ant>
 
-        <cvs cvsRoot=":pserver:anonymous@cvs.ij-plugins.sourceforge.net:/cvsroot/ij-plugins" command="checkout -P" package="ij-plugins" dest="${outputDir}/source"/>
-    </target>
+    <!-- VTK Filters plugins -->
+    <ant dir="./Plugins/VTK Filters" target="compile">
+      <property name="output.dir" value="${plugins.dir}/VTK Filters"/>
+      <reference refid="plugins.classpath" torefid="classpath"/>
+      <property name="setProps" value="true"/>
+    </ant>
+  </target>
 
-    <target name="distFromCVS" depends="checkout" description="Build the toolkit and plugin binaries from CVS">
-        <ant dir="${outputDir}/source/ij-plugins" target="dist">
-            <property name="sourceDir" location="${outputDir}/source/ij-plugins"/>
-            <property name="outputDir" location="${outputDir}"/>
-            <property name="distDir" location="${distDir}"/>
-            <property name="ijClasspath" value="${ijClasspath}"/>
-            <property name="setProps" value="true"/>
-        </ant>
+  <!-- Checkout sources from CVS -->
+  <target name="checkout"
+    depends="prepareCVSBuild"
+    description="Checkout sources from CVS repository">
+    <cvs cvsRoot=":pserver:anonymous@cvs.ij-plugins.sourceforge.net:/cvsroot/ij-plugins" command="checkout -P" package="ij-plugins" dest="${output.dir}/source"/>
+  </target>
 
-        <!-- Create source distribution with current day stamp -->
-        <zip basedir="${outputDir}/source" destfile="${distDir}/ij-3D-Toolkit_src_${DSTAMP}.zip"/>
-    </target>
 
-    <target name="dist" depends="build" description="generate the distribution">
-        <!-- Create the distribution directory -->
-        <mkdir dir="${distDir}"/>
+  <target name="distFromCVS"
+    depends="checkout"
+    description="Build the toolkit and plugin binaries from CVS">
+    <ant dir="${output.dir}/source/ij-plugins" target="dist">
+      <property name="source.dir" location="${output.dir}/source/ij-plugins"/>
+      <property name="output.dir" location="${output.dir}"/>
+      <property name="dist.dir" location="${dist.dir}"/>
+      <reference refid="toolkit.classpath" torefid="classpath"/>
+      <property name="setProps" value="true"/>
+    </ant>
 
-        <!-- Create binary distribution with current day stamp -->
-        <copy file="${sourceDir}/ReadMe.txt" tofile="${pluginsDir}/ij-3D-Toolkit-ReadMe.txt" overwrite="true"/>
-        <zip basedir="${pluginsDir}" destfile="${distDir}/ij-3D-Toolkit_bin_${DSTAMP}.zip"/>
-    </target>
+    <!-- Create source distribution with current day stamp -->
+    <zip basedir="${output.dir}/source" destfile="${dist.dir}/ij-3D-Toolkit_src_${DSTAMP}.zip"/>
+  </target>
 
-    <target name="clean" depends="setProps" description="clean up">
-        <!-- Delete the ${build} and ${dist} directory trees -->
-        <delete dir="${outputDir}"/>
 
-        <ant dir="./Toolkit" target="clean">
-            <property name="outputDir" value="${pluginsDir}"/>
-            <reference refid="base.classpath" torefid="classpath"/>
-            <property name="setProps" value="true"/>
-        </ant>
-    </target>
+  <target name="dist" depends="build" description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist.dir}"/>
+
+    <!-- Create binary distribution with current day stamp -->
+    <copy file="${source.dir}/ReadMe.txt"
+      tofile="${plugins.dir}/ij-3D-Toolkit-ReadMe.txt"
+      overwrite="true"/>
+    <zip basedir="${plugins.dir}"
+      destfile="${dist.dir}/ij-3D-Toolkit_bin_${DSTAMP}.zip"/>
+  </target>
+
+
+  <target name="clean" description="clean up">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${output.dir}"/>
+
+    <ant dir="./Toolkit" target="clean">
+      <property name="output.dir" value="${plugins.dir}"/>
+    </ant>
+  </target>
 </project>
