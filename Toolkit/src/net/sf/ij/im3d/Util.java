@@ -22,6 +22,7 @@ package net.sf.ij.im3d;
 
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.measure.Calibration;
 import ij.process.ImageProcessor;
 
 import java.util.Properties;
@@ -33,7 +34,7 @@ import net.sf.ij.util.TextUtil;
  *
  *@author     Jarek Sacha
  *@created    April 30, 2002
- *@version    $Revision: 1.3 $
+ *@version    $Revision: 1.4 $
  */
 
 public class Util {
@@ -165,12 +166,10 @@ public class Util {
    */
   public static Point3D decodeOrigin(ImagePlus imp) {
     Point3D origin = new Point3D();
-    Properties props = imp.getProperties();
-    if (props != null) {
-      origin.x = TextUtil.parseInt(props.getProperty("origin.x", "0"), 0);
-      origin.y = TextUtil.parseInt(props.getProperty("origin.y", "0"), 0);
-      origin.z = TextUtil.parseInt(props.getProperty("origin.z", "0"), 0);
-    }
+    Calibration calibration = imp.getCalibration();
+      origin.x = (float) calibration.xOrigin;
+      origin.y = (float) calibration.yOrigin;
+      origin.z = (float) calibration.zOrigin;
 
     return origin;
   }
@@ -184,10 +183,11 @@ public class Util {
    *@see            net.sf.ij.im3d.Util.decodeOrigin
    */
   public static void offsetOrigin(ImagePlus imp, Point3D offset) {
-    Point3D origin = decodeOrigin(imp);
-    imp.setProperty("origin.x", "" + (origin.x + offset.x));
-    imp.setProperty("origin.y", "" + (origin.y + offset.y));
-    imp.setProperty("origin.z", "" + (origin.z + offset.z));
+    Calibration calibration = imp.getCalibration();
+      calibration.xOrigin += offset.x;
+      calibration.yOrigin += offset.y;
+      calibration.zOrigin += offset.z;
+      imp.setCalibration(calibration);
   }
 
 
@@ -199,9 +199,11 @@ public class Util {
    *@see            net.sf.ij.im3d.Util.decodeOrigin
    */
   public static void encodeOrigin(ImagePlus imp, Point3D origin) {
-    imp.setProperty("origin.x", "" + origin.x);
-    imp.setProperty("origin.y", "" + origin.y);
-    imp.setProperty("origin.z", "" + origin.z);
+      Calibration calibration = imp.getCalibration();
+        calibration.xOrigin = origin.x;
+        calibration.yOrigin = origin.y;
+        calibration.zOrigin = origin.z;
+        imp.setCalibration(calibration);
   }
 
 }

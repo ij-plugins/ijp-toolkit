@@ -51,25 +51,6 @@ public class VtkEncoder implements PlugIn {
   /**
    *  Description of the Method
    *
-   *@param  imp  Description of the Parameter
-   *@return      Description of the Return Value
-   */
-  private static float[] decodeOrigin(ImagePlus imp) {
-    float[] origin = new float[3];
-    Properties props = imp.getProperties();
-    if (props != null) {
-      origin[0] = TextUtil.parseFloat(props.getProperty("origin.x", "0"), 0);
-      origin[1] = TextUtil.parseFloat(props.getProperty("origin.y", "0"), 0);
-      origin[2] = TextUtil.parseFloat(props.getProperty("origin.z", "0"), 0);
-    }
-
-    return origin;
-  }
-
-
-  /**
-   *  Description of the Method
-   *
    *@param  imp          Description of Parameter
    *@param  asciiFormat  Description of Parameter
    *@return              Description of the Returned Value
@@ -97,9 +78,8 @@ public class VtkEncoder implements PlugIn {
     header.append("" + VtkTag.SPACING + TAG_SEPARATOR
         + c.pixelWidth + " " + c.pixelHeight + " " + c.pixelDepth + "\n");
 
-    float[] origin = decodeOrigin(imp);
     header.append("" + VtkTag.ORIGIN + TAG_SEPARATOR
-        + origin[0] + " " + origin[1] + " " + origin[2] + "\n");
+        + c.xOrigin + " " + c.yOrigin + " " + c.zOrigin + "\n");
 
     header.append("" + VtkTag.POINT_DATA + TAG_SEPARATOR
         + (width * height * depth) + "\n");
