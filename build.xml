@@ -15,11 +15,9 @@
   <target name="setProps" unless="setProps"
   	description="Setup the propertries">
     <property name="outputDir" location="output" />
-    <property name="pluginsDir" location="${outputDir}/build/plugins" />
-    <property name="src"     location="src"/>
-    <property name="dist"    location="dist"/>
-    <property name="classpath" value="${basedir}/lib/ij.jar;${pluginsDir}/ij-plugins-toolkit.jar"/>
-    <property name="setProps" value="true" />
+    <property name="distDir"   location="dist"/>
+    <property name="ijClasspath" value="${basedir}/lib/ij.jar"/>
+    <property name="setProps"  value="true" />
   </target>
   
   <!-- Initialize  -->
@@ -28,6 +26,8 @@
     <!-- Create the time stamp -->
     <tstamp/>
     <!-- Create the build directory structure used by compile -->
+    <property name="pluginsDir" location="${outputDir}/build/plugins" />
+    <property name="classpath" value="${ijClasspath};${pluginsDir}/ij-plugins-toolkit.jar"/>
   </target>
 
   <target name="prepare" depends="init">
@@ -41,6 +41,7 @@
     <!-- toolkit.jar -->
     <ant dir="./Toolkit" target="package">
       <property name="outputdir" value="${pluginsDir}"/>
+      <property name="classpath" value="${ijClasspath}"/>
       <property name="setProps" value="true"/>
     </ant>
 
@@ -58,14 +59,34 @@
       <property name="setProps" value="true"/>
     </ant>
   </target>
+
+  <!-- Checkout sources from CVS -->  
+  <target name="checkout" depends="init"
+          description="Checkout sources drom CVS repository">
+          
+    <cvs cvsRoot=":pserver:anonymous@cvs.ij-plugins.sourceforge.net:/cvsroot/ij-plugins"
+         command="checkout -P"
+         package="ij-plugins"
+         dest="${outputDir}/source"/>
+  </target>
+
+  <target name="distFromCVS" depends="checkout" 
+  	description="Build the toolkit and plugin binaries">
+    <ant dir="${outputDir}/source/ij-plugins" target="dist">
+      <property name="outputDir"   location="${outputDir}"/>
+      <property name="distDir"     location="${distDir}"/>
+      <property name="ijClasspath" value="${ijClasspath}"/>
+      <property name="setProps"  value="true" />
+    </ant>
+  </target>
   
   <target name="dist" depends="build"
         description="generate the distribution" >
     <!-- Create the distribution directory -->
-    <mkdir dir="${dist}/lib"/>
+    <mkdir dir="${distDir}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <zip destfile="${dist}/lib/ij-plugins-toolkit-${DSTAMP}.zip" basedir="${pluginsDir}"/>
+    <zip destfile="${distDir}/lib/ij-plugins-toolkit-${DSTAMP}.zip" basedir="${pluginsDir}"/>
   </target>
 
   <target name="clean"
