@@ -22,7 +22,7 @@ package net.sf.ij.vtk;
 
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
-import net.sf.ij.vtk.Util;
+import net.sf.ij.vtk.VtkUtil;
 
 import net.sf.ij.vtk.VtkImageDataFactory;
 
@@ -30,7 +30,7 @@ import vtk.vtkImageAnisotropicDiffusion2D;
 import vtk.vtkImageData;
 
 /**
- *  Title: Description: Copyright: Copyright (c) 2002 Company:
+ *  Wrapper for vtkImageAnisotropicDiffusion2D.
  *
  * @author
  * @created    September 11, 2002
@@ -51,10 +51,6 @@ public class AnisotropicDiffusion2D {
 //    filter.CornersOn();
 //    filter.FacesOn();
 //    filter.EdgesOn();
-//    filter.SetNumberOfIterations(20);
-//    filter.SetDiffusionFactor(1);
-//    filter.GradientMagnitudeThresholdOn();
-//    filter.SetDiffusionThreshold(8);
   }
 
 
@@ -136,7 +132,7 @@ public class AnisotropicDiffusion2D {
 
       // Pull output from VTK pipeleine
       vtkImageData outputImageData = filter.GetOutput();
-      ImagePlus imp = Util.createImagePlus(outputImageData);
+      ImagePlus imp = VtkUtil.createImagePlus(outputImageData);
 
       outputProcessor = (ByteProcessor) imp.getProcessor();
     }

@@ -32,25 +32,28 @@ import vtk.vtkImageData;
 import vtk.vtkStructuredPointsWriter;
 
 /**
- *  Title: Description: Copyright: Copyright (c) 2002 Company:
+ *  VTK related utilities.
  *
  * @author
  * @created    September 11, 2002
  * @version    1.0
  */
 
-public class Util {
+public class VtkUtil {
 
-  private Util() { }
+  private VtkUtil() { }
 
 
   /**
-   *  Description of the Method
+   *  Create Image/J's ImagePlus object from VTK's vtkImageData object. Current
+   *  implementation performs the transformation by writing/reading data in VTK
+   *  format to/from a temporary file.
    *
-   * @param  data                   Description of the Parameter
-   * @return                        Description of the Return Value
-   * @exception  VtkImageException  Description of the Exception
-   * @exception  IOException        Description of the Exception
+   * @param  data                   VTK's vtkImageData object.
+   * @return                        Image/J's ImagePlus object.
+   * @exception  VtkImageException  Problem reading temporary VTK file.
+   * @exception  IOException        Problems creating/accessing/deleting
+   *      temporary VTK image data file.
    */
   public static ImagePlus createImagePlus(vtkImageData data)
        throws VtkImageException, IOException {

@@ -27,11 +27,8 @@ import ij.process.ImageProcessor;
 
 import net.sf.ij.vtk.AnisotropicDiffusion2D;
 
-//  private static bool faceOn = true;
-//  private static bool cornerOn = true;
-
 /**
- *  Title: Description: Copyright: Copyright (c) 2002 Company:
+ *  Plugin for running anisotropic diffusion filter from VTK.
  *
  * @author
  * @created    September 11, 2002
@@ -49,7 +46,7 @@ public class Anisotropic_Diffusion implements PlugInFilter {
 
 
   /**
-   *  Description of the Method
+   *  Plugin setup
    *
    * @param  arg  Description of the Parameter
    * @param  imp  Description of the Parameter
@@ -68,8 +65,9 @@ public class Anisotropic_Diffusion implements PlugInFilter {
   public void run(ImageProcessor ip) {
     if (vtkLoadError != null) {
       IJ.showMessage("VTK setup error",
-          "Unable to load VTK libraries.\n" +vtkLoadError+"\n"+
-          "To use this plugin you need to install VTK with Java bindings from www.vtk.org.");      return;
+          "Unable to load VTK libraries.\n" + vtkLoadError + "\n" +
+          "To use this plugin you need to install VTK with Java bindings from www.vtk.org.");
+      return;
     }
 
     if (adFilter == null) {
