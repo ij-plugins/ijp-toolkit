@@ -36,21 +36,28 @@ import java.util.ArrayList;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class VtkColorHistogram implements PlugInFilter {
     static {
+        IJ.write("Loading: vtkCommonJava");
         System.loadLibrary("vtkCommonJava"); // for vtk.vtkVersion class
-//      System.loadLibrary("vtkFilteringJava");
-//      System.loadLibrary("vtkIOJava");
-//      System.loadLibrary("vtkImagingJava");
-//      System.loadLibrary("vtkGraphicsJava");
-//      System.loadLibrary("vtkRenderingJava");
-//      try {
-//        System.loadLibrary("vtkHybridJava");
-//      } catch (Throwable e) {
-//        System.out.println("cannot load vtkHybrid, skipping...");
-//      }
+        IJ.write("Loading: vtkFilteringJava");
+        System.loadLibrary("vtkFilteringJava");
+        IJ.write("Loading: vtkIOJava");
+        System.loadLibrary("vtkIOJava");
+        IJ.write("Loading: vtkImagingJava");
+        System.loadLibrary("vtkImagingJava");
+        IJ.write("Loading: vtkGraphicsJava");
+        System.loadLibrary("vtkGraphicsJava");
+        IJ.write("Loading: vtkRenderingJava");
+        System.loadLibrary("vtkRenderingJava");
+        try {
+            IJ.write("Loading: vtkHybridJava");
+            System.loadLibrary("vtkHybridJava");
+        } catch (Throwable e) {
+            System.out.println("cannot load vtkHybrid, skipping...");
+        }
     }
 
     private static Config config = new Config();
@@ -69,8 +76,11 @@ public class VtkColorHistogram implements PlugInFilter {
             }
             return PlugInFilter.DOES_RGB + PlugInFilter.NO_CHANGES;
         } catch (Throwable t) {
-            throw new RuntimeException("Unable to locate supported VTK library.\n" +
-                    "For more information on using this plugins see Help/About Plugins/Color", t);
+            String msg = "Unable to locate supported VTK library.\n" +
+                    "For more information on using this plugins see Help/About Plugins/Color\n";
+            msg += "java.library.path=" + System.getProperty("java.library.path") + "\n";
+            msg += "java.class.path=" + System.getProperty("java.class.path") + "\n";
+            throw new RuntimeException(msg, t);
         }
     }
 
