@@ -11,6 +11,7 @@
       @TODO: Package the binary distribution.
     -->
 
+    <!-- Set property to the location of package vtk, e.g, vtk.jar -->
     <property name="vtk.classpath" location="my_vtk_path/vtk.jar"/>
 
     <!-- Set default properties for this build -->
