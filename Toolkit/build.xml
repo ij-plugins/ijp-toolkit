@@ -3,49 +3,53 @@
         ij-plugins Toolkit package.
     </description>
 
-  <!-- Default values for input properties -->    
-  <target name="setProps" 
-          unless="setProps"
-  	      description="Setup the propertries">
-    <property name="outputDir" location="output" />
-    <path id="classpath" value="${basedir}/lib/ij.jar"/>
-    <property name="setProps" value="true" />
-  </target>
+
+  <property name="output.dir" location="output" />
+  <path id="classpath">
+    <pathelement location="${basedir}/lib/ij.jar"/>
+  </path>
+
 
   <!-- set local properties for this build -->
-  <target name="init" depends="setProps">
-    <property name="srcDir" location="src"/>
-    <property name="buildDir" location="build"/>
+  <target name="init">
+    <property name="src.dir" location="src"/>
+    <property name="build.dir" location="build"/>
   </target>
 
+
+  <!--
   <target name="prepare" depends="init">
-    <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${buildDir}"/>
   </target>
+  -->
 
-  <target name="compile" depends="prepare"
+
+  <target name="compile" depends="init"
         description="compile the source " >
-    <!-- Compile the java code from ${srcDir} into ${buildDir} -->
-    <javac srcdir="${srcDir}"
-           destdir="${buildDir}"
+    <!-- Compile the java code from ${src.dir} into ${build.dir} -->
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${src.dir}"
+           destdir="${build.dir}"
            debug="on"
       >
       <classpath refid="classpath"/>
     </javac>
   </target>
 
-  <target name="package" depends="compile"
-        description="generate toolkit jar" >
-    <!-- Create the distribution directory -->
-    <mkdir dir="${outputDir}"/>
 
+  <target name="package"
+    depends="compile"
+    description="generate toolkit jar" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${output.dir}"/>
     <!-- Put everything in ${build} into the ij-plugins-toolkit.jar file -->
-    <jar jarfile="${outputDir}/ij-plugins-toolkit.jar" basedir="${buildDir}"/>
+    <jar jarfile="${output.dir}/ij-plugins-toolkit.jar" basedir="${build.dir}"/>
   </target>
 
-  <target name="clean" depends="init"
-        description="clean up" >
-    <!-- Delete the ${buildDir} directory tree -->
-    <delete dir="${buildDir}"/>
+
+  <target name="clean"
+    depends="init"
+    description="clean up" >
+    <!-- Delete the ${build.dir} directory tree -->
+    <delete dir="${build.dir}"/>
   </target>
 </project>

@@ -4,30 +4,24 @@
     </description>
 
   <!-- Default values for input properties -->    
-  <target name="setProps" 
-          unless="setProps"
-  	      description="Setup the propertries">
-    <path id="classpath" value="${basedir}/lib/ij.jar"/>
-    <property name="outputDir" value="plugins/3D Toolkits"/>
-    <property name="setProps" value="true" />
-  </target>
+  <path id="classpath">
+    <pathelement location="${basedir}/lib/ij.jar"/>
+  </path>
+  <property name="output.dir" value="plugins/3D Toolkits"/>
 
-  <!-- set local properties for this build -->
-  <target name="init" depends="setProps">
-    <property name="srcDir" location="src/3D Toolkit"/>
-    <property name="destDir"  location="${outputDir}"/>
-  </target>
-
-  <target name="prepare" depends="init">
+  <target name="prepare">
+    <!-- set local properties for this build -->
+    <property name="src.dir" location="src/3D Toolkit"/>
+    <property name="dest.dir"  location="${output.dir}"/>
     <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${destDir}"/>
+    <mkdir dir="${dest.dir}"/>
   </target>
 
   <target name="compile" depends="prepare"
         description="compile the source " >
-    <!-- Compile the java code from ${srcDir} into ${buildDir} -->
-    <javac srcdir="${srcDir}"
-      destdir="${destDir}"
+    <!-- Compile the java code from ${src.dir} into ${build.dir} -->
+    <javac srcdir="${src.dir}"
+      destdir="${dest.dir}"
       debug="on"
       >
           <classpath refid="classpath"/>
