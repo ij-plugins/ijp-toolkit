@@ -26,7 +26,10 @@
   <target name="compile" depends="prepare"
         description="compile the source " >
     <!-- Compile the java code from ${srcDir} into ${buildDir} -->
-    <javac srcdir="${srcDir}" destdir="${destDir}">
+    <javac srcdir="${srcDir}"
+      destdir="${destDir}"
+      debug="on"
+      >
           <classpath refid="classpath"/>
     </javac>
   </target>

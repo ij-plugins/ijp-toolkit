@@ -1,21 +1,21 @@
 <project name="ij-plugins-3D IO" default="compile" basedir=".">
-    <description>
-        ij-plugins Toolkit package.
-    </description>
+  <description>
+    ij-plugins Toolkit package.
+  </description>
 
-  <!-- Default values for input properties -->    
-  <target name="setProps" 
-          unless="setProps"
-  	      description="Setup the propertries">
+  <!-- Default values for input properties -->
+  <target name="setProps"
+    unless="setProps"
+    description="Setup the propertries">
     <path id="classpath" value="${basedir}/lib/ij.jar"/>
     <property name="outputDir" value="plugins/3D IO"/>
-    <property name="setProps" value="true" />
+    <property name="setProps" value="true"/>
   </target>
 
   <!-- set local properties for this build -->
   <target name="init" depends="setProps">
     <property name="srcDir" location="src/3D IO"/>
-    <property name="destDir"  location="${outputDir}"/>
+    <property name="destDir" location="${outputDir}"/>
   </target>
 
   <target name="prepare" depends="init">
@@ -24,10 +24,13 @@
   </target>
 
   <target name="compile" depends="prepare"
-        description="compile the source " >
+    description="compile the source ">
     <!-- Compile the java code from ${srcDir} into ${buildDir} -->
-    <javac srcdir="${srcDir}" destdir="${destDir}">
-          <classpath refid="classpath"/>
+    <javac srcdir="${srcDir}"
+      destdir="${destDir}"
+      debug="on"
+      >
+      <classpath refid="classpath"/>
     </javac>
   </target>
 </project>
