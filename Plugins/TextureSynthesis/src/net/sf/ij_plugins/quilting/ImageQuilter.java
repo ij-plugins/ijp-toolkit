@@ -93,13 +93,10 @@ public class ImageQuilter {
         patchcols++;
         patchrows++;
         if (okwidth != outwidth || okheight != outheight) {
-            System.out.println("Your output size requires partial"
-                    + " patches that are currently"
-                    + " not supported.");
+            IJ.write("Your output size requires partial patches that are currently not supported.");
             outwidth = okwidth;
             outheight = okheight;
-            System.out.println("Using width = " + outwidth + " and  height = "
-                    + outheight + " instead.");
+            IJ.write("Using width = " + outwidth + " and height = " + outheight + " instead.");
         }
 
         // create the output image

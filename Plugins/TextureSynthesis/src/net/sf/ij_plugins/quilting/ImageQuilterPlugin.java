@@ -148,11 +148,11 @@ public class ImageQuilterPlugin implements PlugInFilter {
 
         synther.setPreviewImage(previewImp);
 
-//        IJ.write("Quilting started at " + new java.util.Date());
+        IJ.write("Quilting started at " + new java.util.Date());
 
         ImageProcessor output = synther.synthesize(config.width, config.height);
 
-//        IJ.write("Quilting ended at " + new java.util.Date());
+        IJ.write("Quilting ended at " + new java.util.Date());
 
         return output;
     }

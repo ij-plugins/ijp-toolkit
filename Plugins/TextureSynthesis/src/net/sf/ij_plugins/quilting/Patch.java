@@ -22,6 +22,7 @@
  */
 package net.sf.ij_plugins.quilting;
 
+import ij.IJ;
 import ij.process.ImageProcessor;
 
 /**
@@ -124,8 +125,10 @@ public class Patch extends View {
      */
     public boolean nextRow(int overlap) {
         int newy = yoffset + height - overlap;
-        System.out.println("newy = " + newy);
-        System.out.println("height = " + image.getHeight());
+        if (IJ.debugMode) {
+            IJ.write("newy = " + newy);
+            IJ.write("height = " + image.getHeight());
+        }
         if (newy + height > image.getHeight()) {
             return false;
         }
