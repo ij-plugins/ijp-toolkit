@@ -111,11 +111,11 @@ public class VtkDecoder implements PlugIn {
    *  running VTKDecoder from ImageJ'g GUI. Shows an open dialog, loads the
    *  selected VTK image and displays it on the screen.
    *
-   * @param  arg  Not used.
+   * @param  arg  Used by Image/J scripting.
    */
   public void run(String arg) {
     try {
-      OpenDialog openDialog = new OpenDialog("Open as VTK...", null);
+      OpenDialog openDialog = new OpenDialog("Open as VTK...", arg);
       if (openDialog.getFileName() == null) {
         return;
       }
