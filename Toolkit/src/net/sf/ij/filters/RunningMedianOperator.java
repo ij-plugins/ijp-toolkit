@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RunningMedianOperator {
 
@@ -227,14 +227,17 @@ public class RunningMedianOperator {
         float secondSmallest = Float.POSITIVE_INFINITY;
         for (int i = 0; i < packets.length; i++) {
             final Packet packet = packets[i];
-            if (packet.split < packet.size && packet.data[packet.split] < firstSmallest) {
-                selection = i;
-                if (secondSmallest > firstSmallest) {
-                    secondSmallest = firstSmallest;
+            if (packet.split < packet.size) {
+                final float v = packet.data[packet.split];
+                if (v < firstSmallest) {
+                    selection = i;
+                    if (secondSmallest > firstSmallest) {
+                        secondSmallest = firstSmallest;
+                    }
+                    firstSmallest = v;
+                } else if (v < secondSmallest) {
+                    secondSmallest = v;
                 }
-                firstSmallest = packet.data[packet.split];
-            } else if (packet.split < packet.size && packet.data[packet.split] < secondSmallest) {
-                secondSmallest = packet.data[packet.split];
             }
         }
 
