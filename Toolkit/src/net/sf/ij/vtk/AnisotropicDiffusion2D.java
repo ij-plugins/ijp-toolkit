@@ -29,6 +29,7 @@ import net.sf.ij.vtk.VtkImageDataFactory;
 
 import vtk.vtkImageAnisotropicDiffusion2D;
 import vtk.vtkImageData;
+import vtk.vtkImageAnisotropicDiffusion3D;
 
 /**
  *  Wrapper for vtkImageAnisotropicDiffusion2D.
@@ -56,18 +57,14 @@ public class AnisotropicDiffusion2D {
   }
 
 
-  private ImageProcessor inputProcessor = null;
-  private ImageProcessor outputProcessor = null;
-  private vtkImageAnisotropicDiffusion2D filter = null;
+  private ImagePlus inputImage = null;
+  private ImagePlus outputImage = null;
+  private vtkImageAnisotropicDiffusion3D filter = null;
 
 
   /**  Constructor for the AnisotropicDiffusion2D object */
   public AnisotropicDiffusion2D() {
-    // Create VTK pipeline for the filter
-    filter = new vtkImageAnisotropicDiffusion2D();
-//    filter.CornersOn();
-//    filter.FacesOn();
-//    filter.EdgesOn();
+      filter = new vtkImageAnisotropicDiffusion3D();
   }
 
 
@@ -120,10 +117,10 @@ public class AnisotropicDiffusion2D {
   /**
    *  Sets the input attribute of the AnisotropicDiffusion2D object
    *
-   * @param  bp  The new input value
+   * @param  imp  The new input value
    */
-  public void setInput(ImageProcessor bp) {
-    inputProcessor = bp;
+  public void setInput(ImagePlus imp) {
+    inputImage = imp;
   }
 
 
@@ -132,8 +129,8 @@ public class AnisotropicDiffusion2D {
    *
    * @return    The output value
    */
-  public ImageProcessor getOutput() {
-    return outputProcessor;
+  public ImagePlus getOutput() {
+    return outputImage;
   }
 
 
@@ -141,7 +138,7 @@ public class AnisotropicDiffusion2D {
   public void update() {
     try {
       // Push input to VTK pipeline
-      vtkImageData inputImageData = VtkImageDataFactory.create(inputProcessor);
+      vtkImageData inputImageData = VtkImageDataFactory.create(inputImage);
 
       // update VTK pipeline
       filter.SetInput(inputImageData);
@@ -149,9 +146,7 @@ public class AnisotropicDiffusion2D {
 
       // Pull output from VTK pipeleine
       vtkImageData outputImageData = filter.GetOutput();
-      ImagePlus imp = VtkUtil.createImagePlus(outputImageData);
-
-      outputProcessor = imp.getProcessor();
+      outputImage = VtkUtil.createImagePlus(outputImageData);
     }
     catch (Exception ex) {
       ex.printStackTrace();

@@ -39,8 +39,8 @@ import vtk.vtkStructuredPointsReader;
  *  translation of images from ImageJ representatin to VTK representation.
  *
  * @author     Jarek Sacha
- * @created    September 7, 2002
- * @version    1.0
+ * @since    September 7, 2002
+ * @version  $Revision: 1.4 $
  */
 
 public class VtkImageDataFactory {
@@ -50,7 +50,7 @@ public class VtkImageDataFactory {
 
 
   /**
-   *  Create a vtkImageData object from ImagePlus object.
+   *  Create a vtkImageData object from ImageProcessor object.
    *
    * @param  ip               Description of the Parameter
    * @return                  Description of the Return Value
@@ -77,4 +77,34 @@ public class VtkImageDataFactory {
     // Return reference to the VTK image.
     return data;
   }
+
+    /**
+     *  Create a vtkImageData object from ImagePlus object.
+     *
+     * @param imp
+     * @return
+     * @throws IOException
+     */
+    public static vtkImageData create(ImagePlus imp) throws IOException {
+      File tmpFile = File.createTempFile("ijImageData", ".vtk");
+      String tmpFileName = tmpFile.getAbsolutePath();
+
+      // Save ImagePlus in VTK format in a temporary file.
+      VtkEncoder.save(tmpFileName, imp);
+
+      // Read the temporary file using VTK.
+      vtkStructuredPointsReader reader = new vtkStructuredPointsReader();
+      reader.SetFileName(tmpFileName);
+      reader.Update();
+      reader.CloseVTKFile();
+
+      vtkImageData data = (vtkImageData) reader.GetOutput();
+
+      // Remove the temporary file.
+      tmpFile.delete();
+
+      // Return reference to the VTK image.
+      return data;
+    }
+
 }

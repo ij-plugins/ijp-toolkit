@@ -20,8 +20,10 @@
  */
 import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
+import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 
 import net.sf.ij.vtk.AnisotropicDiffusion2D;
@@ -29,12 +31,12 @@ import net.sf.ij.vtk.AnisotropicDiffusion2D;
 /**
  *  Plugin for running anisotropic diffusion filter from VTK.
  *
- * @author
- * @created    September 11, 2002
- * @version    1.0
+ * @author   Jarek Sacha
+ * @since    September 11, 2002
+ * @version  $Revision: 1.4 $
  */
 
-public class Anisotropic_Diffusion implements PlugInFilter {
+public class Anisotropic_Diffusion implements PlugIn {
 
   private static AnisotropicDiffusion2D adFilter;
 
@@ -68,36 +70,48 @@ public class Anisotropic_Diffusion implements PlugInFilter {
 //      return;
 //    }
 
-    if (adFilter == null) {
-      adFilter = new AnisotropicDiffusion2D();
-    }
-
-    GenericDialog dialog = new GenericDialog("Anisotropic Difusion Options");
-    dialog.addNumericField("Diffusion factor", adFilter.getDiffusionFactor(), 3);
-    dialog.addNumericField("Diffusion threshold", adFilter.getDiffusionThreshold(), 3);
-    dialog.addNumericField("Number of iterations", adFilter.getNumberOfIterations(), 0);
-    dialog.addCheckbox("Gradient magnitude threshold", adFilter.isGradientMagnitudeThreshold());
-    dialog.showDialog();
-
-    while (dialog.invalidNumber() && !dialog.wasCanceled()) {
-      IJ.showMessage("Error",
-          "At least one of the fields is not a valid number.");
-      dialog.show();
-    }
-
-    if (dialog.wasCanceled()) {
-      return;
-    }
-
-    adFilter.setDiffusionFactor(dialog.getNextNumber());
-    adFilter.setDiffusionThreshold(dialog.getNextNumber());
-    adFilter.setNumberOfIterations((int) (dialog.getNextNumber() + 0.5));
-    adFilter.setGradientMagnitudeThreshold(dialog.getNextBoolean());
-    adFilter.setInput(ip);
-
-    adFilter.update();
-
-    ImageProcessor output = adFilter.getOutput();
-    new ImagePlus("Anisotropic Diffusion", output).show();
   }
+
+    public void run(String arg) {
+        // Get current image
+        ImagePlus imp = WindowManager.getCurrentImage();
+        if(imp == null) {
+            IJ.noImage();
+            return;
+        }
+
+        // Allocate Anisotropic Diffusion filter
+        if (adFilter == null) {
+          adFilter = new AnisotropicDiffusion2D();
+        }
+
+        GenericDialog dialog = new GenericDialog("Anisotropic Diffusion Options");
+        dialog.addNumericField("Diffusion factor", adFilter.getDiffusionFactor(), 3);
+        dialog.addNumericField("Diffusion threshold", adFilter.getDiffusionThreshold(), 3);
+        dialog.addNumericField("Number of iterations", adFilter.getNumberOfIterations(), 0);
+        dialog.addCheckbox("Gradient magnitude threshold", adFilter.isGradientMagnitudeThreshold());
+        dialog.showDialog();
+
+        while (dialog.invalidNumber() && !dialog.wasCanceled()) {
+          IJ.showMessage("Error",
+              "At least one of the fields is not a valid number.");
+          dialog.show();
+        }
+
+        if (dialog.wasCanceled()) {
+          return;
+        }
+
+        adFilter.setDiffusionFactor(dialog.getNextNumber());
+        adFilter.setDiffusionThreshold(dialog.getNextNumber());
+        adFilter.setNumberOfIterations((int) (dialog.getNextNumber() + 0.5));
+        adFilter.setGradientMagnitudeThreshold(dialog.getNextBoolean());
+        adFilter.setInput(imp);
+
+        adFilter.update();
+
+        ImagePlus output = adFilter.getOutput();
+        output.setTitle(imp.getTitle() + "Anisotropic Diffusion");
+        output.show();
+    }
 }
