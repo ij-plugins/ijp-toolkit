@@ -40,8 +40,8 @@ import java.util.StringTokenizer;
 
 /**
  *  Reads images form files in <a HREF="http://public.kitware.com/VTK/">VTK</a>
- *  format. Only VTK files containing images (VTK structured points) are supported.
- *  <p>
+ *  format. Only VTK files containing images (VTK structured points) are
+ *  supported. <p>
  *
  *  Limitations
  *  <ul>
@@ -50,8 +50,8 @@ import java.util.StringTokenizer;
  *  </ul>
  *
  *
- *@author     Jarek
- *@created    July 3, 2002
+ * @author     Jarek
+ * @created    July 3, 2002
  */
 public class VtkDecoder implements PlugIn {
 
@@ -65,16 +65,14 @@ public class VtkDecoder implements PlugIn {
   private float[] imageOrigin = null;
 
 
-  /**
-   *  Constructor for the VTKDecoder object
-   */
+  /**  Constructor for the VTKDecoder object  */
   public VtkDecoder() { }
 
 
   /**
    *  The test program for the VTKDecoder class
    *
-   *@param  args  The command line arguments
+   * @param  args  The command line arguments
    */
   public static void main(String[] args) {
     try {
@@ -82,7 +80,8 @@ public class VtkDecoder implements PlugIn {
       FileInfo fileInfo = vtkDecoder.decodeHeader(new File("data/Region.vtk"));
       ImagePlus imp = vtkDecoder.readImageData(fileInfo);
       imp.show();
-    } catch (Throwable t) {
+    }
+    catch (Throwable t) {
       t.printStackTrace();
     }
   }
@@ -91,9 +90,9 @@ public class VtkDecoder implements PlugIn {
   /**
    *  Load image from a VTK image file.
    *
-   *@param  file                   VTK image file.
-   *@return                        Decoded image.
-   *@exception  VtkImageException  In case of IO errors.
+   * @param  file                   VTK image file.
+   * @return                        Decoded image.
+   * @exception  VtkImageException  In case of IO errors.
    */
   public static ImagePlus open(File file) throws VtkImageException {
     VtkDecoder vtkDecoder = new VtkDecoder();
@@ -107,7 +106,7 @@ public class VtkDecoder implements PlugIn {
    *  running VTKDecoder from ImageJ'g GUI. Shows an open dialog, loads the
    *  selected VTK image and displays it on the screen.
    *
-   *@param  arg  Not used.
+   * @param  arg  Not used.
    */
   public void run(String arg) {
     try {
@@ -124,27 +123,29 @@ public class VtkDecoder implements PlugIn {
         long tStop = System.currentTimeMillis();
         imp.show();
         IJ.showStatus("VTK image loaded in " + (tStop - tStart) + " ms.");
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         ex.printStackTrace();
         IJ.showMessage("VTK Reader", "Error opening image: '"
             + file.getAbsolutePath() + "'\n" + ex.getMessage());
       }
 
-    } catch (Throwable t) {
+    }
+    catch (Throwable t) {
       t.printStackTrace();
     }
-
   }
 
 
   /**
    *  Parse value if VTK tag as a string.
    *
-   *@param  line                   String contating VTK tag proceeded by a
+   * @param  line                   String contating VTK tag proceeded by a
    *      value.
-   *@param  tag                    Expected VTK tag at the begining of the line.
-   *@return                        The tag's value
-   *@exception  VtkImageException  When the <code>line</code> does not start
+   * @param  tag                    Expected VTK tag at the begining of the
+   *      line.
+   * @return                        The tag's value
+   * @exception  VtkImageException  When the <code>line</code> does not start
    *      with a given <code>tag</code>.
    */
   private String parseValueAsString(String line, VtkTag tag)
@@ -167,12 +168,13 @@ public class VtkDecoder implements PlugIn {
   /**
    *  Parse value if VTK tag as an array of integers.
    *
-   *@param  line                   String contating VTK tag proceeded by a
+   * @param  line                   String contating VTK tag proceeded by a
    *      value.
-   *@param  tag                    Expected VTK tag at the begining of the line.
-   *@param  nbTokens               Expected number of elements in the array.
-   *@return                        The tag's value
-   *@exception  VtkImageException  When the <code>line</code> does not start
+   * @param  tag                    Expected VTK tag at the begining of the
+   *      line.
+   * @param  nbTokens               Expected number of elements in the array.
+   * @return                        The tag's value
+   * @exception  VtkImageException  When the <code>line</code> does not start
    *      with a given <code>tag</code>, or unable to parse tag value as an
    *      array of integers.
    */
@@ -192,7 +194,8 @@ public class VtkDecoder implements PlugIn {
         token = st.nextToken();
         r[i] = Integer.parseInt(token);
       }
-    } catch (NumberFormatException ex) {
+    }
+    catch (NumberFormatException ex) {
       throw new VtkImageException("Unable to parse token '" + token + "' as integer.");
     }
 
@@ -203,12 +206,13 @@ public class VtkDecoder implements PlugIn {
   /**
    *  Parse value if VTK tag as an array of floats.
    *
-   *@param  line                   String contating VTK tag proceeded by a
+   * @param  line                   String contating VTK tag proceeded by a
    *      value.
-   *@param  tag                    Expected VTK tag at the begining of the line.
-   *@param  nbTokens               Expected number of elements in the array.
-   *@return                        The tag's value
-   *@exception  VtkImageException  When the <code>line</code> does not start
+   * @param  tag                    Expected VTK tag at the begining of the
+   *      line.
+   * @param  nbTokens               Expected number of elements in the array.
+   * @return                        The tag's value
+   * @exception  VtkImageException  When the <code>line</code> does not start
    *      with a given <code>tag</code>, or unable to parse tag value as an
    *      array of floats.
    */
@@ -228,7 +232,8 @@ public class VtkDecoder implements PlugIn {
         token = st.nextToken();
         r[i] = Float.parseFloat(token);
       }
-    } catch (NumberFormatException ex) {
+    }
+    catch (NumberFormatException ex) {
       throw new VtkImageException("Unable to parse token '" + token + "' as integer.");
     }
 
@@ -237,12 +242,14 @@ public class VtkDecoder implements PlugIn {
 
 
   /**
-   *  Decode VTK header information.
+   *  Open file VTK image file and decode header information. Decoded
+   *  information is represented as FileInfo so standard ImageJ methods can be
+   *  used to read image data.
    *
-   *@param  file                   VTK image file.
-   *@return                        VTK header information converted to FileInfo
+   * @param  file                   VTK image file.
+   * @return                        VTK header information converted to FileInfo
    *      format.
-   *@exception  VtkImageException  In case of I/O errors or incorect header
+   * @exception  VtkImageException  In case of I/O errors or incorect header
    *      format.
    */
   private FileInfo decodeHeader(File file) throws VtkImageException {
@@ -259,7 +266,8 @@ public class VtkDecoder implements PlugIn {
             + file.getName());
       }
       fileInputStream.close();
-    } catch (IOException ex) {
+    }
+    catch (IOException ex) {
       throw new VtkImageException(ex.getMessage());
     }
 
@@ -302,9 +310,11 @@ public class VtkDecoder implements PlugIn {
     }
     if (line.compareToIgnoreCase(VtkDataFormat.ASCII.toString()) == 0) {
       asciiImageData = true;
-    } else if (line.compareToIgnoreCase(VtkDataFormat.BINARY.toString()) == 0) {
+    }
+    else if (line.compareToIgnoreCase(VtkDataFormat.BINARY.toString()) == 0) {
       asciiImageData = false;
-    } else {
+    }
+    else {
       throw new VtkImageException(
           "File format error. Expecting either '" + VtkDataFormat.ASCII
           + "' or '" + VtkDataFormat.BINARY + "'. Got: '" + line
@@ -326,7 +336,8 @@ public class VtkDecoder implements PlugIn {
             + "'. Line number: "
             + lineExtractor.getCurrentLineNumber());
       }
-    } else {
+    }
+    else {
       throw new VtkImageException(
           "File format error. Expecting tag '" + VtkTag.DATASET
           + "', got: '" + line
@@ -349,10 +360,12 @@ public class VtkDecoder implements PlugIn {
           fileInfo.width = dim[0];
           fileInfo.height = dim[1];
           fileInfo.nImages = dim[2];
-        } else if (line.startsWith(VtkTag.ORIGIN.toString())) {
+        }
+        else if (line.startsWith(VtkTag.ORIGIN.toString())) {
           // ORIGIN
           imageOrigin = parseValueAsFloatArray(line, VtkTag.ORIGIN, 3);
-        } else if (line.startsWith(VtkTag.SPACING.toString())) {
+        }
+        else if (line.startsWith(VtkTag.SPACING.toString())) {
           // SPACING
           float[] spacing = parseValueAsFloatArray(line, VtkTag.SPACING, 3);
           if (spacing[0] <= 0 || spacing[1] <= 0 || spacing[2] < 0) {
@@ -362,7 +375,8 @@ public class VtkDecoder implements PlugIn {
           fileInfo.pixelWidth = spacing[0];
           fileInfo.pixelHeight = spacing[1];
           fileInfo.pixelDepth = spacing[2];
-        } else if (line.startsWith(VtkTag.ASPECT_RATIO.toString())) {
+        }
+        else if (line.startsWith(VtkTag.ASPECT_RATIO.toString())) {
           // ASPECT_RATIO
           float[] spacing = parseValueAsFloatArray(line, VtkTag.ASPECT_RATIO, 3);
           if (spacing[0] <= 0 || spacing[1] <= 0 || spacing[2] < 0) {
@@ -372,19 +386,22 @@ public class VtkDecoder implements PlugIn {
           fileInfo.pixelWidth = spacing[0];
           fileInfo.pixelHeight = spacing[1];
           fileInfo.pixelDepth = spacing[2];
-        } else if (line.startsWith(VtkTag.POINT_DATA.toString())) {
+        }
+        else if (line.startsWith(VtkTag.POINT_DATA.toString())) {
           // POINT_DATA
           int[] nbPoints = parseValueAsIntArray(line, VtkTag.POINT_DATA, 1);
           if (nbPoints[0] < 0) {
             throw new VtkImageException("Invalid number of image pixels: " +
                 nbPoints + ".");
           }
-        } else if (line.startsWith(VtkTag.SCALARS.toString())) {
+        }
+        else if (line.startsWith(VtkTag.SCALARS.toString())) {
           // SCALARS
           StringTokenizer st = new StringTokenizer(line.substring(VtkTag.SCALARS.toString().length()));
           if (st.hasMoreTokens()) {
             String dataName = st.nextToken();
-          } else {
+          }
+          else {
             throw new VtkImageException("Error parsing header tag: '"
                 + VtkTag.SCALARS + "'. Cannot extract dataName.");
           }
@@ -392,18 +409,24 @@ public class VtkDecoder implements PlugIn {
             String dataType = st.nextToken();
             if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_CHAR.toString()) == 0) {
               fileInfo.fileType = FileInfo.GRAY8;
-            } else if (dataType.compareToIgnoreCase(VtkScalarType.SHORT.toString()) == 0) {
+            }
+            else if (dataType.compareToIgnoreCase(VtkScalarType.SHORT.toString()) == 0) {
               fileInfo.fileType = FileInfo.GRAY16_SIGNED;
-            } else if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_SHORT.toString()) == 0) {
+            }
+            else if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_SHORT.toString()) == 0) {
               fileInfo.fileType = FileInfo.GRAY16_UNSIGNED;
-            } else if (dataType.compareToIgnoreCase(VtkScalarType.INT.toString()) == 0) {
+            }
+            else if (dataType.compareToIgnoreCase(VtkScalarType.INT.toString()) == 0) {
               fileInfo.fileType = FileInfo.GRAY32_INT;
-            } else if (dataType.compareToIgnoreCase(VtkScalarType.FLOAT.toString()) == 0) {
+            }
+            else if (dataType.compareToIgnoreCase(VtkScalarType.FLOAT.toString()) == 0) {
               fileInfo.fileType = FileInfo.GRAY32_FLOAT;
-            } else {
+            }
+            else {
               throw new VtkImageException("Unsupported data type: '" + dataType + "'.");
             }
-          } else {
+          }
+          else {
             throw new VtkImageException("Error parsing header tag: '"
                 + VtkTag.SCALARS + "'. Cannot extract dataType.");
           }
@@ -414,7 +437,8 @@ public class VtkDecoder implements PlugIn {
                   + numComp + "'.");
             }
           }
-        } else if (line.startsWith(VtkTag.LOOKUP_TABLE.toString())) {
+        }
+        else if (line.startsWith(VtkTag.LOOKUP_TABLE.toString())) {
           String lookupTable = line.substring(VtkTag.LOOKUP_TABLE.toString().length());
           if (lookupTable == null || !lookupTable.trim().equalsIgnoreCase("default")) {
             throw new VtkImageException("Unsupported lookup table format. Expecting 'default', got '"
@@ -422,7 +446,8 @@ public class VtkDecoder implements PlugIn {
           }
           // LOOKUP_TABLE should be the last line bifore the data.
           break;
-        } else {
+        }
+        else {
           throw new VtkImageException("Unsupported file header tag '"
               + line + "'.");
         }
@@ -432,7 +457,8 @@ public class VtkDecoder implements PlugIn {
           line = lineExtractor.nextLine(true);
         }
       }
-    } catch (VtkImageException ex) {
+    }
+    catch (VtkImageException ex) {
       throw new VtkImageException("Error processing line "
           + lineExtractor.getCurrentLineNumber() + ". " + ex.getMessage());
     }
@@ -445,9 +471,9 @@ public class VtkDecoder implements PlugIn {
 
 
   /**
-   *@param  fileInfo               Description of Parameter
-   *@return                        Description of the Returned Value
-   *@exception  VtkImageException  Description of Exception
+   * @param  fileInfo               Description of Parameter
+   * @return                        Description of the Returned Value
+   * @exception  VtkImageException  Description of Exception
    */
   private ImagePlus readImageData(FileInfo fileInfo) throws VtkImageException {
     ImagePlus imp = null;
@@ -458,7 +484,8 @@ public class VtkDecoder implements PlugIn {
       if (imp == null) {
         throw new VtkImageException("Unable to read image data.");
       }
-    } else {
+    }
+    else {
       // Read ascii image data
       try {
         File file = new File(fileInfo.directory, fileInfo.fileName);
@@ -476,7 +503,8 @@ public class VtkDecoder implements PlugIn {
         imp = new ImagePlus(fileInfo.fileName, stack);
         IJ.showProgress(1);
         reader.close();
-      } catch (IOException ex) {
+      }
+      catch (IOException ex) {
         throw new VtkImageException("Error opening VTK image file.\n"
             + ex.getMessage());
       }
@@ -493,11 +521,11 @@ public class VtkDecoder implements PlugIn {
 
 
   /**
-   *@param  r                Description of Parameter
-   *@param  size             Description of Parameter
-   *@param  pixels           Description of Parameter
-   *@exception  IOException  Description of Exception
-   *@todo                    ...
+   * @param  r                Description of Parameter
+   * @param  size             Description of Parameter
+   * @param  pixels           Description of Parameter
+   * @exception  IOException  Description of Exception
+   * @todo                    ...
    */
   private void readAsText(Reader r, int size, float[] pixels) throws IOException {
     StreamTokenizer tok = new StreamTokenizer(r);
@@ -527,8 +555,8 @@ public class VtkDecoder implements PlugIn {
   /**
    *  Extarct lines of text from a binary buffer.
    *
-   *@author     Jarek Sacha
-   *@created    June 21, 2002
+   * @author     Jarek Sacha
+   * @created    June 21, 2002
    */
   private static class LineExtractor {
     private final static int NEW_LINE_MODE_NULL = 0;
@@ -556,9 +584,9 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Constructor for the LineExtractor object
      *
-     *@param  buffer  Buffer containing lines to extract.
-     *@param  offset  Offset at which to start the extraction.
-     *@param  length  Number of bytes to consider for extraction.
+     * @param  buffer  Buffer containing lines to extract.
+     * @param  offset  Offset at which to start the extraction.
+     * @param  length  Number of bytes to consider for extraction.
      */
     public LineExtractor(byte[] buffer, int offset, int length) {
       this.buffer = buffer;
@@ -571,7 +599,7 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Gets the startOfNextLine attribute of the LineExtractor object
      *
-     *@return    The startOfNextLine value
+     * @return    The startOfNextLine value
      */
     public int getStartOfNextLine() {
       return startOfNextLine;
@@ -583,7 +611,7 @@ public class VtkDecoder implements PlugIn {
      *  the text lines are ended. This can be used to guess byte order, For PC
      *  it is LSB, for MAC and UNIX it is MSB.
      *
-     *@return    The NewLineMode value
+     * @return    The NewLineMode value
      */
     public int getNewLineMode() {
       return newLineMode;
@@ -593,13 +621,14 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Return most recent extracted line.
      *
-     *@return                        String representation of the current line.
-     *@exception  VtkImageException  If no lines were extracted.
+     * @return                        String representation of the current line.
+     * @exception  VtkImageException  If no lines were extracted.
      */
     public String getCurrentLine() throws VtkImageException {
       if (lineNumber < 0) {
         return nextLine(false);
-      } else {
+      }
+      else {
         return currentLine;
       }
     }
@@ -608,7 +637,7 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Get number of new line characters following current line.
      *
-     *@return    The currentNumberOfNewLineChars value
+     * @return    The currentNumberOfNewLineChars value
      */
     public int getCurrentNumberOfNewLineChars() {
       return (startOfNextLine - endOfCurrentLine);
@@ -618,7 +647,7 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Return first of the curent new line characters.
      *
-     *@return    The currentNewLineChar1 value
+     * @return    The currentNewLineChar1 value
      */
     public byte getCurrentNewLineChar1() {
       return buffer[endOfCurrentLine];
@@ -628,7 +657,7 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Return second of the curent new line characters (if exists).
      *
-     *@return    Second of the curent new line characters.
+     * @return    Second of the curent new line characters.
      */
     public byte getCurrentNewLineChar2() {
       return buffer[endOfCurrentLine + 1];
@@ -639,7 +668,7 @@ public class VtkDecoder implements PlugIn {
      *  Return number of the current line (total number of extracted lines so
      *  far).
      *
-     *@return    The LineNumber value
+     * @return    The LineNumber value
      */
     public int getCurrentLineNumber() {
       return lineNumber;
@@ -649,11 +678,11 @@ public class VtkDecoder implements PlugIn {
     /**
      *  Extract next line.
      *
-     *@param  lineMustBePresent      If 'true' an exception will be thrown if
+     * @param  lineMustBePresent      If 'true' an exception will be thrown if
      *      line cannot be extracted.
-     *@return                        Text representation of the extracted line,
+     * @return                        Text representation of the extracted line,
      *      'null' if no line was extracted.
-     *@exception  VtkImageException  If a line can not be extarcted and <code>lineMustBePresent</code>
+     * @exception  VtkImageException  If a line can not be extarcted and <code>lineMustBePresent</code>
      *      is 'true'.
      */
     public String nextLine(boolean lineMustBePresent) throws VtkImageException {
@@ -670,7 +699,8 @@ public class VtkDecoder implements PlugIn {
         if (lineMustBePresent) {
           throw new VtkImageException(
               "Unexpected end of buffer. Cannot extract complete line.");
-        } else {
+        }
+        else {
           return currentLine;
         }
       }
@@ -684,7 +714,8 @@ public class VtkDecoder implements PlugIn {
             || nextChar == LINE_FEED_CHAR)
             && nextChar != buffer[newPosition]) {
           startOfNextLine = newPosition + 2;
-        } else {
+        }
+        else {
           startOfNextLine = newPosition + 1;
         }
       }
@@ -699,20 +730,24 @@ public class VtkDecoder implements PlugIn {
         if (newLineMode == NEW_LINE_MODE_NULL
             || newLineMode == NEW_LINE_MODE_PC) {
           newLineMode = NEW_LINE_MODE_PC;
-        } else {
+        }
+        else {
           newLineMode = NEW_LINE_MODE_UNKNOWN;
         }
-      } else if (getCurrentNumberOfNewLineChars() == 1) {
+      }
+      else if (getCurrentNumberOfNewLineChars() == 1) {
         if (getCurrentNewLineChar1() == LINE_FEED_CHAR
             && (newLineMode == NEW_LINE_MODE_NULL
             || newLineMode == NEW_LINE_MODE_MAC)) {
           newLineMode = NEW_LINE_MODE_MAC;
-        } else if (getCurrentNewLineChar1() == CARRIAGE_RETURN_CHAR
+        }
+        else if (getCurrentNewLineChar1() == CARRIAGE_RETURN_CHAR
             && (newLineMode == NEW_LINE_MODE_NULL
             || newLineMode == NEW_LINE_MODE_UNIX)) {
           newLineMode = NEW_LINE_MODE_UNIX;
         }
-      } else {
+      }
+      else {
         newLineMode = NEW_LINE_MODE_UNKNOWN;
       }
       return currentLine;
