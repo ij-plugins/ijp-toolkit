@@ -26,19 +26,19 @@ import ij.plugin.filter.PlugInFilter;
 import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 
-import net.sf.ij.vtk.AnisotropicDiffusion2D;
+import net.sf.ij.vtk.AnisotropicDiffusion;
 
 /**
  *  Plugin for running anisotropic diffusion filter from VTK.
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.4 $
+ * @version  $Revision: 1.5 $
  */
 
 public class Anisotropic_Diffusion implements PlugIn {
 
-  private static AnisotropicDiffusion2D adFilter;
+  private static AnisotropicDiffusion adFilter;
 
 
   /**  Constructor for the Anisotropic_Diffusion object */
@@ -82,7 +82,7 @@ public class Anisotropic_Diffusion implements PlugIn {
 
         // Allocate Anisotropic Diffusion filter
         if (adFilter == null) {
-          adFilter = new AnisotropicDiffusion2D();
+          adFilter = new AnisotropicDiffusion();
         }
 
         GenericDialog dialog = new GenericDialog("Anisotropic Diffusion Options");
