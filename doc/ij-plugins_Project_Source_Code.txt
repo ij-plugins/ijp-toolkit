@@ -47,7 +47,7 @@ project_root
   |
   |----- src
   |
-  |----- docs
+  |----- doc
 
 build.xml:
   Apache Ant build file for building, testing, and creation of distribution 
@@ -59,9 +59,9 @@ lib:
 src:
   Project source code.
   
-docs:
+doc:
   Documentation, except generated documentation like javadocs. Generated
-  documentation will be created from Ant and go under output/docs or dist/docs
+  documentation will be created from Ant and go under output/doc or dist/doc
   
 Currently some of the projects deviate somewhat from this structure.
 
