@@ -15,7 +15,7 @@
 
     <!-- CVS setup -->
     <property name="cvs.root" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ij-plugins"/>
-    <property name="clustering.cvs.module" value="imageio"/>
+    <property name="cvs.module" value="ij-plugins/Plugins/Clustering"/>
 
   
     <!-- Set default properties for this build -->
@@ -205,30 +205,28 @@
     <!-- Build dictributin from current content of CVS -->
     <target name="dist-from-cvs" depends="init">
 
-        <property name="cvs.imageio.dir" location="${checkout.dir}/${imageio.cvs.module}"/>
+        <property name="cvs.dir" location="${checkout.dir}/${cvs.module}"/>
 
         <!-- ................... -->
         <!-- Source distribution -->
         <!-- ................... -->
         <!-- Cleanup CVS checkout directory -->
-        <delete dir="${cvs.imageio.dir}"/>
+        <delete dir="${cvs.dir}"/>
         <!-- Fresh checkout from CVS -->
         <echo message="CVS ROOT: ${cvs.root}"/>
         <antcall target="checkout" inheritall="false">
             <param name="cvs.root" value="${cvs.root}"/>
         </antcall>
-        <!-- Include JAI jar to simplify remove need of rebuilding from source -->
-        <copy todir="${cvs.imageio.dir}/lib" file="${jaicodec.jar}"/>
         <!-- ZIP source -->
-        <zip basedir="${cvs.imageio.dir}"
-            destfile="${dist.dir}/${package.name}_src_${DSTAMP}.zip"/>
+        <zip basedir="${cvs.dir}"
+            destfile="${dist.dir}/${package.name}_src_${package.version}_${DSTAMP}.zip"/>
         
 
         <!-- ................... -->
         <!-- Binary distribution -->
         <!-- ................... -->
         <antcall target="jar" inheritall="false">
-            <param name="base.dir" location="${cvs.imageio.dir}"/>
+            <param name="base.dir" location="${cvs.dir}"/>
             <param name="dist.dir" location="${base.dir}/dist"/>
             <param name="jar.dir" location="${dist.dir}"/>
         </antcall>
@@ -239,23 +237,14 @@
         -->
     </target>
 
-    <!-- Checkout non_com sources from CVS repository -->
-    <target name="checkout-non_com"
-        depends="init">
-        <!-- Checkout SUN sources of JAI IO -->
-        <cvs cvsRoot="${cvs.root}"
-            command="checkout -P"
-            package="${non_com.cvs.module}"
-            dest="${checkout.dir}"/>
-    </target>
-
     <!-- Checkout sources drom CVS repository -->
     <target name="checkout"
         depends="init">
         <!-- Checkout wrappers for ImageJ -->
         <cvs cvsRoot="${cvs.root}"
             command="checkout -P"
-            package="${imageio.cvs.module}"
+            package="${cvs.module}"
+
             dest="${checkout.dir}"/>
     </target>
 
@@ -271,7 +260,7 @@
             in="${build.dir}/changelog.xml"
             out="${dist.dir}/changelog.html"
             style="${ant.home}/etc/changelog.xsl">
-            <param name="title" expression="JAI-ImageIO ChangeLog"/>
+            <param name="title" expression="ij_clustering ChangeLog"/>
             <param name="module" expression="imageio"/>
             <param name="cvsweb" expression="http://cvs.sourceforge.net/viewcvs.py/ij-plugins/"/>
         </style>
@@ -282,7 +271,7 @@
         <cvstagdiff
             cvsroot="${cvs.root}"
             destfile="${build.dir}/tagdiff.xml"
-            package="${imageio.cvs.module}"
+            package="${cvs.module}"
             starttag="LatestRelease"
             endtag="HEAD"
             compression="true"
@@ -295,8 +284,8 @@
             in="${build.dir}/tagdiff.xml"
             out="${dist.dir}/tagdiff.html"
             style="${ant.home}/etc/tagdiff.xsl">
-            <param name="title" expression="JAI-ImageIO Tag Diff"/>
-            <param name="module" expression="${imageio.cvs.module}"/>
+            <param name="title" expression="ij_clustering Tag Diff"/>
+            <param name="module" expression="${cvs.module}"/>
             <param name="cvsweb" expression="http://cvs.sourceforge.net/viewcvs.py/ij-plugins/"/>
         </style>
     </target>
