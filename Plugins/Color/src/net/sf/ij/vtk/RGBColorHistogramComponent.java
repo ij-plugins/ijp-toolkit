@@ -20,23 +20,16 @@
  */
 package net.sf.ij.vtk;
 
-import ij.ImagePlus;
-import ij.io.Opener;
-import ij.process.ColorProcessor;
 import vtk.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RGBColorHistogramComponent extends JComponent {
-    final static private double BAND_RANGE = 255.0;
-
     private vtkPanel renWin;
 
     public RGBColorHistogramComponent(int binsPerBand, BinProperty[] binProperties) {
@@ -83,23 +76,26 @@ public class RGBColorHistogramComponent extends JComponent {
 
 
     static private void createColorBox(int size, vtkRenderer ren) {
-        createLine(size, ren, new double[]{0, 0, 0}, new double[]{1, 0, 0});
-        createLine(size, ren, new double[]{0, 0, 0}, new double[]{0, 1, 0});
-        createLine(size, ren, new double[]{0, 0, 0}, new double[]{0, 0, 1});
+        final double max = BinProperty.COLOR_RANGE;
+        // FIX correct size
+        size = 1;
+        createLine(size, ren, new double[]{0, 0, 0}, new double[]{max, 0, 0});
+        createLine(size, ren, new double[]{0, 0, 0}, new double[]{0, max, 0});
+        createLine(size, ren, new double[]{0, 0, 0}, new double[]{0, 0, max});
 
-        createLine(size, ren, new double[]{1, 0, 0}, new double[]{1, 1, 0});
-        createLine(size, ren, new double[]{1, 0, 0}, new double[]{1, 0, 1});
+        createLine(size, ren, new double[]{max, 0, 0}, new double[]{max, max, 0});
+        createLine(size, ren, new double[]{max, 0, 0}, new double[]{max, 0, max});
 
-        createLine(size, ren, new double[]{0, 1, 0}, new double[]{1, 1, 0});
-        createLine(size, ren, new double[]{0, 1, 0}, new double[]{0, 1, 1});
+        createLine(size, ren, new double[]{0, max, 0}, new double[]{max, max, 0});
+        createLine(size, ren, new double[]{0, max, 0}, new double[]{0, max, max});
 
 
-        createLine(size, ren, new double[]{0, 0, 1}, new double[]{0, 1, 1});
-        createLine(size, ren, new double[]{0, 0, 1}, new double[]{1, 0, 1});
+        createLine(size, ren, new double[]{0, 0, max}, new double[]{0, max, max});
+        createLine(size, ren, new double[]{0, 0, max}, new double[]{max, 0, max});
 
-        createLine(size, ren, new double[]{1, 1, 0}, new double[]{1, 1, 1});
-        createLine(size, ren, new double[]{0, 1, 1}, new double[]{1, 1, 1});
-        createLine(size, ren, new double[]{1, 0, 1}, new double[]{1, 1, 1});
+        createLine(size, ren, new double[]{max, max, 0}, new double[]{max, max, max});
+        createLine(size, ren, new double[]{0, max, max}, new double[]{max, max, max});
+        createLine(size, ren, new double[]{max, 0, max}, new double[]{max, max, max});
     }
 
     static private void createLine(int size, vtkRenderer ren, double[] start, double[] end) {
@@ -107,11 +103,11 @@ public class RGBColorHistogramComponent extends JComponent {
             vtkLineSource line = new vtkLineSource();
             double[] s = new double[3];
             double[] e = new double[3];
-            double[] c = new double[3];
+            double[] color = new double[3];
             for (int j = 0; j < 3; j++) {
                 s[j] = (end[j] - start[j]) * i + start[j] * size;
                 e[j] = (end[j] - start[j]) * (i + 1) + start[j] * size;
-                c[j] = (end[j] - start[j]) / size * (i + 0.5) + start[j];
+                color[j] = ((end[j] - start[j]) / size * (i + 0.5) + start[j]) / size;
             }
             line.SetPoint1(s);
             line.SetPoint2(e);
@@ -119,7 +115,7 @@ public class RGBColorHistogramComponent extends JComponent {
             vtkPolyDataMapper lineMapper = new vtkPolyDataMapper();
             lineMapper.SetInput(line.GetOutput());
             vtkActor lineActor = new vtkActor();
-            lineActor.GetProperty().SetColor(c);
+            lineActor.GetProperty().SetColor(color);
             lineActor.SetMapper(lineMapper);
             ren.AddActor(lineActor);
         }

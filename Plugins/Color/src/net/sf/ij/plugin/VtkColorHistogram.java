@@ -20,37 +20,37 @@
  */
 package net.sf.ij.plugin;
 
-import ij.ImagePlus;
 import ij.IJ;
+import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij.color.ColorHistogram;
 import net.sf.ij.vtk.RGBColorHistogramComponent;
+import vtk.vtkVersion;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-import vtk.vtkVersion;
-
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VtkColorHistogram implements PlugInFilter {
     static {
-      System.loadLibrary("vtkCommonJava");
-      System.loadLibrary("vtkFilteringJava");
-      System.loadLibrary("vtkIOJava");
-      System.loadLibrary("vtkImagingJava");
-      System.loadLibrary("vtkGraphicsJava");
-      System.loadLibrary("vtkRenderingJava");
-      try {
-        System.loadLibrary("vtkHybridJava");
-      } catch (Throwable e) {
-        System.out.println("cannot load vtkHybrid, skipping...");
-      }
+        System.loadLibrary("vtkCommonJava"); // for vtk.vtkVersion class
+//      System.loadLibrary("vtkFilteringJava");
+//      System.loadLibrary("vtkIOJava");
+//      System.loadLibrary("vtkImagingJava");
+//      System.loadLibrary("vtkGraphicsJava");
+//      System.loadLibrary("vtkRenderingJava");
+//      try {
+//        System.loadLibrary("vtkHybridJava");
+//      } catch (Throwable e) {
+//        System.out.println("cannot load vtkHybrid, skipping...");
+//      }
     }
 
     private static Config config = new Config();
@@ -62,14 +62,14 @@ public class VtkColorHistogram implements PlugInFilter {
         try {
             IJ.showStatus("Looking for VTK libraries...");
             vtkVersion version = new vtkVersion();
-            IJ.showStatus("Using VTK version: "+version.GetVTKVersion());
+            IJ.showStatus("Using VTK version: " + version.GetVTKVersion());
 
-            if(imp!=null) {
-            imageShortTitle = imp.getShortTitle();
+            if (imp != null) {
+                imageShortTitle = imp.getShortTitle();
             }
-            return PlugInFilter.DOES_RGB;
+            return PlugInFilter.DOES_RGB + PlugInFilter.NO_CHANGES;
         } catch (Throwable t) {
-            throw new RuntimeException("Unable to locate supported VTK library.\n"+
+            throw new RuntimeException("Unable to locate supported VTK library.\n" +
                     "For more information on using this plugins see Help/About Plugins/Color", t);
         }
     }
@@ -78,6 +78,9 @@ public class VtkColorHistogram implements PlugInFilter {
         ColorProcessor cp = (ColorProcessor) ip;
 
         // TODO: Update configuration
+        if (!config.showDialog()) {
+            return;
+        }
 
         // Create histogram
         final int nbBins = config.getBinsPerBand();
@@ -86,21 +89,31 @@ public class VtkColorHistogram implements PlugInFilter {
         colorHistogram.run(cp);
 
         final double[][][] bins = colorHistogram.getNormalizedBins();
-        final Color[][][] binColors = colorHistogram.getBinColors();
+        final Color[][][] binColors;
+        final double[][][][] binMeans = colorHistogram.getBinMeans();
+
+        if (config.isUseBinMeanColor()) {
+            binColors = colorHistogram.getBinMeanColors();
+        } else {
+            binColors = colorHistogram.getBinColors();
+        }
 
         // Convert 3D bins array to 1D array
         java.util.List binPropertiesList = new ArrayList();
+        double binLength = 255.0 / nbBins;
         for (int r = 0; r < bins.length; r++) {
             double binsGB[][] = bins[r];
             for (int g = 0; g < binsGB.length; g++) {
                 double binsB[] = binsGB[g];
                 for (int b = 0; b < binsB.length; b++) {
-                    double relativeSize = Math.pow(binsB[b], 1. / 3.0);
-                    double[] center = new double[]{r + 0.5, g + 0.5, b + 0.5};
+                    double relativeSize = Math.pow(binsB[b], 1. / 3.0) * binLength;
+                    double[] center = config.useBinCentroid
+                            ? binMeans[r][g][b]
+                            : new double[]{(r + 0.5) * binLength,
+                                           (g + 0.5) * binLength,
+                                           (b + 0.5) * binLength};
                     Color color = binColors[r][g][b];
-                    binPropertiesList.add(
-                            new RGBColorHistogramComponent.BinProperty(
-                                    relativeSize, color, center));
+                    binPropertiesList.add(new RGBColorHistogramComponent.BinProperty(relativeSize, color, center));
                 }
             }
         }
@@ -112,7 +125,7 @@ public class VtkColorHistogram implements PlugInFilter {
         RGBColorHistogramComponent panel = new RGBColorHistogramComponent(config.getBinsPerBand(), binProperties);
 
         final String title = "Color Histogram "
-                + nbBins + "x"+ nbBins + "x"+ nbBins + " - "+imageShortTitle;
+                + nbBins + "x" + nbBins + "x" + nbBins + " - " + imageShortTitle;
         final JFrame frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().add("Center", panel);
@@ -127,6 +140,7 @@ public class VtkColorHistogram implements PlugInFilter {
     public static class Config {
         int binsPerBand = 6;
         boolean useBinCentroid = true;
+        boolean useBinMeanColor = true;
 
         public int getBinsPerBand() {
             return binsPerBand;
@@ -142,6 +156,40 @@ public class VtkColorHistogram implements PlugInFilter {
 
         public void setUseBinCentroid(boolean useBinCentroid) {
             this.useBinCentroid = useBinCentroid;
+        }
+
+        public boolean isUseBinMeanColor() {
+            return useBinMeanColor;
+        }
+
+        public void setUseBinMeanColor(boolean useBinMeanColor) {
+            this.useBinMeanColor = useBinMeanColor;
+        }
+
+        /**
+         * Display dialog to modify this config
+         *
+         * @return <code>true</code> if dialog was closed with 'OK'.
+         */
+        public boolean showDialog() {
+            GenericDialog dialog = new GenericDialog("Color Histogram");
+            dialog.addNumericField("Bins per band", binsPerBand, 0);
+            dialog.addCheckbox("Use bin centroid", useBinCentroid);
+            dialog.addCheckbox("Use bin mean color", useBinMeanColor);
+
+            dialog.showDialog();
+
+            if (dialog.wasCanceled()) {
+                return false;
+            }
+
+            //TODO validate
+            binsPerBand = (int) Math.round(dialog.getNextNumber());
+
+            useBinCentroid = dialog.getNextBoolean();
+            useBinMeanColor = dialog.getNextBoolean();
+
+            return true;
         }
     }
 

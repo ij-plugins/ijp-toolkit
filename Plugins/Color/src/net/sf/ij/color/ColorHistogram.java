@@ -26,12 +26,13 @@ import java.awt.*;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ColorHistogram {
     private final int BAND_RANGE = 256;
     private int binsPerBand = 8;
     private int[][][] bins;
+    private double[][][][] binMeans;
     private Color[][][] binColors;
     private double binWidth;
 //    private double[][][] binColorAverage;
@@ -61,6 +62,27 @@ public class ColorHistogram {
                 Color color = cp.getColor(x, y);
                 int[] index = whichBin(color);
                 ++bins[index[0]][index[1]][index[2]];
+                double[] binMean = binMeans[index[0]][index[1]][index[2]];
+                binMean[0] += color.getRed();
+                binMean[1] += color.getGreen();
+                binMean[2] += color.getBlue();
+            }
+        }
+
+        // Compute center averages
+        for (int i = 0; i < binMeans.length; i++) {
+            int[][] binsGB = bins[i];
+            double[][][] binMeanGB = binMeans[i];
+            for (int j = 0; j < binMeanGB.length; j++) {
+                int[] binsB = binsGB[j];
+                double[][] binMeanB = binMeanGB[j];
+                for (int k = 0; k < binMeanB.length; k++) {
+                    int count = binsB[k];
+                    double[] binMean = binMeanB[k];
+                    for (int l = 0; l < binMean.length; l++) {
+                        binMean[l] /= count;
+                    }
+                }
             }
         }
     }
@@ -68,6 +90,11 @@ public class ColorHistogram {
     public int[][][] getBins() {
         //TODO make copy before returning
         return bins;
+    }
+
+    public double[][][][] getBinMeans() {
+        //TODO make copy before returning
+        return binMeans;
     }
 
     public double[][][] getNormalizedBins() {
@@ -91,7 +118,7 @@ public class ColorHistogram {
                 int[] binsB = binsGB[g];
                 double[] normalizedB = normalizedGB[g];
                 for (int b = 0; b < binsB.length; b++) {
-                    normalizedB[b] = (double)binsB[b]/(double)count;
+                    normalizedB[b] = (double) binsB[b] / (double) count;
                 }
             }
         }
@@ -125,6 +152,8 @@ public class ColorHistogram {
     private void initialize() {
         bins = new int[binsPerBand][binsPerBand][binsPerBand];
 
+        binMeans = new double[binsPerBand][binsPerBand][binsPerBand][3];
+
         binColors = new Color[binsPerBand][binsPerBand][binsPerBand];
 
         binWidth = (double) BAND_RANGE / (double) binsPerBand;
@@ -142,5 +171,25 @@ public class ColorHistogram {
             }
         }
 
+    }
+
+    public Color[][][] getBinMeanColors() {
+        Color[][][] colors = new Color[binsPerBand][binsPerBand][binsPerBand];
+        for (int r = 0; r < colors.length; r++) {
+            Color[][] colorsGB = colors[r];
+            double[][][] binMeansGB = binMeans[r];
+            for (int g = 0; g < colorsGB.length; g++) {
+                Color[] colorsB = colorsGB[g];
+                double[][] binMeansB = binMeansGB[g];
+                for (int b = 0; b < colorsB.length; b++) {
+                    double[] binMean = binMeansB[b];
+                    int red = (int) Math.round(binMean[0]);
+                    int green = (int) Math.round(binMean[1]);
+                    int blue = (int) Math.round(binMean[2]);
+                    colorsB[b] = new Color(red, green, blue);
+                }
+            }
+        }
+        return colors;
     }
 }
