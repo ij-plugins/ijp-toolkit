@@ -19,7 +19,7 @@ Plugins available in version 1.0:
 > CIE L*a*b* stack to RGB - Converts image pixels from CIE L*a*b* color space
                             to RGB color space.
 
-> Multiband Sobel Edges - Sobel edge detector that supports multiband and
+> Multiband Sobel edges - Sobel edge detector that supports multiband and
                           color images.
 
 > Intensity shift - Shifts (wraps around) GRAY8 image intensity.

@@ -11,7 +11,7 @@ v.1.0
 * New plugins:
   - RGB to CIE L*a*b* stack
   - CIE L*a*b* stack to RGB
-  - Multiband Sobel Edges
+  - Multiband Sobel edges
   - Intensity shift
 
 * plugins JAR name changed from ij_color.jar to ij-plugins_color.jar
