@@ -20,11 +20,11 @@
  */
 package net.sf.ij.im3d.grow;
 
-import ij.*;
+import ij.ImageStack;
 
-import java.util.*;
+import net.sf.ij.im3d.Point3DInt;
 
-import net.sf.ij.im3d.*;
+import java.util.LinkedList;
 
 /**
  *  Simple region growing algorithm that extracts all pixels connected to the
@@ -33,7 +33,7 @@ import net.sf.ij.im3d.*;
  *
  *@author     Jarek Sacha
  *@created    April 29, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 abstract public class ConnectedThresholdFilterBase {
@@ -111,7 +111,7 @@ abstract public class ConnectedThresholdFilterBase {
    *@return       Image in which extracted pixels have value MARKER all other
    *      pixels have value BACKGROUND.
    */
-  final public ImageStack run(ImageStack src, Point3D seed) {
+  final public ImageStack run(ImageStack src, Point3DInt seed) {
 
     initialize(src);
 
@@ -120,7 +120,7 @@ abstract public class ConnectedThresholdFilterBase {
 
     // Iterate while there are still candidates to check.
     while (!candidatePoints.isEmpty()) {
-      Point3D p = (Point3D) candidatePoints.removeFirst();
+      Point3DInt p = (Point3DInt) candidatePoints.removeFirst();
       checkForGrow(p.x - 1, p.y, p.z);
       checkForGrow(p.x + 1, p.y, p.z);
       checkForGrow(p.x, p.y - 1, p.z);
