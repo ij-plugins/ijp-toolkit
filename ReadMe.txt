@@ -4,9 +4,9 @@ ij-3D-Toolkit - 8/7/2002
 
 3D Toolkit is a set of plugins for 3D and 2D operations on images in
 Image/J ( http://rsb.info.nih.gov/ij/). The first part of the toolkit, 3D
-IO, is a set of plugins in formats two of the formats used for 3D image
+IO, is a set of plugins read/write images the formats used for 3D image
 representation: VTK (http://public.kitware.com/VTK/) and MetaImage (
-http://www.itk.org).
+http://www.itk.org/HTML/Data.htm).
 
 The toolkit also conations some prototypes plugins for:
 
@@ -35,6 +35,8 @@ ij-3D-Toolkit_bin_0.2.zip or newer from http://ij-plugins.sf.net
    it is by extending classpath in Image/J startup script, for instance:
    
    java -cp ij.jar;plugins/ij-plugins-toolkit.jar ij.ImageJ
+   
+4. Restart Immage/J.
 
 
 SOURCE
