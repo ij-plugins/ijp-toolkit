@@ -31,7 +31,7 @@ import net.sf.ij.im3d.morphology.Morpho;
  *
  * @author     Jarek Sacha
  * @created    July 14, 2002
- * @version    $Revision: 1.4 $
+ * @version    $Revision: 1.5 $
  */
 
 public class Morphological_Dilate_3D implements PlugIn {
@@ -46,6 +46,11 @@ public class Morphological_Dilate_3D implements PlugIn {
     ImagePlus imp = WindowManager.getCurrentImage();
     if (imp == null) {
       IJ.noImage();
+      return;
+    }
+
+    if(imp.getType() != ImagePlus.GRAY8) {
+      IJ.showMessage("Morphological Dilate 3D", "This plugin works only with GRAY8 images.");
       return;
     }
 

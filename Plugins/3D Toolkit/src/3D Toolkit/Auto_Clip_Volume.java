@@ -35,7 +35,7 @@ import net.sf.ij.im3d.Util;
  *
  * @author     Jarek Sacha
  * @created    May 8, 2002
- * @version    $Revision: 1.4 $
+ * @version    $Revision: 1.5 $
  */
 
 public class Auto_Clip_Volume implements PlugIn {
@@ -52,6 +52,12 @@ public class Auto_Clip_Volume implements PlugIn {
       IJ.noImage();
       return;
     }
+
+    if(imp.getType() != ImagePlus.GRAY8) {
+      IJ.showMessage("Auto Clip Volume", "This plugin works only with GRAY8 images.");
+      return;
+    }
+
 
     ImageStack src = imp.getStack();
     Box3D bb = Util.getBoundingBox(src);
