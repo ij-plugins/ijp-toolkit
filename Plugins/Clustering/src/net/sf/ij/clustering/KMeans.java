@@ -32,7 +32,7 @@ import java.util.Random;
  * algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class KMeans {
 
@@ -133,7 +133,6 @@ public final class KMeans {
                 throw new java.lang.RuntimeException("Error cloning object of class " + getClass().getName() + ".", e);
             }
         }
-
     }
 
 
@@ -154,20 +153,20 @@ public final class KMeans {
     }
 
     /**
-     * Perform k-means clostering of the input <code>stack</code>. Elements of the
-     * <code>stack</code> must be of type <code>FloatProcessor</code>.
+     * Perform k-means clostering of the input <code>stack</code>. Elements of
+     * the <code>stack</code> must be of type <code>FloatProcessor</code>.
      *
      * @param stack stack representing a multi-band image.
      */
     final public ByteProcessor run(final ImageStack stack) {
 
-       if(stack.getSize() < 1) {
-           throw new IllegalArgumentException("Input stack cannot be empty");
-       }
+        if (stack.getSize() < 1) {
+            throw new IllegalArgumentException("Input stack cannot be empty");
+        }
 
-       if(!(stack.getProcessor(1) instanceof FloatProcessor)) {
-           throw new IllegalArgumentException("Input stack must contain FloatProcessors");
-       }
+        if (!(stack.getProcessor(1) instanceof FloatProcessor)) {
+            throw new IllegalArgumentException("Input stack must contain FloatProcessors");
+        }
 
         // TODO: add support for using ROI. ROI of the first slice is applied to all slices.
 //    Rectangle roi = stack.getProcessor(1).getRoi();
@@ -211,6 +210,18 @@ public final class KMeans {
         return clusterAnimation;
     }
 
+    /**
+     * Returns stack where discovered clusters can be represented by replacing
+     * pixel values in a cluster by the value of the centroid of that cluster.
+     */
+    final public ImageStack getCentroidValueImage() {
+        if (clusterCenters == null) {
+            throw new IllegalStateException("Need to perform clustering first.");
+        }
+
+        return encodeCentroidValueImage();
+    }
+
 
     private ByteProcessor encodeSegmentedImage() {
         // Encode output image
@@ -226,6 +237,28 @@ public final class KMeans {
 
         return new ByteProcessor(width, height, pixels, null);
     }
+
+    private ImageStack encodeCentroidValueImage() {
+        ImageStack s = new ImageStack(width, height);
+        float[][] pixels = new float[bands.length][bandSize];
+        for (int i = 0; i < bands.length; ++i) {
+            // TODO: Band label should be the same as in the input stack
+            s.addSlice("Band i", pixels[i]);
+        }
+        final double[] x = new double[bands.length];
+        for (int i = 0; i < bandSize; i++) {
+            for (int j = 0; j < bands.length; ++j) {
+                x[j] = bands[j][i];
+            }
+            final int c = closestCluster(x, clusterCenters);
+            for (int j = 0; j < bands.length; ++j) {
+                pixels[j][i] = (float) clusterCenters[c][j];
+            }
+        }
+
+        return s;
+    }
+
 
     private void printClusters(final String message) {
         IJ.write(message);

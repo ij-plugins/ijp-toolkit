@@ -39,10 +39,13 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @see KMeans
  */
 public final class KMeansClustering implements PlugIn {
+
+    private static KMeans.Config config = new KMeans.Config();
+    private static boolean showCentroidImage = false;
 
     private final boolean applayLut = false;
     private final boolean autoBrightness = true;
@@ -78,14 +81,13 @@ public final class KMeansClustering implements PlugIn {
             throw new RuntimeException("Unsupporte image type: COLOR_256");
         }
 
-        final KMeans.Config config = new KMeans.Config();
-
         // Create configuration dialog
         final GenericDialog dialog = new GenericDialog("K-means Configuration");
         dialog.addNumericField("Number of clusters", config.getNumberOfClusters(), 0);
         dialog.addNumericField("Cluster center tolerance", config.getTolerance(), 8);
         dialog.addCheckbox("Enable randomization seed", config.isRandomizationSeedEnabled());
         dialog.addNumericField("Randomization seed", config.getRandomizationSeed(), 0);
+        dialog.addCheckbox("Show clusters as centrid value", showCentroidImage);
         dialog.addCheckbox("Enable clustering animation", config.isClusterAnimationEnabled());
         dialog.addCheckbox("Print optimization trace", config.isPrintTraceEnabled());
 
@@ -101,6 +103,7 @@ public final class KMeansClustering implements PlugIn {
         config.setTolerance(dialog.getNextNumber());
         config.setRandomizationSeedEnabled(dialog.getNextBoolean());
         config.setRandomizationSeed((int) Math.round(dialog.getNextNumber()));
+        showCentroidImage = dialog.getNextBoolean();
         config.setClusterAnimationEnabled(dialog.getNextBoolean());
         config.setPrintTraceEnabled(dialog.getNextBoolean());
 
@@ -140,6 +143,13 @@ public final class KMeansClustering implements PlugIn {
                 animation.updateAndDraw();
             }
         }
+
+        // Show centroid image
+        if (showCentroidImage) {
+            ImagePlus cvImp = createCentroidImage(imp.getType(),
+                    kMeans.getCentroidValueImage());
+            cvImp.show();
+        }
     }
 
     /**
@@ -168,23 +178,88 @@ public final class KMeansClustering implements PlugIn {
 
         imp = duplicate(imp);
 
-        if (imp.getType() == ImagePlus.COLOR_RGB) {
-            if (imp.getStackSize() > 1) {
-                throw new RuntimeException("Unsupported image type: stack of COLOR_RGB");
+        // Remember scaling setup
+        boolean doScaling = ImageConverter.getDoScaling();
+
+        try {
+            // Disable scaling
+            ImageConverter.setDoScaling(false);
+
+            if (imp.getType() == ImagePlus.COLOR_RGB) {
+                if (imp.getStackSize() > 1) {
+                    throw new RuntimeException("Unsupported image type: stack of COLOR_RGB");
+                }
+                final ImageConverter ic = new ImageConverter(imp);
+                ic.convertToRGBStack();
             }
-            final ImageConverter ic = new ImageConverter(imp);
-            ic.convertToRGBStack();
+
+            if (imp.getStackSize() > 1) {
+                final StackConverter sc = new StackConverter(imp);
+                sc.convertToGray32();
+            } else {
+                final ImageConverter ic = new ImageConverter(imp);
+                ic.convertToGray32();
+            }
+
+            return imp;
+        } finally {
+            // Restore original scaling option
+            ImageConverter.setDoScaling(doScaling);
+
+        }
+    }
+
+    private static ImagePlus createCentroidImage(int originalImageType, ImageStack centroidValueStack) {
+        boolean doScaling = ImageConverter.getDoScaling();
+        try {
+            ImageConverter.setDoScaling(false);
+            ImagePlus cvImp = new ImagePlus("Cluster centroid values", centroidValueStack);
+            if (centroidValueStack.getSize() > 1) {
+                StackConverter sc = new StackConverter(cvImp);
+                switch (originalImageType) {
+                    case ImagePlus.COLOR_RGB:
+                        sc.convertToGray8();
+                        ImageConverter ic = new ImageConverter(cvImp);
+                        ic.convertRGBStackToRGB();
+                        break;
+                    case ImagePlus.GRAY8:
+                        sc.convertToGray8();
+                        break;
+                    case ImagePlus.GRAY16:
+                        sc.convertToGray16();
+                    case ImagePlus.GRAY32:
+                        // No actcion needed
+                        break;
+                    default:
+                        throw new RuntimeException("Unsupported input image type: "
+                                + originalImageType);
+                }
+            } else {
+                ImageConverter ic = new ImageConverter(cvImp);
+                // Convert image back to original type
+                switch (originalImageType) {
+                    case ImagePlus.COLOR_RGB:
+                        throw new RuntimeException("Internal error: RGB image cannot have a single band.");
+                    case ImagePlus.GRAY8:
+                        ic.convertToGray8();
+                        break;
+                    case ImagePlus.GRAY16:
+                        ic.convertToGray16();
+                        break;
+                    case ImagePlus.GRAY32:
+                        // No actcion needed
+                        break;
+                    default:
+                        throw new RuntimeException("Unsupported input image type: "
+                                + originalImageType);
+                }
+            }
+
+            return cvImp;
+        } finally {
+            ImageConverter.setDoScaling(doScaling);
         }
 
-        if (imp.getStackSize() > 1) {
-            final StackConverter sc = new StackConverter(imp);
-            sc.convertToGray32();
-        } else {
-            final ImageConverter ic = new ImageConverter(imp);
-            ic.convertToGray32();
-        }
-
-        return imp;
     }
 
     /**
