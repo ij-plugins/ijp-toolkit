@@ -7,10 +7,6 @@
     <property name="package.name" value="ij-plugins_Common"/>
     <property name="package.version" value="1.0"/>
 
-
-    <!-- Customize properties, e.g., jaicodec.jar, cvs.root.-->
-    <property file="build.properties"/>
-
     <!-- In case ant.home is not defined, set default value -->
     <property name="ant.home" location="/usr/share/ant"/>
 
@@ -130,7 +126,7 @@
 
     <target name="jar" depends="compile"
         description="Create plugins' JAR">
-    
+
         <!-- Create library jar -->
         <jar destfile="${jar.dir}/${package.name}.jar"
             basedir="${build.classes.dir}"
@@ -219,29 +215,24 @@
         <copy file="${common.xml.file}" todir="${cvs.dir}"/>
 
         <!-- Provide custom 'build.properties' file -->
-        <property name="build.properties.file" location="${cvs.dir}/build.properties"/>
-        <delete file="${build.properties.file}"/>
-        <concat destfile="${build.properties.file}">common.xml.file=common.xml</concat>
-        <concat destfile="${build.properties.file}">ij.jar=lib/ij.jar</concat>
+        <move file="${cvs.dir}/build.properties.template" tofile="${cvs.dir}/build.properties"/>
 
         <!-- ZIP source -->
         <zip basedir="${cvs.dir}"
             destfile="${dist.dir}/${package.name}_src_${package.version}_${DSTAMP}.zip"/>
-        
 
-        <!-- ................... -->
-        <!-- Binary distribution -->
-        <!-- ................... -->
-        <antcall target="jar" inheritall="false">
-            <param name="base.dir" location="${cvs.dir}"/>
-            <param name="dist.dir" location="${base.dir}/dist"/>
-            <param name="jar.dir" location="${dist.dir}"/>
-        </antcall>
+        <!-- ................................................... -->
+        <!-- Binary distribution from acrual distribution source -->
+        <!-- ................................................... -->
+        <ant antfile="${cvs.dir}/build.xml" target="jar">
+            <property name="jar.dir" location="${base.dir}/dist"/>
+        </ant>
 
-        <!-- Cleanup -->
-        <!--
-        <delete dir="{cvs.imageio.dir}"/>
-        -->
+        <!-- ZIP binaries -->
+        <zip basedir="${base.dir}/dist"
+            includes="${package.name}.jar"
+            destfile="${dist.dir}/${package.name}_bin_${package.version}_${DSTAMP}.zip"/>
+
     </target>
 
     <!-- Checkout sources drom CVS repository -->

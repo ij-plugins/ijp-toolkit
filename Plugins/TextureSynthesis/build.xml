@@ -4,7 +4,7 @@
       Texture synthesis through image quilting.
     </description>
 
-    <!-- Customize properties, e.g., jaicodec.jar, cvs.root.-->
+    <!-- Customize properties, e.g., cvs.root.-->
     <property file="build.properties"/>
 
     <!-- Package name and version -->
