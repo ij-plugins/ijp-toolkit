@@ -20,35 +20,41 @@
  */
 package net.sf.ij.util;
 
+import java.io.IOException;
+
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+
+import java.util.ArrayList;
+
 /**
  *  Title: Description: Copyright: GPL 2002 Company:
  *
- *@author     Jarek Sacha
- *@created    July 16, 2002
- *@version    $Revision: 1.1 $
+ * @author     Jarek Sacha
+ * @created    July 16, 2002
+ * @version    $Revision: 1.2 $
  */
 
 public class TextUtil {
 
-  /**
-   *  Constructor for the TextUtil object
-   */
+  /**  Constructor for the TextUtil object */
   private TextUtil() { }
 
 
   /**
    *  Description of the Method
    *
-   *@param  str           Description of the Parameter
-   *@param  defaultValue  Description of the Parameter
-   *@return               Description of the Return Value
+   * @param  str           Description of the Parameter
+   * @param  defaultValue  Description of the Parameter
+   * @return               Description of the Return Value
    */
   public static float parseFloat(String str, float defaultValue) {
     float f = defaultValue;
     if (str != null) {
       try {
         f = Float.parseFloat(str);
-      } catch (NumberFormatException ex) {
+      }
+      catch (NumberFormatException ex) {
       }
     }
 
@@ -59,20 +65,97 @@ public class TextUtil {
   /**
    *  Description of the Method
    *
-   *@param  str           Description of the Parameter
-   *@param  defaultValue  Description of the Parameter
-   *@return               Description of the Return Value
+   * @param  str           Description of the Parameter
+   * @param  defaultValue  Description of the Parameter
+   * @return               Description of the Return Value
    */
   public static int parseInt(String str, int defaultValue) {
     int i = defaultValue;
     if (str != null) {
       try {
         i = Integer.parseInt(str);
-      } catch (NumberFormatException ex) {
+      }
+      catch (NumberFormatException ex) {
       }
     }
 
     return i;
   }
 
+
+  /**
+   *  Parse string as an array of integers separated by white space.
+   *
+   * @param  str  Description of the Parameter
+   * @return      Description of the Return Value
+   */
+  public static int[] parseIntArray(String str) {
+    StringReader reader = new StringReader(str);
+    StreamTokenizer tokenizer = new StreamTokenizer(reader);
+    tokenizer.parseNumbers();
+
+    ArrayList tokens = new ArrayList();
+    try {
+      int id = tokenizer.nextToken();
+      while (id != StreamTokenizer.TT_EOF) {
+        if (id != StreamTokenizer.TT_NUMBER) {
+          throw new IllegalArgumentException("Cannot parse string as an array of integers...");
+        }
+        tokens.add(new Integer((int) tokenizer.nval));
+        id = tokenizer.nextToken();
+      }
+
+      if (tokens.size() < 1) {
+        throw new IllegalArgumentException("Input string does not conain any numbers.");
+      }
+    }
+    catch (IOException ex) {
+      throw new IllegalArgumentException("Unexpected error extacting tokens: " + ex);
+    }
+
+    int[] a = new int[tokens.size()];
+    for (int i = 0; i < a.length; ++i) {
+      a[i] = ((Integer) tokens.get(i)).intValue();
+    }
+
+    return a;
+  }
+
+  /**
+   *  Parse string as an array of floats separated by white space.
+   *
+   * @param  str  Description of the Parameter
+   * @return      Description of the Return Value
+   */
+  public static float[] parseFloatArray(String str) {
+    StringReader reader = new StringReader(str);
+    StreamTokenizer tokenizer = new StreamTokenizer(reader);
+    tokenizer.parseNumbers();
+
+    ArrayList tokens = new ArrayList();
+    try {
+      int id = tokenizer.nextToken();
+      while (id != StreamTokenizer.TT_EOF) {
+        if (id != StreamTokenizer.TT_NUMBER) {
+          throw new IllegalArgumentException("Cannot parse string as an array of integers...");
+        }
+        tokens.add(new Float(tokenizer.nval));
+        id = tokenizer.nextToken();
+      }
+
+      if (tokens.size() < 1) {
+        throw new IllegalArgumentException("Input string does not conain any numbers.");
+      }
+    }
+    catch (IOException ex) {
+      throw new IllegalArgumentException("Unexpected error extacting tokens: " + ex);
+    }
+
+    float[] f = new float[tokens.size()];
+    for (int i = 0; i < f.length; ++i) {
+      f[i] = ((Float) tokens.get(i)).floatValue();
+    }
+
+    return f;
+  }
 }
