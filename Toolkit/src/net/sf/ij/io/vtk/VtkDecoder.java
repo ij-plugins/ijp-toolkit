@@ -387,6 +387,10 @@ public class VtkDecoder implements PlugIn {
           fileInfo.pixelHeight = spacing[1];
           fileInfo.pixelDepth = spacing[2];
         }
+        else if (line.startsWith(VtkTag.CELL_DATA.toString())) {
+          // CELL_DATA
+          // ingnore this tag.
+        }
         else if (line.startsWith(VtkTag.POINT_DATA.toString())) {
           // POINT_DATA
           int[] nbPoints = parseValueAsIntArray(line, VtkTag.POINT_DATA, 1);
@@ -438,13 +442,36 @@ public class VtkDecoder implements PlugIn {
             }
           }
         }
+        else if (line.startsWith(VtkTag.COLOR_SCALARS.toString())) {
+          // COLOR_SCALARS
+          StringTokenizer st = new StringTokenizer(line.substring(VtkTag.COLOR_SCALARS.toString().length()));
+          // dataName
+          if (st.hasMoreTokens()) {
+            String dataName = st.nextToken();
+          }
+          else {
+            throw new VtkImageException("Error parsing header tag: '"
+                + VtkTag.COLOR_SCALARS + "'. Cannot extract dataName.");
+          }
+          // nValues
+          if (st.hasMoreTokens()) {
+            String numComp = st.nextToken().trim();
+            if (numComp.length() > 0 && !numComp.startsWith("1")) {
+              throw new VtkImageException("Supported number of components for scalars is 1, got '"
+                  + numComp + "'.");
+            }
+          }
+          fileInfo.fileType = FileInfo.GRAY8;
+          // COLOR_SCALARS should be the last tag line before the data.
+          break;
+        }
         else if (line.startsWith(VtkTag.LOOKUP_TABLE.toString())) {
           String lookupTable = line.substring(VtkTag.LOOKUP_TABLE.toString().length());
           if (lookupTable == null || !lookupTable.trim().equalsIgnoreCase("default")) {
             throw new VtkImageException("Unsupported lookup table format. Expecting 'default', got '"
                 + lookupTable + "'.");
           }
-          // LOOKUP_TABLE should be the last line before the data.
+          // LOOKUP_TABLE should be the last tag line before the data.
           break;
         }
         else {
