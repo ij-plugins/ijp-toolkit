@@ -20,51 +20,41 @@
  */
 package net.sf.ij.vtk;
 
-import ij.ImagePlus;
-import ij.process.ByteProcessor;
-import ij.process.ImageProcessor;
-import net.sf.ij.vtk.VtkUtil;
-
-import net.sf.ij.vtk.VtkImageDataFactory;
-
-import vtk.vtkImageAnisotropicDiffusion2D;
-import vtk.vtkImageData;
 import vtk.vtkImageAnisotropicDiffusion3D;
+import vtk.vtkImageData;
 
 /**
- *  Wrapper for vtkImageAnisotropicDiffusion2D.
+ *  Wrapper for vtkImageAnisotropicDiffusion3D.
  *
- * @author
- * @created    September 11, 2002
- * @version    1.0
+ * vtkImageAnisotropicDiffusion3D diffuses an volume iteratively.
+ * "DiffusionFactor" determines how far a pixel value moves toward its
+ * neighbors, and is insensitive to the number of neighbors chosen.
+ * The diffusion is anisotropic because it only occurs when a gradient
+ * measure is below "GradientThreshold". Two gradient measures exist and
+ * are toggled by the "GradientMagnitudeThreshold" flag. When
+ * "GradientMagnitudeThreshold" is on, the magnitude of the gradient,
+ * computed by central differences, above "DiffusionThreshold" a voxel is
+ * not modified. The alternative measure examines each neighbor independently.
+ * The gradient between the voxel and the neighbor must be below the
+ * "DiffusionThreshold" for diffusion to occur with THAT neighbor.
+ *
+ *
+ *
+ * @author   Jarek Sacha
+ * @version  $Revision: 1.2 $
  */
 
-public class AnisotropicDiffusion {
+public class AnisotropicDiffusion extends VtkImageFilter {
 
-  static {
-    // Load VTK libraries
-    try {
-      System.loadLibrary("vtkCommonJava");
-      System.loadLibrary("vtkFilteringJava");
-      System.loadLibrary("vtkIOJava");
-      System.loadLibrary("vtkImagingJava");
-      System.loadLibrary("vtkGraphicsJava");
-      System.loadLibrary("vtkRenderingJava");
-    }
-    catch (UnsatisfiedLinkError ex) {
-      ex.printStackTrace();
-    }
-  }
+  private vtkImageAnisotropicDiffusion3D filter;
+  private VtkProgressObserver progressObserver;
 
-
-  private ImagePlus inputImage = null;
-  private ImagePlus outputImage = null;
-  private vtkImageAnisotropicDiffusion3D filter = null;
 
 
   /**  Constructor for the AnisotropicDiffusion object */
   public AnisotropicDiffusion() {
-      filter = new vtkImageAnisotropicDiffusion3D();
+    filter = new vtkImageAnisotropicDiffusion3D();
+    progressObserver = new VtkProgressObserver(filter);
   }
 
 
@@ -97,8 +87,7 @@ public class AnisotropicDiffusion {
   public void setGradientMagnitudeThreshold(boolean enabled) {
     if (enabled) {
       filter.GradientMagnitudeThresholdOn();
-    }
-    else {
+    } else {
       filter.GradientMagnitudeThresholdOff();
     }
   }
@@ -111,26 +100,6 @@ public class AnisotropicDiffusion {
    */
   public void setDiffusionThreshold(double t) {
     filter.SetDiffusionThreshold(t);
-  }
-
-
-  /**
-   *  Sets the input attribute of the AnisotropicDiffusion object
-   *
-   * @param  imp  The new input value
-   */
-  public void setInput(ImagePlus imp) {
-    inputImage = imp;
-  }
-
-
-  /**
-   *  Get the filtered image. Can return null in updae was not called.
-   *
-   * @return    The output value
-   */
-  public ImagePlus getOutput() {
-    return outputImage;
   }
 
 
@@ -147,8 +116,7 @@ public class AnisotropicDiffusion {
       // Pull output from VTK pipeleine
       vtkImageData outputImageData = filter.GetOutput();
       outputImage = VtkUtil.createImagePlus(outputImageData);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       ex.printStackTrace();
 
     }
