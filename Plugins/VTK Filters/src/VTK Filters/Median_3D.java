@@ -28,11 +28,11 @@ import net.sf.ij.vtk.AnisotropicDiffusion;
 import net.sf.ij.vtk.Median3D;
 
 /**
- *  Plugin for running anisotropic diffusion filter from VTK.
+ *  Plugin for running aMedian3D filter from VTK.
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.3 $
  */
 
 public class Median_3D implements PlugIn {
