@@ -23,7 +23,7 @@
     <pathelement location="${vtk.classpath}"/>
   </path>
 
-  <property name="plugins.dir" location="${output.dir}/build/plugins"/>
+  <property name="plugins.dir" location="${output.dir}/plugins"/>
   <path id="plugins.classpath">
     <path refid="toolkit.classpath"/>
     <pathelement location="${plugins.dir}/ij-plugins-toolkit.jar"/>
@@ -49,6 +49,7 @@
 
     <!-- toolkit.jar -->
     <ant dir="./Toolkit" target="package">
+      <property name="build.dir" value="${output.dir}/build"/>
       <property name="output.dir" value="${plugins.dir}"/>
       <reference refid="toolkit.classpath" torefid="classpath"/>
     </ant>
@@ -88,8 +89,6 @@
     description="Build the toolkit and plugin binaries from CVS">
     <ant dir="${output.dir}/source/ij-plugins" target="dist">
       <property name="source.dir" location="${output.dir}/source/ij-plugins"/>
-      <property name="output.dir" location="${output.dir}"/>
-      <property name="dist.dir" location="${dist.dir}"/>
       <reference refid="toolkit.classpath" torefid="classpath"/>
       <property name="setProps" value="true"/>
     </ant>

@@ -8,23 +8,12 @@
   <path id="classpath">
     <pathelement location="${basedir}/lib/ij.jar"/>
   </path>
+  <property name="build.dir" location="build"/>
+  <property name="src.dir" location="src"/>
 
 
-  <!-- set local properties for this build -->
-  <target name="init">
-    <property name="src.dir" location="src"/>
-    <property name="build.dir" location="build"/>
-  </target>
 
-
-  <!--
-  <target name="prepare" depends="init">
-  </target>
-  -->
-
-
-  <target name="compile" depends="init"
-        description="compile the source " >
+  <target name="compile" description="compile the source " >
     <!-- Compile the java code from ${src.dir} into ${build.dir} -->
     <mkdir dir="${build.dir}"/>
     <javac srcdir="${src.dir}"
@@ -47,7 +36,6 @@
 
 
   <target name="clean"
-    depends="init"
     description="clean up" >
     <!-- Delete the ${build.dir} directory tree -->
     <delete dir="${build.dir}"/>
