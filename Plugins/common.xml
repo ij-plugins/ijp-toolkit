@@ -33,6 +33,7 @@
     <property name="javadoc.dir" location="${dist.dir}/api"/>
 
     <property name="ij.jar" location="${lib.dir}/ij.jar"/>
+    <property name="license.file" location="../../License.txt"/>
 
     <!-- Javadoc properties -->
     <property name="javadoc.window.title" value="${package.name} ${package.version} API"/>
@@ -213,6 +214,7 @@
         <mkdir dir="${cvs.dir}/lib"/>
         <copy file="${ij.jar}" todir="${cvs.dir}/lib"/>
         <copy file="${common.xml.file}" todir="${cvs.dir}"/>
+        <copy file="${license.file}" todir="${cvs.dir}"/>
 
         <!-- Provide custom 'build.properties' file -->
         <move file="${cvs.dir}/build.properties.template" tofile="${cvs.dir}/build.properties"/>
