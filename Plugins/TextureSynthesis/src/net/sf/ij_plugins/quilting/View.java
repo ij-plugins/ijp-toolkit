@@ -35,9 +35,6 @@ public class View {
     protected int xoffset, yoffset;
 
 
-//    // this is used in the constructor, see the comment there
-//    private static boolean invalid_indices = true;
-
     /**
      * This creates a new view of the given image.
      *
@@ -93,7 +90,7 @@ public class View {
      * This fetches the RGB values from the given view coordinates.
      */
     public int[] getSample(int x, int y, int[] out) {
-        // FIXME: pixel access
+        // TODO: optimize pixel access
         x = imageX(x);
         y = imageY(y);
         if (out == null) {
@@ -103,33 +100,15 @@ public class View {
         return out;
     }
 
-//    /**
-//     * Get the sample from the (x,y) view coordinate from the given channel.
-//     */
-//    public int getSample(int channel, int x, int y) {
-//        x = imageX(x);
-//        y = imageY(y);
-//        return image.getSample(channel, x, y);
-//    }
-
     /**
      * This sets the RGB sample at the given view coordinates.
      */
     public void putSample(int x, int y, int[] newvals) {
-        // FIXME: pixel access
+        // TODO: optimize pixel access
         x = imageX(x);
         y = imageY(y);
         image.putPixel(x, y, newvals);
     }
-
-//    /**
-//     * Set the sample at the (x,y) view coordinate for the given channel.
-//     */
-//    public void putSample(int channel, int x, int y, int newval) {
-//        x = imageX(x);
-//        y = imageY(y);
-//        image.putSample(channel, x, y, newval);
-//    }
 
     /**
      * This returns the image that this is a view of.

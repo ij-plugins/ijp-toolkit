@@ -66,7 +66,7 @@ public class Patch extends View {
      * the view.
      */
     public int[] getSample(int x, int y, int[] out) {
-        // FIXME: pixel access
+        // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return super.getSample(x, y, out);
         }
@@ -79,7 +79,7 @@ public class Patch extends View {
      * the view.
      */
     public void putSample(int x, int y, int values[]) {
-        // FIXME: pixel access
+        // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
             super.putSample(x, y, values);
         } else
