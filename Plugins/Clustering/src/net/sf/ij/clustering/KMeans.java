@@ -24,126 +24,27 @@ import ij.IJ;
 import ij.ImageStack;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
+import net.sf.ij_plugins.multiband.VectorProcessor;
 
+import java.awt.*;
 import java.util.Random;
 
 /**
- * Pixel-based multi-band image segmentation using k-means clustering
- * algorithm.
+ * Pixel-based multi-band image segmentation using k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class KMeans {
 
-    /**
-     * Configurable parameters of the k-means algorithm.
-     */
-    public static final class Config implements java.lang.Cloneable {
-        /**
-         * Seed used to initialize random number generator.
-         */
-        private int randomizationSeed = 48;
-        private boolean randomizationSeedEnabled = true;
-        private double tolerance = 0.0001;
-        private int numberOfClusters = 4;
-        private boolean clusterAnimationEnabled = false;
-        private boolean printTraceEnabled = false;
-
-        public int getRandomizationSeed() {
-            return randomizationSeed;
-        }
-
-        public void setRandomizationSeed(final int randomizationSeed) {
-            this.randomizationSeed = randomizationSeed;
-        }
-
-        /**
-         * If <code>true</code>, random number generator will be initalized with
-         * a <code>randomizationSeed</code>. If <code>false</code> rundom number
-         * generator will be initialized using 'current' time.
-         *
-         * @see #getRandomizationSeed()
-         */
-        public boolean isRandomizationSeedEnabled() {
-            return randomizationSeedEnabled;
-        }
-
-        public void setRandomizationSeedEnabled(final boolean randomizationSeedEnabled) {
-            this.randomizationSeedEnabled = randomizationSeedEnabled;
-        }
-
-        public int getNumberOfClusters() {
-            return numberOfClusters;
-        }
-
-        public void setNumberOfClusters(final int numberOfClusters) {
-            this.numberOfClusters = numberOfClusters;
-        }
-
-        /**
-         * Return tolerance used to determine cluster centroid distance. This
-         * tolerance is used to determine if a centroid changed location between
-         * iterations.
-         *
-         * @return cluster centroid location tolerunce.
-         */
-        public double getTolerance() {
-            return tolerance;
-        }
-
-        public void setTolerance(final double tolerance) {
-            this.tolerance = tolerance;
-        }
-
-        /**
-         * Return <code>true</code> if when an animation ilustrating cluster
-         * optimization is enabled.
-         */
-        public boolean isClusterAnimationEnabled() {
-            return clusterAnimationEnabled;
-        }
-
-        public void setClusterAnimationEnabled(final boolean clusterAnimationEnabled) {
-            this.clusterAnimationEnabled = clusterAnimationEnabled;
-        }
-
-        /**
-         * Return <code>true</code> if a trace is printed to the ImageJ's Result
-         * window.
-         */
-        public boolean isPrintTraceEnabled() {
-            return printTraceEnabled;
-        }
-
-        public void setPrintTraceEnabled(final boolean printTraceEnabled) {
-            this.printTraceEnabled = printTraceEnabled;
-        }
-
-        /**
-         * Make duplicate of this object. This a convenience wrapper for {@link
-         * #clone()} method.
-         *
-         * @return duplivcate of this object.
-         */
-        public Config duplicate() {
-            try {
-                return (Config) this.clone();
-            } catch (java.lang.CloneNotSupportedException e) {
-                throw new java.lang.RuntimeException("Error cloning object of class " + getClass().getName() + ".", e);
-            }
-        }
-    }
-
-
     private static Config config = new Config();
 
-    private float[][] bands;
-    private int bandSize;
-    private double[][] clusterCenters;
+    private Rectangle roi;
+    private ByteProcessor mask;
+
+    private VectorProcessor vp;
+    private float[][] clusterCenters;
     private ImageStack clusterAnimation;
-    private int width;
-    private int height;
 
     public KMeans() {
     }
@@ -152,9 +53,17 @@ public final class KMeans {
         KMeans.config = config.duplicate();
     }
 
+    public void setRoi(final Rectangle roi) {
+        this.roi = roi;
+    }
+
+    public void setMask(ByteProcessor mask) {
+        this.mask = mask;
+    }
+
     /**
-     * Perform k-means clostering of the input <code>stack</code>. Elements of
-     * the <code>stack</code> must be of type <code>FloatProcessor</code>.
+     * Perform k-means clostering of the input <code>stack</code>. Elements of the
+     * <code>stack</code> must be of type <code>FloatProcessor</code>.
      *
      * @param stack stack representing a multi-band image.
      */
@@ -164,24 +73,14 @@ public final class KMeans {
             throw new IllegalArgumentException("Input stack cannot be empty");
         }
 
-        if (!(stack.getProcessor(1) instanceof FloatProcessor)) {
-            throw new IllegalArgumentException("Input stack must contain FloatProcessors");
-        }
+        vp = new VectorProcessor(stack);
 
         // TODO: add support for using ROI. ROI of the first slice is applied to all slices.
 //    Rectangle roi = stack.getProcessor(1).getRoi();
 //    int[] mask = stack.getProcessor(1).getMask();
 
-        width = stack.getWidth();
-        height = stack.getHeight();
-        bandSize = width * height;
 
-        // Store reference to band pixels for easier access.
-        final int p = stack.getSize();
-        bands = new float[p][];
-        for (int i = 0; i < bands.length; i++) {
-            bands[i] = (float[]) stack.getProcessor(i + 1).getPixels();
-        }
+        // TODO Verify that ROI and mask are consistent with the input image.
 
         // Run clustering
         cluster();
@@ -194,25 +93,24 @@ public final class KMeans {
      *
      * @return array of clustr centers. First index refers to cluster number.
      */
-    final public double[][] getClusterCenters() {
+    final public float[][] getClusterCenters() {
         return clusterCenters;
     }
 
     /**
-     * Return stack representing clustering optimization. This will return not
-     * <code>null</code> value only when configuration parameters
-     * <code>clusterAnimationEnabled</code> is set to true.
+     * Return stack representing clustering optimization. This will return not <code>null</code>
+     * value only when configuration parameters <code>clusterAnimationEnabled</code> is set to
+     * true.
      *
-     * @return stack representing cluster optimization, can return
-     *         <code>null</code>.
+     * @return stack representing cluster optimization, can return <code>null</code>.
      */
     final public ImageStack getClusterAnimation() {
         return clusterAnimation;
     }
 
     /**
-     * Returns stack where discovered clusters can be represented by replacing
-     * pixel values in a cluster by the value of the centroid of that cluster.
+     * Returns stack where discovered clusters can be represented by replacing pixel values in a
+     * cluster by the value of the centroid of that cluster.
      */
     final public ImageStack getCentroidValueImage() {
         if (clusterCenters == null) {
@@ -225,34 +123,33 @@ public final class KMeans {
 
     private ByteProcessor encodeSegmentedImage() {
         // Encode output image
-        final byte[] pixels = new byte[bandSize];
-        final double[] x = new double[bands.length];
-        for (int i = 0; i < pixels.length; i++) {
-            for (int j = 0; j < bands.length; ++j) {
-                x[j] = bands[j][i];
-            }
-            final int c = closestCluster(x, clusterCenters);
-            pixels[i] = (byte) ((c + 1) & 0xff);
+        final ByteProcessor dest = new ByteProcessor(vp.getWidth(), vp.getHeight());
+        final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
+        while (iterator.hasNext()) {
+            final float[] v = (float[]) iterator.next();
+            final int c = closestCluster(v, clusterCenters);
+            dest.putPixel(iterator.getX(), iterator.getY(), c);
         }
-
-        return new ByteProcessor(width, height, pixels, null);
+        return dest;
     }
 
     private ImageStack encodeCentroidValueImage() {
-        ImageStack s = new ImageStack(width, height);
-        float[][] pixels = new float[bands.length][bandSize];
-        for (int i = 0; i < bands.length; ++i) {
+        final int width = vp.getWidth();
+        final int height = vp.getHeight();
+        final int numberOfValues = vp.getNumberOfValues();
+        final ImageStack s = new ImageStack(width, height);
+        for (int i = 0; i < numberOfValues; ++i) {
             // TODO: Band label should be the same as in the input stack
-            s.addSlice("Band i", pixels[i]);
+            s.addSlice("Band i", new FloatProcessor(width, height));
         }
-        final double[] x = new double[bands.length];
-        for (int i = 0; i < bandSize; i++) {
-            for (int j = 0; j < bands.length; ++j) {
-                x[j] = bands[j][i];
-            }
-            final int c = closestCluster(x, clusterCenters);
-            for (int j = 0; j < bands.length; ++j) {
-                pixels[j][i] = (float) clusterCenters[c][j];
+
+        final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
+        final Object[] pixels = s.getImageArray();
+        while (iterator.hasNext()) {
+            final float[] v = (float[]) iterator.next();
+            final int c = closestCluster(v, clusterCenters);
+            for (int j = 0; j < numberOfValues; ++j) {
+                ((float[]) pixels[j])[iterator.getOffset()] = (float) clusterCenters[c][j];
             }
         }
 
@@ -263,10 +160,10 @@ public final class KMeans {
     private void printClusters(final String message) {
         IJ.write(message);
         for (int i = 0; i < clusterCenters.length; i++) {
-            final double[] clusterCenter = clusterCenters[i];
+            final float[] clusterCenter = clusterCenters[i];
             final StringBuffer buffer = new StringBuffer("  (");
             for (int j = 0; j < clusterCenter.length; j++) {
-                final double vv = clusterCenter[j];
+                final float vv = clusterCenter[j];
                 buffer.append(" " + vv + " ");
             }
             buffer.append(")");
@@ -280,15 +177,50 @@ public final class KMeans {
     private void cluster() {
 
         // Select initial partitioning - intialize cluster centers
-        clusterCenters = generateRandomClusterCenters(bands.length);
+        clusterCenters = generateRandomClusterCenters(vp.getNumberOfValues());
         if (config.isPrintTraceEnabled()) {
             printClusters("Initial clusters");
         }
 
         if (config.clusterAnimationEnabled) {
-            clusterAnimation = new ImageStack(width, height);
+            clusterAnimation = new ImageStack(vp.getWidth(), vp.getHeight());
             clusterAnimation.addSlice("Initial", encodeSegmentedImage());
         }
+
+//        public int[] getHistogram() {
+//            if (mask!=null)
+//                return getHistogram(mask);
+//            int[] histogram = new int[256];
+//            for (int y=roiY; y<(roiY+roiHeight); y++) {
+//                int i = y * width + roiX;
+//                for (int x=roiX; x<(roiX+roiWidth); x++) {
+//                    int v = pixels[i++] & 0xff;
+//                    histogram[v]++;
+//                }
+//            }
+//            return histogram;
+//        }
+//
+//        public int[] getHistogram(ImageProcessor mask) {
+//            if (mask.getWidth()!=roiWidth||mask.getHeight()!=roiHeight)
+//                throw new IllegalArgumentException(maskSizeError(mask));
+//            int v;
+//            int[] histogram = new int[256];
+//            byte[] mpixels = (byte[])mask.getPixels();
+//            for (int y=roiY, my=0; y<(roiY+roiHeight); y++, my++) {
+//                int i = y * width + roiX;
+//                int mi = my * roiWidth;
+//                for (int x=roiX; x<(roiX+roiWidth); x++) {
+//                    if (mpixels[mi++]!=0) {
+//                        v = pixels[i] & 0xff;
+//                        histogram[v]++;
+//                    }
+//                    i++;
+//                }
+//            }
+//            return histogram;
+//        }
+
 
         // Optimize cluster centers
         boolean converged = false;
@@ -297,25 +229,23 @@ public final class KMeans {
 
             final MeanElement[] newClusterMeans = new MeanElement[config.getNumberOfClusters()];
             for (int i = 0; i < newClusterMeans.length; i++) {
-                newClusterMeans[i] = new MeanElement(bands.length);
+                newClusterMeans[i] = new MeanElement(vp.getNumberOfValues());
             }
 
             // Generate a new partition by assigning each pattern to its closest cluster center
             // Compute new cluster centers as the centroids of the clusters
-            final double[] x = new double[bands.length];
-            for (int i = 0; i < bandSize; ++i) {
-                for (int j = 0; j < bands.length; ++j) {
-                    x[j] = bands[j][i];
-                }
-                final int c = closestCluster(x, clusterCenters);
-                newClusterMeans[c].add(x);
+            VectorProcessor.PixelIterator iterator = vp.pixelIterator();
+            while (iterator.hasNext()) {
+                final float[] v = (float[]) iterator.next();
+                final int c = closestCluster(v, clusterCenters);
+                newClusterMeans[c].add(v);
             }
 
             // Check for convergance
-            double distanceSum = 0;
+            float distanceSum = 0;
             for (int i = 0; i < clusterCenters.length; i++) {
-                final double[] clusterCenter = clusterCenters[i];
-                final double[] newClusterCenter = newClusterMeans[i].mean();
+                final float[] clusterCenter = clusterCenters[i];
+                final float[] newClusterCenter = newClusterMeans[i].mean();
                 distanceSum += distance(clusterCenter, newClusterCenter);
             }
 
@@ -346,11 +276,11 @@ public final class KMeans {
      * @param clusterCenters
      * @return
      */
-    private static int closestCluster(final double[] x, final double[][] clusterCenters) {
-        double minDistance = java.lang.Double.MAX_VALUE;
+    private static int closestCluster(final float[] x, final float[][] clusterCenters) {
+        double minDistance = Double.MAX_VALUE;
         int closestCluster = -1;
         for (int i = 0; i < clusterCenters.length; i++) {
-            final double[] clusterCenter = clusterCenters[i];
+            final float[] clusterCenter = clusterCenters[i];
             final double d = distance(clusterCenter, x);
             if (d < minDistance) {
                 minDistance = d;
@@ -369,10 +299,10 @@ public final class KMeans {
      * @param b
      * @return
      */
-    private static double distance(final double[] a, final double[] b) {
-        double sum = 0;
+    private static double distance(final float[] a, final float[] b) {
+        float sum = 0;
         for (int i = 0; i < a.length; i++) {
-            final double d = a[i] - b[i];
+            final float d = a[i] - b[i];
             sum += d * d;
         }
         return java.lang.Math.sqrt(sum);
@@ -382,30 +312,28 @@ public final class KMeans {
      * @param p pattern dimentionality (number of bands in the input image)
      * @return
      */
-    private double[][] generateRandomClusterCenters(final int p) {
+    private float[][] generateRandomClusterCenters(final int p) {
 
         final Random random = config.isRandomizationSeedEnabled()
                 ? new Random(config.getRandomizationSeed())
                 : new Random();
 
-        final double[][] centers = new double[config.getNumberOfClusters()][];
+        final float[][] centers = new float[config.getNumberOfClusters()][];
         for (int i = 0; i < centers.length; i++) {
-            final double[] center = new double[p];
-            centers[i] = center;
+            centers[i] = new float[vp.getNumberOfValues()];
             // Make sure that each center is unique
             boolean unique = false;
             int count = 0;
             while (!unique) {
                 // Initialize center
-                final int sample = random.nextInt(bandSize);
-                for (int j = 0; j < center.length; j++) {
-                    center[j] = bands[j][sample];
-                }
+                final int sampleX = random.nextInt(vp.getWidth());
+                final int sampleY = random.nextInt(vp.getHeight());
+                vp.get(sampleX, sampleY, centers[i]);
 
                 // Test if it is not a repeat of already selected center.
                 unique = true;
                 for (int j = 0; j < i; ++j) {
-                    final double d = distance(centers[j], center);
+                    final double d = distance(centers[j], centers[i]);
                     if (d < config.getTolerance()) {
                         unique = false;
                         break;
@@ -413,7 +341,7 @@ public final class KMeans {
                 }
 
                 ++count;
-                if (count > 2 * bandSize) {
+                if (count > vp.getWidth() * vp.getHeight()) {
                     throw new RuntimeException("Unable to initialize " + centers.length +
                             " unique clusater centroids.\n" +
                             "Input image may not have enough unique pixel values.");
@@ -424,18 +352,19 @@ public final class KMeans {
         return centers;
     }
 
+
     /**
      *
      */
     private static final class MeanElement {
-        final double[] sum;
+        final float[] sum;
         int count = 0;
 
         public MeanElement(final int elementSize) {
-            sum = new double[elementSize];
+            sum = new float[elementSize];
         }
 
-        public void add(final double[] x) {
+        public void add(final float[] x) {
             if (x.length != sum.length) {
                 throw new java.lang.IllegalArgumentException("Invalid element size, got " + x.length + ", expecting" + sum.length);
             }
@@ -446,8 +375,8 @@ public final class KMeans {
             ++count;
         }
 
-        public double[] mean() {
-            final double[] r = new double[sum.length];
+        public float[] mean() {
+            final float[] r = new float[sum.length];
             for (int i = 0; i < r.length; i++) {
                 r[i] = sum[i] / count;
             }
@@ -455,4 +384,101 @@ public final class KMeans {
             return r;
         }
     }
+
+    /**
+     * Configurable parameters of the k-means algorithm.
+     */
+    public static final class Config implements java.lang.Cloneable {
+        /**
+         * Seed used to initialize random number generator.
+         */
+        private int randomizationSeed = 48;
+        private boolean randomizationSeedEnabled = true;
+        private double tolerance = 0.0001;
+        private int numberOfClusters = 4;
+        private boolean clusterAnimationEnabled = false;
+        private boolean printTraceEnabled = false;
+
+        public int getRandomizationSeed() {
+            return randomizationSeed;
+        }
+
+        public void setRandomizationSeed(final int randomizationSeed) {
+            this.randomizationSeed = randomizationSeed;
+        }
+
+        /**
+         * If <code>true</code>, random number generator will be initalized with a
+         * <code>randomizationSeed</code>. If <code>false</code> rundom number generator will be
+         * initialized using 'current' time.
+         *
+         * @see #getRandomizationSeed()
+         */
+        public boolean isRandomizationSeedEnabled() {
+            return randomizationSeedEnabled;
+        }
+
+        public void setRandomizationSeedEnabled(final boolean randomizationSeedEnabled) {
+            this.randomizationSeedEnabled = randomizationSeedEnabled;
+        }
+
+        public int getNumberOfClusters() {
+            return numberOfClusters;
+        }
+
+        public void setNumberOfClusters(final int numberOfClusters) {
+            this.numberOfClusters = numberOfClusters;
+        }
+
+        /**
+         * Return tolerance used to determine cluster centroid distance. This tolerance is used to
+         * determine if a centroid changed location between iterations.
+         *
+         * @return cluster centroid location tolerunce.
+         */
+        public double getTolerance() {
+            return tolerance;
+        }
+
+        public void setTolerance(final float tolerance) {
+            this.tolerance = tolerance;
+        }
+
+        /**
+         * Return <code>true</code> if when an animation ilustrating cluster optimization is
+         * enabled.
+         */
+        public boolean isClusterAnimationEnabled() {
+            return clusterAnimationEnabled;
+        }
+
+        public void setClusterAnimationEnabled(final boolean clusterAnimationEnabled) {
+            this.clusterAnimationEnabled = clusterAnimationEnabled;
+        }
+
+        /**
+         * Return <code>true</code> if a trace is printed to the ImageJ's Result window.
+         */
+        public boolean isPrintTraceEnabled() {
+            return printTraceEnabled;
+        }
+
+        public void setPrintTraceEnabled(final boolean printTraceEnabled) {
+            this.printTraceEnabled = printTraceEnabled;
+        }
+
+        /**
+         * Make duplicate of this object. This a convenience wrapper for {@link #clone()} method.
+         *
+         * @return duplivcate of this object.
+         */
+        public Config duplicate() {
+            try {
+                return (Config) this.clone();
+            } catch (java.lang.CloneNotSupportedException e) {
+                throw new java.lang.RuntimeException("Error cloning object of class " + getClass().getName() + ".", e);
+            }
+        }
+    }
+
 }
