@@ -4,6 +4,9 @@
       Texture synthesis through image quilting.
     </description>
 
+    <!-- Customize properties, e.g., jaicodec.jar, cvs.root.-->
+    <property file="build.properties"/>
+
     <!-- Package name and version -->
     <property name="package.name" value="ij-plugins_TextureSynthesis"/>
     <property name="package.version" value="1.0"/>
@@ -13,7 +16,7 @@
     <property name="cvs.module" value="ij-plugins/Plugins/TextureSynthesis"/>
 
     <!-- Location of common.xml -->
-    <property name="common.xml.file" location="../common.xml"/>                                
+    <property name="common.xml.file" location="../common.xml"/>
 
 
     <!-- ==================== -->
