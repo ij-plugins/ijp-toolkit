@@ -26,16 +26,20 @@ import net.sf.ij.im3d.*;
 import net.sf.ij.im3d.grow.*;
 
 /**
- *  Performs connected region growing. User is asked to provide seed point
+ *  Performs connected region growing. User is asked to provide seedPoint point
  *  coordinates and min/max limits of the threshold. Result is displayed as a
  *  binary image. Works with 2D and 3D images (stacks).
  *
  * @author     Jarek Sacha
- * @created    July 14, 2002
- * @version    $Revision: 1.6 $
+ * @since      July 14, 2002
+ * @version    $Revision: 1.7 $
  */
 
 public class Connected_Threshold_Grower implements PlugIn {
+
+  private static Point3DInt seedPoint = new Point3DInt();
+  private static int valueMin;
+  private static int valueMax;
 
   /**
    *  Main processing method for the VTK_Writer plugin
@@ -52,12 +56,12 @@ public class Connected_Threshold_Grower implements PlugIn {
 
     GenericDialog gd = new GenericDialog("Grow options");
     gd.addMessage("Seed point coordinates");
-    gd.addNumericField("x", 0, 0);
-    gd.addNumericField("y", 0, 0);
-    gd.addNumericField("z", 0, 0);
+    gd.addNumericField("x", seedPoint.x, 0);
+    gd.addNumericField("y", seedPoint.y, 0);
+    gd.addNumericField("z", seedPoint.z, 0);
     gd.addMessage("Threshold limits");
-    gd.addNumericField("min", 0, 0);
-    gd.addNumericField("max", 0, 0);
+    gd.addNumericField("min", valueMin, 0);
+    gd.addNumericField("max", valueMax, 0);
 
     gd.showDialog();
 
@@ -65,12 +69,11 @@ public class Connected_Threshold_Grower implements PlugIn {
       return;
     }
 
-    Point3DInt seed = new Point3DInt();
-    seed.x = (int) gd.getNextNumber();
-    seed.y = (int) gd.getNextNumber();
-    seed.z = (int) gd.getNextNumber();
-    int valueMin = (int) gd.getNextNumber();
-    int valueMax = (int) gd.getNextNumber();
+    seedPoint.x = (int) gd.getNextNumber();
+    seedPoint.y = (int) gd.getNextNumber();
+    seedPoint.z = (int) gd.getNextNumber();
+    valueMin = (int) gd.getNextNumber();
+    valueMax = (int) gd.getNextNumber();
 
     ConnectedThresholdFilterBase ctf;
     if(imp.getType() == ImagePlus.GRAY8) {
@@ -86,7 +89,7 @@ public class Connected_Threshold_Grower implements PlugIn {
     }
     ctf.setValueMin(valueMin);
     ctf.setValueMax(valueMax);
-    ImageStack out = ctf.run(imp.getStack(), seed);
+    ImageStack out = ctf.run(imp.getStack(), seedPoint);
 
     new ImagePlus("Region", out).show();
   }
