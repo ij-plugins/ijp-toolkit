@@ -29,13 +29,13 @@ import ij.process.ImageProcessor;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class IntensityShiftPlugin implements PlugInFilter {
     final private static String PLUGIN_NAME = "Intensity shift";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
-            "Shift (wrap around) GRAY8 image intensity. Shift value is assumed to be positive.";
+            "Shifts (wraps around) GRAY8 image intensity. Shift value is assumed to be positive.";
 
     private static int shift = 128;
 
