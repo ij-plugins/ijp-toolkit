@@ -1,0 +1,112 @@
+import net.sourceforge.jiu.data.RGBIntegerImage;
+
+/** This is a rectangular patch of pixels belonging to a image.
+ */
+public class Patch extends View {
+
+    private int width, height;
+
+    /** This makes a patch based on the given dimensions and view parameters.
+     */
+    public Patch(RGBIntegerImage image, int x, int y, int width, int height) {
+	super(image, x, y);
+	this.width = width;
+	this.height = height;
+	setCorner(x,y);
+    }
+
+    /** This moves the patch to have the upper left corner at (x,y)
+     *  in image coordinates.
+     */
+    public void setCorner(int x, int y) {
+	if( x+width > image.getWidth() || y+height > image.getHeight()
+	    || x < 0 || y < 0 ) {
+	    throw new IllegalArgumentException("can not create a patch there");
+	}
+	super.setCorner(x,y);
+    }
+
+    public int getWidth() {
+	return width;
+    }
+    public int getHeight() {
+	return height;
+    }
+
+    /** Bounds checks the input to make sure it is part of the patch and
+     *  then gets the sample from the view.
+     */
+    public int[] getSample(int x, int y) {
+	if( x >= 0 && x < width && y >= 0 && y < height) {
+	    return super.getSample(x,y);
+	}
+	throw new IllegalArgumentException("Attempted to get ("+x+","+y
+					   +") from "+toString());
+    }
+
+    /** Bounds checks the input to make sure it is part of the patch and
+     *  then puts the sample into the view.
+     */
+    public void putSample(int x, int y, int values[]) {
+	if( x >= 0 && x < width && y >= 0 && y < height) {
+	    super.putSample(x,y,values);
+	}
+	else
+	    throw new IllegalArgumentException("Attempted to put ("+x+","+y
+					   +") in "+toString());
+    }
+
+    /** returns a string with the corner, width, and height listed */
+    public String toString() {
+	return "patch with corner ("+xoffset+","+yoffset+") width "
+	    +width+" height "+height;
+    }
+
+    /** This moves the patch one pixel to the right if able.
+     *  If the move fails (because it puts part of the patch out of bounds)
+     *  then this returns false.
+     */
+    public boolean rightOnePixel() {
+	if( xoffset+width < image.getWidth() ) {
+	    setCorner(xoffset+1, yoffset);
+	    return true;
+	}
+	return false;
+    }
+
+    /** This moves the patch one pixel down and all the way to the left.
+     *  If the move fails (because it puts part of the patch out of bounds)
+     *  then this returns false.
+     */
+    public boolean nextPixelRow() {
+	if( yoffset+height < image.getHeight() ) {
+	    setCorner(0, yoffset+1);
+	    return true;
+	}
+	return false;
+    }
+
+    /** This moves the patch to the left side of the image and
+     *  down by height-overlap. If the move fails, this returns false.
+     */
+    public boolean nextRow(int overlap) {
+	int newy = yoffset + height - overlap;
+	if( newy + height > image.getHeight() ) {
+	    return false;
+	}
+	setCorner(0,newy);
+	return true;
+    }
+
+    /** This moves the patch to the right in this row of patches if able.
+     *  The amount moved will be width-overlap. This returns false on failure.
+     */
+    public boolean nextColumn(int overlap) {
+	int newx = xoffset + width - overlap;
+	if( newx + width > image.getWidth() ) {
+	    return false;
+	}
+	setCorner(newx, yoffset);
+	return true;
+    }
+}
