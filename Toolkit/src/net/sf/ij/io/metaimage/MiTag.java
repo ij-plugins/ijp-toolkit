@@ -27,7 +27,7 @@ import net.sf.ij.util.Enumeration;
  *
  * @author     Jarek Sacha
  * @created    June 18, 2002
- * @version    $Revision: 1.3 $ $Date: 2002-08-13 01:23:11 $
+ * @version    $Revision: 1.4 $ $Date: 2003-01-08 02:21:31 $
  */
 public class MiTag extends Enumeration {
 
@@ -93,6 +93,8 @@ public class MiTag extends Enumeration {
   public static MiTag ParentID = new MiTag("ParentID");
   /**  BinaryData */
   public static MiTag BinaryData = new MiTag("BinaryData");
+  /** BinaryDataByteOrderMSB */
+  public static MiTag BinaryDataByteOrderMSB  = new MiTag("BinaryDataByteOrderMSB");
   /**  Color */
   public static MiTag Color = new MiTag("Color");
   /**  ElementNumberOfChannels */
