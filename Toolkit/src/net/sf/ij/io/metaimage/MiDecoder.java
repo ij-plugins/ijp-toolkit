@@ -40,7 +40,7 @@ import net.sf.ij.util.TextUtil;
  *
  * @author     Jarek Sacha
  * @created    July 31, 2002
- * @version    $Revision: 1.2 $
+ * @version    $Revision: 1.3 $
  * @todo       Validate MetaImage tag dependency (some tags need always be
  *      present, some only if other tags are present, etc.)
  */
@@ -177,6 +177,21 @@ public class MiDecoder implements PlugIn {
           fileInfo.height = dimSize[1];
           if (dimSize.length > 2) {
             fileInfo.nImages = dimSize[2];
+          }
+        }
+        // TAG: BinaryDataByteOrderMSB
+        else if (tag.id == MiTag.BinaryDataByteOrderMSB) {
+          if (tag.value.compareToIgnoreCase("true") == 0) {
+            fileInfo.intelByteOrder = false;
+          }
+          else if (tag.value.compareToIgnoreCase("false") == 0) {
+            fileInfo.intelByteOrder = true;
+          }
+          else {
+            throw new MiException("Invalid value of header tag '"
+                + MiTag.BinaryDataByteOrderMSB
+                + "'. Expecting either 'true' or 'false', got '"
+                + tag.value + "'.");
           }
         }
         // TAG: ElementByteOrderMSB
@@ -327,7 +342,7 @@ public class MiDecoder implements PlugIn {
   public void run(String arg) {
     try {
       // Get file name
-      OpenDialog openDialog = new OpenDialog("Open as MetaImage...", null);
+      OpenDialog openDialog = new OpenDialog("Open as MetaImage...", arg);
       if (openDialog.getFileName() == null) {
         return;
       }
