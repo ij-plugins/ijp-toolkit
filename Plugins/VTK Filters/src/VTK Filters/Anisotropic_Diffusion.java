@@ -22,7 +22,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
 import net.sf.ij.vtk.AnisotropicDiffusion2D;
@@ -53,7 +52,7 @@ public class Anisotropic_Diffusion implements PlugInFilter {
    * @return      Description of the Return Value
    */
   public int setup(String arg, ImagePlus imp) {
-    return PlugInFilter.DOES_8G | PlugInFilter.NO_CHANGES;
+    return PlugInFilter.DOES_8G | PlugInFilter.DOES_16 |PlugInFilter.NO_CHANGES;
   }
 
 
@@ -95,11 +94,11 @@ public class Anisotropic_Diffusion implements PlugInFilter {
     adFilter.setDiffusionThreshold(dialog.getNextNumber());
     adFilter.setNumberOfIterations((int) (dialog.getNextNumber() + 0.5));
     adFilter.setGradientMagnitudeThreshold(dialog.getNextBoolean());
-    adFilter.setInput((ByteProcessor) ip);
+    adFilter.setInput(ip);
 
     adFilter.update();
 
-    ByteProcessor output = adFilter.getOutput();
+    ImageProcessor output = adFilter.getOutput();
     new ImagePlus("Anisotropic Diffusion", output).show();
   }
 

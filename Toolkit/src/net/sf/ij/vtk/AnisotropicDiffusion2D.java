@@ -22,6 +22,7 @@ package net.sf.ij.vtk;
 
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
+import ij.process.ImageProcessor;
 import net.sf.ij.vtk.VtkUtil;
 
 import net.sf.ij.vtk.VtkImageDataFactory;
@@ -39,8 +40,8 @@ import vtk.vtkImageData;
 
 public class AnisotropicDiffusion2D {
 
-  private ByteProcessor inputProcessor = null;
-  private ByteProcessor outputProcessor = null;
+  private ImageProcessor inputProcessor = null;
+  private ImageProcessor outputProcessor = null;
   private vtkImageAnisotropicDiffusion2D filter = null;
 
 
@@ -105,7 +106,7 @@ public class AnisotropicDiffusion2D {
    *
    * @param  bp  The new input value
    */
-  public void setInput(ByteProcessor bp) {
+  public void setInput(ImageProcessor bp) {
     inputProcessor = bp;
   }
 
@@ -115,7 +116,7 @@ public class AnisotropicDiffusion2D {
    *
    * @return    The output value
    */
-  public ByteProcessor getOutput() {
+  public ImageProcessor getOutput() {
     return outputProcessor;
   }
 
@@ -134,7 +135,7 @@ public class AnisotropicDiffusion2D {
       vtkImageData outputImageData = filter.GetOutput();
       ImagePlus imp = VtkUtil.createImagePlus(outputImageData);
 
-      outputProcessor = (ByteProcessor) imp.getProcessor();
+      outputProcessor = imp.getProcessor();
     }
     catch (Exception ex) {
       ex.printStackTrace();

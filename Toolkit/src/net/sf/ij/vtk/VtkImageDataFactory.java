@@ -22,6 +22,8 @@ package net.sf.ij.vtk;
 
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
+import ij.process.ImageProcessor;
+
 import java.io.File;
 
 import java.io.IOException;
@@ -54,7 +56,7 @@ public class VtkImageDataFactory {
    * @return                  Description of the Return Value
    * @exception  IOException  Description of the Exception
    */
-  public static vtkImageData create(ByteProcessor bp) throws IOException {
+  public static vtkImageData create(ImageProcessor bp) throws IOException {
     File tmpFile = File.createTempFile("ijImageData", ".vtk");
     String tmpFileName = tmpFile.getAbsolutePath();
 
