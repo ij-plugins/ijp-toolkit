@@ -44,14 +44,14 @@ public class ImageQuilterPlugin implements PlugInFilter {
             "http://www.cs.berkeley.edu/~efros/research/quilting.html\n" +
             "  \n" +
             "Parameters:\n" +
-            "   " + DEST_WIDTH_LABEL + " - desired width of the output image, actual width be " +
+            "   " + DEST_WIDTH_LABEL + " - desired width of the output image, actual width be\n " +
             "       slightly larger, depending on patch size.\n" +
-            "   " + DEST_HEIGHT_LABEL + " - desired height of the output image, actual height be \n" +
+            "   " + DEST_HEIGHT_LABEL + " - desired height of the output image, actual height be\n" +
             "       slightly larger, depending on patch size.\n" +
             "   " + PATCH_SIZE_LABEL + " - width and height of a patch used for quilting.\n" +
             "   " + PATCH_OVERLAP_LABEL + " - amount of overlap between patches when matching.\n" +
             "   " + ENABLE_HORIZ_PATHS_LABEL + " - enable improved matching by weighted paths.\n" +
-            "   " + PATCH_COST_WEIGHT_LABEL + " - weight used for improved matching." +
+            "   " + PATCH_COST_WEIGHT_LABEL + " - weight used for improved matching.\n" +
             "  \n" +
             "The code of this plugin was originally developed by by Nick Vavra.\n" +
             "Original code and description is available at: http://www.cs.wisc.edu/~vavra/cs766/.\n" +
