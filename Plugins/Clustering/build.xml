@@ -229,6 +229,7 @@
             <param name="base.dir" location="${cvs.dir}"/>
             <param name="dist.dir" location="${base.dir}/dist"/>
             <param name="jar.dir" location="${dist.dir}"/>
+            <param name="ij.jar" location="${ij.jar}"/>
         </antcall>
 
         <!-- Cleanup -->
