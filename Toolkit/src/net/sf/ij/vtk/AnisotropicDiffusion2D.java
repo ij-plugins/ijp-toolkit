@@ -40,6 +40,22 @@ import vtk.vtkImageData;
 
 public class AnisotropicDiffusion2D {
 
+  static {
+    // Load VTK libraries
+    try {
+      System.loadLibrary("vtkCommonJava");
+      System.loadLibrary("vtkFilteringJava");
+      System.loadLibrary("vtkIOJava");
+      System.loadLibrary("vtkImagingJava");
+      System.loadLibrary("vtkGraphicsJava");
+      System.loadLibrary("vtkRenderingJava");
+    }
+    catch (UnsatisfiedLinkError ex) {
+      ex.printStackTrace();
+    }
+  }
+
+
   private ImageProcessor inputProcessor = null;
   private ImageProcessor outputProcessor = null;
   private vtkImageAnisotropicDiffusion2D filter = null;
