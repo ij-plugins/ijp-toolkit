@@ -82,7 +82,7 @@
     </ant>
 
     <!-- Create source distribution with current day stamp -->
-    <zip basedir="${sourceDir}" destfile="${distDir}/ij-3D-Toolkit_src_${DSTAMP}.zip" />
+    <zip basedir="${outputDir}/source" destfile="${distDir}/ij-3D-Toolkit_src_${DSTAMP}.zip" />
   </target>
   
   <target name="dist" depends="build"
@@ -91,7 +91,7 @@
     <mkdir dir="${distDir}"/>
 
     <!-- Create binary distribution with current day stamp -->
-    <copyfile src="${sourceDir}/ReadMe.txt" dest="${pluginsDir}/ij-3D-Toolkit-ReadMe.txt" />
+    <copy src="${sourceDir}/ReadMe.txt" dest="${pluginsDir}/ij-3D-Toolkit-ReadMe.txt" />
     <zip basedir="${pluginsDir}" destfile="${distDir}/ij-3D-Toolkit_bin_${DSTAMP}.zip" />
   </target>
 
