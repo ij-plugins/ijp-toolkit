@@ -30,7 +30,7 @@ import net.sf.ij.io.metaimage.MiEncoder;
  *
  * @author     Jarek Sacha
  * @created    June 18, 2002
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.2 $
  */
 
 public class MetaImage_Writer implements PlugIn {

@@ -32,7 +32,7 @@ import net.sf.ij.im3d.grow.*;
  *
  * @author     Jarek Sacha
  * @created    July 14, 2002
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.2 $
  */
 
 public class Connected_Threshold_Grower implements PlugIn {

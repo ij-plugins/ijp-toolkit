@@ -32,7 +32,7 @@ import net.sf.ij.im3d.morphology.Morpho;
  *
  *@author     Jarek Sacha
  *@created    July 14, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 public class Morphological_Erode_3D implements PlugIn {

@@ -28,7 +28,7 @@ import net.sf.ij.io.vtk.VtkEncoder;
  *
  *@author     Jarek Sacha
  *@created    April 28, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  *@see        net.sf.ij.io.vtk.VtkEncoder
  */
 

@@ -35,7 +35,7 @@ import net.sf.ij.im3d.Util;
  *
  * @author     Jarek Sacha
  * @created    May 8, 2002
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.2 $
  */
 
 public class Auto_Clip_Volume implements PlugIn {

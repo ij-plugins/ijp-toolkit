@@ -30,7 +30,7 @@ import net.sf.ij.io.metaimage.MiDecoder;
  *
  * @author     Jarek Sacha
  * @created    June 18, 2002
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.2 $
  * @todo       Fix comments.
  */
 

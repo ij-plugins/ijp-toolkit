@@ -27,7 +27,7 @@ import net.sf.ij.io.vtk.VtkDecoder;
  *
  *@author     Jarek Sacha
  *@created    June 18, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  *@see        net.sf.ij.io.vtk.VtkDecoder
  */
 
