@@ -20,14 +20,18 @@
  */
 package net.sf.ij.util;
 
+import java.util.ArrayList;
+
 /**
  *  Description of the Class
  *
  * @author     Jarek Sacha
  * @created    June 18, 2002
- * @version    $Revision: 1.1 $ $Date: 2002-07-19 02:45:18 $
+ * @version    $Revision: 1.2 $ $Date: 2002-08-04 03:16:21 $
  */
 public abstract class Enumeration {
+  private static ArrayList allMembers = new ArrayList();
+
   private String name;
 
 
@@ -37,7 +41,51 @@ public abstract class Enumeration {
    * @param  name  Description of Parameter
    */
   protected Enumeration(String name) {
+    // Check that the name is unique
+    try {
+      byName(name);
+      throw new RuntimeException(
+          "An Enumeration cannot have two members with the same name ['"
+          + name + "].");
+    }
+    catch (IllegalArgumentException ex) {
+      // Expect this exception as a confirmation that the name is not on
+      // the member list.
+    }
+
     this.name = name;
+    allMembers.add(this);
+  }
+
+
+  /**
+   *  Returns a reference to the named member of this Enumeration.<p>
+   *
+   *  <strong>API NOTE:</strong> This method looks as it should have been
+   *  defines as static. However, this could lead to an unpredictable behaviour
+   *  of this method due to the way Java iniializes static member variables of a
+   *  class. In particular, if this method was static it would be possible to
+   *  call it before static member variables of the Enumeration class for which
+   *  it was called were initialized. As a result if this method was static it
+   *  could thow IllegalArgumentException even when its argument was a valid
+   *  member name.
+   *
+   * @param  name                          A name of the Enumeration member.
+   * @return                               Reference tro a member with given
+   *      <code>name</code>.
+   * @exception  IllegalArgumentException  If a member with given <code>name</code>
+   *      cannot be found.
+   */
+  public Enumeration byName(String name)
+       throws IllegalArgumentException {
+    for (int i = 0; i < allMembers.size(); ++i) {
+      Enumeration member = (Enumeration)allMembers.get(i);
+      if (member.name.equals(name)) {
+        return member;
+      }
+    }
+
+    throw new IllegalArgumentException("Invalid member name '" + name + "'.");
   }
 
 
