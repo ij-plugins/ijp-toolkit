@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002,2003 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,11 +20,8 @@
  */
 package net.sf.ij.im3d.grow;
 
-import ij.*;
-
-import java.util.*;
-
-import net.sf.ij.im3d.*;
+import ij.ImageStack;
+import net.sf.ij.im3d.Point3DInt;
 
 /**
  *  Simple region growing algorithm that extracts all pixels connected to the
@@ -32,8 +29,8 @@ import net.sf.ij.im3d.*;
  *  limit is inclusive, max limit is exclusive.
  *
  *@author     Jarek Sacha
- *@created    April 29, 2002
- *@version    $Revision: 1.2 $
+ *@since      April 29, 2002
+ *@version    $Revision: 1.3 $
  */
 
 public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase {

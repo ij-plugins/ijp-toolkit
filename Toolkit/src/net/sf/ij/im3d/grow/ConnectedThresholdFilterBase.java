@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002,2003 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,6 @@
 package net.sf.ij.im3d.grow;
 
 import ij.ImageStack;
-
 import net.sf.ij.im3d.Point3DInt;
 
 import java.util.LinkedList;
@@ -32,8 +31,8 @@ import java.util.LinkedList;
  *  limit is inclusive, max limit is exclusive.
  *
  *@author     Jarek Sacha
- *@created    April 29, 2002
- *@version    $Revision: 1.2 $
+ *@since      April 29, 2002
+ *@version    $Revision: 1.3 $
  */
 
 abstract public class ConnectedThresholdFilterBase {
@@ -50,7 +49,7 @@ abstract public class ConnectedThresholdFilterBase {
    */
   protected final static byte NOT_MEMBER = (byte) 0x01;
 
-  /** Pixels of the destibation image */  
+  /** Pixels of the destibation image */
   protected byte[][] destPixels = null;
 
   /**  Grow candidates */
@@ -155,18 +154,18 @@ abstract public class ConnectedThresholdFilterBase {
     zSize = src.getSize();
     zMin = 0;
     zMax = zSize;
-    
+
     destPixels = new byte[zSize][];
     int sliceSize = xSize * ySize;
     for (int z = 0; z < zSize; ++z) {
       destPixels[z] = new byte[sliceSize];
     }
   }
-  
-  
-  /** 
-   *  Create handle to source pixels, e.g. byte[][] srcPixels. This method is called at the 
-   *  begining of the initialize method. This method should only modify handle to source piels 
+
+
+  /**
+   *  Create handle to source pixels, e.g. byte[][] srcPixels. This method is called at the
+   *  begining of the initialize method. This method should only modify handle to source piels
    *  that is defined in the derived class. This handle is used by checkForGrow()
    */
   abstract protected void createHandleToSrcPixels(ImageStack src);
@@ -184,8 +183,8 @@ abstract public class ConnectedThresholdFilterBase {
    *@param  z
    */
   abstract protected void checkForGrow(int x, int y, int z);
-  
-    /**
+
+  /**
    *  Description of the Method
    *
    *@return    Description of the Return Value
