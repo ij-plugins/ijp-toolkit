@@ -25,9 +25,9 @@ import java.util.Arrays;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-public class RunningMedianOperator {
+public class RunningMedianOperator implements IRunningMedianFloatOperator {
 
     private Packet[] packets;
     private int updatablePacket = 0;
@@ -40,7 +40,7 @@ public class RunningMedianOperator {
     public RunningMedianOperator() {
     }
 
-    void reset(final int maxPackets, final int maxElementsPerPacket) {
+    public void reset(final int maxPackets, final int maxElementsPerPacket) {
         packets = new Packet[maxPackets];
         for (int i = 0; i < packets.length; ++i) {
             packets[i] = new Packet(maxElementsPerPacket);
@@ -51,7 +51,7 @@ public class RunningMedianOperator {
     }
 
 
-    void push(final int length, float[] data) {
+    public void push(final int length, float[] data) {
 
         final Packet packet = packets[updatablePacket];
 
@@ -108,7 +108,7 @@ public class RunningMedianOperator {
         updatablePacket = (updatablePacket + 1) % packets.length;
     }
 
-    float evaluate() {
+    public float evaluate() {
         while (needsUpdate) {
 
             if (revaluateMedian) {
@@ -172,7 +172,7 @@ public class RunningMedianOperator {
         return median;
     }
 
-    void clear() {
+    public void clear() {
         updatablePacket = 0;
         median = 0;
         needsUpdate = false;
