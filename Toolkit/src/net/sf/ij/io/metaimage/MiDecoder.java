@@ -40,7 +40,7 @@ import net.sf.ij.util.TextUtil;
  *
  * @author     Jarek Sacha
  * @created    July 31, 2002
- * @version    $Revision: 1.3 $
+ * @version    $Revision: 1.4 $
  * @todo       Validate MetaImage tag dependency (some tags need always be
  *      present, some only if other tags are present, etc.)
  */
@@ -80,12 +80,6 @@ public class MiDecoder implements PlugIn {
       throw new MiException("Unable to read image data from '"
           + fileInfo.fileName + "'.");
     }
-
-//    if (imageOrigin != null) {
-//      imp.setProperty("origin.x", "" + imageOrigin[0]);
-//      imp.setProperty("origin.y", "" + imageOrigin[1]);
-//      imp.setProperty("origin.z", "" + imageOrigin[2]);
-//    }
 
     return imp;
   }
