@@ -26,7 +26,7 @@ import java.awt.*;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class ColorHistogram {
     private final static int BAND_RANGE = 256;

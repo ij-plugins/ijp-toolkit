@@ -20,14 +20,13 @@
  */
 package net.sf.ij.color;
 
+import ij.ImagePlus;
+import ij.io.Opener;
+import ij.process.ColorProcessor;
 import junit.framework.TestCase;
 
-import java.io.File;
 import java.awt.*;
-
-import ij.io.Opener;
-import ij.ImagePlus;
-import ij.process.ColorProcessor;
+import java.io.File;
 
 /**
  * @author Jarek Sacha
@@ -57,7 +56,7 @@ public class ColorHistogramTest extends TestCase {
 
         net.sf.ij.color.ColorHistogram colorHistogram = new net.sf.ij.color.ColorHistogram();
         colorHistogram.setBinsPerBand(2);
-        colorHistogram.run((ColorProcessor)imp.getProcessor());
+        colorHistogram.run((ColorProcessor) imp.getProcessor());
 
         int[][][] bins = colorHistogram.getBins();
         Color[][][] binColors = colorHistogram.getBinColors();
@@ -67,7 +66,7 @@ public class ColorHistogramTest extends TestCase {
                 int[] binB = binGB[g];
                 for (int b = 0; b < binB.length; b++) {
                     int count = binB[b];
-                    System.out.println("["+r+","+g+","+b+"]: "+count);
+                    System.out.println("[" + r + "," + g + "," + b + "]: " + count);
                 }
 
             }
