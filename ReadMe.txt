@@ -55,15 +55,27 @@ Following steps assume that you downloaded binary archive
 ij-3D-Toolkit_bin_0.3.zip or newer from http://ij-plugins.sf.net
 
    1. Follow the link and download latest ij-3D-Toolkit_bin_*.zip
+   
    2. Locate your Image/J plugins folder.
-   3. Remove from Image/J plugins folder sub directories named '3D IO' and
-      '3D Toolkit', if their exist.
+   
+   3. Remove from Image/J plugins folder sub directories named '3D IO',
+      '3D Toolkit', and 'VTK Filters' if their exist.
+      
    4. Unzip content of ij-3D-Toolkit_bin_*.zip into Image/J plugins folder.
+   
    5. Add ij-plugins-tookit.jar to Image/J class path. One of the ways to 
-      do it is by extending classpath in Image/J startup script, for instance:
-        java -cp ij.jar;plugins/ij-plugins-toolkit.jar ij.ImageJ
+       do it is by extending classpath in Image/J startup script, for instance 
+       on Windows:
+           java -cp ij.jar;plugins/ij-plugins-toolkit.jar ij.ImageJ
+       On Unix like systems (including Linux and Mac OS X) the command 
+       would be almost the same:
+           java -cp ij.jar:plugins/ij-plugins-toolkit.jar ij.ImageJ
+       The only difference is that on Windows you use ';' to separate 
+       elements of a classpath, on Unix like systems you use ":".
+       
    6. To use VTK filters add path to VTK Java classes typically located in 
-      vtk.jar. VTK binaries and source code are available from www.vtk.org.
+       vtk.jar. VTK binaries and source code are available from www.vtk.org.
+      
    7. Restart Image/J.
 
 ______
