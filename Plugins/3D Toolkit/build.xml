@@ -3,28 +3,32 @@
         ij-plugins Toolkit package - 3D Toolkit loaders.
     </description>
 
-  <!-- Default values for input properties -->    
-  <path id="classpath">
-    <pathelement location="${basedir}/lib/ij.jar"/>
-  </path>
-  <property name="output.dir" value="plugins/3D Toolkits"/>
+    <!-- Default values for input properties -->
+    <property name="lib.dir" location="${basedir}/lib"/>
+    <property name="toolkit.classpath" location="."/>
+    <property name="output.dir" value="plugins/3D Toolkits"/>
 
-  <target name="prepare">
-    <!-- set local properties for this build -->
-    <property name="src.dir" location="src/3D Toolkit"/>
-    <property name="dest.dir"  location="${output.dir}"/>
-    <!-- Create the build directory structure used by compile -->
-    <mkdir dir="${dest.dir}"/>
-  </target>
+    <path id="classpath">
+        <pathelement location="${lib.dir}/ij.jar"/>
+        <pathelement location="${toolkit.classpath}"/>
+    </path>
 
-  <target name="compile" depends="prepare"
-        description="compile the source " >
-    <!-- Compile the java code from ${src.dir} into ${build.dir} -->
-    <javac srcdir="${src.dir}"
-      destdir="${dest.dir}"
-      debug="on"
-      >
-          <classpath refid="classpath"/>
-    </javac>
-  </target>
+    <target name="prepare">
+        <!-- set local properties for this build -->
+        <property name="src.dir" location="src/3D Toolkit"/>
+        <property name="dest.dir" location="${output.dir}"/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${dest.dir}"/>
+    </target>
+
+    <target name="compile" depends="prepare"
+        description="compile the source ">
+        <!-- Compile the java code from ${src.dir} into ${build.dir} -->
+        <javac srcdir="${src.dir}"
+            destdir="${dest.dir}"
+            debug="on"
+            >
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
 </project>
