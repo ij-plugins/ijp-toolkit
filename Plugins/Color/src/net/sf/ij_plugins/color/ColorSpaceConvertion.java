@@ -20,12 +20,16 @@
  */
 package net.sf.ij_plugins.color;
 
+import ij.IJ;
+import ij.process.ColorProcessor;
+import net.sf.ij_plugins.multiband.VectorProcessor;
+
 /**
  * Color space conversion utility, assuming two degree observer and illuminant D65. Conversion based
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ColorSpaceConvertion {
 
@@ -281,5 +285,69 @@ public class ColorSpaceConvertion {
         dest[0] = (float) l;
         dest[1] = (float) a;
         dest[2] = (float) b;
+    }
+
+    /**
+     * Convert between RGB and CIE L*a*b* color image representation.
+     *
+     * @param cp RGB image to be converted
+     * @return CIE L*a*b* image represented by {@link VectorProcessor}.
+     */
+    public static VectorProcessor rgbToLabVectorProcessor(final ColorProcessor cp) {
+        final VectorProcessor vp = new VectorProcessor(cp);
+        final float[][] pixels = vp.getPixels();
+        final float[] tmp = new float[3];
+
+        final int progressStep = pixels.length / 10;
+        for (int i = 0; i < pixels.length; i++) {
+            if (i % progressStep == 0) {
+                IJ.showProgress(i, pixels.length);
+            }
+            final float[] pixel = pixels[i];
+            ColorSpaceConvertion.rgbToXYZ(pixel, tmp);
+            ColorSpaceConvertion.xyzToLab(tmp, pixel);
+        }
+
+        return vp;
+    }
+
+    /**
+     * Convert between CIE L*a*b* and RGB color image representation.
+     *
+     * @param vp CIE L*a*b* image represented by {@link VectorProcessor}.
+     * @return RGB image represented by a {@link ColorProcessor}.
+     */
+    public static ColorProcessor labToColorProcessor(final VectorProcessor vp) {
+        final float[][] pixels = vp.getPixels();
+        final float[] tmp = new float[3];
+
+        final int width = vp.getWidth();
+        final int height = vp.getHeight();
+        final int sliceSize = width * height;
+        final byte[] red = new byte[sliceSize];
+        final byte[] green = new byte[sliceSize];
+        final byte[] blue = new byte[sliceSize];
+
+
+        final int progressStep = pixels.length / 10;
+        for (int i = 0; i < pixels.length; i++) {
+            if (i % progressStep == 0) {
+                IJ.showProgress(i, pixels.length);
+            }
+            final float[] pixel = pixels[i];
+            ColorSpaceConvertion.labToXYZ(pixel, tmp);
+            ColorSpaceConvertion.xyzToRGB(tmp, pixel);
+            int r = Math.min(Math.max(Math.round(pixel[0]), 0), 255);
+            int g = Math.min(Math.max(Math.round(pixel[1]), 0), 255);
+            int b = Math.min(Math.max(Math.round(pixel[2]), 0), 255);
+            red[i] = (byte) (r & 0xff);
+            green[i] = (byte) (g & 0xff);
+            blue[i] = (byte) (b & 0xff);
+        }
+
+        final ColorProcessor cp = new ColorProcessor(width, height);
+        cp.setRGB(red, green, blue);
+
+        return cp;
     }
 }
