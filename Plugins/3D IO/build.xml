@@ -1,0 +1,35 @@
+<project name="ij-plugins-3D IO" default="compile" basedir=".">
+    <description>
+        ij-plugins Toolkit package.
+    </description>
+
+  <!-- Default values for input properties -->    
+  <target name="setProps" 
+          unless="setProps"
+  	      description="Setup the propertries">
+    <property name="classpath" value="${basedir}/../lib/ij.jar"/>
+    <property name="outputdir" value="plugins/3D IO"/>
+    <property name="setProps" value="true" />
+  </target>
+
+  <!-- set local properties for this build -->
+  <target name="init" depends="setProps">
+    <property name="srcDir" location="src/3D IO"/>
+    <property name="destDir"  location="${outputdir}"/>
+  </target>
+
+  <target name="prepare" depends="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${destDir}"/>
+  </target>
+
+  <target name="compile" depends="prepare"
+        description="compile the source " >
+    <!-- Compile the java code from ${srcDir} into ${buildDir} -->
+    <echo message="classpath = ${classpath}" level="error"/>
+    <echo message="destDir = ${destDir}" level="error"/>
+    <javac srcdir="${srcDir}" destdir="${destDir}" classpath="${classpath}"/>
+  </target>
+</project>

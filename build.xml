@@ -1,0 +1,76 @@
+<project name="ij-plugins" default="dist" basedir=".">
+    <description>
+        ij-plugins
+    </description>
+    
+  <!--
+    @TODO: Toolkit creation targets.    
+    @TODO: PlugIns build file
+    @TODO: PlugIns build creation targets
+    @TODO: Readme files for the distribution.
+    @TODO: Package the binary distribution.
+  -->
+  
+  <!-- Set default properties for this build -->
+  <target name="setProps" unless="setProps"
+  	description="Setup the propertries">
+    <property name="outputDir" location="output" />
+    <property name="pluginsDir" location="${outputDir}/build/plugins" />
+    <property name="src"     location="src"/>
+    <property name="dist"    location="dist"/>
+    <property name="classpath" value="${basedir}/lib/ij.jar;${pluginsDir}/ij-plugins-toolkit.jar"/>
+    <property name="setProps" value="true" />
+  </target>
+  
+  <!-- Initialize  -->
+  <target name="init" depends="setProps"
+  	description="Initialize the properties"> 
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+  </target>
+
+  <target name="prepare" depends="init">
+    <mkdir dir="${pluginsDir}/3D IO"/>
+    <mkdir dir="${pluginsDir}/3D Toolkit"/>
+  </target>
+  
+  <target name="build" depends="prepare" 
+  	description="Build the toolkit and plugin binaries">
+    
+    <!-- toolkit.jar -->
+    <ant dir="./Toolkit" target="package">
+      <property name="outputdir" value="${pluginsDir}"/>
+      <property name="setProps" value="true"/>
+    </ant>
+
+    <!-- 3D IO plugins -->
+    <ant dir="./Plugins/3D IO" target="compile">
+      <property name="outputdir" value="${pluginsDir}/3D IO"/>
+      <property name="classpath" value="${classpath}"/>
+      <property name="setProps" value="true"/>
+    </ant>
+
+    <!-- 3D Toolkit plugins -->
+    <ant dir="./Plugins/3D Toolkit" target="compile">
+      <property name="outputdir" value="${pluginsDir}/3D Toolkit"/>
+      <property name="classpath" value="${classpath}"/>
+      <property name="setProps" value="true"/>
+    </ant>
+  </target>
+  
+  <target name="dist" depends="build"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+    <zip destfile="${dist}/lib/ij-plugins-toolkit-${DSTAMP}.zip" basedir="${pluginsDir}"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${outputdir}"/>
+  </target>
+</project>

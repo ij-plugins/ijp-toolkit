@@ -1,0 +1,49 @@
+<project name="ij-plugins-toolkit" default="package" basedir=".">
+    <description>
+        ij-plugins Toolkit package.
+    </description>
+
+  <!-- Default values for input properties -->    
+  <target name="setProps" 
+          unless="setProps"
+  	      description="Setup the propertries">
+    <property name="outputdir" location="output" />
+    <property name="classpath" value="${basedir}/lib/ij.jar"/>
+    <property name="setProps" value="true" />
+  </target>
+
+  <!-- set local properties for this build -->
+  <target name="init" depends="setProps">
+    <property name="srcDir" location="src"/>
+    <property name="buildDir" location="build"/>
+    <property name="distDir"  location="${outputdir}"/>
+  </target>
+
+  <target name="prepare" depends="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${buildDir}"/>
+  </target>
+
+  <target name="compile" depends="prepare"
+        description="compile the source " >
+    <!-- Compile the java code from ${srcDir} into ${buildDir} -->
+    <javac srcdir="${srcDir}" destdir="${buildDir}" classpath="${classpath}"/>
+  </target>
+
+  <target name="package" depends="compile"
+        description="generate toolkit jar" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${distDir}"/>
+
+    <!-- Put everything in ${build} into the ij-plugins-toolkit.jar file -->
+    <jar jarfile="${distDir}/ij-plugins-toolkit.jar" basedir="${buildDir}"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${buildDir} directory tree -->
+    <delete dir="${buildDir}"/>
+  </target>
+</project>
