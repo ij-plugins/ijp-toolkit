@@ -22,9 +22,9 @@ package net.sf.ij.swing;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -118,10 +118,10 @@ public class ImageCanvasView extends JComponent {
         ImageCanvasView canvas = new ImageCanvasView();
 //        canvas.setPreferredSize(new Dimension(256,256));
 
-        BufferedImage image = new BufferedImage(256,256, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
 
-        ImageCanvasModel model = canvas.getModel();
-        model.setImage(image);
+        ImageCanvasModel imageCanvasModel = canvas.getModel();
+        imageCanvasModel.setImage(image);
 
         final JFrame frame = new JFrame("ImageCanvasView Test");
         frame.getContentPane().add(canvas);
