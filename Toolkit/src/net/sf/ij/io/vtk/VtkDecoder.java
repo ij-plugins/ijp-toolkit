@@ -23,6 +23,7 @@ package net.sf.ij.io.vtk;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.measure.Calibration;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.OpenDialog;
@@ -61,6 +62,7 @@ public class VtkDecoder implements PlugIn {
   private String DIALOG_CAPTION = "VTK Reader";
 
   private FileInfo fileInfo = null;
+  private Calibration calibration = null;
   private boolean asciiImageData = false;
   private float[] imageOrigin = null;
 
@@ -76,9 +78,7 @@ public class VtkDecoder implements PlugIn {
    */
   public static void main(String[] args) {
     try {
-      VtkDecoder vtkDecoder = new VtkDecoder();
-      FileInfo fileInfo = vtkDecoder.decodeHeader(new File("data/Region.vtk"));
-      ImagePlus imp = vtkDecoder.readImageData(fileInfo);
+      ImagePlus imp = VtkDecoder.open(new File("data/Region.vtk"));
       imp.show();
     }
     catch (Throwable t) {
@@ -101,8 +101,8 @@ public class VtkDecoder implements PlugIn {
    */
   public static ImagePlus open(File file) throws VtkImageException {
     VtkDecoder vtkDecoder = new VtkDecoder();
-    FileInfo fileInfo = vtkDecoder.decodeHeader(file);
-    return vtkDecoder.readImageData(fileInfo);
+    vtkDecoder.decodeHeader(file);
+    return vtkDecoder.readImageData();
   }
 
 
@@ -248,16 +248,20 @@ public class VtkDecoder implements PlugIn {
 
   /**
    *  Open file VTK image file and decode header information. Decoded
-   *  information is represented as FileInfo so standard ImageJ methods can be
-   *  used to read image data.
+   *  information is stored in <code>fileInfo</code> and <code>calibration</code>
+   *  member variables,
+   *  so standard ImageJ methods can be used to read image data.
+   *  <code>calibration</code> stores pixel dimensions and image origin information.
    *
    * @param  file                   VTK image file.
-   * @return                        VTK header information converted to FileInfo
-   *      format.
    * @exception  VtkImageException  In case of I/O errors or incorrect header
    *      format.
    */
-  private FileInfo decodeHeader(File file) throws VtkImageException {
+  private void decodeHeader(File file) throws VtkImageException {
+    // Reset values of modified member variables
+    fileInfo = null;
+    calibration = null;
+
     byte[] headerBuffer = null;
     FileInputStream fileInputStream = null;
     int headerBufferSize = 0;
@@ -276,11 +280,14 @@ public class VtkDecoder implements PlugIn {
       throw new VtkImageException(ex.getMessage());
     }
 
+    // Allocate new output variables
+    fileInfo = new FileInfo();
+    calibration  = new Calibration();
+
     //
     // Parse header from buffer
     //
     LineExtractor lineExtractor = new LineExtractor(headerBuffer, 0, headerBufferSize);
-    fileInfo = new FileInfo();
     fileInfo.fileName = file.getName();
     fileInfo.directory = file.getParent();
     if(fileInfo.directory == null)
@@ -372,6 +379,9 @@ public class VtkDecoder implements PlugIn {
         else if (line.startsWith(VtkTag.ORIGIN.toString())) {
           // ORIGIN
           imageOrigin = parseValueAsFloatArray(line, VtkTag.ORIGIN, 3);
+          calibration.xOrigin = imageOrigin[0];
+          calibration.yOrigin = imageOrigin[1];
+          calibration.zOrigin = imageOrigin[2];
         }
         else if (line.startsWith(VtkTag.SPACING.toString())) {
           // SPACING
@@ -383,6 +393,11 @@ public class VtkDecoder implements PlugIn {
           fileInfo.pixelWidth = spacing[0];
           fileInfo.pixelHeight = spacing[1];
           fileInfo.pixelDepth = spacing[2];
+          fileInfo.unit = "pixel";
+          calibration.pixelWidth = spacing[0];
+          calibration.pixelHeight = spacing[1];
+          calibration.pixelDepth = spacing[2];
+          calibration.setUnit("pixel");
         }
         else if (line.startsWith(VtkTag.ASPECT_RATIO.toString())) {
           // ASPECT_RATIO
@@ -394,6 +409,11 @@ public class VtkDecoder implements PlugIn {
           fileInfo.pixelWidth = spacing[0];
           fileInfo.pixelHeight = spacing[1];
           fileInfo.pixelDepth = spacing[2];
+          fileInfo.unit = "pixel";
+          calibration.pixelWidth = spacing[0];
+          calibration.pixelHeight = spacing[1];
+          calibration.pixelDepth = spacing[2];
+          calibration.setUnit("pixel");
         }
         else if (line.startsWith(VtkTag.CELL_DATA.toString())) {
           // CELL_DATA
@@ -423,6 +443,7 @@ public class VtkDecoder implements PlugIn {
               fileInfo.fileType = FileInfo.GRAY8;
             }
             else if (dataType.compareToIgnoreCase(VtkScalarType.SHORT.toString()) == 0) {
+              //@todo: Should calibration function be set here?
               fileInfo.fileType = FileInfo.GRAY16_SIGNED;
             }
             else if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_SHORT.toString()) == 0) {
@@ -469,6 +490,7 @@ public class VtkDecoder implements PlugIn {
                   + numComp + "'.");
             }
           }
+          //@todo: Should calibration function be reset here to NONE?
           fileInfo.fileType = FileInfo.GRAY8;
           // COLOR_SCALARS should be the last tag line before the data.
           break;
@@ -501,16 +523,18 @@ public class VtkDecoder implements PlugIn {
     fileInfo.intelByteOrder = (lineExtractor.getNewLineMode() == LineExtractor.NEW_LINE_MODE_PC);
     fileInfo.offset = lineExtractor.getStartOfNextLine();
 
-    return fileInfo;
+    if(IJ.debugMode) {
+        IJ.write(fileInfo.toString());
+        IJ.write(calibration.toString());
+    }
   }
 
 
   /**
-   * @param  fileInfo               Description of Parameter
    * @return                        Description of the Returned Value
    * @exception  VtkImageException  Description of Exception
    */
-  private ImagePlus readImageData(FileInfo fileInfo) throws VtkImageException {
+  private ImagePlus readImageData() throws VtkImageException {
     ImagePlus imp = null;
     if (!asciiImageData) {
       // Read binary image data
@@ -545,11 +569,14 @@ public class VtkDecoder implements PlugIn {
       }
     }
 
-    if (imageOrigin != null) {
-      imp.setProperty("origin.x", "" + imageOrigin[0]);
-      imp.setProperty("origin.y", "" + imageOrigin[1]);
-      imp.setProperty("origin.z", "" + imageOrigin[2]);
-    }
+    Calibration impCalibration = imp.getCalibration();
+    impCalibration.pixelWidth = calibration.pixelWidth;
+    impCalibration.pixelHeight = calibration.pixelHeight;
+    impCalibration.pixelDepth = calibration.pixelDepth;
+    impCalibration.xOrigin = calibration.xOrigin;
+    impCalibration.yOrigin = calibration.yOrigin;
+    impCalibration.zOrigin = calibration.zOrigin;
+    imp.setCalibration(impCalibration);
 
     return imp;
   }
