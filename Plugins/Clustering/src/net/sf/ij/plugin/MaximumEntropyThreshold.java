@@ -21,20 +21,28 @@
 package net.sf.ij.plugin;
 
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import net.sf.ij.thresholding.HistogramThreshold;
 
 /**
- * Automatic thresholding technique based on the entopy of the histogram. See:
- * P.K. Sahoo, S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of Thresholding
- * Techniques", Computer Vision, Graphics, and Image Processing, Vol. 41,
- * pp.233-260, 1988.
+ * Automatic thresholding technique based on the maximum entopy of the
+ * histogram. See: P.K. Sahoo, S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of
+ * Thresholding Techniques", Computer Vision, Graphics, and Image Processing,
+ * Vol. 41, pp.233-260, 1988.
  *
  * @author Jarek Sacha
  */
 public final class MaximumEntropyThreshold implements PlugInFilter {
+
+    private final static String aboutMessage =
+            "Automatic thresholding technique based on the maximum entopy of the\n" +
+            "histogram. See:\n" +
+            "P.K. Sahoo, S. Soltani, K.C. Wong and, Y.C. Chen \"A Survey of \n"+
+            "Thresholding Techniques\", Computer Vision, Graphics, and Image\n"+
+            "Processing, Vol. 41, pp.233-260, 1988.";
 
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
 
@@ -42,6 +50,12 @@ public final class MaximumEntropyThreshold implements PlugInFilter {
      *
      */
     public final int setup(final java.lang.String s, final ImagePlus imagePlus) {
+
+        if("about".equalsIgnoreCase(s)) {
+            IJ.showMessage("Maximum Entropy Theshold", aboutMessage);
+            return PlugInFilter.DONE;
+        }
+
         return PlugInFilter.DOES_8G | PlugInFilter.DOES_STACKS;
     }
 

@@ -23,6 +23,7 @@ package net.sf.ij.clustering;
 import ij.IJ;
 import ij.ImageStack;
 import ij.process.ByteProcessor;
+import ij.process.FloatProcessor;
 
 import java.util.Random;
 
@@ -31,7 +32,7 @@ import java.util.Random;
  * algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class KMeans {
 
@@ -153,11 +154,20 @@ public final class KMeans {
     }
 
     /**
-     * Perform k-means clostering of the input <code>stack</code>.
+     * Perform k-means clostering of the input <code>stack</code>. Elements of the
+     * <code>stack</code> must be of type <code>FloatProcessor</code>.
      *
      * @param stack stack representing a multi-band image.
      */
     final public ByteProcessor run(final ImageStack stack) {
+
+       if(stack.getSize() < 1) {
+           throw new IllegalArgumentException("Input stack cannot be empty");
+       }
+
+       if(!(stack.getProcessor(1) instanceof FloatProcessor)) {
+           throw new IllegalArgumentException("Input stack must contain FloatProcessors");
+       }
 
         // TODO: add support for using ROI. ROI of the first slice is applied to all slices.
 //    Rectangle roi = stack.getProcessor(1).getRoi();

@@ -39,7 +39,7 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @see KMeans
  */
 public final class KMeansClustering implements PlugIn {
@@ -62,8 +62,7 @@ public final class KMeansClustering implements PlugIn {
             "For more information on this and other clustering approaches see:\n" +
             "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
             "Prentice Hall, 1988.\n" +
-            "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n"+
-            "KMeansClustering version @BUILD_VERSION@";
+            "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
 
     final public void run(final String s) {
 

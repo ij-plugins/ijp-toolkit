@@ -25,10 +25,13 @@ import ij.io.FileSaver;
 import ij.io.Opener;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
+import ij.process.StackConverter;
+
+import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class KMeansTest extends junit.framework.TestCase {
     public KMeansTest(final java.lang.String test) {
@@ -36,9 +39,16 @@ public final class KMeansTest extends junit.framework.TestCase {
     }
 
     public void test01() throws java.lang.Exception {
-        final java.io.File imageFile = new java.io.File("test_images/clown24.tif");
+        final File imageFile = new File("test_images/clown24.tif");
+        final double tolerance = 0.01;
+        final double[][] expectedCenters = {
+            {115.623, 51.116, 20.330},
+            {182.392, 108.690, 45.736},
+            {30.560, 10.590, 5.617},
+            {224.589, 187.087, 151.137}
+        };
 
-        junit.framework.Assert.assertTrue("File exists", imageFile.exists());
+        assertTrue("File exists", imageFile.exists());
 
         // Read test image
         final Opener opener = new Opener();
@@ -54,15 +64,27 @@ public final class KMeansTest extends junit.framework.TestCase {
         // Convert RGB to a stack
         final ImageConverter ic = new ImageConverter(imp);
         ic.convertToRGBStack();
+        final StackConverter sc = new StackConverter(imp);
+        sc.convertToGray32();
 
-        final net.sf.ij.clustering.KMeans.Config config = new net.sf.ij.clustering.KMeans.Config();
+        final KMeans.Config config = new KMeans.Config();
         config.setNumberOfClusters(4);
-        final net.sf.ij.clustering.KMeans kmeans = new net.sf.ij.clustering.KMeans(config);
+        config.setRandomizationSeedEnabled(true);
+        config.setRandomizationSeed(31415);
+        final KMeans kmeans = new KMeans(config);
         final ImageProcessor ip = kmeans.run(imp.getStack());
-        final ImagePlus imp1 = new ImagePlus("K-means", ip);
-        final FileSaver saver = new FileSaver(imp1);
-        saver.saveAsTiff("kmeans-output.tif");
 
+        double[][] centers = kmeans.getClusterCenters();
+        for (int i = 0; i < centers.length; i++) {
+            for (int j = 0; j < centers[i].length; j++) {
+                assertEquals("center["+i+"]["+j+"]",
+                        expectedCenters[i][j], centers[i][j], tolerance);
+            }
+        }
+
+//        final ImagePlus imp1 = new ImagePlus("K-means", ip);
+//        final FileSaver saver = new FileSaver(imp1);
+//        saver.saveAsTiff("kmeans-output.tif");
     }
 
     public void testColor() {
