@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ij-Clustering" default="run" basedir=".">
+    <description>
+      Image segmentation through thresholding and clustering.
+    </description>
+
+    <property name="package.name" value="ij_clustering"/>
+    <property name="package.version" value="1.0.0"/>
+
+    <!-- Customize properties, e.g., jaicodec.jar, cvs.root.-->
+    <property file="build.properties"/>
+
+    <!-- In case ant.home is not defined, set default value -->
+    <property name="ant.home" location="/usr/share/ant"/>
+
+    <!-- CVS setup -->
+    <property name="cvs.root" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ij-plugins"/>
+    <property name="clustering.cvs.module" value="imageio"/>
+
+  
+    <!-- Set default properties for this build -->
+    <property name="base.dir" location="${basedir}"/>
+    <property name="lib.dir" location="${base.dir}/../../lib"/>
+    <property name="src.dir" location="${base.dir}/src"/>
+    <property name="docs.dir" location="${base.dir}/docs"/>
+
+    <!-- Generated directories -->
+    <property name="build.dir" location="${base.dir}/build"/>
+    <property name="build.classes.dir" location="${build.dir}/classes"/>
+
+    <property name="checkout.dir" location="${build.dir}/checkout"/>
+    <property name="dist.dir" location="${base.dir}/dist"/>
+    <property name="sandbox.dir" location="${base.dir}/sandbox"/>
+    <property name="sandbox.plugins.dir" location="${sandbox.dir}/plugins"/>
+    <property name="jar.dir" location="${sandbox.plugins.dir}"/>
+    <property name="javadoc.dir" location="${dist.dir}/api"/>
+
+    <property name="ij.jar" location="${lib.dir}/ij.jar"/>
+
+    <!--    <property name="main.class" value="net.sf.ij.plugin.HelpPanel"/>-->
+
+
+    <path id="compile.classpath">
+        <pathelement location="${ij.jar}"/>
+    </path>
+
+    <fileset id="config.files"
+        dir="${src.dir}">
+        <include name="**/*.config"/>
+    </fileset>
+    <fileset id="resource.files"
+        dir="${src.dir}">
+        <include name="**/*.png"/>
+        <include name="**/*.gif"/>
+    </fileset>
+    <fileset id="docs.files"
+        dir="${docs.dir}">
+        <include name="**/*.html"/>
+        <include name="**/*.css"/>
+        <include name="**/*.png"/>
+        <include name="**/*.gif"/>
+    </fileset>
+
+    <!-- ================= -->
+    <!--  Primary targets  -->
+    <!-- ================= -->
+
+    <target name="run"
+        description="Test run ImageJ with ij-ImageIO plugins"
+        depends="jar">
+
+        <java
+            jar="${ij.jar}"
+            dir="${base.dir}"
+            fork="true">
+            <jvmarg value="-Dplugins.dir=${sandbox.dir}"/>
+        </java>
+
+    </target>
+
+    <target name="dist"
+        description="Create distribution files."
+        depends="dist-from-cvs">
+    </target>
+
+    <target name="compile"
+        depends="init"
+        description="Compile all examples">
+        <javac
+            srcdir="${src.dir}"
+            destdir="${build.classes.dir}"
+            debug="on"
+            target="1.3"
+            source="1.3">
+            <classpath refid="compile.classpath"/>
+            <exclude name="**/*Test.java"/>
+        </javac>
+
+        <copy todir="${build.classes.dir}" overwrite="true">
+            <fileset refid="config.files"/>
+            <filterset>
+                <filter token="BUILD_DATE" value="${DSTAMP}"/>
+                <filter token="BUILD_VERSION" value="${package.version}"/>
+            </filterset>
+        </copy>
+        <copy todir="${build.classes.dir}">
+            <fileset refid="resource.files"/>
+        </copy>
+        <!--        <copy todir="${build.classes.dir}/docs">-->
+        <!--            <fileset refid="docs.files"/>-->
+        <!--        </copy>-->
+    </target>
+
+    <target name="jar" depends="compile"
+        description="Create plugins' JAR">
+    
+        <!-- Create library jar -->
+        <jar destfile="${jar.dir}/${package.name}.jar"
+            basedir="${build.classes.dir}"
+            compress="true">
+            <fileset refid="resource.files"/>
+            <!--            <manifest>-->
+            <!--                <attribute name="Main-Class" value="${main.class}"/>-->
+            <!--            </manifest>-->
+            <!--            <zipfileset src="${jaicodec.jar}"/>-->
+        </jar>
+    </target>
+
+    <!-- Create API documentation -->
+    <target name="javadoc"
+        depends="compile"
+        description="Create Javadoc API documentation">
+        <javadoc verbose="no"
+            packagenames="*"
+            destdir="${javadoc.dir}"
+            windowtitle="Clustering and Thresholding Toolkit for ImageJ - API"
+            header="Clustering and Thresholding Toolkit for ImageJ - API">
+            <fileset dir="src" defaultexcludes="yes">
+                <include name="**/*.java"/>
+                <exclude name="**/**Test.java"/>
+                <exclude name="**/**TestCase.java"/>
+            </fileset>
+            <footer>
+                <![CDATA[<a href="http://ij-plugins.sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=49871&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo">
+            </a>]]>
+            </footer>
+            <classpath refid="compile.classpath"/>
+        </javadoc>
+    </target>
+
+    <target name="clean" description="Remove internediate files and directories created during build.">
+        <delete dir="${checkout.dir}"/>
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="clean-all"
+        depends="clean"
+        description="Remove all files and directories created during build.">
+        <delete dir="${jar.dir}"/>
+        <delete dir="${sandbox.plugins.dir}"/>
+        <delete dir="${sandbox.dir}"/>
+        <delete dir="${javadoc.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="jdepend"
+        depends="compile"
+        description="Perform JDepend analysis and generate design quality metrics">
+        <jdepend
+            format="xml"
+            outputfile="${build.dir}/jdepend-report.xml">
+
+            <sourcespath>
+                <pathelement location="${build.classes.dir}"/>
+            </sourcespath>
+            <classpath location="${build.classes.dir}"/>
+        </jdepend>
+
+        <style basedir="${build.dir}" destdir="${build.dir}"
+            includes="jdepend-report.xml"
+            style="${ant.home}/etc/jdepend.xsl"/>
+
+    </target>
+
+    <!-- ================= -->
+    <!-- Secondary targets -->
+    <!-- ================= -->
+
+    <!-- Initialize  -->
+    <target name="init">
+        <echo message="Building ${ant.project.name}"/>
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${sandbox.dir}"/>
+        <mkdir dir="${sandbox.plugins.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${javadoc.dir}"/>
+        <mkdir dir="${checkout.dir}"/>
+    </target>
+
+    <!-- Build dictributin from current content of CVS -->
+    <target name="dist-from-cvs" depends="init">
+
+        <property name="cvs.imageio.dir" location="${checkout.dir}/${imageio.cvs.module}"/>
+
+        <!-- ................... -->
+        <!-- Source distribution -->
+        <!-- ................... -->
+        <!-- Cleanup CVS checkout directory -->
+        <delete dir="${cvs.imageio.dir}"/>
+        <!-- Fresh checkout from CVS -->
+        <echo message="CVS ROOT: ${cvs.root}"/>
+        <antcall target="checkout" inheritall="false">
+            <param name="cvs.root" value="${cvs.root}"/>
+        </antcall>
+        <!-- Include JAI jar to simplify remove need of rebuilding from source -->
+        <copy todir="${cvs.imageio.dir}/lib" file="${jaicodec.jar}"/>
+        <!-- ZIP source -->
+        <zip basedir="${cvs.imageio.dir}"
+            destfile="${dist.dir}/${package.name}_src_${DSTAMP}.zip"/>
+        
+
+        <!-- ................... -->
+        <!-- Binary distribution -->
+        <!-- ................... -->
+        <antcall target="jar" inheritall="false">
+            <param name="base.dir" location="${cvs.imageio.dir}"/>
+            <param name="dist.dir" location="${base.dir}/dist"/>
+            <param name="jar.dir" location="${dist.dir}"/>
+        </antcall>
+
+        <!-- Cleanup -->
+        <!--
+        <delete dir="{cvs.imageio.dir}"/>
+        -->
+    </target>
+
+    <!-- Checkout non_com sources from CVS repository -->
+    <target name="checkout-non_com"
+        depends="init">
+        <!-- Checkout SUN sources of JAI IO -->
+        <cvs cvsRoot="${cvs.root}"
+            command="checkout -P"
+            package="${non_com.cvs.module}"
+            dest="${checkout.dir}"/>
+    </target>
+
+    <!-- Checkout sources drom CVS repository -->
+    <target name="checkout"
+        depends="init">
+        <!-- Checkout wrappers for ImageJ -->
+        <cvs cvsRoot="${cvs.root}"
+            command="checkout -P"
+            package="${imageio.cvs.module}"
+            dest="${checkout.dir}"/>
+    </target>
+
+    <!-- Target: changelog -->
+    <target name="changelog" depends="init">
+        <cvschangelog
+            dir="${base.dir}"
+            destfile="${dist.dir}/changelog.xml"
+            start="LatestRelease"
+            end="HEAD"
+            />
+        <style
+            in="${build.dir}/changelog.xml"
+            out="${dist.dir}/changelog.html"
+            style="${ant.home}/etc/changelog.xsl">
+            <param name="title" expression="JAI-ImageIO ChangeLog"/>
+            <param name="module" expression="imageio"/>
+            <param name="cvsweb" expression="http://cvs.sourceforge.net/viewcvs.py/ij-plugins/"/>
+        </style>
+    </target>
+  
+    <!-- Target: tagdif -->
+    <target name="tagdiff" depends="init">
+        <cvstagdiff
+            cvsroot="${cvs.root}"
+            destfile="${build.dir}/tagdiff.xml"
+            package="${imageio.cvs.module}"
+            starttag="LatestRelease"
+            endtag="HEAD"
+            compression="true"
+            />
+        <!--
+        startTag="ij-jai-imageio_v_1_0_5"
+        endTag="HEAD"
+        -->
+        <style
+            in="${build.dir}/tagdiff.xml"
+            out="${dist.dir}/tagdiff.html"
+            style="${ant.home}/etc/tagdiff.xsl">
+            <param name="title" expression="JAI-ImageIO Tag Diff"/>
+            <param name="module" expression="${imageio.cvs.module}"/>
+            <param name="cvsweb" expression="http://cvs.sourceforge.net/viewcvs.py/ij-plugins/"/>
+        </style>
+    </target>
+</project>
