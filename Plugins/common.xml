@@ -216,12 +216,13 @@
         <!-- Copy dependencies -->
         <mkdir dir="${cvs.dir}/lib"/>
         <copy file="${ij.jar}" todir="${cvs.dir}/lib"/>
+        <copy file="${common.xml.file}" todir="${cvs.dir}"/>
 
         <!-- Provide custom 'build.properties' file -->
-        <concat destfile="${cvs.dir}/build.properties">
-            common.xml.file=common.xml
-            ij.jar=lib/ij.jar
-        </concat>
+        <property name="build.properties.file" location="${cvs.dir}/build.properties"/>
+        <delete file="${build.properties.file}"/>
+        <concat destfile="${build.properties.file}">common.xml.file=common.xml</concat>
+        <concat destfile="${build.properties.file}">ij.jar=lib/ij.jar</concat>
 
         <!-- ZIP source -->
         <zip basedir="${cvs.dir}"
@@ -235,7 +236,6 @@
             <param name="base.dir" location="${cvs.dir}"/>
             <param name="dist.dir" location="${base.dir}/dist"/>
             <param name="jar.dir" location="${dist.dir}"/>
-            <param name="ij.jar" location="${ij.jar}"/>
         </antcall>
 
         <!-- Cleanup -->
