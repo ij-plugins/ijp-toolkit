@@ -25,7 +25,7 @@ package net.sf.ij_plugins.color;
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ColorSpaceConvertion {
 
@@ -70,7 +70,7 @@ public class ColorSpaceConvertion {
      * </pre>
      */
 
-    public static void convertXYZToRGB(final float[] xyz, final float[] rgb) {
+    public static void xyzToRGB(final float[] xyz, final float[] rgb) {
         final double var_X = xyz[0] / REF_X;        //X = From 0 to ref_X
         final double var_Y = xyz[1] / REF_Y;        //Y = From 0 to ref_Y
         final double var_Z = xyz[2] / REF_Z;        //Z = From 0 to ref_Y
@@ -123,7 +123,7 @@ public class ColorSpaceConvertion {
      * </pre>
      */
 
-    public static void convertLabToXYZ(final float[] lab, final float[] xyz) {
+    public static void labToXYZ(final float[] lab, final float[] xyz) {
         double var_Y = (lab[0] + 16) / 116;
         double var_X = lab[1] / 500 + var_Y;
         double var_Z = var_Y - lab[2] / 200;
@@ -185,7 +185,7 @@ public class ColorSpaceConvertion {
      *             size of array <code>dest</code> larger than three then only first 3 values are
      *             used.
      */
-    public static void convertRGBToXYZ(final float[] src, final float[] dest) {
+    public static void rgbToXYZ(final float[] src, final float[] dest) {
         double var_R = src[0] / 255;        //R = From 0 to 255
         double var_G = src[1] / 255;        //G = From 0 to 255
         double var_B = src[2] / 255;        //B = From 0 to 255
@@ -250,7 +250,7 @@ public class ColorSpaceConvertion {
      *             If size of array <code>dest</code> larger than three then only first 3 values are
      *             used.
      */
-    public static void convertXYZToLab(final float[] src, final float[] dest) {
+    public static void xyzToLab(final float[] src, final float[] dest) {
         //Observer = 2°, Illuminant = D65
         double var_X = src[0] / REF_X;
         double var_Y = src[1] / REF_Y;

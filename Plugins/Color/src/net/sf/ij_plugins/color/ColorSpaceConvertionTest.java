@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ColorSpaceConvertionTest extends TestCase {
     private static final float TOLERANCE = 0.006f;
@@ -41,25 +41,25 @@ public class ColorSpaceConvertionTest extends TestCase {
         rgb[0] = 243;
         rgb[1] = 201;
         rgb[2] = 203;
-        ColorSpaceConvertion.convertRGBToXYZ(rgb, xyz);
+        ColorSpaceConvertion.rgbToXYZ(rgb, xyz);
 //        assertEquals(68.63, xyz[0], TOLERANCE);
 //        assertEquals(65.14, xyz[1], TOLERANCE);
 //        assertEquals(65.46, xyz[2], TOLERANCE);
 
         final float[] lab = {0, 0, 0};
-        ColorSpaceConvertion.convertXYZToLab(xyz, lab);
+        ColorSpaceConvertion.xyzToLab(xyz, lab);
 //        assertEquals(84.56, lab[0], TOLERANCE);
 //        assertEquals(15.13, lab[1], TOLERANCE);
 //        assertEquals(4.58, lab[2], TOLERANCE);
 
         final float[] xyz1 = {0, 0, 0};
-        ColorSpaceConvertion.convertLabToXYZ(lab, xyz1);
+        ColorSpaceConvertion.labToXYZ(lab, xyz1);
         assertEquals(xyz[0], xyz1[0], TOLERANCE);
         assertEquals(xyz[1], xyz1[1], TOLERANCE);
         assertEquals(xyz[2], xyz1[2], TOLERANCE);
 
         final float[] rgb1 = {0, 0, 0};
-        ColorSpaceConvertion.convertXYZToRGB(xyz1, rgb1);
+        ColorSpaceConvertion.xyzToRGB(xyz1, rgb1);
         assertEquals(rgb[0], rgb1[0], TOLERANCE);
         assertEquals(rgb[1], rgb1[1], TOLERANCE);
         assertEquals(rgb[2], rgb1[2], TOLERANCE);
@@ -83,8 +83,8 @@ public class ColorSpaceConvertionTest extends TestCase {
 //                pixelSrc[1] = g;
 //                for (int b = 0; b < 256; ++b) {
 //                    pixelSrc[2] = b;
-//                    ColorSpaceConvertion.convertRGBToXYZ(pixelSrc, tmp);
-//                    ColorSpaceConvertion.convertXYZToLab(tmp, pixelDest);
+//                    ColorSpaceConvertion.rgbToXYZ(pixelSrc, tmp);
+//                    ColorSpaceConvertion.xyzToLab(tmp, pixelDest);
 //                    for (int i = 0; i < 3; ++i) {
 //                        min[i] = Math.min(min[i], pixelDest[i]);
 //                        max[i] = Math.max(max[i], pixelDest[i]);
