@@ -87,6 +87,11 @@ public class VtkDecoder implements PlugIn {
   }
 
 
+  public static ImagePlus open(String fileName) throws VtkImageException {
+    File file = new File(fileName);
+    return open(file);
+  }
+
   /**
    *  Load image from a VTK image file.
    *
@@ -278,6 +283,9 @@ public class VtkDecoder implements PlugIn {
     fileInfo = new FileInfo();
     fileInfo.fileName = file.getName();
     fileInfo.directory = file.getParent();
+    if(fileInfo.directory == null)
+      // ij.io.FileOpener may choke on null
+      fileInfo.directory = "";
     if (fileInfo.directory != null && fileInfo.directory.length() > 0) {
       fileInfo.directory += File.separator;
     }
