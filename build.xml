@@ -69,12 +69,6 @@
       <property name="setProps" value="true"/>
     </ant>
 
-    <!-- VTK Filters plugins -->
-    <ant dir="./Plugins/VTK Filters" target="compile">
-      <property name="output.dir" value="${plugins.dir}/VTK Filters"/>
-      <reference refid="plugins.classpath" torefid="classpath"/>
-      <property name="setProps" value="true"/>
-    </ant>
   </target>
 
   <!-- Checkout sources from CVS -->
