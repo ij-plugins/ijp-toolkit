@@ -27,7 +27,7 @@ import ij.IJ;
  * Abstract class foe wrapping VTK image to image filters.
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  */
 public abstract class VtkImageFilter {
 
@@ -38,11 +38,8 @@ public abstract class VtkImageFilter {
       long tStart = System.currentTimeMillis();
 
       System.loadLibrary("vtkCommonJava");
-      System.loadLibrary("vtkFilteringJava");
       System.loadLibrary("vtkIOJava");
       System.loadLibrary("vtkImagingJava");
-      System.loadLibrary("vtkGraphicsJava");
-      System.loadLibrary("vtkRenderingJava");
 
       long tEnd = System.currentTimeMillis();
       IJ.showStatus("VTK dynamic libraries loaded in " + (tEnd - tStart) + "ms.");
