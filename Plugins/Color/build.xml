@@ -5,7 +5,7 @@
     </description>
 
     <property name="package.name" value="ij-plugins_color"/>
-    <property name="package.version" value="1.0.0.0"/>
+    <property name="package.version" value="1.0"/>
 
     <!-- Customize properties, e.g., jaicodec.jar, cvs.root.-->
     <property file="build.properties"/>
