@@ -1,0 +1,31 @@
+<project name="ij-plugins-VTK Filters" default="compile" basedir=".">
+    <description>
+        ij-plugins Toolkit package.
+    </description>
+
+  <!-- Default values for input properties -->    
+  <target name="setProps" 
+          unless="setProps"
+  	      description="Setup the propertries">
+    <property name="classpath" value="${basedir}/../../lib/ij.jar;${vtk.classpath}"/>
+    <property name="outputDir" value="plugins/VTK Filters"/>
+    <property name="setProps" value="true" />
+  </target>
+
+  <!-- set local properties for this build -->
+  <target name="init" depends="setProps">
+    <property name="srcDir" location="src/VTK Filters"/>
+    <property name="destDir"  location="${outputDir}"/>
+  </target>
+
+  <target name="prepare" depends="init">
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${destDir}"/>
+  </target>
+
+  <target name="compile" depends="prepare"
+        description="compile the source " >
+    <!-- Compile the java code from ${srcDir} into ${buildDir} -->
+    <javac srcdir="${srcDir}" destdir="${destDir}" classpath="${classpath}"/>
+  </target>
+</project>
