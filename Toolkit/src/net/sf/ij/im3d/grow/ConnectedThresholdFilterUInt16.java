@@ -33,7 +33,7 @@ import net.sf.ij.im3d.*;
  *
  *@author     Jarek Sacha
  *@created    April 29, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase {
@@ -74,7 +74,7 @@ public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase
       int value = srcPixels[z][offset] & 0xffff;
       if (value >= valueMin && value < valueMax) {
         destPixels[z][offset] = MARKER;
-        candidatePoints.addLast(new Point3D(x, y, z));
+        candidatePoints.addLast(new Point3DInt(x, y, z));
       } else {
         destPixels[z][offset] = NOT_MEMBER;
       }
