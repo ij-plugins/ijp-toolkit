@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ij-plugins TextureSynthesis" default="run" basedir=".">
+    <description>
+      Texture synthesis through image quilting.
+    </description>
+
+    <!-- Package name and version -->
+    <property name="package.name" value="ij-plugins_TextureSynthesis"/>
+    <property name="package.version" value="1.0"/>
+
+    <!-- CVS setup -->
+    <property name="cvs.root" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ij-plugins"/>
+    <property name="cvs.module" value="ij-plugins/Plugins/TextureSynthesis"/>
+
+
+    <!-- ==================== -->
+    <!--  Load common target  -->
+    <!-- ==================== -->
+    <import file="../common.xml"/>
+
+</project>
