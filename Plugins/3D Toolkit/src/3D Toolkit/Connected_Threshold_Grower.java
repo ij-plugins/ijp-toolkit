@@ -32,7 +32,7 @@ import net.sf.ij.im3d.grow.*;
  *
  * @author     Jarek Sacha
  * @created    July 14, 2002
- * @version    $Revision: 1.5 $
+ * @version    $Revision: 1.6 $
  */
 
 public class Connected_Threshold_Grower implements PlugIn {
@@ -65,14 +65,25 @@ public class Connected_Threshold_Grower implements PlugIn {
       return;
     }
 
-    Point3D seed = new Point3D();
+    Point3DInt seed = new Point3DInt();
     seed.x = (int) gd.getNextNumber();
     seed.y = (int) gd.getNextNumber();
     seed.z = (int) gd.getNextNumber();
     int valueMin = (int) gd.getNextNumber();
     int valueMax = (int) gd.getNextNumber();
 
-    ConnectedThresholdFilter ctf = new ConnectedThresholdFilter();
+    ConnectedThresholdFilterBase ctf;
+    if(imp.getType() == ImagePlus.GRAY8) {
+      ctf = new ConnectedThresholdFilterUInt8();
+    }
+    else if(imp.getType() == ImagePlus.GRAY16)
+    {
+     ctf = new ConnectedThresholdFilterUInt16();
+    }
+      else {
+        IJ.showMessage("Incorrect image type, only 8 bit and 16 bit gray level images are supported.");
+        return;
+    }
     ctf.setValueMin(valueMin);
     ctf.setValueMax(valueMax);
     ImageStack out = ctf.run(imp.getStack(), seed);
