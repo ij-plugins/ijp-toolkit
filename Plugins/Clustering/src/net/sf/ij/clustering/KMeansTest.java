@@ -30,7 +30,7 @@ import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class KMeansTest extends junit.framework.TestCase {
     public KMeansTest(final java.lang.String test) {

@@ -20,9 +20,9 @@
  */
 package net.sf.ij_plugins.multiband;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.gui.ProgressBar;
 import ij.plugin.filter.Duplicater;
 import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
@@ -36,7 +36,7 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class VectorProcessor {
     final int width;
@@ -44,6 +44,8 @@ public class VectorProcessor {
     final int numberOfValues;
     final float[][] pixels;
     Rectangle roi;
+    private ProgressBar progressBar;
+
 
     public VectorProcessor(final ColorProcessor cp) {
         this(new ImagePlus("", cp));
@@ -120,6 +122,21 @@ public class VectorProcessor {
         this.roi = roi;
     }
 
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    /**
+     * @return pixel value iterator.
+     */
+    public PixelIterator pixelIterator() {
+        return new VectorProcessor.PixelIterator();
+    }
+
     /**
      * @return pixel value iterator.
      */
@@ -191,6 +208,26 @@ public class VectorProcessor {
     }
 
     /**
+     * Return pixel value at coordinates (<code>x</code>, <code>y</code>)
+     */
+    public float[] get(final int x, final int y, float[] dest) {
+        if (x < 0 || x >= width || y < 0 || y >= width) {
+            throw new IllegalArgumentException("Value of coordinates (x,y) is out of range.");
+        }
+        if (dest == null) {
+            dest = new float[numberOfValues];
+        } else {
+            if (dest.length != numberOfValues) {
+                throw new IllegalArgumentException("Invalid leghth of array dest.");
+            }
+        }
+        final int offset = x + y * width;
+        final float[] v = pixels[offset];
+        System.arraycopy(v, 0, dest, 0, v.length);
+        return dest;
+    }
+
+    /**
      * Represents 3x3 neighbourhood. the center pixel is <code>p5</code>. Pixels <code>p1</code> to
      * <code>p3</code> are in the top row, <code>p4</code> to <code>p6</code> in the middle, and
      * <code>p7</code> to <code>p9</code> in the bottom of the neighbourhood.
@@ -198,6 +235,66 @@ public class VectorProcessor {
     public static class Neighborhood3x3 {
         float[] p1, p2, p3, p4, p5, p6, p7, p8, p9;
         int x, y, offset;
+    }
+
+    /**
+     * Iterator over 3x3 neighbourhood of vector valued pixels.
+     */
+    public class PixelIterator implements java.util.Iterator {
+        final int xMin = roi.x - 1;
+        final int xMax = roi.x + roi.width - 1;;
+        final int rowOffset = width;
+        final int yMin = roi.y;
+        final int yMax = roi.y + roi.height - 1;
+        int x = roi.x;
+        int y = roi.y;
+        float[] value = new float[numberOfValues];
+
+        private PixelIterator() {
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public boolean hasNext() {
+            return x < xMax || y < yMax;
+        }
+
+        public Object next() {
+            // Update center location
+            if (x < xMax) {
+                ++x;
+            } else {
+                if (y < yMax) {
+                    x = xMin;
+                    ++y;
+                }
+                if (progressBar != null) {
+                    progressBar.show(y - yMin, yMax - yMin);
+                }
+            }
+            int offset = x + y * width;
+
+            value = pixels[offset];
+
+            return value;
+        }
+
+        /**
+         * Not suported.
+         */
+        public void remove() {
+            throw new UnsupportedOperationException("Method remove() not supported.");
+        }
+
+        public int getOffset() {
+            return x + y * width;
+        }
     }
 
 
@@ -230,7 +327,9 @@ public class VectorProcessor {
                     x = xMin;
                     ++y;
                 }
-                IJ.showProgress(y, yMax);
+                if (progressBar != null) {
+                    progressBar.show(y - yMin, yMax - yMin);
+                }
             }
             int offset = x + y * width;
 
