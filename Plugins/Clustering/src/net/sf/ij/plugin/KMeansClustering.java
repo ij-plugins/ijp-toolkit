@@ -39,7 +39,7 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @see KMeans
  */
 public final class KMeansClustering implements PlugIn {
@@ -227,6 +227,7 @@ public final class KMeansClustering implements PlugIn {
                         break;
                     case ImagePlus.GRAY16:
                         sc.convertToGray16();
+                        break;
                     case ImagePlus.GRAY32:
                         // No actcion needed
                         break;
