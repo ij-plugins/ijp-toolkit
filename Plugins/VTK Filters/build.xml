@@ -1,6 +1,6 @@
 <project name="ij-plugins-VTK Filters" default="compile" basedir=".">
     <description>
-        ij-plugins Toolkit package.
+        ij-plugins Toolkit package - VTK Filters loaders.
     </description>
 
   <!-- Default values for input properties -->    
