@@ -43,6 +43,7 @@ import net.sf.ij.util.TextUtil;
 public class VtkEncoder implements PlugIn {
 
   private String DIALOG_CAPTION = "VTK Writer";
+  private final static String TAG_SEPARATOR = " ";
   private final static String vtkFileVersion = "3.0";
 
 
@@ -83,23 +84,25 @@ public class VtkEncoder implements PlugIn {
     header.append(asciiFormat ? VtkDataFormat.ASCII : VtkDataFormat.BINARY);
     header.append("\n");
 
-    header.append("" + VtkTag.DATASET + VtkDataSetType.STRUCTURED_POINTS + "\n");
+    header.append("" + VtkTag.DATASET + TAG_SEPARATOR
+        + VtkDataSetType.STRUCTURED_POINTS + "\n");
 
     int width = imp.getWidth();
     int height = imp.getHeight();
     int depth = imp.getStackSize();
-    header.append("" + VtkTag.DIMENSIONS
+    header.append("" + VtkTag.DIMENSIONS + TAG_SEPARATOR
         + width + " " + height + " " + depth + "\n");
 
     Calibration c = imp.getCalibration();
-    header.append("" + VtkTag.SPACING
+    header.append("" + VtkTag.SPACING + TAG_SEPARATOR
         + c.pixelWidth + " " + c.pixelHeight + " " + c.pixelDepth + "\n");
 
     float[] origin = decodeOrigin(imp);
-    header.append("" + VtkTag.ORIGIN
+    header.append("" + VtkTag.ORIGIN + TAG_SEPARATOR
         + origin[0] + " " + origin[1] + " " + origin[2] + "\n");
 
-    header.append("" + VtkTag.POINT_DATA + (width * height * depth) + "\n");
+    header.append("" + VtkTag.POINT_DATA + TAG_SEPARATOR 
+        + (width * height * depth) + "\n");
 
     String scalarName = null;
     switch (imp.getType()) {
@@ -116,9 +119,11 @@ public class VtkEncoder implements PlugIn {
         throw new IllegalArgumentException("Unsupported image type. "
             + "Only images of types: GRAY8, GRAY16, and GRAY32 are supported.");
     }
-    header.append("" + VtkTag.SCALARS + " volume_scalars " + scalarName + " 1\n");
+    header.append("" + VtkTag.SCALARS + TAG_SEPARATOR 
+        + "volume_scalars " + scalarName + " 1\n");
 
-    header.append("" + VtkTag.LOOKUP_TABLE + " default\n");
+    header.append("" + VtkTag.LOOKUP_TABLE + TAG_SEPARATOR 
+        + "default\n");
 
     return header.toString();
   }
