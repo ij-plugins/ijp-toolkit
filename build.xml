@@ -12,23 +12,27 @@
   -->
   
   <!-- Set default properties for this build -->
-  <target name="setProps" unless="setProps"
-  	description="Setup the propertries">
+  <target name="setProps" unless="setProps">
     <property name="sourceDir" location="." />
     <property name="outputDir" location="output" />
     <property name="distDir"   location="dist"/>
-    <property name="ijClasspath" value="${basedir}/lib/ij.jar"/>
+    <property name="lib.dir"   location="lib" />
+    <path id="base.classpath">
+      <pathelement location="${lib.dir}/ij.jar"/>
+      <pathelement location="/home/sacha/src/VTK-build/bin/vtk.jar"/>
+    </path>
+    <property name="pluginsDir" location="${outputDir}/build/plugins" />
+    <path id="plugins.classpath">
+      <path refid="base.classpath"/>
+      <pathelement location="${pluginsDir}/ij-plugins-toolkit.jar"/>
+    </path>
     <property name="setProps"  value="true" />
   </target>
   
   <!-- Initialize  -->
-  <target name="init" depends="setProps"
-  	description="Initialize the properties"> 
+  <target name="init" depends="setProps"> 
     <!-- Create the time stamp -->
     <tstamp/>
-    <!-- Create the build directory structure used by compile -->
-    <property name="pluginsDir" location="${outputDir}/build/plugins" />
-    <property name="classpath" value="${ijClasspath};${pluginsDir}/ij-plugins-toolkit.jar"/>
   </target>
 
   <target name="prepare" depends="init">
@@ -38,32 +42,32 @@
   
   <target name="build" depends="prepare" 
   	description="Build the toolkit and plugin binaries">
-    
+	
     <!-- toolkit.jar -->
     <ant dir="./Toolkit" target="package">
       <property name="outputDir" value="${pluginsDir}"/>
-      <property name="classpath" value="${ijClasspath}"/>
+      <reference refid="base.classpath" torefid="classpath"/>
       <property name="setProps" value="true"/>
     </ant>
 
     <!-- 3D IO plugins -->
     <ant dir="./Plugins/3D IO" target="compile">
       <property name="outputDir" value="${pluginsDir}/3D IO"/>
-      <property name="classpath" value="${classpath}"/>
+      <reference refid="plugins.classpath" torefid="classpath"/>
       <property name="setProps" value="true"/>
     </ant>
 
     <!-- 3D Toolkit plugins -->
     <ant dir="./Plugins/3D Toolkit" target="compile">
       <property name="outputDir" value="${pluginsDir}/3D Toolkit"/>
-      <property name="classpath" value="${classpath}"/>
+      <reference refid="plugins.classpath" torefid="classpath"/>
       <property name="setProps" value="true"/>
     </ant>
   </target>
 
   <!-- Checkout sources from CVS -->  
   <target name="checkout" depends="init"
-          description="Checkout sources drom CVS repository">
+          description="Checkout sources from CVS repository">
           
     <cvs cvsRoot=":pserver:anonymous@cvs.ij-plugins.sourceforge.net:/cvsroot/ij-plugins"
          command="checkout -P"
@@ -72,7 +76,7 @@
   </target>
 
   <target name="distFromCVS" depends="checkout" 
-  	description="Build the toolkit and plugin binaries">
+  	description="Build the toolkit and plugin binaries from CVS">
     <ant dir="${outputDir}/source/ij-plugins" target="dist">
       <property name="sourceDir" location="${outputDir}/source/ij-plugins" />
       <property name="outputDir"   location="${outputDir}"/>
@@ -103,5 +107,11 @@
         description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->
     <delete dir="${outputDir}" />
+    
+   <ant dir="./Toolkit" target="clean">
+      <property name="outputDir" value="${pluginsDir}"/>
+      <reference refid="base.classpath" torefid="classpath"/>
+      <property name="setProps" value="true"/>
+    </ant>
   </target>
 </project>

@@ -7,7 +7,7 @@
   <target name="setProps" 
           unless="setProps"
   	      description="Setup the propertries">
-    <property name="classpath" value="${basedir}/../../lib/ij.jar;${vtk.classpath}"/>
+    <path id="classpath" value="${basedir}/lib/ij.jar"/>
     <property name="outputDir" value="plugins/VTK Filters"/>
     <property name="setProps" value="true" />
   </target>
@@ -26,6 +26,8 @@
   <target name="compile" depends="prepare"
         description="compile the source " >
     <!-- Compile the java code from ${srcDir} into ${buildDir} -->
-    <javac srcdir="${srcDir}" destdir="${destDir}" classpath="${classpath}"/>
+    <javac srcdir="${srcDir}" destdir="${destDir}">
+          <classpath refid="classpath"/>
+    </javac>
   </target>
 </project>
