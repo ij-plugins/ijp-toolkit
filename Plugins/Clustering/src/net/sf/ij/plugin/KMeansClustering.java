@@ -24,6 +24,7 @@ package net.sf.ij.plugin;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.Macro;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import ij.plugin.filter.Duplicater;
@@ -39,7 +40,7 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @see KMeans
  */
 public final class KMeansClustering implements PlugIn {
@@ -94,13 +95,13 @@ public final class KMeansClustering implements PlugIn {
         // Show dialog
         dialog.showDialog();
         if (dialog.wasCanceled()) {
-            //TODO: Should the macro be cancelled here?
+            Macro.abort();
             return;
         }
 
         // Read configuration from dialog
         config.setNumberOfClusters((int) Math.round(dialog.getNextNumber()));
-        config.setTolerance(dialog.getNextNumber());
+        config.setTolerance((float) dialog.getNextNumber());
         config.setRandomizationSeedEnabled(dialog.getNextBoolean());
         config.setRandomizationSeed((int) Math.round(dialog.getNextNumber()));
         showCentroidImage = dialog.getNextBoolean();
@@ -112,7 +113,13 @@ public final class KMeansClustering implements PlugIn {
 
         // Run clustering
         final KMeans kMeans = new KMeans(config);
+//        Roi roi =  imp.getRoi();
+//        ByteProcessor mask = (ByteProcessor) imp.getMask();
+//        kMeans.setRoi(roi.getBoundingRect());
+//        kMeans.setMask(mask);
+        final long startTime = System.currentTimeMillis();
         final ByteProcessor bp = kMeans.run(stack.getStack());
+        final long endTime = System.currentTimeMillis();
 
         // Applay default color map
         if (applayLut) {
@@ -150,6 +157,8 @@ public final class KMeansClustering implements PlugIn {
                     kMeans.getCentroidValueImage());
             cvImp.show();
         }
+
+        IJ.showStatus("Clustering completed in " + (endTime - startTime) + " ms.");
     }
 
     /**
