@@ -7,7 +7,7 @@
   <target name="setProps" 
           unless="setProps"
   	      description="Setup the propertries">
-    <property name="outputdir" location="output" />
+    <property name="outputDir" location="output" />
     <property name="classpath" value="${basedir}/lib/ij.jar"/>
     <property name="setProps" value="true" />
   </target>
@@ -16,12 +16,9 @@
   <target name="init" depends="setProps">
     <property name="srcDir" location="src"/>
     <property name="buildDir" location="build"/>
-    <property name="distDir"  location="${outputdir}"/>
   </target>
 
   <target name="prepare" depends="init">
-    <!-- Create the time stamp -->
-    <tstamp/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${buildDir}"/>
   </target>
@@ -35,10 +32,10 @@
   <target name="package" depends="compile"
         description="generate toolkit jar" >
     <!-- Create the distribution directory -->
-    <mkdir dir="${distDir}"/>
+    <mkdir dir="${outputDir}"/>
 
     <!-- Put everything in ${build} into the ij-plugins-toolkit.jar file -->
-    <jar jarfile="${distDir}/ij-plugins-toolkit.jar" basedir="${buildDir}"/>
+    <jar jarfile="${outputDir}/ij-plugins-toolkit.jar" basedir="${buildDir}"/>
   </target>
 
   <target name="clean"
