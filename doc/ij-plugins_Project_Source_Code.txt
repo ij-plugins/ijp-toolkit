@@ -1,6 +1,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ij-plugins Project Source Code
-       v.2004-04-26
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$Date: 2004-05-08 21:19:47 $
+$Revision: 1.2 $
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 =========================
@@ -22,7 +24,7 @@ itk4j:
   Java. 
   
 Sun_JAI_Sample_IO_Source_Code_v_1.1.1:
-  JAI I/O source code released bu SUN. Probably the only thing added is a Ant
+  JAI I/O source code released bu SUN. Probably the only thing added is an Ant
   build file to compile the code and create a JAR. Note that original source
   code had no package structure.   
   
@@ -61,7 +63,8 @@ src:
   
 doc:
   Documentation, except generated documentation like javadocs. Generated
-  documentation will be created from Ant and go under output/doc or dist/doc
+  documentation will be created from Ant. Depending on executed target, Ant 
+will create new directories ‘output’ and ‘dist’. The generated documentation may be created in ‘output/doc’ or ‘dist/doc’.
   
 Currently some of the projects deviate somewhat from this structure.
 
@@ -69,7 +72,7 @@ ij-plugins
 ----------
 
 ij-plugins CVS project has main build.xml file, a 'lib' directory, and two
-parallel directory trees: Toolkit and Plugins. Each have its own Ant build file.
+parallel directory trees: Toolkit and Plugins. Each has its own Ant build file.
 The Toolkit directory contains library code organized into typical Java
 packages. The Plugins directory contains plugin 'drivers' that follow Image/J
 plugin naming convention, subdirectories group related plugins (3D IO, 3D
@@ -81,7 +84,7 @@ structure of ij-plugins obsolete. In particular there is no longer need for the
 Plugins source directory since it role can be taken by the declaration file
 included in the JAR.
 
-There are some junit test cases. More will be include with new source. Test
+There are some JUnit test cases. More will be include with new source. Test
 cases for older code will be added.
 
 imageio
@@ -108,9 +111,9 @@ described at http://java.sun.com/docs/codeconv/ is generally followed.
 Please put javadoc comments to describe API. UML documentation encouraged :)
 
 Please add comments when checking in code into CVS. The comment should describe
-intention of the commit rather than content content.
+intention of the commit rather than content.
 
-Please use junit test cases when possible. Test cases are put together with the
+Please use JUnit test cases when possible. Test cases are put together with the
 source they test. JUnit test classes have suffix Test, for instance, VtkDecoder
 class may have a corresponding VtkDecoderTest unit test. Test code can be easily
 filtered out from the distribution using Ant.
@@ -123,3 +126,4 @@ A. Hunt & D. Thomas. Pragmatic Version Control: with CVS. The Pragmatic
 
 A. Hunt & D. Thomas. Pragmatic Unit Testing: in Java with JUnit. The Pragmatic 
     Bookshelf, 2003. (http://www.pragmaticprogrammer.com)
+
