@@ -33,7 +33,7 @@ import net.sf.ij.util.TextUtil;
  *
  *@author     Jarek Sacha
  *@created    April 30, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 public class Util {
@@ -43,11 +43,11 @@ public class Util {
 
 
   /**
-   *  Computes a bounding box for an image. A bounding box attemps to exclude
+   *  Computes a bounding box for an image. A bounding box attempts to exclude
    *  voxels with value zero that are close to image borders.
    *
    *@param  src  Input image (GRAY8).
-   *@return      Bpounding box for non-zero voxels.
+   *@return      Bounding box for non-zero voxels.
    */
   public static Box3D getBoundingBox(ImageStack src) {
     int w = src.getWidth();
@@ -157,8 +157,8 @@ public class Util {
   /**
    *  Decode value of the origin property of image <code>imp</code>. The origin
    *  is stored in property values 'origin.x', 'origin.y', and 'origin.z'. If a
-   *  propery is missing or cannot be parsed as a number it is assumed to be
-   *  equal zero..
+   *  properly is missing or cannot be parsed as a number it is assumed to be
+   *  equal zero.
    *
    *@param  imp  Input image.
    *@return      Point representing the origin.

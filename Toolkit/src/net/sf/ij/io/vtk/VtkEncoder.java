@@ -42,7 +42,7 @@ import net.sf.ij.util.TextUtil;
 
 public class VtkEncoder implements PlugIn {
 
-  private String msgBoxTitle = "VTK Writer";
+  private String DIALOG_CAPTION = "VTK Writer";
   private final static String vtkFileVersion = "3.0";
 
 
@@ -294,7 +294,7 @@ public class VtkEncoder implements PlugIn {
   public void run(String arg) {
     ImagePlus imp = WindowManager.getCurrentImage();
     if (imp == null) {
-      IJ.showMessage("VTK Writer", "No image to save.");
+      IJ.showMessage(DIALOG_CAPTION, "No image to save.");
       return;
     }
 
@@ -328,7 +328,7 @@ public class VtkEncoder implements PlugIn {
         msg = "\n" + msg;
       }
 
-      IJ.showMessage("VTK Writer", "Error writing file '" + fileName + "'."
+      IJ.showMessage(DIALOG_CAPTION, "Error writing file '" + fileName + "'."
           + msg);
     }
   }

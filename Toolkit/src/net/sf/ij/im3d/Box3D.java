@@ -21,11 +21,11 @@
 package net.sf.ij.im3d;
 
 /**
- *  Repesents a 3D box oriented along the axis xyz.
+ *  Represents a 3D box oriented along the axis xyz.
  *
  *@author     Jarek Sacha
  *@created    April 29, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 public class Box3D {

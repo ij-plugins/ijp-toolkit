@@ -28,11 +28,11 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 /**
- *  Title: Description: Copyright: GPL 2002 Company:
+ *  Text related utilities.
  *
  * @author     Jarek Sacha
  * @created    July 16, 2002
- * @version    $Revision: 1.2 $
+ * @version    $Revision: 1.3 $
  */
 
 public class TextUtil {
@@ -42,11 +42,12 @@ public class TextUtil {
 
 
   /**
-   *  Description of the Method
+   *  Parse a string value as a floating point number.
    *
-   * @param  str           Description of the Parameter
-   * @param  defaultValue  Description of the Parameter
-   * @return               Description of the Return Value
+   * @param  str           Input string.
+   * @param  defaultValue  Value returned if <code>str</code> can not be parsed
+   *      as a floating point number.
+   * @return               Strung value interpreted as a floating point number.
    */
   public static float parseFloat(String str, float defaultValue) {
     float f = defaultValue;
@@ -63,11 +64,12 @@ public class TextUtil {
 
 
   /**
-   *  Description of the Method
+   *  Parse a string value as an integer.
    *
-   * @param  str           Description of the Parameter
-   * @param  defaultValue  Description of the Parameter
-   * @return               Description of the Return Value
+   * @param  str           Input string.
+   * @param  defaultValue  Value returned if <code>str</code> can not be parsed
+   *      as a integer.
+   * @return               String value interpreted as an integer.
    */
   public static int parseInt(String str, int defaultValue) {
     int i = defaultValue;
@@ -86,10 +88,12 @@ public class TextUtil {
   /**
    *  Parse string as an array of integers separated by white space.
    *
-   * @param  str  Description of the Parameter
-   * @return      Description of the Return Value
+   * @param  str                           Input string.
+   * @return                               int array containing parsed numbers
+   * @exception  IllegalArgumentException  In case of parsing error.
    */
-  public static int[] parseIntArray(String str) {
+  public static int[] parseIntArray(String str)
+       throws IllegalArgumentException {
     StringReader reader = new StringReader(str);
     StreamTokenizer tokenizer = new StreamTokenizer(reader);
     tokenizer.parseNumbers();
@@ -106,11 +110,11 @@ public class TextUtil {
       }
 
       if (tokens.size() < 1) {
-        throw new IllegalArgumentException("Input string does not conain any numbers.");
+        throw new IllegalArgumentException("Input string does not contain any numbers.");
       }
     }
     catch (IOException ex) {
-      throw new IllegalArgumentException("Unexpected error extacting tokens: " + ex);
+      throw new IllegalArgumentException("Unexpected error extracting tokens: " + ex);
     }
 
     int[] a = new int[tokens.size()];
@@ -121,13 +125,17 @@ public class TextUtil {
     return a;
   }
 
+
   /**
    *  Parse string as an array of floats separated by white space.
    *
-   * @param  str  Description of the Parameter
-   * @return      Description of the Return Value
+   * @param  str                           Input string.
+   * @return                               float array containing parsed
+   *      numbers.
+   * @exception  IllegalArgumentException  In case of parsing error.
    */
-  public static float[] parseFloatArray(String str) {
+  public static float[] parseFloatArray(String str)
+       throws IllegalArgumentException {
     StringReader reader = new StringReader(str);
     StreamTokenizer tokenizer = new StreamTokenizer(reader);
     tokenizer.parseNumbers();
@@ -144,11 +152,11 @@ public class TextUtil {
       }
 
       if (tokens.size() < 1) {
-        throw new IllegalArgumentException("Input string does not conain any numbers.");
+        throw new IllegalArgumentException("Input string does not contain any numbers.");
       }
     }
     catch (IOException ex) {
-      throw new IllegalArgumentException("Unexpected error extacting tokens: " + ex);
+      throw new IllegalArgumentException("Unexpected error extracting tokens: " + ex);
     }
 
     float[] f = new float[tokens.size()];

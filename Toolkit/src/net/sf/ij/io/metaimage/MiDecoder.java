@@ -32,18 +32,24 @@ import java.io.*;
 import net.sf.ij.util.TextUtil;
 
 /**
- *  Title: Description: Copyright: GPL 2002 Company:
+ *  Decodes an image file in MetaImage format. MetaImage is one of the formats
+ *  supported by ITK (http://www.itk.org). More information about MetaImage,
+ *  including C++ code, can be found at http://caddlab.rad.unc.edu/technologies/MetaImage/
+ *  . This implementation is intended to be compatible with ITK version of
+ *  MetaImage.
  *
  * @author     Jarek Sacha
  * @created    July 31, 2002
- * @version    $Revision: 1.1 $
+ * @version    $Revision: 1.2 $
  * @todo       Validate MetaImage tag dependency (some tags need always be
- *      present, some only if other tags are preent, etc.)
+ *      present, some only if other tags are present, etc.)
  */
 
 public class MiDecoder implements PlugIn {
 
-  /**  Symbol reparating a tag from its vaue in the MetaImage header. */
+  private static String DIALOG_CAPTION = "MetaImage Reader";
+
+  /**  Symbol separating a tag from its value in the MetaImage header. */
   public static String ASSIGNMENT_SYMBOL = "=";
 
 
@@ -85,6 +91,9 @@ public class MiDecoder implements PlugIn {
   }
 
 
+  /*
+   *
+   */
   private MiTagValuePair extractTagAndValue(String line) throws MiException {
 
     if (line == null) {
@@ -120,7 +129,7 @@ public class MiDecoder implements PlugIn {
    * @param  file             MetaImage header file.
    * @return                  MetaImage header information converted to FileInfo
    *      format.
-   * @exception  MiException  In case of I/O errors or incorect header format.
+   * @exception  MiException  In case of I/O errors or incorrect header format.
    */
   private FileInfo decodeHeader(File file) throws MiException {
     BufferedReader reader = null;
@@ -209,7 +218,7 @@ public class MiDecoder implements PlugIn {
         }
         // TAG: ElementSize
         else if (tag.id == MiTag.ElementSize) {
-          // Ingnore for a time being.
+          // Ignore for a time being.
         }
         // TAG: ElementType
         else if (tag.id == MiTag.ElementType) {
@@ -297,7 +306,7 @@ public class MiDecoder implements PlugIn {
 
 
   /**
-   *  Helper clas to represent a MetaImage tag and its value.
+   *  Helper class to represent a MetaImage tag and its value.
    *
    * @author     Jarek Sacha
    * @created    August 3, 2002
@@ -334,12 +343,12 @@ public class MiDecoder implements PlugIn {
       }
       catch (MiException ex) {
         ex.printStackTrace();
-        IJ.showMessage("VTK Reader", "Error opening image: '"
+        IJ.showMessage(DIALOG_CAPTION, "Error opening image: '"
             + file.getAbsolutePath() + "'\n" + ex.getMessage());
       }
       catch (Exception ex) {
         ex.printStackTrace();
-        IJ.showMessage("VTK Reader", "Error opening image: '"
+        IJ.showMessage(DIALOG_CAPTION, "Error opening image: '"
             + file.getAbsolutePath() + "'\n" + ex);
       }
 

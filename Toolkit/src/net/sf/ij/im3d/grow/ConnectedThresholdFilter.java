@@ -33,7 +33,7 @@ import net.sf.ij.im3d.*;
  *
  *@author     Jarek Sacha
  *@created    April 29, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 public class ConnectedThresholdFilter {
@@ -118,10 +118,10 @@ public class ConnectedThresholdFilter {
 
     initialize(src);
 
-    // Verify that seed point can be a mamber point.
+    // Verify that seed point can be a member point.
     checkForGrow(seed.x, seed.y, seed.z);
 
-    // Iterate while there are still candidates to chesk.
+    // Iterate while there are still candidates to check.
     while (!candidatePoints.isEmpty()) {
       Point3D p = (Point3D) candidatePoints.removeFirst();
       checkForGrow(p.x - 1, p.y, p.z);

@@ -21,41 +21,33 @@
 package net.sf.ij.im3d;
 
 /**
- *  Repesents a 3D point.
+ *  Represents a 3D point.
  *
- *@author     Jarek Sacha
- *@created    April 29, 2002
- *@version    $Revision: 1.1 $
+ * @author     Jarek Sacha
+ * @created    April 29, 2002
+ * @version    $Revision: 1.2 $
  */
 
 public class Point3D {
 
-  /**
-   *  Description of the Field
-   */
+  /**  x coordinate. */
   public int x;
-  /**
-   *  Description of the Field
-   */
+  /**  y coordinate. */
   public int y;
-  /**
-   *  Description of the Field
-   */
+  /**  z coordinate. */
   public int z;
 
 
-  /**
-   *  Constructor for the Point3D object
-   */
+  /**  Constructor for the Point3D object */
   public Point3D() { }
 
 
   /**
    *  Constructor for the Point3D object
    *
-   *@param  x  Description of Parameter
-   *@param  y  Description of Parameter
-   *@param  z  Description of Parameter
+   * @param  x  x coordinate.
+   * @param  y  y coordinate.
+   * @param  z  z coordinate.
    */
   public Point3D(int x, int y, int z) {
     this.x = x;
@@ -65,9 +57,9 @@ public class Point3D {
 
 
   /**
-   *  Description of the Method
+   *  Returns a string representing Point3D coordinates: (x,y,z).
    *
-   *@return    Description of the Returned Value
+   * @return    String representing Point3D coordinates.
    */
   public String toString() {
     return "(" + x + "," + y + "," + z + ")";

@@ -23,11 +23,11 @@ package net.sf.ij.io.metaimage;
 import net.sf.ij.util.Enumeration;
 
 /**
- *  Represents types of elemeny values in MetaImage files.
+ *  Represents types of element values in MetaImage files.
  *
  *@author     Jarek Sacha
  *@created    June 18, 2002
- *@version    $Revision: 1.1 $ $Date: 2002-07-19 02:45:18 $
+ *@version    $Revision: 1.2 $ $Date: 2002-08-06 00:53:26 $
  */
 public class MiElementType extends Enumeration {
 

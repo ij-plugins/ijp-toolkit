@@ -27,7 +27,7 @@ import net.sf.ij.util.Enumeration;
  *
  *@author     Jarek Sacha
  *@created    June 18, 2002
- *@version    $Revision: 1.1 $ $Date: 2002-07-19 02:45:18 $
+ *@version    $Revision: 1.2 $ $Date: 2002-08-06 00:53:26 $
  */
 public class MiTag extends Enumeration {
 
@@ -60,7 +60,7 @@ public class MiTag extends Enumeration {
   public static MiTag ElementSize = new MiTag("ElementSize");
 
   /**
-   *  Spacing between voxels (for instance, MRI images often use overlaping
+   *  Spacing between voxels (for instance, MRI images often use overlapping
    *  slices), e.g. '2.5 2.5 8'. Optional, default is 1 in each dimension.
    */
   public static MiTag ElementSpacing = new MiTag("ElementSpacing");
@@ -68,8 +68,8 @@ public class MiTag extends Enumeration {
   /**
    *  Equal to 'True' if image data are stored using MSB (most significant bye)
    *  order, otherwise 'False'. Default is the same as native type for the
-   *  platfor on which program runs. This tag is not required, however, it use
-   *  is highly recommanded to avoid problems reading images on other platforms.
+   *  platform on which program runs. This tag is not required, however, it use
+   *  is highly recommended to avoid problems reading images on other platforms.
    *  <br>
    *  Note: MSB is native for Java and most computers not using Intel compatible
    *  processors, e.g. Mac or most UNIX computers (excluding most flavors of

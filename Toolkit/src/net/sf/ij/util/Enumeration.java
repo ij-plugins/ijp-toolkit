@@ -23,11 +23,12 @@ package net.sf.ij.util;
 import java.util.ArrayList;
 
 /**
- *  Description of the Class
+ *  Abstract base class for representing enumeration. Based on pattern
+ *  presented by Joshua Bloch in "Effective Java" 2001.
  *
  * @author     Jarek Sacha
  * @created    June 18, 2002
- * @version    $Revision: 1.2 $ $Date: 2002-08-04 03:16:21 $
+ * @version    $Revision: 1.3 $ $Date: 2002-08-06 00:53:25 $
  */
 public abstract class Enumeration {
   private static ArrayList allMembers = new ArrayList();
@@ -59,19 +60,20 @@ public abstract class Enumeration {
 
 
   /**
-   *  Returns a reference to the named member of this Enumeration.<p>
+   *  Returns a reference to the named member of this Enumeration, throes
+   *  IllegalArgumentException of name is not found.<p>
    *
    *  <strong>API NOTE:</strong> This method looks as it should have been
-   *  defines as static. However, this could lead to an unpredictable behaviour
-   *  of this method due to the way Java iniializes static member variables of a
+   *  defines as static. However, this could lead to an unpredictable behavior
+   *  of this method due to the way Java initializes static member variables of a
    *  class. In particular, if this method was static it would be possible to
    *  call it before static member variables of the Enumeration class for which
    *  it was called were initialized. As a result if this method was static it
-   *  could thow IllegalArgumentException even when its argument was a valid
+   *  could throw IllegalArgumentException even when its argument was a valid
    *  member name.
    *
    * @param  name                          A name of the Enumeration member.
-   * @return                               Reference tro a member with given
+   * @return                               Reference to a member with given
    *      <code>name</code>.
    * @exception  IllegalArgumentException  If a member with given <code>name</code>
    *      cannot be found.
@@ -79,7 +81,7 @@ public abstract class Enumeration {
   public Enumeration byName(String name)
        throws IllegalArgumentException {
     for (int i = 0; i < allMembers.size(); ++i) {
-      Enumeration member = (Enumeration)allMembers.get(i);
+      Enumeration member = (Enumeration) allMembers.get(i);
       if (member.name.equals(name)) {
         return member;
       }
@@ -90,7 +92,7 @@ public abstract class Enumeration {
 
 
   /**
-   *  Description of the Method
+   *  Return name a
    *
    * @return    Description of the Returned Value
    */
