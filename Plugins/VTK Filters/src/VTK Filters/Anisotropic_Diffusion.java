@@ -25,14 +25,13 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import net.sf.ij.vtk.AnisotropicDiffusion;
-import net.sf.ij.vtk.VtkProgressObserver;
 
 /**
  *  Plugin for running anisotropic diffusion filter from VTK.
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.7 $
+ * @version  $Revision: 1.8 $
  */
 
 public class Anisotropic_Diffusion implements PlugIn {
@@ -66,6 +65,7 @@ public class Anisotropic_Diffusion implements PlugIn {
     dialog.addNumericField("Diffusion threshold", diffusionThreshold, 0);
     dialog.addNumericField("Number of iterations", numberOfIterations, 0);
     dialog.addCheckbox("Gradient magnitude threshold", useGradientMagnitudeThreshold);
+    dialog.addTextAreas(vtkFilter.getHelpString(), null, 5, 40);
     dialog.showDialog();
 
     while (dialog.invalidNumber() && !dialog.wasCanceled()) {

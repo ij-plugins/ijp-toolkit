@@ -24,7 +24,6 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
-import net.sf.ij.vtk.AnisotropicDiffusion;
 import net.sf.ij.vtk.Median3D;
 
 /**
@@ -32,7 +31,7 @@ import net.sf.ij.vtk.Median3D;
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  */
 
 public class Median_3D implements PlugIn {
@@ -65,6 +64,7 @@ public class Median_3D implements PlugIn {
     dialog.addNumericField("Kernel size x", kernelSizeX, 0);
     dialog.addNumericField("Kernel size y", kernelSizeY, 0);
     dialog.addNumericField("Kernel size z", kernelSizeZ, 0);
+    dialog.addTextAreas(vtkFilter.getHelpString(), null, 5, 40);
     dialog.showDialog();
 
     while (dialog.invalidNumber() && !dialog.wasCanceled()) {
@@ -77,9 +77,9 @@ public class Median_3D implements PlugIn {
       return;
     }
 
-    kernelSizeX = (int)(dialog.getNextNumber()+0.5);
-    kernelSizeY = (int)(dialog.getNextNumber()+0.5);
-    kernelSizeZ = (int)(dialog.getNextNumber()+0.5);
+    kernelSizeX = (int) (dialog.getNextNumber() + 0.5);
+    kernelSizeY = (int) (dialog.getNextNumber() + 0.5);
+    kernelSizeZ = (int) (dialog.getNextNumber() + 0.5);
     vtkFilter.setKernelSize(kernelSizeX, kernelSizeY, kernelSizeZ);
 
     vtkFilter.setInput(imp);
