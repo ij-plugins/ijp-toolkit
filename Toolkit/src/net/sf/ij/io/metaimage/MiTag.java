@@ -25,13 +25,13 @@ import net.sf.ij.util.Enumeration;
 /**
  *  MetaImage tags.
  *
- *@author     Jarek Sacha
- *@created    June 18, 2002
- *@version    $Revision: 1.2 $ $Date: 2002-08-06 00:53:26 $
+ * @author     Jarek Sacha
+ * @created    June 18, 2002
+ * @version    $Revision: 1.3 $ $Date: 2002-08-13 01:23:11 $
  */
 public class MiTag extends Enumeration {
 
-  /**  Number of dimensions, e.g. '3'.  */
+  /**  Number of dimensions, e.g. '3'. */
   public static MiTag NDims = new MiTag("NDims");
   /**
    *  Size for each of the dimensions separated by spaces, e.g. '256 256 480'.
@@ -41,7 +41,7 @@ public class MiTag extends Enumeration {
   /**
    *  Atomic data type.
    *
-   *@see    MiElementType
+   * @see    MiElementType
    */
   public static MiTag ElementType = new MiTag("ElementType");
 
@@ -83,11 +83,26 @@ public class MiTag extends Enumeration {
    */
   public static MiTag ElementDataFile = new MiTag("ElementDataFile");
 
+  /**  ObjectType */
+  public static MiTag ObjectType = new MiTag("ObjectType");
+  /**  TransformType */
+  public static MiTag TransformType = new MiTag("TransformType");
+  /**  ID */
+  public static MiTag ID = new MiTag("ID");
+  /**  ParentID */
+  public static MiTag ParentID = new MiTag("ParentID");
+  /**  BinaryData */
+  public static MiTag BinaryData = new MiTag("BinaryData");
+  /**  Color */
+  public static MiTag Color = new MiTag("Color");
+  /**  ElementNumberOfChannels */
+  public static MiTag ElementNumberOfChannels = new MiTag("ElementNumberOfChannels");
+
 
   /**
    *  Constructor for the MiTag object
    *
-   *@param  name  Description of the Parameter
+   * @param  name  Description of the Parameter
    */
   private MiTag(String name) {
     super(name);
