@@ -27,10 +27,6 @@ import ij.io.Opener;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 
-/**
- * This class is a simple driver for my image quilting implementation. It parses your parameters,
- * loads up the input image, runs the algorithm, and saves the resulting image.
- */
 public class ImageQuilterPlugin implements PlugInFilter {
 
     final private static String DEST_WIDTH_LABEL = "Output width";
@@ -43,16 +39,16 @@ public class ImageQuilterPlugin implements PlugInFilter {
     final private static String PLUGIN_NAME = "Image Quilter";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
-            "Perfoms texture synthsis using image quilting algorithms of Efros and Freeman.\n" +
+            "Performs texture synthesis using image quilting algorithms of Efros and Freeman.\n" +
             "Parameters:\n" +
             "   " + DEST_WIDTH_LABEL + " - desired width of the output image.\n" +
             "   " + DEST_HEIGHT_LABEL + " - desired height of the output image.\n" +
-            "   " + PATCH_SIZE_LABEL + " - width and height of apatch used for quilting.\n" +
-            "   " + PATCH_OVERLAP_LABEL + " - amount of overlap between patches when matchin.\n" +
-            "   " + ENABLE_HORIZ_PATHS_LABEL + " - enable improved matching by weithting paths.\n" +
+            "   " + PATCH_SIZE_LABEL + " - width and height of a patch used for quilting.\n" +
+            "   " + PATCH_OVERLAP_LABEL + " - amount of overlap between patches when matching.\n" +
+            "   " + ENABLE_HORIZ_PATHS_LABEL + " - enable improved matching by weighted paths.\n" +
             "   " + PATCH_COST_WEIGHT_LABEL + " - weight used for improved matching." +
             "\n" +
-            "The code of this plugin was originaly developed by by Nick Vavra.\n" +
+            "The code of this plugin was originally developed by by Nick Vavra.\n" +
             "Original code and description is available at: http://www.cs.wisc.edu/~vavra/cs766/.\n" +
             "ImageJ port info available at: http://ij-plugins.sf.net/plugins/texturesynthesis/.";
 
