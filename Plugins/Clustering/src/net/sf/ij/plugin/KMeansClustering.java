@@ -39,7 +39,7 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @see KMeans
  */
 public final class KMeansClustering implements PlugIn {
@@ -47,8 +47,8 @@ public final class KMeansClustering implements PlugIn {
     private static KMeans.Config config = new KMeans.Config();
     private static boolean showCentroidImage = false;
 
-    private final boolean applayLut = false;
-    private final boolean autoBrightness = true;
+    private static final boolean applayLut = false;
+    private static final boolean autoBrightness = true;
 
     private static final String aboutMessage =
             "k-means Clustering performs pixel-based segmentation of multi-band\n" +

@@ -26,10 +26,10 @@ import java.awt.*;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ColorHistogram {
-    private final int BAND_RANGE = 256;
+    private final static int BAND_RANGE = 256;
     private int binsPerBand = 8;
     private int[][][] bins;
     private double[][][][] binMeans;
