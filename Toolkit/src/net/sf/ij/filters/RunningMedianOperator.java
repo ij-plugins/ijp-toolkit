@@ -20,15 +20,16 @@
  */
 package net.sf.ij.filters;
 
+
 import java.util.Arrays;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class RunningMedianOperator {
 
-    private final Packet[] packets;
+    private Packet[] packets;
     private int updatablePacket = 0;
     private float median = 0;
     private boolean needsUpdate = false;
@@ -36,9 +37,12 @@ public class RunningMedianOperator {
     private int upperSetSize = 0;
     private boolean revaluateMedian = false;
 
-    public RunningMedianOperator(final int maxPackets, int maxElementsPerPacket) {
+    public RunningMedianOperator() {
+    }
+
+    void reset(final int maxPackets, final int maxElementsPerPacket) {
         packets = new Packet[maxPackets];
-        for (int i = 0; i < packets.length; i++) {
+        for (int i = 0; i < packets.length; ++i) {
             packets[i] = new Packet(maxElementsPerPacket);
         }
 
@@ -47,7 +51,7 @@ public class RunningMedianOperator {
     }
 
 
-    public void push(final int length, float[] data) {
+    void push(final int length, float[] data) {
 
         final Packet packet = packets[updatablePacket];
 
@@ -82,21 +86,22 @@ public class RunningMedianOperator {
 
 
         // Process numbers being added
-        System.arraycopy(data, 0, packet.data, 0, length);
-        Arrays.sort(packet.data, 0, length);
-        packet.size = length;
-        packet.split = 0;
-        while (packet.split < packet.size && packet.data[packet.split] < median) {
-            ++packet.split;
-        }
-
-        for (int i = 0; i < packet.size; ++i) {
-            final float v = packet.data[i];
+//        System.arraycopy(data, 0, packet.data, 0, length);
+        for (int i = 0; i < length; ++i) {
+            final float v = data[i];
+            packet.data[i] = v;
             if (v < median) {
                 ++lowerSetSize;
             } else {
                 ++upperSetSize;
             }
+        }
+
+        Arrays.sort(packet.data, 0, length);
+        packet.size = length;
+        packet.split = 0;
+        while (packet.split < packet.size && packet.data[packet.split] < median) {
+            ++packet.split;
         }
 
         needsUpdate = true;
@@ -113,7 +118,7 @@ public class RunningMedianOperator {
             if (lowerSetSize > upperSetSize) {
 
                 // Move values between upper and lower sets
-                float movedValue = moveOneUp();
+                final float movedValue = moveOneUp();
 
 //                assert movedValue <= median;
 //                assert !Float.isNaN(movedValue);
@@ -135,7 +140,7 @@ public class RunningMedianOperator {
             } else if (lowerSetSize < upperSetSize - 1) {
 
                 // Move values between upper and lower sets
-                float movedValue = moveOneDown();
+                final float movedValue = moveOneDown();
 
                 if (Float.isNaN(movedValue)) {
                     needsUpdate = false;
@@ -167,10 +172,27 @@ public class RunningMedianOperator {
         return median;
     }
 
+    void clear() {
+        updatablePacket = 0;
+        median = 0;
+        needsUpdate = false;
+        lowerSetSize = 0;
+        upperSetSize = 0;
+        revaluateMedian = false;
+
+        for (int i = 0; i < packets.length; ++i) {
+            final Packet packet = packets[i];
+            packet.size = 0;
+            packet.split = 0;
+            Arrays.fill(packet.data, 0);
+        }
+    }
+
+
     private void updateSetCounts() {
         lowerSetSize = 0;
         upperSetSize = 0;
-        for (int i = 0; i < packets.length; i++) {
+        for (int i = 0; i < packets.length; ++i) {
             final Packet packet = packets[i];
             lowerSetSize += packet.split;
             upperSetSize += packet.size - packet.split;
@@ -178,9 +200,9 @@ public class RunningMedianOperator {
     }
 
     private float findSmallestInUpperSet() {
-        // Find largerst element in the lower set
+        // Find largerst key in the lower set
         float minValue = Float.POSITIVE_INFINITY;
-        for (int i = 0; i < packets.length; i++) {
+        for (int i = 0; i < packets.length; ++i) {
             final Packet packet = packets[i];
             if (packet.split < packet.size && packet.data[packet.split] < minValue) {
                 minValue = packet.data[packet.split];
@@ -193,10 +215,10 @@ public class RunningMedianOperator {
     }
 
     private float moveOneUp() {
-        // Find largerst element in the lower set
+        // Find largerst key in the lower set
         int selection = -1;
         float firstLagest = Float.NEGATIVE_INFINITY;
-        for (int i = 0; i < packets.length; i++) {
+        for (int i = 0; i < packets.length; ++i) {
             final Packet packet = packets[i];
             if (packet.split > 0
                     && packet.data[packet.split - 1] > firstLagest) {
@@ -221,11 +243,11 @@ public class RunningMedianOperator {
     }
 
     private float moveOneDown() {
-        // Find smallest element in the upper set
+        // Find smallest key in the upper set
         int selection = -1;
         float firstSmallest = Float.POSITIVE_INFINITY;
         float secondSmallest = Float.POSITIVE_INFINITY;
-        for (int i = 0; i < packets.length; i++) {
+        for (int i = 0; i < packets.length; ++i) {
             final Packet packet = packets[i];
             if (packet.split < packet.size) {
                 final float v = packet.data[packet.split];
@@ -257,28 +279,12 @@ public class RunningMedianOperator {
     }
 
 
-    public void clear() {
-        updatablePacket = 0;
-        median = 0;
-        needsUpdate = false;
-        lowerSetSize = 0;
-        upperSetSize = 0;
-        revaluateMedian = false;
-
-        for (int i = 0; i < packets.length; i++) {
-            final Packet packet = packets[i];
-            packet.size = 0;
-            packet.split = 0;
-            Arrays.fill(packet.data, 0);
-        }
-    }
-
     private static class Packet {
-        public int split;
-        public int size;
-        final public float[] data;
+        int split;
+        int size;
+        final float[] data;
 
-        public Packet(int maxSize) {
+        Packet(final int maxSize) {
             data = new float[maxSize];
         }
     }

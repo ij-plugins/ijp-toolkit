@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RunningMedianOperatorTest extends TestCase {
 
@@ -50,7 +50,9 @@ public class RunningMedianOperatorTest extends TestCase {
 
         final int filterSize = 3;
 
-        final RunningMedianOperator operator = new RunningMedianOperator(filterSize, filterSize);
+        final RunningMedianOperator operator = new RunningMedianOperator();
+        operator.reset(filterSize, filterSize);
+
         assertEquals(0, operator.evaluate(), TOLERANCE);
 
         final float[] chunk = new float[filterSize];
@@ -83,7 +85,9 @@ public class RunningMedianOperatorTest extends TestCase {
 
         final int filterSize = 3;
 
-        final RunningMedianOperator operator = new RunningMedianOperator(filterSize, filterSize);
+        final RunningMedianOperator operator = new RunningMedianOperator();
+        operator.reset(filterSize, filterSize);
+
 //        assertEquals(0, operator.evaluate(), TOLERANCE);
 
         final float[] chunk = new float[filterSize];
@@ -111,8 +115,8 @@ public class RunningMedianOperatorTest extends TestCase {
 
         final int filterSize = 3;
 
-        final RunningMedianOperator operator = new RunningMedianOperator(filterSize, filterSize);
-        operator.clear();
+        final RunningMedianOperator operator = new RunningMedianOperator();
+        operator.reset(filterSize, filterSize);
 
         final float[] chunk = new float[filterSize];
         chunk[0] = 181;
@@ -137,7 +141,9 @@ public class RunningMedianOperatorTest extends TestCase {
 
         final int filterSize = 3;
 
-        final RunningMedianOperator operator = new RunningMedianOperator(filterSize, filterSize);
+        final RunningMedianOperator operator = new RunningMedianOperator();
+        operator.reset(filterSize, filterSize);
+
 
         final float[] chunk = new float[filterSize];
         chunk[0] = 123;
@@ -172,7 +178,9 @@ public class RunningMedianOperatorTest extends TestCase {
 
         final int filterSize = 3;
 
-        final RunningMedianOperator operator = new RunningMedianOperator(filterSize, filterSize);
+        final RunningMedianOperator operator = new RunningMedianOperator();
+        operator.reset(filterSize, filterSize);
+
 
         final float[] chunk = new float[filterSize];
         chunk[0] = 239;

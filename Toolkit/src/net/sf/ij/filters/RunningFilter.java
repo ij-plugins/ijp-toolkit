@@ -32,11 +32,13 @@ import java.io.IOException;
  * Implemnts iteratoin over an {@link RunningMedianOperator}.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class RunningFilter {
 
     final private RunningMedianOperator operator;
+    final int filterWidth;
+    final int filterHeight;
     private ProgressBar progressBar;
 
 
@@ -45,15 +47,19 @@ public class RunningFilter {
      *
      * @param operator operator over which this filter iterates.
      */
-    public RunningFilter(RunningMedianOperator operator) {
+    public RunningFilter(final RunningMedianOperator operator,
+                         final int filterWidth, final int filterHeight) {
         if (operator == null) {
             throw new IllegalArgumentException("Argument operator cannot be null.");
         }
 
         this.operator = operator;
+        this.operator.reset(filterWidth, filterHeight);
+        this.filterWidth = filterWidth;
+        this.filterHeight = filterHeight;
     }
 
-    public FloatProcessor run(final FloatProcessor src, final int filterWidth, final int filterHeight) {
+    public FloatProcessor run(final FloatProcessor src) {
 
         final int width = src.getWidth();
         final int height = src.getHeight();
@@ -78,7 +84,7 @@ public class RunningFilter {
         for (int y = yMin; y < yMax; ++y) {
             final int yOffset = y * width;
 
-            // Initialize median operator, with all but the last column in the structural element
+            // Initialize median operator, with all but the last column in the structural key
             operator.clear();
             final int yyMin = Math.max(y - yr, yMin);
             final int yyMax = Math.min(y + yr + 1, yMax);
@@ -134,8 +140,8 @@ public class RunningFilter {
         ImagePlus imp = IOUtils.openImage("test_images/blobs_noise.tif");
         final FloatProcessor fp = (FloatProcessor) imp.getProcessor().convertToFloat();
 
-        final RunningFilter filter = new RunningFilter(new RunningMedianOperator(3, 3));
-        FloatProcessor dest = filter.run(fp, 3, 3);
+        final RunningFilter filter = new RunningFilter(new RunningMedianOperator(), 3, 3);
+        FloatProcessor dest = filter.run(fp);
         new ImagePlus("result", dest).show();
     }
 
