@@ -34,9 +34,8 @@ import vtk.vtkStructuredPointsWriter;
 /**
  *  VTK related utilities.
  *
- * @author
- * @created    September 11, 2002
- * @version    1.0
+ * @author   Jarek Sacha
+ * @version  $Revision: 1.2 $
  */
 
 public class VtkUtil {
