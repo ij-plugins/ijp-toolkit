@@ -12,10 +12,13 @@
     <property name="cvs.root" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ij-plugins"/>
     <property name="cvs.module" value="ij-plugins/Plugins/TextureSynthesis"/>
 
+    <!-- Location of common.xml -->
+    <property name="common.xml.file" location="../common.xml"/>                                
+
 
     <!-- ==================== -->
     <!--  Load common target  -->
     <!-- ==================== -->
-    <import file="../common.xml"/>
+    <import file="${common.xml.file}"/>
 
 </project>

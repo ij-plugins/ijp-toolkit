@@ -212,6 +212,17 @@
         <antcall target="checkout" inheritall="false">
             <param name="cvs.root" value="${cvs.root}"/>
         </antcall>
+
+        <!-- Copy dependencies -->
+        <mkdir dir="${cvs.dir}/lib"/>
+        <copy file="${ij.jar}" todir="${cvs.dir}/lib"/>
+
+        <!-- Provide custom 'build.properties' file -->
+        <concat destfile="${cvs.dir}/build.properties">
+            common.xml.file=common.xml
+            ij.jar=lib/ij.jar
+        </concat>
+
         <!-- ZIP source -->
         <zip basedir="${cvs.dir}"
             destfile="${dist.dir}/${package.name}_src_${package.version}_${DSTAMP}.zip"/>
