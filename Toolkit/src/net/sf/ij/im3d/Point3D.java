@@ -25,17 +25,17 @@ package net.sf.ij.im3d;
  *
  * @author     Jarek Sacha
  * @created    April 29, 2002
- * @version    $Revision: 1.2 $
+ * @version    $Revision: 1.3 $
  */
 
 public class Point3D {
 
   /**  x coordinate. */
-  public int x;
+  public float x;
   /**  y coordinate. */
-  public int y;
+  public float y;
   /**  z coordinate. */
-  public int z;
+  public float z;
 
 
   /**  Constructor for the Point3D object */
@@ -49,7 +49,7 @@ public class Point3D {
    * @param  y  y coordinate.
    * @param  z  z coordinate.
    */
-  public Point3D(int x, int y, int z) {
+  public Point3D(float x, float y, float z) {
     this.x = x;
     this.y = y;
     this.z = z;
