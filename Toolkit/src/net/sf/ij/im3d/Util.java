@@ -33,7 +33,7 @@ import net.sf.ij.util.TextUtil;
  *
  *@author     Jarek Sacha
  *@created    April 30, 2002
- *@version    $Revision: 1.2 $
+ *@version    $Revision: 1.3 $
  */
 
 public class Util {
@@ -181,7 +181,7 @@ public class Util {
    *
    *@param  imp     Input image.
    *@param  offset  Value of the offset.
-   *@see            Util.decodeOrigin
+   *@see            net.sf.ij.im3d.Util.decodeOrigin
    */
   public static void offsetOrigin(ImagePlus imp, Point3D offset) {
     Point3D origin = decodeOrigin(imp);
@@ -196,7 +196,7 @@ public class Util {
    *
    *@param  imp     Input image.
    *@param  origin  New value of the origin.
-   *@see            Util.decodeOrigin
+   *@see            net.sf.ij.im3d.Util.decodeOrigin
    */
   public static void encodeOrigin(ImagePlus imp, Point3D origin) {
     imp.setProperty("origin.x", "" + origin.x);
