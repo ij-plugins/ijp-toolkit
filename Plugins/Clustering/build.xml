@@ -42,6 +42,7 @@
 
     <path id="compile.classpath">
         <pathelement location="${ij.jar}"/>
+        <pathelement location="../Color/sandbox/plugins/ij-plugins_color.jar"/>
     </path>
 
     <fileset id="config.files"
@@ -162,25 +163,6 @@
         <delete dir="${sandbox.dir}"/>
         <delete dir="${javadoc.dir}"/>
         <delete dir="${dist.dir}"/>
-    </target>
-
-    <target name="jdepend"
-        depends="compile"
-        description="Perform JDepend analysis and generate design quality metrics">
-        <jdepend
-            format="xml"
-            outputfile="${build.dir}/jdepend-report.xml">
-
-            <sourcespath>
-                <pathelement location="${build.classes.dir}"/>
-            </sourcespath>
-            <classpath location="${build.classes.dir}"/>
-        </jdepend>
-
-        <style basedir="${build.dir}" destdir="${build.dir}"
-            includes="jdepend-report.xml"
-            style="${ant.home}/etc/jdepend.xsl"/>
-
     </target>
 
     <!-- ================= -->
