@@ -1,4 +1,4 @@
-<project name="ij-plugins-3D Toolkit" default="compile" basedir=".">
+<project name="ij-plugins-VTK Filters" default="compile" basedir=".">
     <description>
         ij-plugins Toolkit package.
     </description>
@@ -7,14 +7,14 @@
   <target name="setProps" 
           unless="setProps"
   	      description="Setup the propertries">
-    <property name="classpath" value="${basedir}/../lib/ij.jar"/>
-    <property name="outputDir" value="plugins/3D Toolkit"/>
+    <property name="classpath" value="${basedir}/../../lib/ij.jar;${vtk.classpath}"/>
+    <property name="outputDir" value="plugins/VTK Filters"/>
     <property name="setProps" value="true" />
   </target>
 
   <!-- set local properties for this build -->
   <target name="init" depends="setProps">
-    <property name="srcDir" location="src/3D Toolkit"/>
+    <property name="srcDir" location="src/VTK Filters"/>
     <property name="destDir"  location="${outputDir}"/>
   </target>
 
