@@ -21,32 +21,27 @@
 package net.sf.ij.vtk;
 
 import ij.ImagePlus;
-import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-
-import java.io.File;
-
-import java.io.IOException;
-
-import net.sf.ij.io.vtk.VtkDecoder;
 import net.sf.ij.io.vtk.VtkEncoder;
-
 import vtk.vtkImageData;
 import vtk.vtkStructuredPointsReader;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  *  Factory creating instances of class vtk.vtkImageData. In general performs
  *  translation of images from ImageJ representatin to VTK representation.
  *
- * @author     Jarek Sacha
- * @since    September 7, 2002
- * @version  $Revision: 1.4 $
+ * @author   Jarek Sacha
+ * @version  $Revision: 1.5 $
  */
 
 public class VtkImageDataFactory {
 
   /**  Constructor for the VtkImageDataFactory object */
-  public VtkImageDataFactory() { }
+  public VtkImageDataFactory() {
+  }
 
 
   /**
@@ -78,33 +73,33 @@ public class VtkImageDataFactory {
     return data;
   }
 
-    /**
-     *  Create a vtkImageData object from ImagePlus object.
-     *
-     * @param imp
-     * @return
-     * @throws IOException
-     */
-    public static vtkImageData create(ImagePlus imp) throws IOException {
-      File tmpFile = File.createTempFile("ijImageData", ".vtk");
-      String tmpFileName = tmpFile.getAbsolutePath();
+  /**
+   *  Create a vtkImageData object from ImagePlus object.
+   *
+   * @param imp
+   * @return
+   * @throws IOException
+   */
+  public static vtkImageData create(ImagePlus imp) throws IOException {
+    File tmpFile = File.createTempFile("ijImageData", ".vtk");
+    String tmpFileName = tmpFile.getAbsolutePath();
 
-      // Save ImagePlus in VTK format in a temporary file.
-      VtkEncoder.save(tmpFileName, imp);
+    // Save ImagePlus in VTK format in a temporary file.
+    VtkEncoder.save(tmpFileName, imp);
 
-      // Read the temporary file using VTK.
-      vtkStructuredPointsReader reader = new vtkStructuredPointsReader();
-      reader.SetFileName(tmpFileName);
-      reader.Update();
-      reader.CloseVTKFile();
+    // Read the temporary file using VTK.
+    vtkStructuredPointsReader reader = new vtkStructuredPointsReader();
+    reader.SetFileName(tmpFileName);
+    reader.Update();
+    reader.CloseVTKFile();
 
-      vtkImageData data = (vtkImageData) reader.GetOutput();
+    vtkImageData data = (vtkImageData) reader.GetOutput();
 
-      // Remove the temporary file.
-      tmpFile.delete();
+    // Remove the temporary file.
+    tmpFile.delete();
 
-      // Return reference to the VTK image.
-      return data;
-    }
+    // Return reference to the VTK image.
+    return data;
+  }
 
 }
