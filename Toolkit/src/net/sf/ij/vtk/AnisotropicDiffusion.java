@@ -42,7 +42,7 @@ import vtk.vtkImageCast;
  *
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  */
 
 public class AnisotropicDiffusion extends VtkImageFilter {
@@ -50,7 +50,19 @@ public class AnisotropicDiffusion extends VtkImageFilter {
   private vtkImageAnisotropicDiffusion3D filter;
   private vtkImageCast inputCast;
   private VtkProgressObserver progressObserver;
-
+  private static final String HELP_STRING =
+      "This is a wrapper for vtkImageAnisotropicDiffusion3D filter.\n " +
+      "vtkImageAnisotropicDiffusion3D diffuses an volume iteratively. " +
+      "\"DiffusionFactor\" determines how far a pixel value moves toward its " +
+      "neighbors, and is insensitive to the number of neighbors chosen. " +
+      "The diffusion is anisotropic because it only occurs when a gradient " +
+      "measure is below \"GradientThreshold\". Two gradient measures exist and  " +
+      "are toggled by the \"GradientMagnitudeThreshold\" flag. When " +
+      "\"GradientMagnitudeThreshold\" is on, the magnitude of the gradient, " +
+      "computed by central differences, above \"DiffusionThreshold\" a voxel is " +
+      "not modified. The alternative measure examines each neighbor independently. " +
+      "The gradient between the voxel and the neighbor must be below the " +
+      "\"DiffusionThreshold\" for diffusion to occur with THAT neighbor.";
 
 
   /**  Constructor for the AnisotropicDiffusion object */
@@ -125,6 +137,10 @@ public class AnisotropicDiffusion extends VtkImageFilter {
       ex.printStackTrace();
 
     }
+  }
+
+  public String getHelpString() {
+    return HELP_STRING;
   }
 
 

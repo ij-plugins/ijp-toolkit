@@ -33,13 +33,19 @@ import vtk.vtkImageMedian3D;
  *
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 
 public class Median3D extends VtkImageFilter {
 
   private vtkImageMedian3D filter = null;
   private VtkProgressObserver progressObserver;
+  private final static String HELP_STRING =
+      "This is a wrapper for vtkImageMedian3D filter.\n" +
+      "vtkImageMedian3D a Median filter that replaces each pixel with the median " +
+      "value from a rectangular neighborhood around that pixel. Neighborhoods " +
+      "can be no more than 3 dimensional. Setting one axis of the neighborhood " +
+      "  kernelSize to 1 changes the filter into a 2D median.";
 
 
   /**  Constructor for the AnisotropicDiffusion object */
@@ -73,5 +79,9 @@ public class Median3D extends VtkImageFilter {
     } catch (Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+  public String getHelpString() {
+    return HELP_STRING;
   }
 }

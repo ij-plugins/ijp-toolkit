@@ -32,10 +32,16 @@ import vtk.vtkImageContinuousErode3D;
  *
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 
 public class ContinuousErode3D extends VtkImageFilter {
+
+  private static final String HELP_STRING =
+      "This is a wrapper for vtkImageContinuousErode3D.\n" +
+      "vtkImageContinuousErode3D replaces a pixel with the minimum over an " +
+      "ellipsoidal neighborhood. If KernelSize of an axis is 1, no processing " +
+      "is done on that axis.";
 
   private vtkImageContinuousErode3D filter = null;
   private VtkProgressObserver progressObserver;
@@ -45,6 +51,10 @@ public class ContinuousErode3D extends VtkImageFilter {
   public ContinuousErode3D() {
     filter = new vtkImageContinuousErode3D();
     progressObserver = new VtkProgressObserver(filter);
+  }
+
+  public String getHelpString() {
+    return HELP_STRING;
   }
 
 

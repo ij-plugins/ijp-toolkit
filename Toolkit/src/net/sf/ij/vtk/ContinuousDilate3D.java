@@ -32,10 +32,16 @@ import vtk.vtkImageContinuousDilate3D;
  *
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 
 public class ContinuousDilate3D extends VtkImageFilter {
+
+  private static final String HELP_STRING =
+      "This is a wrapper for vtkImageContinuousDilate3D.\n" +
+      "vtkImageContinuousDilate3D replaces a pixel with the maximum over an " +
+      "ellipsoidal neighborhood. If KernelSize of an axis is 1, no processing " +
+      "is done on that axis.";
 
   private vtkImageContinuousDilate3D filter = null;
   private VtkProgressObserver progressObserver;
@@ -45,6 +51,10 @@ public class ContinuousDilate3D extends VtkImageFilter {
   public ContinuousDilate3D() {
     filter = new vtkImageContinuousDilate3D();
     progressObserver = new VtkProgressObserver(filter);
+  }
+
+  public String getHelpString() {
+    return HELP_STRING;
   }
 
 

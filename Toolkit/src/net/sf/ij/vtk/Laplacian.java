@@ -32,15 +32,20 @@ import vtk.vtkImageLaplacian;
  * gradient. Boundaries are handled, so the input is the same as the output.
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.3 $
  */
 
 public class Laplacian extends VtkImageFilter {
 
+  private static final String HELP_STRING =
+      "This is a wrapper for vtkImageLaplacian filter.\n" +
+      "vtkImageLaplacian computes the Laplacian (like a second derivative) of a " +
+      "scalar image. The operation is the same as taking the divergence after a " +
+      "gradient. Boundaries are handled, so the input is the same as the output.";
+
   private vtkImageLaplacian filter = null;
   private vtkImageCast inputCast;
   private VtkProgressObserver progressObserver;
-
 
 
   /**  Constructor for the AnisotropicDiffusion object */
@@ -72,5 +77,9 @@ public class Laplacian extends VtkImageFilter {
       ex.printStackTrace();
 
     }
+  }
+
+  public String getHelpString() {
+    return null;
   }
 }
