@@ -42,7 +42,7 @@ import vtk.vtkImageCast;
  *
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.4 $
+ * @version  $Revision: 1.5 $
  */
 
 public class AnisotropicDiffusion extends VtkImageFilter {
@@ -74,6 +74,19 @@ public class AnisotropicDiffusion extends VtkImageFilter {
     progressObserver = new VtkProgressObserver(filter);
   }
 
+  public String getHelpString() {
+    return HELP_STRING;
+  }
+
+
+  /**
+   *  Gets the numberOfIterations attribute of the AnisotropicDiffusion object
+   *
+   * @return    The numberOfIterations value
+   */
+  public int getNumberOfIterations() {
+    return filter.GetNumberOfIterations();
+  }
 
   /**
    *  Sets the numberOfIterations attribute of the AnisotropicDiffusion object
@@ -86,6 +99,15 @@ public class AnisotropicDiffusion extends VtkImageFilter {
 
 
   /**
+   *  Gets the diffusionFactor attribute of the AnisotropicDiffusion object
+   *
+   * @return    The diffusionFactor value
+   */
+  public double getDiffusionFactor() {
+    return filter.GetDiffusionFactor();
+  }
+
+  /**
    *  Sets the diffusionFactor attribute of the AnisotropicDiffusion object
    *
    * @param  d  The new diffusionFactor value
@@ -94,6 +116,16 @@ public class AnisotropicDiffusion extends VtkImageFilter {
     filter.SetDiffusionFactor(d);
   }
 
+
+  /**
+   *  Gets the gradientMagnitudeThreshold attribute of the
+   *  AnisotropicDiffusion object
+   *
+   * @return    The gradientMagnitudeThreshold value
+   */
+  public boolean isGradientMagnitudeThreshold() {
+    return filter.GetGradientMagnitudeThreshold() != 0;
+  }
 
   /**
    *  Sets the gradientMagnitudeThreshold attribute of the
@@ -109,6 +141,15 @@ public class AnisotropicDiffusion extends VtkImageFilter {
     }
   }
 
+
+  /**
+   *  Gets the diffusionThreshold attribute of the AnisotropicDiffusion object
+   *
+   * @return    The diffusionThreshold value
+   */
+  public double getDiffusionThreshold() {
+    return filter.GetDiffusionThreshold();
+  }
 
   /**
    *  Sets the diffusionThreshold attribute of the AnisotropicDiffusion object
@@ -139,48 +180,5 @@ public class AnisotropicDiffusion extends VtkImageFilter {
     }
   }
 
-  public String getHelpString() {
-    return HELP_STRING;
-  }
 
-
-  /**
-   *  Gets the diffusionFactor attribute of the AnisotropicDiffusion object
-   *
-   * @return    The diffusionFactor value
-   */
-  public double getDiffusionFactor() {
-    return filter.GetDiffusionFactor();
-  }
-
-
-  /**
-   *  Gets the diffusionThreshold attribute of the AnisotropicDiffusion object
-   *
-   * @return    The diffusionThreshold value
-   */
-  public double getDiffusionThreshold() {
-    return filter.GetDiffusionThreshold();
-  }
-
-
-  /**
-   *  Gets the gradientMagnitudeThreshold attribute of the
-   *  AnisotropicDiffusion object
-   *
-   * @return    The gradientMagnitudeThreshold value
-   */
-  public boolean isGradientMagnitudeThreshold() {
-    return filter.GetGradientMagnitudeThreshold() != 0;
-  }
-
-
-  /**
-   *  Gets the numberOfIterations attribute of the AnisotropicDiffusion object
-   *
-   * @return    The numberOfIterations value
-   */
-  public int getNumberOfIterations() {
-    return filter.GetNumberOfIterations();
-  }
 }
