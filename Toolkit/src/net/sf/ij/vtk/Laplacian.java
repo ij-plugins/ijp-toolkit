@@ -32,7 +32,7 @@ import vtk.vtkImageLaplacian;
  * gradient. Boundaries are handled, so the input is the same as the output.
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  */
 
 public class Laplacian extends VtkImageFilter {
@@ -80,6 +80,6 @@ public class Laplacian extends VtkImageFilter {
   }
 
   public String getHelpString() {
-    return null;
+    return HELP_STRING;
   }
 }
