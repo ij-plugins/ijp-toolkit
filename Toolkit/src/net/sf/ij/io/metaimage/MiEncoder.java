@@ -42,7 +42,7 @@ import java.io.IOException;
  *
  *@author     Jarek Sacha
  *@created    June 18, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  *@todo       Fix MetaImage format for unambigious element size, e.g. MET_LONG
  *      could be 32 bit on 32 bit processors and 64 bit on 64 bit processors. A
  *      fix would be to use MET_INT32.
@@ -197,12 +197,12 @@ public class MiEncoder implements PlugIn {
         throw new MiException("Unrecognized ImagePlus type id: " + imp.getType());
     }
     header.append(MiTag.ElementType + ASSIGNMENT_SEPARATOR
-        + MiBoolean.True + LINE_SEPARATOR);
+        + elementType + LINE_SEPARATOR);
 
     // ElementByteOrderMSB
     // JVM always uses MSB, independent of the underlaying hardware platform.
     header.append(MiTag.ElementByteOrderMSB + ASSIGNMENT_SEPARATOR
-        + elementType + LINE_SEPARATOR);
+        + MiBoolean.True + LINE_SEPARATOR);
 
     // ElementSize
     // ElementSpacing
