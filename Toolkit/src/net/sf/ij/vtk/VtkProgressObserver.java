@@ -9,13 +9,16 @@ import vtk.vtkProcessObject;
  * Date: Feb 5, 2003
  * Time: 10:13:00 PM
  * To change this template use Options | File Templates.
+ * FIX: Use vtkObject.AddObserver for ProcessEvent instead of depreciated SetProgressMethod.
+ * FIX: Javadoc comments
  */
 public class VtkProgressObserver {
   vtkProcessObject processObject;
 
   public VtkProgressObserver(vtkProcessObject processObject) {
     this.processObject = processObject;
-    processObject.SetProgressMethod(this, "progressMethod");
+    // FIX: Enable  SetProgressMethod or equivalent
+//    processObject.SetProgressMethod(this, "progressMethod");
   }
 
   public void progressMethod() {
