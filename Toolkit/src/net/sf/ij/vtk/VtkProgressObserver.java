@@ -1,7 +1,7 @@
 package net.sf.ij.vtk;
 
-import vtk.vtkProcessObject;
 import ij.IJ;
+import vtk.vtkProcessObject;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +21,7 @@ public class VtkProgressObserver {
   public void progressMethod() {
     double progress = processObject.GetProgress();
     String processObjectName = processObject.GetClassName();
-    IJ.showStatus(processObjectName  + " " + (int)(progress*100)+"%");
+    IJ.showStatus(processObjectName + " " + (int) (progress * 100) + "%");
     IJ.showProgress(progress);
 //    System.out.println("Process object  : "+processObjectName);
 //    System.out.println("Progress        : "+progress);

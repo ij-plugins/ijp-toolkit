@@ -22,9 +22,7 @@
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
-import net.sf.ij.vtk.AnisotropicDiffusion;
 import net.sf.ij.vtk.Laplacian;
 
 /**
@@ -32,7 +30,7 @@ import net.sf.ij.vtk.Laplacian;
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.3 $
+ * @version  $Revision: 1.4 $
  */
 
 public class Laplacian_ implements PlugIn {

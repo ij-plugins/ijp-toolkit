@@ -21,26 +21,25 @@
 package net.sf.ij.vtk;
 
 import ij.ImagePlus;
+import net.sf.ij.io.vtk.VtkDecoder;
+import net.sf.ij.io.vtk.VtkImageException;
+import vtk.vtkImageData;
+import vtk.vtkStructuredPointsWriter;
 
 import java.io.File;
 import java.io.IOException;
-
-import net.sf.ij.io.vtk.VtkDecoder;
-import net.sf.ij.io.vtk.VtkImageException;
-
-import vtk.vtkImageData;
-import vtk.vtkStructuredPointsWriter;
 
 /**
  *  VTK related utilities.
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.3 $
  */
 
 public class VtkUtil {
 
-  private VtkUtil() { }
+  private VtkUtil() {
+  }
 
 
   /**
@@ -55,7 +54,7 @@ public class VtkUtil {
    *      temporary VTK image data file.
    */
   public static ImagePlus createImagePlus(vtkImageData data)
-       throws VtkImageException, IOException {
+      throws VtkImageException, IOException {
 
     File tmpFile = File.createTempFile("ijImageData", ".vtk");
     String tmpFileName = tmpFile.getAbsolutePath();
