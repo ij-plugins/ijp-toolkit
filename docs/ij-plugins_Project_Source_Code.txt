@@ -1,6 +1,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ij-plugins Project Source Code
-       v.2003-12-23
+       v.2004-04-26
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 =========================
@@ -16,6 +16,10 @@ ij-plugins:
 imageio:    
   Code related to JAI-image I/O plugin bundle. Uses the JAI Sample IO code
   released by SUN (see the next project).
+
+itk4j:
+  ITK Image/J plugins and general utility classes to simplify use of ITK from 
+  Java. 
   
 Sun_JAI_Sample_IO_Source_Code_v_1.1.1:
   JAI I/O source code released bu SUN. Probably the only thing added is a Ant
@@ -33,7 +37,7 @@ SOURCE CODE
 ===========
 
 Generally source code for each project is organized into a similar directory 
-structure (at least this is such intention :)
+structure (at least this the goal :)
 
 project_root
   |
@@ -59,8 +63,7 @@ docs:
   Documentation, except generated documentation like javadocs. Generated
   documentation will be created from Ant and go under output/docs or dist/docs
   
-Currently each of the projects, except Sun_JAI_Sample_IO_Source_Code_v_1.1.1 
-deviate somewhat from this structure.
+Currently some of the projects deviate somewhat from this structure.
 
 ij-plugins
 ----------
@@ -108,6 +111,15 @@ Please add comments when checking in code into CVS. The comment should describe
 intention of the commit rather than content content.
 
 Please use junit test cases when possible. Test cases are put together with the
-source they test. JUnit test classes have prefix Test, for instance, VtkDecoder
-class may have a corresponding TestVtkDecoder unit test. Test code can be easily
+source they test. JUnit test classes have suffix Test, for instance, VtkDecoder
+class may have a corresponding VtkDecoderTest unit test. Test code can be easily
 filtered out from the distribution using Ant.
+
+
+RECOMMENDED READING
+===================
+A. Hunt & D. Thomas. Pragmatic Version Control: with CVS. The Pragmatic 
+    Bookshelf, 2003. (http://www.pragmaticprogrammer.com)
+
+A. Hunt & D. Thomas. Pragmatic Unit Testing: in Java with JUnit. The Pragmatic 
+    Bookshelf, 2003. (http://www.pragmaticprogrammer.com)
