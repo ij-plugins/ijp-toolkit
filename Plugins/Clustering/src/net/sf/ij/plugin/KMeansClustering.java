@@ -39,7 +39,7 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @see KMeans
  */
 public final class KMeansClustering implements PlugIn {
@@ -57,7 +57,7 @@ public final class KMeansClustering implements PlugIn {
             "Each cluster is defined by its centroid in n-dimensional space. Pixels are\n" +
             "grouped by their proximity to cluster's centroids.\n" +
             "Cluster centroids are determined using a heuristics: initially centroids\n" +
-            "are randomly initialized and then then their location is interactively\n" +
+            "are randomly initialized and then their location is interactively\n" +
             "optimized.\n" +
             "For more information on this and other clustering approaches see:\n" +
             "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
