@@ -101,7 +101,7 @@ public class VtkEncoder implements PlugIn {
     header.append("" + VtkTag.ORIGIN + TAG_SEPARATOR
         + origin[0] + " " + origin[1] + " " + origin[2] + "\n");
 
-    header.append("" + VtkTag.POINT_DATA + TAG_SEPARATOR 
+    header.append("" + VtkTag.POINT_DATA + TAG_SEPARATOR
         + (width * height * depth) + "\n");
 
     String scalarName = null;
@@ -119,10 +119,10 @@ public class VtkEncoder implements PlugIn {
         throw new IllegalArgumentException("Unsupported image type. "
             + "Only images of types: GRAY8, GRAY16, and GRAY32 are supported.");
     }
-    header.append("" + VtkTag.SCALARS + TAG_SEPARATOR 
+    header.append("" + VtkTag.SCALARS + TAG_SEPARATOR
         + "volume_scalars " + scalarName + " 1\n");
 
-    header.append("" + VtkTag.LOOKUP_TABLE + TAG_SEPARATOR 
+    header.append("" + VtkTag.LOOKUP_TABLE + TAG_SEPARATOR
         + "default\n");
 
     return header.toString();
@@ -150,6 +150,10 @@ public class VtkEncoder implements PlugIn {
     imageWriter.write(bos);
 
     bos.close();
+  }
+
+  public static void save(String fileName, ImagePlus imp) throws IOException {
+    saveAsVtkBinary(fileName, imp);
   }
 
 
