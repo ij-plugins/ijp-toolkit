@@ -21,7 +21,6 @@
 package net.sf.ij.clustering;
 
 import ij.ImagePlus;
-import ij.io.FileSaver;
 import ij.io.Opener;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
@@ -31,7 +30,7 @@ import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class KMeansTest extends junit.framework.TestCase {
     public KMeansTest(final java.lang.String test) {
@@ -42,10 +41,10 @@ public final class KMeansTest extends junit.framework.TestCase {
         final File imageFile = new File("test_images/clown24.tif");
         final double tolerance = 0.01;
         final double[][] expectedCenters = {
-            {115.623, 51.116, 20.330},
-            {182.392, 108.690, 45.736},
-            {30.560, 10.590, 5.617},
-            {224.589, 187.087, 151.137}
+            {182.407, 108.690, 45.752},
+            {224.589, 187.087, 151.137},
+            {30.590, 10.600, 5.617},
+            {115.772, 51.208, 20.245},
         };
 
         assertTrue("File exists", imageFile.exists());
@@ -74,10 +73,10 @@ public final class KMeansTest extends junit.framework.TestCase {
         final KMeans kmeans = new KMeans(config);
         final ImageProcessor ip = kmeans.run(imp.getStack());
 
-        double[][] centers = kmeans.getClusterCenters();
+        float[][] centers = kmeans.getClusterCenters();
         for (int i = 0; i < centers.length; i++) {
             for (int j = 0; j < centers[i].length; j++) {
-                assertEquals("center["+i+"]["+j+"]",
+                assertEquals("center[" + i + "][" + j + "]",
                         expectedCenters[i][j], centers[i][j], tolerance);
             }
         }
