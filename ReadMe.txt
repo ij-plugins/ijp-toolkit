@@ -2,16 +2,13 @@
 ij-3D-Toolkit - 2/8/2002
 ------------------------
 
-3D Toolkit is a set of plugins for 3D and 2D operations on images in
-Image/J ( http://rsb.info.nih.gov/ij/). 
-
 3D Toolkit is a set of plugins for 3D and 2D operations on images for 
 Image/J ( http://rsb.info.nih.gov/ij/). The toolkit has three groups of 
 plugins:
 
     * 3D IO - reading and writing of images in VTK and MetaImage formats
     * 3D Toolkit - native Java operations on 2D and 3D images
-    * VTK Filters - wrapper for native VTK filters
+    * VTK Filters - wrappers for native VTK filters
 
 _____
 3D IO
