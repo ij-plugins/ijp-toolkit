@@ -42,7 +42,7 @@
     </target>
 
     <target
-        name="toolkit-jar"
+        name="jar"
         depends="prepare"
         description="Main library jar">
 
@@ -59,7 +59,7 @@
 
     <target
         name="build"
-        depends="prepare,toolkit-jar"
+        depends="prepare,jar"
         description="Build the toolkit and plugin binaries">
 
 
