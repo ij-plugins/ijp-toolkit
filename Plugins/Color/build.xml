@@ -37,8 +37,6 @@
 
     <property name="ij.jar" location="${lib.dir}/ij.jar"/>
 
-    <!--    <property name="main.class" value="net.sf.ij.plugin.HelpPanel"/>-->
-
 
     <path id="compile.classpath">
         <pathelement location="${ij.jar}"/>
@@ -66,7 +64,7 @@
     <!-- ================= -->
 
     <target name="run"
-        description="Test run ImageJ with ij-ImageIO plugins"
+        description="Test run ImageJ with plugins"
         depends="jar">
 
         <java
@@ -119,10 +117,6 @@
             basedir="${build.classes.dir}"
             compress="true">
             <fileset refid="resource.files"/>
-            <!--            <manifest>-->
-            <!--                <attribute name="Main-Class" value="${main.class}"/>-->
-            <!--            </manifest>-->
-            <!--            <zipfileset src="${jaicodec.jar}"/>-->
         </jar>
     </target>
 
@@ -164,24 +158,6 @@
         <delete dir="${dist.dir}"/>
     </target>
 
-    <target name="jdepend"
-        depends="compile"
-        description="Perform JDepend analysis and generate design quality metrics">
-        <jdepend
-            format="xml"
-            outputfile="${build.dir}/jdepend-report.xml">
-
-            <sourcespath>
-                <pathelement location="${build.classes.dir}"/>
-            </sourcespath>
-            <classpath location="${build.classes.dir}"/>
-        </jdepend>
-
-        <style basedir="${build.dir}" destdir="${build.dir}"
-            includes="jdepend-report.xml"
-            style="${ant.home}/etc/jdepend.xsl"/>
-
-    </target>
 
     <!-- ================= -->
     <!-- Secondary targets -->
@@ -250,12 +226,11 @@
     </target>
 
     <!-- Target: changelog -->
-    <target name="changelog" depends="init">
+    <target name="changelog" depends="init" description="">
         <cvschangelog
             dir="${base.dir}"
-            destfile="${dist.dir}/changelog.xml"
-            start="LatestRelease"
-            end="HEAD"
+            destfile="${build.dir}/changelog.xml"
+            start="29 Feb 2004"
             />
         <style
             in="${build.dir}/changelog.xml"
@@ -273,7 +248,7 @@
             cvsroot="${cvs.root}"
             destfile="${build.dir}/tagdiff.xml"
             package="${cvs.module}"
-            starttag="LatestRelease"
+            starttag="2004-02-29"
             endtag="HEAD"
             compression="true"
             />

@@ -25,46 +25,41 @@ import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij.multiband.VectorProcessor;
+import net.sf.ij_plugins.multiband.VectorProcessor;
 
 /**
+ * Converts image pixels from RGB color space to CIE L*a*b* color space.
+ *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConvertRGBToLabStackPlugin implements PlugInFilter {
-    final private static String PLUGIN_NAME = "Convert RGB to CIE Lab";
+    final private static String PLUGIN_NAME = "Convert RGB to CIE L*a*b*";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
-            "Converts image pixels from RGB color space to CIE Lab color space.\n" +
+            "Converts image pixels from RGB color space to CIE L*a*b* color space.\n" +
             "Assumes observer = 2°, illuminant = D65, and uses formulas provided at:\n" +
             "http://www.easyrgb.com/math.php";
+
+    private String imageTitle = "";
 
     public int setup(String arg, ImagePlus imp) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
+            return DONE;
         }
+
+        imageTitle = imp.getShortTitle();
         return DOES_RGB | DOES_STACKS | NO_CHANGES;
     }
 
     public void run(final ImageProcessor ip) {
+        IJ.showStatus(PLUGIN_NAME);
+
         final ColorProcessor cp = (ColorProcessor) ip;
-        final VectorProcessor vp = new VectorProcessor(cp);
-        final float[][] pixels = vp.getPixels();
-        final float[] tmp = new float[3];
-
-        IJ.showStatus("Converting pixels from RGB to CIELab");
-
-        final int progressStep = pixels.length / 10;
-        for (int i = 0; i < pixels.length; i++) {
-            if (i % progressStep == 0) {
-                IJ.showProgress(i, pixels.length);
-            }
-            final float[] pixel = pixels[i];
-            ColorConvertion.convertRGBToXYZ(pixel, tmp);
-            ColorConvertion.convertXYZtoLab(tmp, pixel);
-        }
-
+        final VectorProcessor vp = ColorSpaceConvertion.rgbToLabVectorProcessor(cp);
         final ImagePlus imp = vp.toFloatStack();
+        imp.setTitle(imageTitle + " - Lab");
         imp.show();
     }
 }

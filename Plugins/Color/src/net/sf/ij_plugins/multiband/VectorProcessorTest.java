@@ -29,7 +29,7 @@ import java.util.Random;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VectorProcessorTest extends TestCase {
     public VectorProcessorTest(String test) {
@@ -72,17 +72,5 @@ public class VectorProcessorTest extends TestCase {
                 assertEquals("Pixel value", newPixels[j], oldPixels[j], tolerance);
             }
         }
-    }
-
-    /**
-     * The fixture set up called before every test method
-     */
-    protected void setUp() throws Exception {
-    }
-
-    /**
-     * The fixture clean up called after every test method
-     */
-    protected void tearDown() throws Exception {
     }
 }

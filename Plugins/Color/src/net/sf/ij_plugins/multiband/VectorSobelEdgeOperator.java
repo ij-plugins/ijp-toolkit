@@ -26,8 +26,10 @@ import ij.process.FloatProcessor;
 import java.awt.*;
 
 /**
+ * Sobel edge detector for vector valued images.
+ *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VectorSobelEdgeOperator {
     public static FloatProcessor run(ImagePlus imp) {

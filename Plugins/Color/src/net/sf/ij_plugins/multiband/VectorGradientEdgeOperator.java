@@ -26,8 +26,12 @@ import ij.process.FloatProcessor;
 import java.awt.*;
 
 /**
+ * Finds edges in a vector valued image by computing maximum Euclidian distance between the center
+ * pixel and each of the other pixels in a 3x3 neighbourhood. That is, eight different distances are
+ * compared.
+ *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VectorGradientEdgeOperator {
     public static FloatProcessor run(ImagePlus imp) {

@@ -31,7 +31,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * Converts image pixels from CIE L*a*b* color space to RGB color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConvertLabStackToRGBPlugin implements PlugIn {
     final private static String PLUGIN_NAME = "Convert CIE L*a*b* to RGB";
@@ -61,6 +61,7 @@ public class ConvertLabStackToRGBPlugin implements PlugIn {
             IJ.showMessage(PLUGIN_NAME,
                     "Conversion supported for GRAY32 stacks with three slices.");
             Macro.abort();
+            return;
         }
 
         IJ.showStatus(PLUGIN_NAME);

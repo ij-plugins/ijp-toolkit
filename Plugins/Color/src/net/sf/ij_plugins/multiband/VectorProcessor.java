@@ -32,8 +32,11 @@ import ij.process.StackConverter;
 import java.awt.*;
 
 /**
+ * Represents vector valued image. Value at each pixel in the image is a vector of floating point
+ * numbers.
+ *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VectorProcessor {
     final int width;
@@ -72,31 +75,54 @@ public class VectorProcessor {
     }
 
 
+    /**
+     * @return width of the image.
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return height of the image.
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * @return number of values at each pixel in the image.
+     */
     public int getNumberOfValues() {
         return numberOfValues;
     }
 
-
+    /**
+     * Gives direct access to pixel values in the image first index is the pixel number (between 0
+     * and width*height-1), the second index references within each pixel value.
+     *
+     * @return reference to the array containing pixel values in the image.
+     */
     public float[][] getPixels() {
         return pixels;
     }
 
+    /**
+     * @return region of interest within the image.
+     */
     public Rectangle getRoi() {
         return roi;
     }
 
+    /**
+     * @see {@link #getRoi()}
+     */
     public void setRoi(Rectangle roi) {
         this.roi = roi;
     }
 
+    /**
+     * @return pixel value iterator.
+     */
     public Iterator iterator() {
         return new VectorProcessor.Iterator();
     }
@@ -120,7 +146,7 @@ public class VectorProcessor {
     }
 
     static final private ImageStack convertToFloatStack(ImagePlus imp) {
-        // TODO: remove duplicae method in KMeansClustering
+        // TODO: remove duplicate method in KMeansClustering
 
         imp = duplicate(imp);
 
@@ -158,18 +184,26 @@ public class VectorProcessor {
     }
 
     static final private ImagePlus duplicate(final ImagePlus imp) {
-        // TODO: remove duplicae method in KMeansClustering
+        // TODO: remove duplicate method in KMeansClustering
         final Duplicater duplicater = new Duplicater();
         duplicater.setup(null, imp);
         return duplicater.duplicateStack(imp, imp.getTitle() + "-duplicate");
     }
 
+    /**
+     * Represents 3x3 neighbourhood. the center pixel is <code>p5</code>. Pixels <code>p1</code> to
+     * <code>p3</code> are in the top row, <code>p4</code> to <code>p6</code> in the middle, and
+     * <code>p7</code> to <code>p9</code> in the bottom of the neighbourhood.
+     */
     public static class Neighborhood3x3 {
         float[] p1, p2, p3, p4, p5, p6, p7, p8, p9;
         int x, y, offset;
     }
 
 
+    /**
+     * Iterator over 3x3 neighbourhood of vector valued pixels.
+     */
     public class Iterator implements java.util.Iterator {
         final int xMin = roi.x - 1;
         final int xMax = roi.x + roi.width - 1;;
@@ -200,7 +234,7 @@ public class VectorProcessor {
             }
             int offset = x + y * width;
 
-            // Update neighborhod information
+            // Update neighbourhood information
             neighborhood3x3.p1 = pixels[offset - rowOffset - 1];
             neighborhood3x3.p2 = pixels[offset - rowOffset];
             neighborhood3x3.p3 = pixels[offset - rowOffset + 1];
@@ -220,8 +254,11 @@ public class VectorProcessor {
             return neighborhood3x3;
         }
 
+        /**
+         * Not suported.
+         */
         public void remove() {
-            throw new UnsupportedOperationException("Metod remove() not supported.");
+            throw new UnsupportedOperationException("Method remove() not supported.");
         }
 
     }

@@ -21,7 +21,7 @@
 package net.sf.ij_plugins.multiband;
 
 /**
- * Inplece vertor operations
+ * In-plece vertor operations
  */
 final class VectorMath {
     final static public void add(float[] a, float[] b) {
