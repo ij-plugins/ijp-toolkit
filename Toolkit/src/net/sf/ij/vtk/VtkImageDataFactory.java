@@ -52,16 +52,16 @@ public class VtkImageDataFactory {
   /**
    *  Create a vtkImageData object from ImagePlus object.
    *
-   * @param  bp               Description of the Parameter
+   * @param  ip               Description of the Parameter
    * @return                  Description of the Return Value
    * @exception  IOException  Description of the Exception
    */
-  public static vtkImageData create(ImageProcessor bp) throws IOException {
+  public static vtkImageData create(ImageProcessor ip) throws IOException {
     File tmpFile = File.createTempFile("ijImageData", ".vtk");
     String tmpFileName = tmpFile.getAbsolutePath();
 
     // Save ImagePlus in VTK format in a temporary file.
-    VtkEncoder.save(tmpFileName, new ImagePlus(tmpFileName, bp));
+    VtkEncoder.save(tmpFileName, new ImagePlus(tmpFileName, ip));
 
     // Read the temporary file using VTK.
     vtkStructuredPointsReader reader = new vtkStructuredPointsReader();
