@@ -32,12 +32,16 @@ import net.sf.ij.vtk.VtkProgressObserver;
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.6 $
+ * @version  $Revision: 1.7 $
  */
 
 public class Anisotropic_Diffusion implements PlugIn {
 
   private static AnisotropicDiffusion vtkFilter;
+  private static double diffusionFactor = 1;
+  private static double diffusionThreshold = 128;
+  private static int numberOfIterations = 3;
+  private static boolean useGradientMagnitudeThreshold = false;
 
   /**  Constructor for the Anisotropic_Diffusion object */
   public Anisotropic_Diffusion() {
@@ -58,15 +62,14 @@ public class Anisotropic_Diffusion implements PlugIn {
     }
 
     GenericDialog dialog = new GenericDialog("Anisotropic Diffusion Options");
-    dialog.addNumericField("Diffusion factor", vtkFilter.getDiffusionFactor(), 3);
-    dialog.addNumericField("Diffusion threshold", vtkFilter.getDiffusionThreshold(), 3);
-    dialog.addNumericField("Number of iterations", vtkFilter.getNumberOfIterations(), 0);
-    dialog.addCheckbox("Gradient magnitude threshold", vtkFilter.isGradientMagnitudeThreshold());
+    dialog.addNumericField("Diffusion factor", diffusionFactor, 3);
+    dialog.addNumericField("Diffusion threshold", diffusionThreshold, 0);
+    dialog.addNumericField("Number of iterations", numberOfIterations, 0);
+    dialog.addCheckbox("Gradient magnitude threshold", useGradientMagnitudeThreshold);
     dialog.showDialog();
 
     while (dialog.invalidNumber() && !dialog.wasCanceled()) {
-      IJ.showMessage("Error",
-          "At least one of the fields is not a valid number.");
+      IJ.showMessage("Error", "At least one of the fields is not a valid number.");
       dialog.show();
     }
 
@@ -74,15 +77,24 @@ public class Anisotropic_Diffusion implements PlugIn {
       return;
     }
 
-    vtkFilter.setDiffusionFactor(dialog.getNextNumber());
-    vtkFilter.setDiffusionThreshold(dialog.getNextNumber());
-    vtkFilter.setNumberOfIterations((int) (dialog.getNextNumber() + 0.5));
-    vtkFilter.setGradientMagnitudeThreshold(dialog.getNextBoolean());
+    diffusionFactor = dialog.getNextNumber();
+    diffusionThreshold = dialog.getNextNumber();
+    numberOfIterations = ((int) (dialog.getNextNumber() + 0.5));
+    useGradientMagnitudeThreshold = dialog.getNextBoolean();
+
     vtkFilter.setInput(imp);
+    vtkFilter.setDiffusionFactor(diffusionFactor);
+    vtkFilter.setDiffusionThreshold(diffusionThreshold);
+    vtkFilter.setNumberOfIterations(numberOfIterations);
+    vtkFilter.setGradientMagnitudeThreshold(useGradientMagnitudeThreshold);
 
     vtkFilter.update();
 
     ImagePlus output = vtkFilter.getOutput();
+
+    // Free pipeline memory
+    vtkFilter = null;
+
     output.setTitle(imp.getTitle() + "-Anisotropic Diffusion");
     output.show();
   }

@@ -22,6 +22,7 @@ package net.sf.ij.vtk;
 
 import vtk.vtkImageAnisotropicDiffusion3D;
 import vtk.vtkImageData;
+import vtk.vtkImageCast;
 
 /**
  *  Wrapper for vtkImageAnisotropicDiffusion3D.
@@ -41,19 +42,23 @@ import vtk.vtkImageData;
  *
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.2 $
+ * @version  $Revision: 1.3 $
  */
 
 public class AnisotropicDiffusion extends VtkImageFilter {
 
   private vtkImageAnisotropicDiffusion3D filter;
+  private vtkImageCast inputCast;
   private VtkProgressObserver progressObserver;
 
 
 
   /**  Constructor for the AnisotropicDiffusion object */
   public AnisotropicDiffusion() {
+    inputCast = new vtk.vtkImageCast();
+    inputCast.SetOutputScalarTypeToFloat();
     filter = new vtkImageAnisotropicDiffusion3D();
+    filter.SetInput(inputCast.GetOutput());
     progressObserver = new VtkProgressObserver(filter);
   }
 
@@ -110,7 +115,7 @@ public class AnisotropicDiffusion extends VtkImageFilter {
       vtkImageData inputImageData = VtkImageDataFactory.create(inputImage);
 
       // update VTK pipeline
-      filter.SetInput(inputImageData);
+      inputCast.SetInput(inputImageData);
       filter.Update();
 
       // Pull output from VTK pipeleine

@@ -32,7 +32,7 @@ import net.sf.ij.vtk.Laplacian;
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 
 public class Laplacian_ implements PlugIn {
@@ -58,6 +58,10 @@ public class Laplacian_ implements PlugIn {
     vtkFilter.update();
 
     ImagePlus output = vtkFilter.getOutput();
+
+    // Free pipeline memory
+    vtkFilter = null;
+
     output.setTitle(imp.getTitle() + "-Laplacian");
     output.show();
   }

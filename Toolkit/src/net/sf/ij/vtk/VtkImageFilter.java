@@ -21,24 +21,32 @@
 package net.sf.ij.vtk;
 
 import ij.ImagePlus;
+import ij.IJ;
 
 /**
  * Abstract class foe wrapping VTK image to image filters.
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 public abstract class VtkImageFilter {
 
   static {
     // Load VTK libraries
     try {
+      IJ.showStatus("Loading VTK dynamic libraries...");
+      long tStart = System.currentTimeMillis();
+
       System.loadLibrary("vtkCommonJava");
       System.loadLibrary("vtkFilteringJava");
       System.loadLibrary("vtkIOJava");
       System.loadLibrary("vtkImagingJava");
       System.loadLibrary("vtkGraphicsJava");
       System.loadLibrary("vtkRenderingJava");
+
+      long tEnd = System.currentTimeMillis();
+      IJ.showStatus("VTK dynamic libraries loaded in "+(tEnd-tStart)+"ms.");
+
     } catch (UnsatisfiedLinkError ex) {
       ex.printStackTrace();
     }

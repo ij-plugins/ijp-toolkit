@@ -32,7 +32,7 @@ import vtk.vtkImageLaplacian;
  * gradient. Boundaries are handled, so the input is the same as the output.
  *
  * @author   Jarek Sacha
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 
 public class Laplacian extends VtkImageFilter {
@@ -49,6 +49,7 @@ public class Laplacian extends VtkImageFilter {
     inputCast.SetOutputScalarTypeToFloat();
     filter = new vtkImageLaplacian();
     filter.SetInput(inputCast.GetOutput());
+    filter.SetDimensionality(3);
     progressObserver = new VtkProgressObserver(filter);
   }
 

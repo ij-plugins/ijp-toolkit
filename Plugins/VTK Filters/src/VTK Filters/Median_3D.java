@@ -32,7 +32,7 @@ import net.sf.ij.vtk.Median3D;
  *
  * @author   Jarek Sacha
  * @since    September 11, 2002
- * @version  $Revision: 1.1 $
+ * @version  $Revision: 1.2 $
  */
 
 public class Median_3D implements PlugIn {
@@ -87,6 +87,10 @@ public class Median_3D implements PlugIn {
     vtkFilter.update();
 
     ImagePlus output = vtkFilter.getOutput();
+
+    // Free pipeline memory
+    vtkFilter = null;
+
     output.setTitle(imp.getTitle() + "-Median 3D");
     output.show();
   }
