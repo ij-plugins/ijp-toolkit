@@ -40,7 +40,7 @@ import net.sf.ij.util.TextUtil;
  *
  * @author     Jarek Sacha
  * @created    July 31, 2002
- * @version    $Revision: 1.4 $
+ * @version    $Revision: 1.5 $
  * @todo       Validate MetaImage tag dependency (some tags need always be
  *      present, some only if other tags are present, etc.)
  */
@@ -128,10 +128,15 @@ public class MiDecoder implements PlugIn {
   private FileInfo decodeHeader(File file) throws MiException {
     BufferedReader reader = null;
     FileInfo fileInfo = new FileInfo();
-    int lineNb = 0;
     try {
       reader = new BufferedReader(new FileReader(file));
+    } catch (FileNotFoundException ex) {
+        throw new MiException("Error opening file " + ex.getMessage());
+    }
 
+    int lineNb = 0;
+    boolean elementSpacingDefined = false;
+    try {
       String line = reader.readLine();
       // Keep track of line number for error reporting.
       int nDims = -1;
@@ -223,11 +228,31 @@ public class MiDecoder implements PlugIn {
           if (elementSpacing.length > 2) {
             fileInfo.pixelDepth = elementSpacing[2];
           }
+          fileInfo.unit = "mm";
+          elementSpacingDefined = true;
 
         }
         // TAG: ElementSize
-        else if (tag.id == MiTag.ElementSize) {
-          // Ignore for a time being.
+        else if (tag.id == MiTag.ElementSize && !elementSpacingDefined) {
+            if (nDims == -1) {
+              throw new MiException("Got tag '" + MiTag.ElementSize
+                  + "' but there was no tag '" + MiTag.NDims
+                  + "' yet. Header line=" + lineNb + ".");
+            }
+
+            float[] elementSize = TextUtil.parseFloatArray(tag.value);
+            if (elementSize.length != nDims) {
+              throw new MiException("Number of dimensions in tag '"
+                  + MiTag.DimSize
+                  + "' does not match number of dimensions in tag '"
+                  + MiTag.ElementSize + "'. Header line=" + lineNb + ".");
+            }
+            fileInfo.pixelWidth = elementSize[0];
+            fileInfo.pixelHeight = elementSize[1];
+            if (elementSize.length > 2) {
+              fileInfo.pixelDepth = elementSize[2];
+            }
+            fileInfo.unit = "mm";
         }
         // TAG: ElementType
         else if (tag.id == MiTag.ElementType) {
