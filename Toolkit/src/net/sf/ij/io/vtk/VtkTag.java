@@ -27,7 +27,7 @@ import net.sf.ij.util.Enumeration;
  *
  *@author     Jarek Sacha
  *@created    June 21, 2002
- *@version    $Revision: 1.1 $
+ *@version    $Revision: 1.2 $
  */
 
 class VtkTag extends Enumeration {
@@ -43,10 +43,14 @@ class VtkTag extends Enumeration {
   public final static VtkTag SPACING = new VtkTag("SPACING");
   /**  ASPECT_RATIO */
   public final static VtkTag ASPECT_RATIO = new VtkTag("ASPECT_RATIO");
+  /**  CELL_DATA */
+  public final static VtkTag CELL_DATA = new VtkTag("CELL_DATA");
   /**  POINT_DATA */
   public final static VtkTag POINT_DATA = new VtkTag("POINT_DATA");
   /**  SCALARS */
   public final static VtkTag SCALARS = new VtkTag("SCALARS");
+  /** COLOR_SCALARS */
+  public final static VtkTag COLOR_SCALARS = new VtkTag("COLOR_SCALARS");
   /**  LOOKUP_TABLE */
   public final static VtkTag LOOKUP_TABLE = new VtkTag("LOOKUP_TABLE");
 
