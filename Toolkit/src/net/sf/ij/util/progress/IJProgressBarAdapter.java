@@ -32,10 +32,11 @@ import ij.IJ;
  * </pre>
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class IJProgressBarAdapter implements ProgressListener {
     public void progressNotification(ProgressEvent e) {
+        IJ.showStatus(e.getMessage());
         IJ.showProgress(e.getProgress());
     }
 }

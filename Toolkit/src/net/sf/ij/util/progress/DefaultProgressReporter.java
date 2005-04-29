@@ -90,16 +90,18 @@ public class DefaultProgressReporter implements ProgressReporter {
      * @see #notifyProgressListeners()
      */
     protected void notifyProgressListeners(final double progress) {
+        notifyProgressListeners(progress, "");
+    }
+
+    protected void notifyProgressListeners(final double progress, final String message) {
         setCurrentProgress(progress);
         final int numberOfListeners = progressListeners.size();
         if (numberOfListeners > 0) {
-            final ProgressEvent e = new ProgressEvent(this, currentProgress);
+            final ProgressEvent e = new ProgressEvent(this, currentProgress, message);
             for (int i = 0; i < numberOfListeners; i++) {
                 final ProgressListener l = (ProgressListener) progressListeners.get(i);
                 l.progressNotification(e);
             }
         }
     }
-
-
 }

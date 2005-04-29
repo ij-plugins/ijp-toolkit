@@ -30,13 +30,23 @@ import java.util.EventObject;
  */
 public class ProgressEvent extends EventObject {
     private double progress;
+    private String message;
 
-    public ProgressEvent(Object source, double progress) {
+    public ProgressEvent(final Object source, final double progress) {
+        this(source, progress, "");
+    }
+
+    public ProgressEvent(final Object source, double progress, final String message) {
         super(source);
         this.progress = progress;
+        this.message = message;
     }
 
     public double getProgress() {
         return progress;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

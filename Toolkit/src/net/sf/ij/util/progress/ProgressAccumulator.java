@@ -26,14 +26,24 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Ultility for aggregating progress events from multiple {@link ProgressReporter}'s
+ * Utility for aggregating progress events from multiple {@link ProgressReporter}'s
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ProgressAccumulator
         extends DefaultProgressReporter
         implements ProgressListener {
+    private static class Data {
+        double weight;
+        String message;
+
+        public Data(double weight, String message) {
+            this.weight = weight;
+            this.message = message;
+        }
+    }
+
     final private Map reporters = new HashMap();
     private double minimumChange = 0.01;
     private double lastReportedProgress = -1;
@@ -62,28 +72,58 @@ public class ProgressAccumulator
 
     /**
      * Add progress <code>reporter</code> with given <code>weight</code>.
-     * If reporter already exists its <code>weight</code> will be updated.
+     * If reporter already exists its <code>weight</code> and <code>message</code> will be updated.
      *
      * @param reporter
      * @param weight
      */
     public void addProgressReporter(final ProgressReporter reporter, final double weight) {
+        addProgressReporter(reporter, weight, null);
+    }
+
+    /**
+     * Add progress <code>reporter</code> with given <code>weight</code>.
+     * If reporter already exists its <code>weight</code> and <code>message</code> will be updated.
+     *
+     * @param reporter
+     * @param weight
+     * @param message  message that will be reported when this reporter send progress event. If <code>null</code> the
+     *                 original message send by reporter will be used.
+     */
+    public void addProgressReporter(final ProgressReporter reporter, final double weight, final String message) {
         if (reporter == null) {
             return;
         }
         if (!reporters.containsKey(reporter)) {
             reporter.addProgressListener(this);
         }
-        reporters.put(reporter, new Double(weight));
+        reporters.put(reporter, new Data(weight, message));
     }
 
 
-    public void progressNotification(ProgressEvent e) {
-        if (e == null) {
+    public void removeProgressReporter(final ProgressReporter reporter) {
+        final ProgressReporter r = (ProgressReporter) reporters.remove(reporter);
+        if (r != null) {
+            r.removeProgressListener(this);
+        }
+    }
+
+    public void removeAllProgressReporter() {
+        final Set keys = reporters.keySet();
+        for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+            final ProgressReporter progressReporter = (ProgressReporter) iterator.next();
+            progressReporter.removeProgressListener(this);
+        }
+        reporters.clear();
+    }
+
+
+    public void progressNotification(final ProgressEvent event) {
+        if (event == null) {
             throw new IllegalArgumentException("Progress event argument cannot be null.");
         }
 
-        final Object o = e.getSource();
+        final Object o = event.getSource();
         if (o == null) {
             throw new IllegalArgumentException("Event source cannot be null.");
         }
@@ -103,22 +143,27 @@ public class ProgressAccumulator
         final Set entries = reporters.entrySet();
         for (final Iterator i = entries.iterator(); i.hasNext();) {
             final Map.Entry entry = (Map.Entry) i.next();
-            final double weight = ((Double) entry.getValue()).doubleValue();
-            weightSum += weight;
+            final Data data = (Data) entry.getValue();
+            weightSum += data.weight;
             double progress = ((ProgressReporter) entry.getKey()).getCurrentProgress();
-            progressSum += progress * weight;
+            progressSum += progress * data.weight;
         }
 
         assert progressSum >= 0;
         assert weightSum > 0;
 
         final double progress = progressSum / weightSum;
+        final Data data = (Data) reporters.get(reporter);
 
-        setCurrentProgress(progress);
+        final String message = data.message != null
+                ? data.message
+                : event.getMessage();
 
         if ((progress - lastReportedProgress) > minimumChange) {
             lastReportedProgress = progress;
-            notifyProgressListeners();
+            notifyProgressListeners(progress, message);
+        } else {
+            setCurrentProgress(progress);
         }
     }
 }

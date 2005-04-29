@@ -35,8 +35,8 @@ final  public class ProgressExample3 {
         // Create acumulator that will observer progress of both counters
         ProgressAccumulator accumulator = new ProgressAccumulator();
         // Register counters as progress reporters, use dirfferent weight for each
-        accumulator.addProgressReporter(counter1, 3);
-        accumulator.addProgressReporter(counter2, 1);
+        accumulator.addProgressReporter(counter1, 3, " + ");
+        accumulator.addProgressReporter(counter2, 1, " * ");
 
         // Request that only progress changes above minumum be reported
         accumulator.setMinimumChange(0.1);
@@ -44,7 +44,8 @@ final  public class ProgressExample3 {
         // Add progress listener
         accumulator.addProgressListener(new ProgressListener() {
             public void progressNotification(ProgressEvent e) {
-                System.out.println("\nProgress listener: " + Math.round(e.getProgress() * 100) + "%");
+                System.out.println("\nProgress listener: " + Math.round(e.getProgress() * 100) + "% "
+                        + e.getMessage());
             }
         });
 
