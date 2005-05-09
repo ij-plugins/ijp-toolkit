@@ -29,7 +29,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ColorSpaceConvertion {
 
@@ -298,7 +298,8 @@ public class ColorSpaceConvertion {
         final float[][] pixels = vp.getPixels();
         final float[] tmp = new float[3];
 
-        final int progressStep = pixels.length / 10;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(pixels.length / 10, 1);
         for (int i = 0; i < pixels.length; i++) {
             if (i % progressStep == 0) {
                 IJ.showProgress(i, pixels.length);
@@ -329,7 +330,8 @@ public class ColorSpaceConvertion {
         final byte[] blue = new byte[sliceSize];
 
 
-        final int progressStep = pixels.length / 10;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(pixels.length / 10, 1);
         for (int i = 0; i < pixels.length; i++) {
             if (i % progressStep == 0) {
                 IJ.showProgress(i, pixels.length);

@@ -32,10 +32,9 @@ import java.io.IOException;
  * Implemnts iteratoin over an {@link RunningMedianOperator}.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class RunningFilter {
-
     final private IRunningMedianFloatOperator operator;
     final int filterWidth;
     final int filterHeight;
@@ -78,7 +77,8 @@ public class RunningFilter {
         final int yMin = roi.y;
         final int yMax = roi.y + roi.height;
 
-        final int progressIncrement = (yMax - yMin) / 100;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressIncrement = Math.max((yMax - yMin) / 100, 1);
 
         final float[] packet = new float[filterHeight];
         for (int y = yMin; y < yMax; ++y) {

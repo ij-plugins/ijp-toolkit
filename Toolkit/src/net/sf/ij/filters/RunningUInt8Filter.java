@@ -29,10 +29,9 @@ import java.awt.*;
  * Implemnts iteratoin over an {@link IRunningUInt8Operator}.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 class RunningUInt8Filter implements IRunningUInt8Filter {
-
     final private IRunningUInt8Operator operator;
     private ProgressBar progressBar;
 
@@ -69,7 +68,8 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
         final int yMin = roi.y;
         final int yMax = roi.y + roi.height;
 
-        final int progressIncrement = (yMax - yMin) / 100;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressIncrement = Math.max((yMax - yMin) / 100, 1);
 
         for (int y = yMin; y < yMax; ++y) {
             final int yOffset = y * width;

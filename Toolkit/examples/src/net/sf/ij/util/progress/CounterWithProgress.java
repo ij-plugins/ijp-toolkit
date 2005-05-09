@@ -25,7 +25,7 @@ package net.sf.ij.util.progress;
  * Created Apr 28, 2005 4:32:45 PM.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CounterWithProgress extends DefaultProgressReporter {
     private final char marker;
@@ -36,7 +36,8 @@ public class CounterWithProgress extends DefaultProgressReporter {
 
     public void count(final int max) {
 
-        final int progressIncrement = max / 10;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressIncrement = Math.max(max / 10, 1);
 
         System.out.println("Counting " + max + " '" + marker + "'.");
         for (int i = 0; i < max; i++) {
