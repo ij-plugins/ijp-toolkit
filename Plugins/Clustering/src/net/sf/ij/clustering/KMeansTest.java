@@ -30,7 +30,7 @@ import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public final class KMeansTest extends junit.framework.TestCase {
     public KMeansTest(final java.lang.String test) {
@@ -38,7 +38,7 @@ public final class KMeansTest extends junit.framework.TestCase {
     }
 
     public void test01() throws java.lang.Exception {
-        final File imageFile = new File("test_images/clown24.tif");
+        final File imageFile = new File("test/data/clown24.png");
         final double tolerance = 0.01;
         final double[][] expectedCenters = {
             {182.407, 108.690, 45.752},
