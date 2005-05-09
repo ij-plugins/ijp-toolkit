@@ -22,10 +22,9 @@ package net.sf.ij.filters;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class RunningMedianOperatorTest extends AbstractRunningMedianOperatorTest {
-
     public RunningMedianOperatorTest(String test) {
         super(test);
     }

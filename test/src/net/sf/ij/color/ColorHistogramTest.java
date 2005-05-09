@@ -38,7 +38,7 @@ public class ColorHistogramTest extends TestCase {
     }
 
     public void testHistogram() throws Exception {
-        final File imageFile = new File("test_images/clown24.tif");
+        final File imageFile = new File("test/data/clown24.png");
 
         assertTrue("File exists", imageFile.exists());
 

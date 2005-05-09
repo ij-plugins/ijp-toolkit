@@ -27,18 +27,21 @@ import ij.process.ByteProcessor;
 import junit.framework.TestCase;
 
 import java.awt.*;
+import java.io.File;
 
 /**
  * Unit test for SRG.
- * 
+ *
  * @author Jarek Sacha
  * @version $ Revision: $
  *          <p/>
  *          //TODO: Verify that segmentation is correct.
  */
 public class SRGTest extends TestCase {
-    private static final String BLOBS_FILE_NAME = "test_images/blobs.png";
-    private static final String RAMP_FILE_NAME = "test_images/ramp.png";
+    private static final String OUTPUT_DIR = "tmp";
+
+    private static final String BLOBS_FILE_NAME = "test/data/blobs.png";
+    private static final String RAMP_FILE_NAME = "test/data/ramp.png";
 
     public SRGTest(String test) {
         super(test);
@@ -57,8 +60,8 @@ public class SRGTest extends TestCase {
         }
 
         Point[][] seeds = {
-                        {new Point(1, 198)}, // dark
-                        {new Point(198, 1)} // bright
+            {new Point(1, 198)}, // dark
+            {new Point(198, 1)} // bright
         };
 
         // Setup region growed
@@ -73,13 +76,15 @@ public class SRGTest extends TestCase {
         ByteProcessor regionMask = srg.getRegionMask();
         ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
 
+        new File(OUTPUT_DIR).mkdirs();
+
         FileSaver fileSaver = new FileSaver(imp1);
-        if (!fileSaver.saveAsTiff("test_images/srg_ramp_test_output.tif")) {
+        if (!fileSaver.saveAsTiff(OUTPUT_DIR + "/srg_ramp_test_output.tif")) {
             throw new Exception("Error saving output image.");
         }
 
         FileSaver fileSaver1 = new FileSaver(new ImagePlus("Growth", srg.getAnimationStack()));
-        if (!fileSaver1.saveAsTiffStack("test_images/srg_ramp_test_animation.tif")) {
+        if (!fileSaver1.saveAsTiffStack(OUTPUT_DIR + "/srg_ramp_test_animation.tif")) {
             throw new Exception("Error saving output image.");
         }
 
@@ -99,9 +104,9 @@ public class SRGTest extends TestCase {
 
 
         Point[][] seeds = {
-                        {new Point(107, 144)}, // Background
-                        {new Point(91, 159)}, // Blob 1
-                        {new Point(119, 143)}, // Blob 2
+            {new Point(107, 144)}, // Background
+            {new Point(91, 159)}, // Blob 1
+            {new Point(119, 143)}, // Blob 2
         };
 
         // Setup region growed
@@ -116,13 +121,15 @@ public class SRGTest extends TestCase {
         ByteProcessor regionMask = srg.getRegionMask();
         ImagePlus imp = new ImagePlus("Region Mask", regionMask);
 
+        new File(OUTPUT_DIR).mkdirs();
+
         FileSaver fileSaver = new FileSaver(imp);
-        if (!fileSaver.saveAsTiff("test_images/srg_test_output.tif")) {
+        if (!fileSaver.saveAsTiff(OUTPUT_DIR + "/srg_test_output.tif")) {
             throw new Exception("Error saving output image.");
         }
 
         FileSaver fileSaver1 = new FileSaver(new ImagePlus("Growth", srg.getAnimationStack()));
-        if (!fileSaver1.saveAsTiffStack("test_images/srg_test_animation.tif")) {
+        if (!fileSaver1.saveAsTiffStack(OUTPUT_DIR + "/srg_test_animation.tif")) {
             throw new Exception("Error saving output image.");
         }
     }

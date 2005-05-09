@@ -47,8 +47,8 @@ public class RunningFilterTest extends TestCase {
     }
 
     public void testFilter() throws Exception {
-        ImagePlus imp = IOUtils.openImage("test_images/boats_x2.png");
-        //        ImagePlus imp = IOUtils.openImage("test_images/blobs_noise.tif");
+//        ImagePlus imp = IOUtils.openImage("test_images/boats_x2.png");
+        ImagePlus imp = IOUtils.openImage("test/data/blobs_noise.png");
         final FloatProcessor fp = (FloatProcessor) imp.getProcessor().convertToFloat();
 
         //        final RunningFilter filter = new RunningFilter(new RunningMedianOperator(), 29, 29);

@@ -156,10 +156,10 @@ public class RedBlackTreeFloatTest extends TestCase {
 
 
         final float[][] keys = {
-                        {206, 202, 201},
-                        {220, 191, 199},
-                        {187, 217, 17},
-                        {252, 240, 221}};
+            {206, 202, 201},
+            {220, 191, 199},
+            {187, 217, 17},
+            {252, 240, 221}};
 
         for (int i = 0; i < keys[0].length; i++) {
             tree.insert(keys[0][i]);
