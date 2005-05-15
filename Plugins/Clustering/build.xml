@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ij-Clustering" default="run" basedir=".">
     <description>
-      Image segmentation through thresholding and clustering.
+        Image segmentation through thresholding and clustering.
     </description>
 
     <property name="package.name" value="ij_clustering"/>
-    <property name="package.version" value="1.1"/>
+    <property name="package.version" value="1.2"/>
 
     <!-- Customize properties, e.g., jaicodec.jar, cvs.root.-->
     <property file="build.properties"/>
@@ -17,7 +17,7 @@
     <property name="cvs.root" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ij-plugins"/>
     <property name="cvs.module" value="ij-plugins/Plugins/Clustering"/>
 
-  
+
     <!-- Set default properties for this build -->
     <property name="base.dir" location="${basedir}"/>
     <property name="lib.dir" location="${base.dir}/../../lib"/>
@@ -46,16 +46,16 @@
     </path>
 
     <fileset id="config.files"
-        dir="${src.dir}">
+             dir="${src.dir}">
         <include name="**/*.config"/>
     </fileset>
     <fileset id="resource.files"
-        dir="${src.dir}">
+             dir="${src.dir}">
         <include name="**/*.png"/>
         <include name="**/*.gif"/>
     </fileset>
     <fileset id="docs.files"
-        dir="${docs.dir}">
+             dir="${docs.dir}">
         <include name="**/*.html"/>
         <include name="**/*.css"/>
         <include name="**/*.png"/>
@@ -67,32 +67,32 @@
     <!-- ================= -->
 
     <target name="run"
-        description="Test run ImageJ with ij-ImageIO plugins"
-        depends="jar">
+            description="Test run ImageJ with ij-ImageIO plugins"
+            depends="jar">
 
         <java
-            jar="${ij.jar}"
-            dir="${base.dir}"
-            fork="true">
+                jar="${ij.jar}"
+                dir="${base.dir}"
+                fork="true">
             <jvmarg value="-Dplugins.dir=${sandbox.dir}"/>
         </java>
 
     </target>
 
     <target name="dist"
-        description="Create distribution files."
-        depends="dist-from-cvs">
+            description="Create distribution files."
+            depends="dist-from-cvs">
     </target>
 
     <target name="compile"
-        depends="init"
-        description="Compile all examples">
+            depends="init"
+            description="Compile all examples">
         <javac
-            srcdir="${src.dir}"
-            destdir="${build.classes.dir}"
-            debug="on"
-            target="1.3"
-            source="1.3">
+                srcdir="${src.dir}"
+                destdir="${build.classes.dir}"
+                debug="on"
+                target="1.4"
+                source="1.4">
             <classpath refid="compile.classpath"/>
             <exclude name="**/*Test.java"/>
         </javac>
@@ -113,12 +113,12 @@
     </target>
 
     <target name="jar" depends="compile"
-        description="Create plugins' JAR">
-    
+            description="Create plugins' JAR">
+
         <!-- Create library jar -->
         <jar destfile="${jar.dir}/${package.name}.jar"
-            basedir="${build.classes.dir}"
-            compress="true">
+             basedir="${build.classes.dir}"
+             compress="true">
             <fileset refid="resource.files"/>
             <!--            <manifest>-->
             <!--                <attribute name="Main-Class" value="${main.class}"/>-->
@@ -129,13 +129,13 @@
 
     <!-- Create API documentation -->
     <target name="javadoc"
-        depends="compile"
-        description="Create Javadoc API documentation">
+            depends="compile"
+            description="Create Javadoc API documentation">
         <javadoc verbose="no"
-            packagenames="*"
-            destdir="${javadoc.dir}"
-            windowtitle="Clustering and Thresholding Toolkit for ImageJ - API"
-            header="Clustering and Thresholding Toolkit for ImageJ - API">
+                 packagenames="*"
+                 destdir="${javadoc.dir}"
+                 windowtitle="Clustering and Thresholding Toolkit for ImageJ - API"
+                 header="Clustering and Thresholding Toolkit for ImageJ - API">
             <fileset dir="src" defaultexcludes="yes">
                 <include name="**/*.java"/>
                 <exclude name="**/**Test.java"/>
@@ -156,8 +156,8 @@
     </target>
 
     <target name="clean-all"
-        depends="clean"
-        description="Remove all files and directories created during build.">
+            depends="clean"
+            description="Remove all files and directories created during build.">
         <delete dir="${jar.dir}"/>
         <delete dir="${sandbox.plugins.dir}"/>
         <delete dir="${sandbox.dir}"/>
@@ -201,8 +201,8 @@
         </antcall>
         <!-- ZIP source -->
         <zip basedir="${cvs.dir}"
-            destfile="${dist.dir}/${package.name}_src_${package.version}_${DSTAMP}.zip"/>
-        
+             destfile="${dist.dir}/${package.name}_src_${package.version}_${DSTAMP}.zip"/>
+
 
         <!-- ................... -->
         <!-- Binary distribution -->
@@ -215,58 +215,58 @@
         </antcall>
 
         <!-- Cleanup -->
-        <!--
+<!--
         <delete dir="{cvs.imageio.dir}"/>
         -->
     </target>
 
     <!-- Checkout sources drom CVS repository -->
     <target name="checkout"
-        depends="init">
+            depends="init">
         <!-- Checkout wrappers for ImageJ -->
         <cvs cvsRoot="${cvs.root}"
-            command="checkout -P"
-            package="${cvs.module}"
+             command="checkout -P"
+             package="${cvs.module}"
 
-            dest="${checkout.dir}"/>
+             dest="${checkout.dir}"/>
     </target>
 
     <!-- Target: changelog -->
     <target name="changelog" depends="init">
         <cvschangelog
-            dir="${base.dir}"
-            destfile="${dist.dir}/changelog.xml"
-            start="LatestRelease"
-            end="HEAD"
-            />
+                dir="${base.dir}"
+                destfile="${dist.dir}/changelog.xml"
+                start="LatestRelease"
+                end="HEAD"
+                />
         <style
-            in="${build.dir}/changelog.xml"
-            out="${dist.dir}/changelog.html"
-            style="${ant.home}/etc/changelog.xsl">
+                in="${build.dir}/changelog.xml"
+                out="${dist.dir}/changelog.html"
+                style="${ant.home}/etc/changelog.xsl">
             <param name="title" expression="ij_clustering ChangeLog"/>
             <param name="module" expression="imageio"/>
             <param name="cvsweb" expression="http://cvs.sourceforge.net/viewcvs.py/ij-plugins/"/>
         </style>
     </target>
-  
+
     <!-- Target: tagdif -->
     <target name="tagdiff" depends="init">
         <cvstagdiff
-            cvsroot="${cvs.root}"
-            destfile="${build.dir}/tagdiff.xml"
-            package="${cvs.module}"
-            starttag="LatestRelease"
-            endtag="HEAD"
-            compression="true"
-            />
-        <!--
+                cvsroot="${cvs.root}"
+                destfile="${build.dir}/tagdiff.xml"
+                package="${cvs.module}"
+                starttag="LatestRelease"
+                endtag="HEAD"
+                compression="true"
+                />
+<!--
         startTag="ij-jai-imageio_v_1_0_5"
         endTag="HEAD"
         -->
         <style
-            in="${build.dir}/tagdiff.xml"
-            out="${dist.dir}/tagdiff.html"
-            style="${ant.home}/etc/tagdiff.xsl">
+                in="${build.dir}/tagdiff.xml"
+                out="${dist.dir}/tagdiff.html"
+                style="${ant.home}/etc/tagdiff.xsl">
             <param name="title" expression="ij_clustering Tag Diff"/>
             <param name="module" expression="${cvs.module}"/>
             <param name="cvsweb" expression="http://cvs.sourceforge.net/viewcvs.py/ij-plugins/"/>

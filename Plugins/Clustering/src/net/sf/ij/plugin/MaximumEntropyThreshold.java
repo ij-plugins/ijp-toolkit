@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,22 +36,21 @@ import net.sf.ij.thresholding.HistogramThreshold;
  * @author Jarek Sacha
  */
 public final class MaximumEntropyThreshold implements PlugInFilter {
-
     private final static String aboutMessage =
             "Automatic thresholding technique based on the maximum entropy of the\n" +
-            "histogram. See:\n" +
-            "P.K. Sahoo, S. Soltani, K.C. Wong and, Y.C. Chen \"A Survey of \n"+
-            "Thresholding Techniques\", Computer Vision, Graphics, and Image\n"+
-            "Processing, Vol. 41, pp.233-260, 1988.";
+                    "histogram. See:\n" +
+                    "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
+                    "\"Thresholding Using the Entropy of the Histogram\"CVGIP, (29), pp.273-285,\n" +
+                    "1985.";
 
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
 
     /*
      *
      */
-    public final int setup(final java.lang.String s, final ImagePlus imagePlus) {
+            public final int setup(final java.lang.String s, final ImagePlus imagePlus) {
 
-        if("about".equalsIgnoreCase(s)) {
+        if ("about".equalsIgnoreCase(s)) {
             IJ.showMessage("Maximum Entropy Theshold", aboutMessage);
             return PlugInFilter.DONE;
         }
@@ -62,7 +61,7 @@ public final class MaximumEntropyThreshold implements PlugInFilter {
     /*
      *
      */
-    public final void run(final ImageProcessor imageProcessor) {
+            public final void run(final ImageProcessor imageProcessor) {
         final int[] hist = imageProcessor.getHistogram();
         final int threshold = HistogramThreshold.maximumEntropy(hist);
         imageProcessor.threshold(threshold);
