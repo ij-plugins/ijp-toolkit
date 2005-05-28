@@ -18,48 +18,48 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
-import ij.*;
-import ij.gui.*;
-import ij.plugin.PlugIn;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.plugin.PlugIn;
 import net.sf.ij.im3d.Util;
 import net.sf.ij.im3d.morphology.Morpho;
 
 /**
- *  Performs morphological dilation (max) for 2D and 3D images, using 8- or
- *  26-connectedness, respectively.
+ * Performs morphological dilation (max) for 2D and 3D images, using 8- or 26-connectedness,
+ * respectively.
  *
- * @author     Jarek Sacha
- * @created    July 14, 2002
- * @version    $Revision: 1.5 $
+ * @author Jarek Sacha
+ * @version $Revision: 1.6 $
+ * @created July 14, 2002
  */
 
 public class Morphological_Dilate_3D implements PlugIn {
+    /**
+     * Main processing method for the VTK_Writer plugin
+     *
+     * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
+     */
+    public void run(String arg) {
+        ImagePlus imp = WindowManager.getCurrentImage();
+        if (imp == null) {
+            IJ.noImage();
+            return;
+        }
 
-  /**
-   *  Main processing method for the VTK_Writer plugin
-   *
-   * @param  arg  Optional argument required by ij.plugin.PlugIn interface (not
-   *      used).
-   */
-  public void run(String arg) {
-    ImagePlus imp = WindowManager.getCurrentImage();
-    if (imp == null) {
-      IJ.noImage();
-      return;
+        if (imp.getType() != ImagePlus.GRAY8) {
+            IJ.showMessage("Morphological Dilate 3D", "This plugin works only with GRAY8 images.");
+            return;
+        }
+
+        ImageStack src = imp.getStack();
+        ImageStack dest = Util.duplicateEmpty(src);
+
+        Morpho morpho = new Morpho();
+        morpho.dilate(imp.getStack(), dest);
+
+        new ImagePlus(imp.getTitle() + "+Dilate", dest).show();
     }
-
-    if(imp.getType() != ImagePlus.GRAY8) {
-      IJ.showMessage("Morphological Dilate 3D", "This plugin works only with GRAY8 images.");
-      return;
-    }
-
-    ImageStack src = imp.getStack();
-    ImageStack dest = Util.duplicateEmpty(src);
-
-    Morpho morpho = new Morpho();
-    morpho.dilate(imp.getStack(), dest);
-
-    new ImagePlus(imp.getTitle() + "+Dilate", dest).show();
-  }
 }

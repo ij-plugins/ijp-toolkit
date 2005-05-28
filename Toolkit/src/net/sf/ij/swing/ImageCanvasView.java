@@ -29,10 +29,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * Initial implemntation based on class PaintModel from Andrei Cioroianu article
- * <i>Prototyping Desktop Applications</i> (http://www.onjava.com/pub/a/onjava/2004/04/28/desktop.html).
+ * Initial implemntation based on class PaintModel from Andrei Cioroianu article <i>Prototyping
+ * Desktop Applications</i> (http://www.onjava.com/pub/a/onjava/2004/04/28/desktop.html).
  */
 public class ImageCanvasView extends JComponent {
+    private static final long serialVersionUID = 1L;
     private ImageCanvasModel model;
 //    private AbstractTool currentTool;
 

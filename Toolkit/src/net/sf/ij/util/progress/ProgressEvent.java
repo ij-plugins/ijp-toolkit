@@ -29,6 +29,7 @@ import java.util.EventObject;
  * @author Jarek Sacha
  */
 public class ProgressEvent extends EventObject {
+    private static final long serialVersionUID = 1L;
     private double progress;
     private String message;
 

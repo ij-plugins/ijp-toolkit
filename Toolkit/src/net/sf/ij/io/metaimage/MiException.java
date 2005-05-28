@@ -21,20 +21,22 @@
 package net.sf.ij.io.metaimage;
 
 /**
- *  Exception specific to MetaImage I/O classes.
+ * Exception specific to MetaImage I/O classes.
  *
- *@author     Jarek Sacha
- *@created    June 18, 2002
- *@version    $Revision: 1.1 $ $Date: 2002-07-19 02:45:18 $
+ * @author Jarek Sacha
+ * @version $Revision: 1.2 $ $Date: 2005-05-28 04:06:51 $
+ * @created June 18, 2002
  */
 public class MiException extends Exception {
-  /**
-   *  Constructor for the MetaImageException object
-   *
-   *@param  message  Message.
-   */
-  public MiException(String message) {
-    super(message);
+    private static final long serialVersionUID = 1L;
 
-  }
+    /**
+     * Constructor for the MetaImageException object
+     *
+     * @param message Message.
+     */
+    public MiException(String message) {
+        super(message);
+
+    }
 }

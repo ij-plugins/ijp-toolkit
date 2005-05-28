@@ -21,19 +21,21 @@
 package net.sf.ij.io.vtk;
 
 /**
- *  Exception specific to VTK image I/O classes.
+ * Exception specific to VTK image I/O classes.
  *
- *@author     Jarek Sacha
- *@created    June 18, 2002
- *@version    $Revision: 1.1 $ $Date: 2002-07-19 02:45:18 $
+ * @author Jarek Sacha
+ * @version $Revision: 1.2 $ $Date: 2005-05-28 04:06:52 $
+ * @created June 18, 2002
  */
 public class VtkImageException extends Exception {
-  /**
-   *  Constructor for the VtkImageException object
-   *
-   *@param  message  Description of Parameter
-   */
-  public VtkImageException(String message) {
-    super(message);
-  }
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Constructor for the VtkImageException object
+     *
+     * @param message Description of Parameter
+     */
+    public VtkImageException(String message) {
+        super(message);
+    }
 }

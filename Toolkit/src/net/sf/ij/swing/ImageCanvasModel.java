@@ -27,10 +27,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Initial implemntation based on class PaintModel from Andrei Cioroianu article
- * <i>Prototyping Desktop Applications</i> (http://www.onjava.com/pub/a/onjava/2004/04/28/desktop.html).
+ * Initial implemntation based on class PaintModel from Andrei Cioroianu article <i>Prototyping
+ * Desktop Applications</i> (http://www.onjava.com/pub/a/onjava/2004/04/28/desktop.html).
  */
 public class ImageCanvasModel extends PropertyChangeSupport {
+    private static final long serialVersionUID = 1L;
+
     public static final String BACK_COLOR_PROPERTY
             = "BACK_COLOR_PROPERTY";
     public static final String BACK_IMAGE_PROPERTY
@@ -60,7 +62,7 @@ public class ImageCanvasModel extends PropertyChangeSupport {
             = Color.black;
     public static final BasicStroke TOOL_STROKE_INIT_VALUE
             = new BasicStroke(5, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_ROUND);
+            BasicStroke.JOIN_ROUND);
 
     private Color backColor;
     private Image backImage;
@@ -84,24 +86,19 @@ public class ImageCanvasModel extends PropertyChangeSupport {
     }
 
     /**
-     *
-     * Associates the specified <code>item</code> with the specified
-     * <code>key</code> that is displayed on this canvas. If the canvas
-     * previously contained a mapping for this <code>key</code>, the old item is replaced by
-     * the specified <code>item</code>. (A map m is said to contain a mapping for a key k if
-     * and only if m.containsKey(k) would return true.)) Parameters: key - key
-     * with which the specified value is to be associated. value - value to be
-     * associated with the specified key. Returns: previous value associated
-     * with specified key, or null if there was no mapping for key. A null
-     * return can also indicate that the map previously associated null with the
-     * specified key, if the implementation supports null values. Throws:
-     * java.lang.UnsupportedOperationException - if the put operation is not
-     * supported by this map. java.lang.ClassCastException - if the class of the
-     * specified key or value prevents it from being stored in this map.
-     * java.lang.IllegalArgumentException - if some aspect of this key or value
-     * prevents it from being stored in this map. java.lang.NullPointerException
-     * - this map does not permit null keys or values, and the specified key or
-     * value is null.
+     * Associates the specified <code>item</code> with the specified <code>key</code> that is
+     * displayed on this canvas. If the canvas previously contained a mapping for this
+     * <code>key</code>, the old item is replaced by the specified <code>item</code>. (A map m is
+     * said to contain a mapping for a key k if and only if m.containsKey(k) would return true.))
+     * Parameters: key - key with which the specified value is to be associated. value - value to be
+     * associated with the specified key. Returns: previous value associated with specified key, or
+     * null if there was no mapping for key. A null return can also indicate that the map previously
+     * associated null with the specified key, if the implementation supports null values. Throws:
+     * java.lang.UnsupportedOperationException - if the put operation is not supported by this map.
+     * java.lang.ClassCastException - if the class of the specified key or value prevents it from
+     * being stored in this map. java.lang.IllegalArgumentException - if some aspect of this key or
+     * value prevents it from being stored in this map. java.lang.NullPointerException - this map
+     * does not permit null keys or values, and the specified key or value is null.
      *
      * @param key
      * @param item
