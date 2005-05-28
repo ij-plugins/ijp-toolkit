@@ -28,7 +28,6 @@ import java.util.LinkedList;
  * This class has some helper methods for texture synthesis algorithms.
  */
 public class SynthAide {
-
     /**
      * This copies a rectangular region of pixels from one view to another. The region copied will
      * start at (firstx,firsty) and extend to include (firstx+width-1, firsty+height-1). Coordinates
