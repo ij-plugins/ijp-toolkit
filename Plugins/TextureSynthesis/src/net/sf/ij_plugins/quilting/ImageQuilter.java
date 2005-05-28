@@ -38,16 +38,15 @@ import java.util.LinkedList;
  * time.
  */
 public class ImageQuilter {
+    private final ImageProcessor input;
+    private final int patchsize;
+    private final int overlapsize;
 
-    private ImageProcessor input;
-    private int patchsize;
-    private int overlapsize;
+    public static final int DEFAULT_PATCH_SIZE = 36;
+    public static final int DEFAULT_OVERLAP_SIZE = 6;
 
-    public static int DEFAULT_PATCH_SIZE = 36;
-    public static int DEFAULT_OVERLAP_SIZE = 6;
-
-    private boolean allowHorizontalPaths;
-    private double pathCostWeight;
+    private final boolean allowHorizontalPaths;
+    private final double pathCostWeight;
 
     private ImagePlus previewImp;
 
@@ -333,7 +332,6 @@ public class ImageQuilter {
     private double[][] getLeftOverlapDists(Patch outPatch, Patch inPatch) {
         final int rowcnt = outPatch.getHeight();
         double dists[][] = new double[rowcnt][overlapsize];
-        int arrayr = rowcnt - 1;
 
         // Calculate using blitting
         final ImageProcessor outIP = outPatch.getImage();
@@ -343,7 +341,7 @@ public class ImageQuilter {
         overlapIP.copyBits(outIP, -outPatch.getXOffset(), -outPatch.getYOffset(), Blitter.COPY);
         overlapIP.copyBits(inIP, -inPatch.getXOffset(), -inPatch.getYOffset(), Blitter.DIFFERENCE);
 
-        arrayr = rowcnt - 1;
+        int arrayr = rowcnt - 1;
         if (overlapIP instanceof ColorProcessor) {
             int[] rgb = new int[3];
             for (int r = 0; r < rowcnt; r++) {

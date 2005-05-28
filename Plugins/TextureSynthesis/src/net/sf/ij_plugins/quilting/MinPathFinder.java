@@ -24,17 +24,16 @@ package net.sf.ij_plugins.quilting;
 
 
 public class MinPathFinder {
-
     /**
      * costs[i][j] gives the cumulative cost of going from spot i,j to the destination.
      */
-    private double costs[][];
+    private final double[][] costs;
 
     /**
      * destinations[i][j] gives the spot to go next from spot i,j when heading toward the
      * destination.
      */
-    private TwoDLoc path[][];
+    private final TwoDLoc[][] path;
 
     /**
      * This sets up a path finder to find the min path from last row to the first row given the cost

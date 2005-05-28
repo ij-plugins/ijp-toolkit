@@ -27,8 +27,7 @@ import ij.io.Opener;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 
-public class ImageQuilterPlugin implements PlugInFilter {
-
+public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
     final private static String DEST_WIDTH_LABEL = "Output width";
     final private static String DEST_HEIGHT_LABEL = "Output height";
     final private static String PATCH_SIZE_LABEL = "Patch size";
@@ -40,39 +39,35 @@ public class ImageQuilterPlugin implements PlugInFilter {
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
             "Image Quilter plugin performs texture synthesis using image quilting\n"
-            + "algorithms of Efros and Freeman:\n" +
-            "http://www.cs.berkeley.edu/~efros/research/quilting.html\n" +
-            "  \n" +
-            "Parameters:\n" +
-            "   " + DEST_WIDTH_LABEL + " - desired width of the output image, actual width may be\n " +
-            "       slightly smaller, depending on patch size.\n" +
-            "   " + DEST_HEIGHT_LABEL + " - desired height of the output image, actual height may be\n" +
-            "       slightly smaller, depending on patch size.\n" +
-            "   " + PATCH_SIZE_LABEL + " - width and height of a patch used for quilting.\n" +
-            "   " + PATCH_OVERLAP_LABEL + " - amount of overlap between patches when matching.\n" +
-            "   " + ENABLE_HORIZ_PATHS_LABEL + " - enable improved matching by weighted paths.\n" +
-            "   " + PATCH_COST_WEIGHT_LABEL + " - weight used for improved matching.\n" +
-            "  \n" +
-            "The code of this plugin was originally developed by by Nick Vavra.\n" +
-            "Original code and description is available at: http://www.cs.wisc.edu/~vavra/cs766/.\n" +
-            "ImageJ port and info is available at: http://ij-plugins.sf.net/plugins/texturesynthesis/.";
+                    + "algorithms of Efros and Freeman:\n" +
+                    "http://www.cs.berkeley.edu/~efros/research/quilting.html\n" +
+                    "  \n" +
+                    "Parameters:\n" +
+                    "   " + DEST_WIDTH_LABEL + " - desired width of the output image, actual width may be\n " +
+                    "       slightly smaller, depending on patch size.\n" +
+                    "   " + DEST_HEIGHT_LABEL + " - desired height of the output image, actual height may be\n" +
+                    "       slightly smaller, depending on patch size.\n" +
+                    "   " + PATCH_SIZE_LABEL + " - width and height of a patch used for quilting.\n" +
+                    "   " + PATCH_OVERLAP_LABEL + " - amount of overlap between patches when matching.\n" +
+                    "   " + ENABLE_HORIZ_PATHS_LABEL + " - enable improved matching by weighted paths.\n" +
+                    "   " + PATCH_COST_WEIGHT_LABEL + " - weight used for improved matching.\n" +
+                    "  \n" +
+                    "The code of this plugin was originally developed by by Nick Vavra.\n" +
+                    "Original code and description is available at: http://www.cs.wisc.edu/~vavra/cs766/.\n" +
+                    "ImageJ port and info is available at: http://ij-plugins.sf.net/plugins/texturesynthesis/.";
 
-    private static Config config = new Config();
+    private static final Config config = new Config();
 
     private String imageTitle;
 
 
-    private static class Config implements Cloneable {
+    private static final class Config implements Cloneable {
         int width = 256;
         int height = 256;
         int patchSize = ImageQuilter.DEFAULT_PATCH_SIZE;
         int overlapSize = ImageQuilter.DEFAULT_OVERLAP_SIZE;
         boolean allowHorizontalPaths = false;
         double pathCostWeight = 0.1;
-
-        protected Object clone() throws CloneNotSupportedException {
-            return super.clone();
-        }
 
         public Config duplicate() {
             try {

@@ -29,8 +29,8 @@ import ij.process.ImageProcessor;
  * This is a rectangular patch of pixels belonging to a image.
  */
 public class Patch extends View {
-
-    private int width, height;
+    private final int width;
+    private final int height;
 
     /**
      * This makes a patch based on the given dimensions and view parameters.

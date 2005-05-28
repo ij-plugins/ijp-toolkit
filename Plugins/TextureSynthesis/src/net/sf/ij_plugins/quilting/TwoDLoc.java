@@ -26,8 +26,8 @@ package net.sf.ij_plugins.quilting;
  * This is a simple wrapper around a 2D location.
  */
 public class TwoDLoc {
-
-    public int row, col;
+    private int row;
+    private int col;
 
     public TwoDLoc(int row, int col) {
         this.row = row;

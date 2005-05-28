@@ -30,9 +30,10 @@ import ij.process.ImageProcessor;
  * not ensure that the whole view is inside the image, so be careful.
  */
 public class View {
-
-    protected ImageProcessor image;
-    protected int xoffset, yoffset;
+    protected final ImageProcessor image;
+    protected int xoffset
+    ,
+    yoffset;
 
 
     /**
@@ -118,12 +119,12 @@ public class View {
     }
 
     /* This converts view coordinates into image coordinates. */
-    protected int imageX(int x) {
+            protected int imageX(int x) {
         return x + xoffset;
     }
 
     /* This converts view coordinates into image coordinates. */
-    protected int imageY(int y) {
+            protected int imageY(int y) {
         return y + yoffset;
     }
 
