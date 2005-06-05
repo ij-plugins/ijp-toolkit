@@ -1,3 +1,19 @@
+******************************
+ ij-plugins Toolkit Changelog 
+******************************
+
+* Jar file renamed from 'ij-plugins-toolkit.jar' to 'ij-plugins_toolkit.jar',
+  So it can be recognized bu ImageJ plugin discovery (presence of '_' in file 
+  name needed.
+
+* New souce code layout. 'Plugins' and 'Toolkit' subdirectories depreciated, all 
+  source moved to root 'src' directory. Plugins distributed in a single JAR:
+  ''ij-plugins_toolkit.jar' (RFE-1208248).
+
+* 'Toolkit/src' code moved to 'src'.
+
+* Image Quilting plugin moved to main source directory ('src').
+
 --------------------------------------------------------------------------
 Changes - 3D Toolkit
 --------------------------------------------------------------------------
