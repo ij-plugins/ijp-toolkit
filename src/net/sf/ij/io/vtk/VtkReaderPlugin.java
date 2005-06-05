@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,28 +18,26 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+package net.sf.ij.io.vtk;
+
 import ij.plugin.PlugIn;
 
-import net.sf.ij.io.vtk.VtkEncoder;
-
 /**
- *  Save image in <a HREF="http://public.kitware.com/VTK/">VTK</a> format.
- *  Supported image types: GRAY8, GRAY16, GRAY32.
+ * Read image in <a HREF="http://public.kitware.com/VTK/">VTK</a> format.
  *
- *@author     Jarek Sacha
- *@created    April 28, 2002
- *@version    $Revision: 1.2 $
- *@see        net.sf.ij.io.vtk.VtkEncoder
+ * @author Jarek Sacha
+ * @version $Revision: 1.1 $
+ * @created June 18, 2002
+ * @see net.sf.ij.io.vtk.VtkDecoder
  */
 
-public class VTK_Writer implements PlugIn {
-  /**
-   *  Main processing method for the VTK_Writer plugin
-   *
-   *@param  arg  If equal "ASCII" file will be saved in text format otherwise in
-   *      binary format (MSB).
-   */
-  public void run(String param1) {
-    new VtkEncoder().run(param1);
-  }
+public class VtkReaderPlugin implements PlugIn {
+    /**
+     * Main processing method for the net.sf.ij.io.vtk.VtkReaderPlugin object
+     *
+     * @param parm1 Description of Parameter
+     */
+    public void run(String parm1) {
+        new VtkDecoder().run(parm1);
+    }
 }

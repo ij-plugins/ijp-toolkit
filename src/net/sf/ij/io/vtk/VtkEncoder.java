@@ -275,7 +275,7 @@ public class VtkEncoder implements PlugIn {
 
 
     /**
-     * Main processing method for the VTK_Writer plugin
+     * Main processing method for the VtkEncoder plugin
      *
      * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
      *            (MSB).

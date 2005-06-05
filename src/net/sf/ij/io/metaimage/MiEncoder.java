@@ -41,7 +41,7 @@ import java.io.IOException;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @created June 18, 2002
  * @todo Fix MetaImage format for unambiguous element size, e.g. MET_LONG could be 32 bit on 32 bit
  * processors and 64 bit on 64 bit processors. A fix would be to use MET_INT32.
@@ -60,14 +60,15 @@ public class MiEncoder implements PlugIn {
 
 
     /**
-     * Constructor for the MetaImage_Writer object
+     * Constructor for the MiEncoder object
      */
     public MiEncoder() {
     }
 
 
     /**
-     * Write image in MetaImage format. Info header and raw image data are stored in separate files.
+     * Write image in MetaImage format. Info header and raw image data are stored in separate
+     * files.
      *
      * @param imp          Image to save.
      * @param fileRootName Root file name for image files. Header will have extension ".mha", raw
@@ -272,10 +273,9 @@ public class MiEncoder implements PlugIn {
 
 
     /**
-     *  Main processing method for the MetaImage_Writer object, required by PlugIn
-     *  interface.
+     * Main processing method for the MiEncoder object, required by PlugIn interface.
      *
-     * @param  parm1  Not used.
+     * @param parm1 Not used.
      */
     public void run(String parm1) {
         // Get current image
@@ -302,6 +302,6 @@ public class MiEncoder implements PlugIn {
         }
 
         IJ.showStatus("MetaImage " + saveDialog.getFileName() + " saved.");
-  }
+    }
 
 }

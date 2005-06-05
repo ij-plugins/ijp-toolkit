@@ -18,55 +18,52 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-
 import net.sf.ij.im3d.Box3D;
 import net.sf.ij.im3d.Point3D;
 import net.sf.ij.im3d.Util;
 
 /**
- *  Reduce size of an image to smallest one containing all non-zero pixels.
- *  Stacks are treated as 3D images. The 'origin' property of an image is
- *  modified to reflect clipping performed.
+ * Reduce size of an image to smallest one containing all non-zero pixels. Stacks are treated as 3D
+ * images. The 'origin' property of an image is modified to reflect clipping performed.
  *
- * @author     Jarek Sacha
- * @created    May 8, 2002
- * @version    $Revision: 1.5 $
+ * @author Jarek Sacha
+ * @version $Revision: 1.6 $
+ * @created May 8, 2002
  */
 
 public class Auto_Clip_Volume implements PlugIn {
+    /**
+     * Main processing method for the Auto_Clip_Volume plugin
+     *
+     * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
+     */
+    public void run(String arg) {
+        ImagePlus imp = WindowManager.getCurrentImage();
+        if (imp == null) {
+            IJ.noImage();
+            return;
+        }
 
-  /**
-   *  Main processing method for the VTK_Writer plugin
-   *
-   * @param  arg  Optional argument required by ij.plugin.PlugIn interface (not
-   *      used).
-   */
-  public void run(String arg) {
-    ImagePlus imp = WindowManager.getCurrentImage();
-    if (imp == null) {
-      IJ.noImage();
-      return;
+        if (imp.getType() != ImagePlus.GRAY8) {
+            IJ.showMessage("Auto Clip Volume", "This plugin works only with GRAY8 images.");
+            return;
+        }
+
+
+        ImageStack src = imp.getStack();
+        Box3D bb = Util.getBoundingBox(src);
+        ImageStack dest = Util.clip(src, bb);
+
+        ImagePlus impDest = new ImagePlus(imp.getTitle() + "+AutoClip", dest);
+        Point3D originSrc = Util.decodeOrigin(imp);
+        Util.offsetOrigin(impDest, bb.origin());
+
+        impDest.show();
     }
-
-    if(imp.getType() != ImagePlus.GRAY8) {
-      IJ.showMessage("Auto Clip Volume", "This plugin works only with GRAY8 images.");
-      return;
-    }
-
-
-    ImageStack src = imp.getStack();
-    Box3D bb = Util.getBoundingBox(src);
-    ImageStack dest = Util.clip(src, bb);
-
-    ImagePlus impDest = new ImagePlus(imp.getTitle() + "+AutoClip", dest);
-    Point3D originSrc = Util.decodeOrigin(imp);
-    Util.offsetOrigin(impDest, bb.origin());
-
-    impDest.show();
-  }
 }

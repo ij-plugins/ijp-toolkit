@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,29 +18,29 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+package net.sf.ij.io.metaimage;
+
 import ij.plugin.PlugIn;
-import net.sf.ij.io.metaimage.MiEncoder;
 
 /**
- *  Write image (including stacks) in MetaImage format. MetaImage is one of the
- *  formats supported by ITK (http://www.itk.org). More information about
- *  MetaImage, including C++ code, can be found at
- *  http://caddlab.rad.unc.edu/technologies/MetaImage/ . This implementation is
- *  intended to be compatible with ITK version of MetaImage.
+ * Read image (including stacks) in MetaImage format. MetaImage is one of the formats supported by
+ * ITK (http://www.itk.org). More information about MetaImage, including C++ code, can be found
+ * http://caddlab.rad.unc.edu/technologies/MetaImage/ . This implementation is intended to be
+ * compatibile with ITK version of MetaImage.
  *
- * @author     Jarek Sacha
- * @created    June 18, 2002
- * @version    $Revision: 1.2 $
+ * @author Jarek Sacha
+ * @version $Revision: 1.1 $
+ * @created June 18, 2002
+ * @todo Fix comments.
  */
 
-public class MetaImage_Writer implements PlugIn {
-
-  /**
-   *  Main processing method for the MetaImage_Writer object
-   *
-   * @param  parm1  Description of Parameter
-   */
-  public void run(String parm1) {
-    new MiEncoder().run(parm1);
-  }
+public class MetaImageReaderPlugin implements PlugIn {
+    /**
+     * Main processing method for the net.sf.ij.io.metaimage.MetaImageReaderPlugin object
+     *
+     * @param parm1 Description of Parameter
+     */
+    public void run(String parm1) {
+        new MiDecoder().run(parm1);
+    }
 }

@@ -14,6 +14,8 @@
 
 * Image Quilting plugin moved to main source directory ('src').
 
+* 3D IO plugins moved to main source directory ('src').  
+
 --------------------------------------------------------------------------
 Changes - 3D Toolkit
 --------------------------------------------------------------------------

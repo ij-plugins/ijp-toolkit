@@ -32,13 +32,13 @@ import net.sf.ij.im3d.morphology.Morpho;
  * respectively.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @created July 14, 2002
  */
 
 public class Morphological_Erode_3D implements PlugIn {
     /**
-     * Main processing method for the VTK_Writer plugin
+     * Main processing method for the Morphological_Erode_3D plugin
      *
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
