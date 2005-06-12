@@ -29,7 +29,7 @@ import ij.process.ImageProcessor;
  * Utility methods for 3D objects.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @created April 30, 2002
  */
 
@@ -177,7 +177,7 @@ public class Util {
      *
      * @param imp    Input image.
      * @param offset Value of the offset.
-     * @see net.sf.ij.im3d.Util.decodeOrigin
+     * @see net.sf.ij.im3d.Util#decodeOrigin
      */
     public static void offsetOrigin(ImagePlus imp, Point3D offset) {
         Calibration calibration = imp.getCalibration();
@@ -193,7 +193,7 @@ public class Util {
      *
      * @param imp    Input image.
      * @param origin New value of the origin.
-     * @see net.sf.ij.im3d.Util.decodeOrigin
+     * @see net.sf.ij.im3d.Util#decodeOrigin
      */
     public static void encodeOrigin(ImagePlus imp, Point3D origin) {
         Calibration calibration = imp.getCalibration();

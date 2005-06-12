@@ -24,28 +24,36 @@ package net.sf.ij.im3d;
  * Represents a 3D box oriented along the axis xyz.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @created April 29, 2002
  */
 
 public class Box3D {
     /**
-     * Location of the corner with smallest coordinates
+     * X coordinate of the corner with smallest coordinates
      */
-    public int x
-    ,
-    y
-    ,
-    z;
+    public int x;
+    /**
+     * Y coordinate of the corner with smallest coordinates
+     */
+    public int y;
+    /**
+     * Z coordinate of the corner with smallest coordinates
+     */
+    public int z;
 
     /**
-     * Box dimensions
+     * Box width.
      */
-    public int width
-    ,
-    height
-    ,
-    depth;
+    public int width;
+    /**
+     * Box height.
+     */
+    public int height;
+    /**
+     * Box depth.
+     */
+    public int depth;
 
 
     /**
@@ -56,9 +64,9 @@ public class Box3D {
 
 
     /**
-     *  Return a point representing the corner with smallest coordinates.
+     * Return a point representing the corner with smallest coordinates.
      *
-     *@return    Point representing the corner with smallest coordinates.
+     * @return Point representing the corner with smallest coordinates.
      */
     public Point3D origin() {
         return new Point3D(x, y, z);
