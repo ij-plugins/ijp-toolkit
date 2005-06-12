@@ -1,4 +1,4 @@
-/***
+package net.sf.ij.im3d.filters;/***
  * Image/J Plugins
  * Copyright (C) 2002 Jarek Sacha
  *
@@ -32,13 +32,13 @@ import net.sf.ij.im3d.morphology.Morpho;
  * respectively.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * @created July 14, 2002
  */
 
-public class Morphological_Dilate_3D implements PlugIn {
+public class MorphologicalDilate3DPlugin implements PlugIn {
     /**
-     * Main processing method for the Morphological_Dilate_3D plugin
+     * Main processing method for the net.sf.ij.im3d.filters.MorphologicalDilate3DPlugin plugin
      *
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
