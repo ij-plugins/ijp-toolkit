@@ -31,7 +31,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * Converts image pixels from RGB color space to CIE L*a*b* color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConvertRGBToLabStackPlugin implements PlugInFilter {
     final private static String PLUGIN_NAME = "Convert RGB to CIE L*a*b*";
@@ -50,7 +50,9 @@ public class ConvertRGBToLabStackPlugin implements PlugInFilter {
             return DONE;
         }
 
-        imageTitle = imp.getShortTitle();
+        if (imp != null) {
+            imageTitle = imp.getShortTitle();
+        }
         return DOES_RGB | DOES_STACKS | NO_CHANGES;
     }
 
