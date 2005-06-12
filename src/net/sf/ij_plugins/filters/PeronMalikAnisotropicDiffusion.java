@@ -21,7 +21,6 @@
 package net.sf.ij_plugins.filters;
 
 import ij.process.FloatProcessor;
-
 import net.sf.ij_plugins.operators.Neighborhood3x3;
 import net.sf.ij_plugins.operators.PixelIterator;
 

@@ -91,12 +91,12 @@ public class FastMedianAS {
     public void run(ByteProcessor ip) {
 
         int[][] pixels = {
-            {19, 15, 22, 1, 5, 7},
-            {24, 31, 28, 9, 11, 23},
-            {21, 24, 24, 21, 23, 14},
-            {23, 25, 14, 23, 8, 8},
-            {22, 24, 6, 15, 16, 7},
-            {23, 25, 5, 13, 17, 3}
+        {19, 15, 22, 1, 5, 7},
+        {24, 31, 28, 9, 11, 23},
+        {21, 24, 24, 21, 23, 14},
+        {23, 25, 14, 23, 8, 8},
+        {22, 24, 6, 15, 16, 7},
+        {23, 25, 5, 13, 17, 3}
         };
 
         for (int y = 0; y < M; ++y) {
@@ -247,8 +247,8 @@ public class FastMedianAS {
 
     /**
      * In this function, count number of smallest elements is moved from Subset 2 to Subset 1 The
-     * variables: median2 = the second smallest key along the border in Subset 2 pointer2 =
-     * points to the column of median2
+     * variables: median2 = the second smallest key along the border in Subset 2 pointer2 = points
+     * to the column of median2
      */
     private void find_min() {
         int median2, pointer2, i3, temp;
@@ -352,9 +352,9 @@ public class FastMedianAS {
     /**
      * In this function, the columns of the windows corresponding to the next row to be processed
      * are found by updating the columns corresponding to the present row of the image. The
-     * variables: delete =  the key to be deleted in a column delpos = the position occupied by
-     * the key delete insert = the key to be inserted inspos = the position where the
-     * key insert is to be inserted
+     * variables: delete =  the key to be deleted in a column delpos = the position occupied by the
+     * key delete insert = the key to be inserted inspos = the position where the key insert is to
+     * be inserted
      */
     private void insert_delete() {
         int column, delpos, inspos, insert, delete;

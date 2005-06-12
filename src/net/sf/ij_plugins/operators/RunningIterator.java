@@ -31,7 +31,6 @@ import java.util.Iterator;
  * @version $Revision: 1.1 $
  */
 public class RunningIterator implements Iterator {
-
     final private Pixel pixel = new Pixel();
     private int x = 0;
     private int y = 0;

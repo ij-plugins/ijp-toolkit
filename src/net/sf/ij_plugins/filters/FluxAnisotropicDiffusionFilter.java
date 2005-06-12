@@ -129,9 +129,9 @@ public class FluxAnisotropicDiffusionFilter {
                 // et Calcul de e0, e1
                 if ((x < (sizeX - 1)) && (y > 0) && (y < (sizeY - 1))) {
                     grad.y = ((in[pos + sizeX] - in[pos - sizeX] +
-                        in[pos + sizeX + 1]) - in[pos - sizeX + 1]) / 4.0;
+                            in[pos + sizeX + 1]) - in[pos - sizeX + 1]) / 4.0;
                     e0.y = ((Iconv[pos + sizeX] - Iconv[pos - sizeX] +
-                        Iconv[pos + sizeX + 1]) - Iconv[pos - sizeX + 1]) / 4.0;
+                            Iconv[pos + sizeX + 1]) - Iconv[pos - sizeX + 1]) / 4.0;
                 } else {
                     grad.y = 0;
                     e0.y = 0;
@@ -171,10 +171,10 @@ public class FluxAnisotropicDiffusionFilter {
                 }
 
                 double alpha1_x = (phi0(phi0_param) * e0.x * e0.x) +
-                    (phi1(u_e1) * e1.x * e1.x);
+                        (phi1(u_e1) * e1.x * e1.x);
 
                 double gamma1_x = grad.y * ((e0.y * phi0(phi0_param) * e0.x) +
-                    (e1.y * phi1(u_e1) * e1.x));
+                        (e1.y * phi1(u_e1) * e1.x));
 
                 //----- Calcul de alpha1_y, gamma1_y
                 // Gradient en (x,y+1/2)
@@ -190,9 +190,9 @@ public class FluxAnisotropicDiffusionFilter {
                 //  gradient en X
                 if ((y < (sizeY - 1)) && (x > 0) && (x < (sizeX - 1))) {
                     grad.x = ((in[pos + 1] - in[pos - 1] + in[pos + 1 + sizeX]) -
-                        in[pos - 1 + sizeX]) / 4.0;
+                            in[pos - 1 + sizeX]) / 4.0;
                     e0.x = ((Iconv[pos + 1] - Iconv[pos - 1] +
-                        Iconv[pos + 1 + sizeX]) - Iconv[pos - 1 + sizeX]) / 4.0;
+                            Iconv[pos + 1 + sizeX]) - Iconv[pos - 1 + sizeX]) / 4.0;
                 } else {
                     grad.x = 0;
                     e0.x = 0.0;
@@ -223,10 +223,10 @@ public class FluxAnisotropicDiffusionFilter {
                 }
 
                 double alpha1_y = (phi0(phi0_param) * e0.y * e0.y) +
-                    (phi1(u_e1) * e1.y * e1.y);
+                        (phi1(u_e1) * e1.y * e1.y);
 
                 double gamma1_y = (grad.x * e0.x * phi0(phi0_param) * e0.y) +
-                    (grad.x * e1.x * phi1(u_e1) * e1.y);
+                        (grad.x * e1.x * phi1(u_e1) * e1.y);
 
                 //----- Mise a jour de l'image
                 double val1 = beta * inData.getPixelValue(x, y);
@@ -234,15 +234,15 @@ public class FluxAnisotropicDiffusionFilter {
 
                 if ((x > 0) && (x < (sizeX - 1))) {
                     val1 += (((alpha1_x * (in[pos + 1])) +
-                    (_alpha_x * (in[pos - 1])) + gamma1_x) - _gamma_x);
+                            (_alpha_x * (in[pos - 1])) + gamma1_x) - _gamma_x);
 
                     val1div += (alpha1_x + _alpha_x);
                 }
 
                 if ((y > 0) && (y < (sizeY - 1))) {
                     val1 += (((alpha1_y * (in[pos + sizeX])) +
-                    (_alpha_y[x] * (in[pos - sizeX])) + gamma1_y) -
-                    _gamma_y[x]);
+                            (_alpha_y[x] * (in[pos - sizeX])) + gamma1_y) -
+                            _gamma_y[x]);
 
                     val1div += (alpha1_y + _alpha_y[x]);
                 }
@@ -274,7 +274,7 @@ public class FluxAnisotropicDiffusionFilter {
         }
 
         System.out.println("Max maxError at (" + maxErrorPoint.x + "," +
-            maxErrorPoint.y + ") = " + maxError);
+                maxErrorPoint.y + ") = " + maxError);
         System.out.println("Unstabile points: " + nbUnstabilePoints);
 
         return maxError;

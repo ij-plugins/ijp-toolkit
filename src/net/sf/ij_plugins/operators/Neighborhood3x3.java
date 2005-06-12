@@ -28,8 +28,26 @@ package net.sf.ij_plugins.operators;
 public class Neighborhood3x3 {
     private final float[] neighbors = new float[9];
     public float center;
-    public float neighbor1, neighbor2, neighbor3, neighbor4, neighbor5, neighbor6, neighbor7, neighbor8;
-    public int x, y, offset;
+    public float neighbor1
+    ,
+    neighbor2
+    ,
+    neighbor3
+    ,
+    neighbor4
+    ,
+    neighbor5
+    ,
+    neighbor6
+    ,
+    neighbor7
+    ,
+    neighbor8;
+    public int x
+    ,
+    y
+    ,
+    offset;
 
     public float[] getNeighbors() {
         neighbors[0] = center;
