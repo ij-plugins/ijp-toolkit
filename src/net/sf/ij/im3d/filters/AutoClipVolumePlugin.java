@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+package net.sf.ij.im3d.filters;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -25,7 +26,6 @@ import ij.ImageStack;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
 import net.sf.ij.im3d.Box3D;
-import net.sf.ij.im3d.Point3D;
 import net.sf.ij.im3d.Util;
 
 /**
@@ -33,18 +33,18 @@ import net.sf.ij.im3d.Util;
  * images. The 'origin' property of an image is modified to reflect clipping performed.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * @created May 8, 2002
  */
 
-public class Auto_Clip_Volume implements PlugIn {
+public class AutoClipVolumePlugin implements PlugIn {
     /**
-     * Main processing method for the Auto_Clip_Volume plugin
+     * Main processing method for the net.sf.ij.im3d.filters.AutoClipVolumePlugin plugin
      *
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
-    public void run(String arg) {
-        ImagePlus imp = WindowManager.getCurrentImage();
+    public void run(final String arg) {
+        final ImagePlus imp = WindowManager.getCurrentImage();
         if (imp == null) {
             IJ.noImage();
             return;
@@ -56,12 +56,11 @@ public class Auto_Clip_Volume implements PlugIn {
         }
 
 
-        ImageStack src = imp.getStack();
-        Box3D bb = Util.getBoundingBox(src);
-        ImageStack dest = Util.clip(src, bb);
+        final ImageStack src = imp.getStack();
+        final Box3D bb = Util.getBoundingBox(src);
+        final ImageStack dest = Util.clip(src, bb);
 
-        ImagePlus impDest = new ImagePlus(imp.getTitle() + "+AutoClip", dest);
-        Point3D originSrc = Util.decodeOrigin(imp);
+        final ImagePlus impDest = new ImagePlus(imp.getTitle() + "+AutoClip", dest);
         Util.offsetOrigin(impDest, bb.origin());
 
         impDest.show();
