@@ -29,7 +29,7 @@ import ij.process.ImageProcessor;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class IntensityShiftPlugin implements PlugInFilter {
     final private static String PLUGIN_NAME = "Intensity shift";

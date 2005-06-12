@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class ColorSpaceConvertionTest extends TestCase {
     private static final float TOLERANCE = 0.006f;

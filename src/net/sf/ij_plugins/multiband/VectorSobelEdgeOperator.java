@@ -26,14 +26,12 @@ import ij.process.FloatProcessor;
 import java.awt.*;
 
 /**
- * Finds edges in a vector valued image by computing maximum Euclidian distance between the center
- * pixel and each of the other pixels in a 3x3 neighbourhood. That is, eight different distances are
- * compared.
+ * Sobel edge detector for vector valued images.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class VectorGradientEdgeOperator {
+public class VectorSobelEdgeOperator {
     public static FloatProcessor run(ImagePlus imp) {
         VectorProcessor vp = new VectorProcessor(imp);
         imp = null;
@@ -45,6 +43,7 @@ public class VectorGradientEdgeOperator {
 
         final int width = vp.getWidth();
         final int height = vp.getHeight();
+        final int nbBands = vp.getNumberOfValues();
 
         FloatProcessor dest = new FloatProcessor(width, height);
 
@@ -54,20 +53,38 @@ public class VectorGradientEdgeOperator {
         VectorProcessor.Iterator iterator = vp.iterator();
         while (iterator.hasNext()) {
             VectorProcessor.Neighborhood3x3 vn = (VectorProcessor.Neighborhood3x3) iterator.next();
+            // 3x3 Sobel filter
+            //sum1 = p1 + 2 * p2 + p3 - p7 - 2 * p8 - p9;
+            float[] sum11 = new float[nbBands];
+            VectorMath.add(sum11, vn.p1);
+            VectorMath.add(sum11, vn.p2);
+            VectorMath.add(sum11, vn.p2);
+            VectorMath.add(sum11, vn.p3);
+            float[] sum12 = new float[nbBands];
+            VectorMath.add(sum12, vn.p7);
+            VectorMath.add(sum12, vn.p8);
+            VectorMath.add(sum12, vn.p8);
+            VectorMath.add(sum12, vn.p9);
 
-            double d = VectorMath.distance(vn.p1, vn.p5);
-            d = Math.max(d, VectorMath.distance(vn.p2, vn.p5));
-            d = Math.max(d, VectorMath.distance(vn.p3, vn.p5));
-            d = Math.max(d, VectorMath.distance(vn.p4, vn.p5));
-            d = Math.max(d, VectorMath.distance(vn.p6, vn.p5));
-            d = Math.max(d, VectorMath.distance(vn.p7, vn.p5));
-            d = Math.max(d, VectorMath.distance(vn.p8, vn.p5));
-            d = Math.max(d, VectorMath.distance(vn.p9, vn.p5));
+            // sum2 = p1 + 2 * p4 + p7 - p3 - 2 * p6 - p9;
+            float[] sum21 = new float[nbBands];
+            VectorMath.add(sum21, vn.p1);
+            VectorMath.add(sum21, vn.p4);
+            VectorMath.add(sum21, vn.p4);
+            VectorMath.add(sum21, vn.p7);
+            float[] sum22 = new float[nbBands];
+            VectorMath.add(sum22, vn.p3);
+            VectorMath.add(sum22, vn.p6);
+            VectorMath.add(sum22, vn.p6);
+            VectorMath.add(sum22, vn.p9);
+
+            double d1 = VectorMath.distance(sum11, sum12);
+            double d2 = VectorMath.distance(sum21, sum22);
+            double d = Math.max(d1, d2);
 
             dest.putPixelValue(vn.x, vn.y, d);
         }
 
         return dest;
     }
-
 }

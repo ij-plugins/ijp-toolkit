@@ -31,18 +31,18 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * Converts image pixels from CIE L*a*b* color space to RGB color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class ConvertLabStackToRGBPlugin implements PlugIn {
     final private static String PLUGIN_NAME = "Convert CIE L*a*b* to RGB";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
             "Converts image pixels from CIE L*a*b* color space to RGB color space.\n" +
-            "The CIE L*a*b* image is asumed to a stack of floating point images (32 bit).\n" +
-            "The L* band is in the range 0 to 100, the a* band and the b* band between -100\n" +
-            "and 100\n" +
-            "Conversions assume observer = 2°, illuminant = D65, and use formulas provided at:\n" +
-            "http://www.easyrgb.com/math.php";
+                    "The CIE L*a*b* image is asumed to a stack of floating point images (32 bit).\n" +
+                    "The L* band is in the range 0 to 100, the a* band and the b* band between -100\n" +
+                    "and 100\n" +
+                    "Conversions assume observer = 2°, illuminant = D65, and use formulas provided at:\n" +
+                    "http://www.easyrgb.com/math.php";
 
     public void run(String arg) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {

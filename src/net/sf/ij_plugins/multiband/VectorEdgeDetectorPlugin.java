@@ -27,17 +27,16 @@ import ij.process.FloatProcessor;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class VectorEdgeDetectorPlugin implements PlugIn {
-
     final private static String PLUGIN_NAME = "Multi-band edge detection";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
             "Sobel edge detector that supports multi-band and color images.\n" +
-            "Slices in an image stack are interpreted as bands in a multi-band image.\n" +
-            "An RGB image is interpreted as 3 band image. A simple gray image in interpreted as\n" +
-            "as a single band image.";
+                    "Slices in an image stack are interpreted as bands in a multi-band image.\n" +
+                    "An RGB image is interpreted as 3 band image. A simple gray image in interpreted as\n" +
+                    "as a single band image.";
 
 
     /**

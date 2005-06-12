@@ -31,7 +31,7 @@ import java.awt.*;
  * four different distances are compared.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class VectorDifferenceEdgeOperator {
     public static FloatProcessor run(ImagePlus imp) {

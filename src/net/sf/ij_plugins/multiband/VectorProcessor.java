@@ -36,7 +36,7 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class VectorProcessor {
     final int width;
@@ -233,8 +233,28 @@ public class VectorProcessor {
      * <code>p7</code> to <code>p9</code> in the bottom of the neighbourhood.
      */
     public static class Neighborhood3x3 {
-        float[] p1, p2, p3, p4, p5, p6, p7, p8, p9;
-        int x, y, offset;
+        float[] p1
+        ,
+        p2
+        ,
+        p3
+        ,
+        p4
+        ,
+        p5
+        ,
+        p6
+        ,
+        p7
+        ,
+        p8
+        ,
+        p9;
+        int x
+        ,
+        y
+        ,
+        offset;
     }
 
     /**
@@ -242,7 +262,8 @@ public class VectorProcessor {
      */
     public class PixelIterator implements java.util.Iterator {
         final int xMin = roi.x - 1;
-        final int xMax = roi.x + roi.width - 1;;
+        final int xMax = roi.x + roi.width - 1;
+        ;
         final int rowOffset = width;
         final int yMin = roi.y;
         final int yMax = roi.y + roi.height - 1;
@@ -303,7 +324,8 @@ public class VectorProcessor {
      */
     public class Iterator implements java.util.Iterator {
         final int xMin = roi.x - 1;
-        final int xMax = roi.x + roi.width - 1;;
+        final int xMax = roi.x + roi.width - 1;
+        ;
         final int rowOffset = width;
         final int yMin = roi.y;
         final int yMax = roi.y + roi.height - 1;

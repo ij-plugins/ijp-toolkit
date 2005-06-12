@@ -29,7 +29,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  */
 public class ColorSpaceConvertion {
 
@@ -73,7 +73,6 @@ public class ColorSpaceConvertion {
      * B = var_B * 255
      * </pre>
      */
-
     public static void xyzToRGB(final float[] xyz, final float[] rgb) {
         final double var_X = xyz[0] / REF_X;        //X = From 0 to ref_X
         final double var_Y = xyz[1] / REF_Y;        //Y = From 0 to ref_Y
@@ -126,7 +125,6 @@ public class ColorSpaceConvertion {
      * Z = ref_Z * var_Z     //ref_Z = 108.883
      * </pre>
      */
-
     public static void labToXYZ(final float[] lab, final float[] xyz) {
         double var_Y = (lab[0] + 16) / 116;
         double var_X = lab[1] / 500 + var_Y;

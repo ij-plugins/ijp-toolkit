@@ -29,7 +29,7 @@ import java.util.Random;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public class VectorProcessorTest extends TestCase {
     public VectorProcessorTest(String test) {
