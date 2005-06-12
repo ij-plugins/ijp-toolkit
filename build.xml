@@ -45,19 +45,22 @@
     <property name="license.file" location="License.txt"/>
 
 
-    <path id="compile.classpath">
-        <pathelement location="${ij.jar}"/>
-    </path>
+    <fileset id="library.files"
+             dir="${lib.dir}">
+        <include name="**/l2fprod-common-all.jar"/>
+    </fileset>
 
     <fileset id="config.files"
              dir="${src.dir}">
         <include name="**/*.config"/>
     </fileset>
+
     <fileset id="resource.files"
              dir="${src.dir}">
         <include name="**/*.png"/>
         <include name="**/*.gif"/>
     </fileset>
+
     <fileset id="docs.files"
              dir="${docs.dir}">
         <include name="**/*.html"/>
@@ -65,6 +68,12 @@
         <include name="**/*.png"/>
         <include name="**/*.gif"/>
     </fileset>
+
+
+    <path id="compile.classpath">
+        <pathelement location="${ij.jar}"/>
+        <fileset refid="library.files"/>
+    </path>
 
 
     <!-- ================= -->
@@ -96,6 +105,7 @@
              basedir="${build.classes.dir}"
              compress="true">
             <fileset refid="resource.files"/>
+            <zipgroupfileset refid="library.files"/>
         </jar>
     </target>
 
