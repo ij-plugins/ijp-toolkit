@@ -33,10 +33,9 @@ import java.util.Random;
  * Pixel-based multi-band image segmentation using k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  */
 public final class KMeans {
-
     private static Config config = new Config();
 
     private Rectangle roi;

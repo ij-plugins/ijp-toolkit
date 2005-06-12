@@ -1,4 +1,4 @@
-package net.sf.ij.plugin;
+package net.sf.ij.clustering;
 
 /***
  * Image/J Plugins
@@ -31,7 +31,6 @@ import ij.plugin.filter.Duplicater;
 import ij.process.ByteProcessor;
 import ij.process.ImageConverter;
 import ij.process.StackConverter;
-import net.sf.ij.clustering.KMeans;
 
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
@@ -40,11 +39,10 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * @see KMeans
  */
-public final class KMeansClustering implements PlugIn {
-
+public final class KMeansClusteringPlugin implements PlugIn {
     private static KMeans.Config config = new KMeans.Config();
     private static boolean showCentroidImage = false;
 
@@ -53,20 +51,20 @@ public final class KMeansClustering implements PlugIn {
 
     private static final String aboutMessage =
             "k-means Clustering performs pixel-based segmentation of multi-band\n" +
-            "images. An image stack is interpreted as a set of bands corresponding to\n" +
-            "the same image. For instance, an RGB color images has three bands: red,\n" +
-            "green, and blue. Each pixels is represented by an n-valued vector , where\n" +
-            "n is a number of bands, for instance, a 3-value vector [r,g,b] in case of\n" +
-            "a color image.\n" +
-            "Each cluster is defined by its centroid in n-dimensional space. Pixels are\n" +
-            "grouped by their proximity to cluster's centroids.\n" +
-            "Cluster centroids are determined using a heuristics: initially centroids\n" +
-            "are randomly initialized and then their location is interactively\n" +
-            "optimized.\n" +
-            "For more information on this and other clustering approaches see:\n" +
-            "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
-            "Prentice Hall, 1988.\n" +
-            "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
+                    "images. An image stack is interpreted as a set of bands corresponding to\n" +
+                    "the same image. For instance, an RGB color images has three bands: red,\n" +
+                    "green, and blue. Each pixels is represented by an n-valued vector , where\n" +
+                    "n is a number of bands, for instance, a 3-value vector [r,g,b] in case of\n" +
+                    "a color image.\n" +
+                    "Each cluster is defined by its centroid in n-dimensional space. Pixels are\n" +
+                    "grouped by their proximity to cluster's centroids.\n" +
+                    "Cluster centroids are determined using a heuristics: initially centroids\n" +
+                    "are randomly initialized and then their location is interactively\n" +
+                    "optimized.\n" +
+                    "For more information on this and other clustering approaches see:\n" +
+                    "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
+                    "Prentice Hall, 1988.\n" +
+                    "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
 
     final public void run(final String s) {
 
@@ -218,7 +216,8 @@ public final class KMeansClustering implements PlugIn {
         }
     }
 
-    private static ImagePlus createCentroidImage(int originalImageType, ImageStack centroidValueStack) {
+    private static ImagePlus createCentroidImage(int originalImageType, ImageStack centroidValueStack)
+    {
         boolean doScaling = ImageConverter.getDoScaling();
         try {
             ImageConverter.setDoScaling(false);

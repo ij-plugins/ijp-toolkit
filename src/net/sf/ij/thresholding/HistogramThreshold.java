@@ -27,7 +27,7 @@ import java.util.List;
  * histogram based thresholding.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
 public final class HistogramThreshold {
     final static private double EPSILON = Double.MIN_VALUE;
@@ -36,10 +36,9 @@ public final class HistogramThreshold {
     }
 
     /**
-     * Calculate maximum entropy split of a histogram. For more inforamtion see:
-     * J.N. Kapur, P.K. Sahoo and A.K.C. Wong,
-     * "A New Method for Gray-Level Picture Thresholding Using the Entropy of the Histogram",
-     * <i>CVGIP</i>, (29), pp.273-285 , 1985.
+     * Calculate maximum entropy split of a histogram. For more inforamtion see: J.N. Kapur, P.K.
+     * Sahoo and A.K.C. Wong, "A New Method for Gray-Level Picture Thresholding Using the Entropy of
+     * the Histogram", <i>CVGIP</i>, (29), pp.273-285 , 1985.
      *
      * @param hist histogram to be thresholded.
      * @return index of the maximum entropy split.
@@ -116,10 +115,9 @@ public final class HistogramThreshold {
     }
 
     /**
-     * Find maximum entropy split of a histogram. It is a generalization of single split presented by
-     * J.N. Kapur, P.K. Sahoo and A.K.C. Wong,
-     * "A New Method for Gray-Level Picture Thresholding Using the Entropy of the Histogram",
-     * <i>CVGIP</i>, (29), pp.273-285 , 1985.
+     * Find maximum entropy split of a histogram. It is a generalization of single split presented
+     * by J.N. Kapur, P.K. Sahoo and A.K.C. Wong, "A New Method for Gray-Level Picture Thresholding
+     * Using the Entropy of the Histogram", <i>CVGIP</i>, (29), pp.273-285 , 1985.
      *
      * @param hist        histogram to be partitioned.
      * @param nbDivisions desired number of thresholds.
@@ -164,7 +162,8 @@ public final class HistogramThreshold {
     }
 
     /**
-     * Normalize histogram: divide all elemnts of the histogram by a fixed values so sum of the elements is equal 1.
+     * Normalize histogram: divide all elemnts of the histogram by a fixed values so sum of the
+     * elements is equal 1.
      *
      * @param hist histogram to be normalized.
      * @return normalized histogram.

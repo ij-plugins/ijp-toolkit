@@ -30,7 +30,7 @@ import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  */
 public final class KMeansTest extends junit.framework.TestCase {
     public KMeansTest(final java.lang.String test) {
@@ -41,10 +41,10 @@ public final class KMeansTest extends junit.framework.TestCase {
         final File imageFile = new File("test/data/clown24.png");
         final double tolerance = 0.01;
         final double[][] expectedCenters = {
-            {182.407, 108.690, 45.752},
-            {224.589, 187.087, 151.137},
-            {30.590, 10.600, 5.617},
-            {115.772, 51.208, 20.245},
+        {182.407, 108.690, 45.752},
+        {224.589, 187.087, 151.137},
+        {30.590, 10.600, 5.617},
+        {115.772, 51.208, 20.245},
         };
 
         assertTrue("File exists", imageFile.exists());

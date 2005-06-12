@@ -18,24 +18,22 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
-package net.sf.ij.plugin;
+package net.sf.ij.thresholding;
 
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
-import net.sf.ij.thresholding.HistogramThreshold;
 
 /**
- * Automatic thresholding technique based on the maximum entropy of the
- * histogram. See: P.K. Sahoo, S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of
- * Thresholding Techniques", Computer Vision, Graphics, and Image Processing,
- * Vol. 41, pp.233-260, 1988.
+ * Automatic thresholding technique based on the maximum entropy of the histogram. See: P.K. Sahoo,
+ * S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of Thresholding Techniques", Computer Vision,
+ * Graphics, and Image Processing, Vol. 41, pp.233-260, 1988.
  *
  * @author Jarek Sacha
  */
-public final class MaximumEntropyThreshold implements PlugInFilter {
+public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
     private final static String aboutMessage =
             "Automatic thresholding technique based on the maximum entropy of the\n" +
                     "histogram. See:\n" +
@@ -48,7 +46,7 @@ public final class MaximumEntropyThreshold implements PlugInFilter {
     /*
      *
      */
-            public final int setup(final java.lang.String s, final ImagePlus imagePlus) {
+    public final int setup(final java.lang.String s, final ImagePlus imagePlus) {
 
         if ("about".equalsIgnoreCase(s)) {
             IJ.showMessage("Maximum Entropy Theshold", aboutMessage);
@@ -61,7 +59,7 @@ public final class MaximumEntropyThreshold implements PlugInFilter {
     /*
      *
      */
-            public final void run(final ImageProcessor imageProcessor) {
+    public final void run(final ImageProcessor imageProcessor) {
         final int[] hist = imageProcessor.getHistogram();
         final int threshold = HistogramThreshold.maximumEntropy(hist);
         imageProcessor.threshold(threshold);

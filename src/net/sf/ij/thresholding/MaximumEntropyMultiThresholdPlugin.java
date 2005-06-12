@@ -18,7 +18,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
-package net.sf.ij.plugin;
+package net.sf.ij.thresholding;
 
 
 import ij.IJ;
@@ -27,17 +27,15 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij.thresholding.HistogramThreshold;
 
 /**
- * Automatic thresholding technique based on the maximum entropy of the
- * histogram. See: P.K. Sahoo, S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of
- * Thresholding Techniques", Computer Vision, Graphics, and Image Processing,
- * Vol. 41, pp.233-260, 1988.
+ * Automatic thresholding technique based on the maximum entropy of the histogram. See: P.K. Sahoo,
+ * S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of Thresholding Techniques", Computer Vision,
+ * Graphics, and Image Processing, Vol. 41, pp.233-260, 1988.
  *
  * @author Jarek Sacha
  */
-public final class MaximumEntropyMultiThreshold implements PlugInFilter {
+public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
     private final static String aboutMessage =
             "Automatic multiple thresholding technique, generalization of a single maximum\n" +
                     "entropy thresholding of Kapur, Sahoo, and Wond:\n" +

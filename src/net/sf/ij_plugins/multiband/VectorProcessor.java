@@ -36,7 +36,7 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VectorProcessor {
     final int width;
@@ -163,7 +163,7 @@ public class VectorProcessor {
     }
 
     static final private ImageStack convertToFloatStack(ImagePlus imp) {
-        // TODO: remove duplicate method in KMeansClustering
+        // TODO: remove duplicate method in KMeansClusteringPlugin
 
         imp = duplicate(imp);
 
@@ -201,7 +201,7 @@ public class VectorProcessor {
     }
 
     static final private ImagePlus duplicate(final ImagePlus imp) {
-        // TODO: remove duplicate method in KMeansClustering
+        // TODO: remove duplicate method in KMeansClusteringPlugin
         final Duplicater duplicater = new Duplicater();
         duplicater.setup(null, imp);
         return duplicater.duplicateStack(imp, imp.getTitle() + "-duplicate");
