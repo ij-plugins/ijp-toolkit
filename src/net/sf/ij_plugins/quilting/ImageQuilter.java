@@ -26,6 +26,7 @@ package net.sf.ij_plugins.quilting;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.*;
+import net.sf.ij.IJPluginsRuntimeException;
 
 import java.util.LinkedList;
 
@@ -377,7 +378,7 @@ public class ImageQuilter {
                 arrayr--;
             }
         } else {
-            throw new RuntimeException("Unsupported image type: " + overlapIP.getClass().getName());
+            throw new IJPluginsRuntimeException("Unsupported image type: " + overlapIP.getClass().getName());
         }
 
 
@@ -439,7 +440,7 @@ public class ImageQuilter {
             }
 
         } else {
-            throw new RuntimeException("Unsupported image type: " + overlapIP.getClass().getName());
+            throw new IJPluginsRuntimeException("Unsupported image type: " + overlapIP.getClass().getName());
         }
 
         return dists;

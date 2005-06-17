@@ -26,6 +26,7 @@ import ij.gui.GenericDialog;
 import ij.io.Opener;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import net.sf.ij.IJPluginsRuntimeException;
 
 public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
     final private static String DEST_WIDTH_LABEL = "Output width";
@@ -73,7 +74,7 @@ public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
             try {
                 return (Config) clone();
             } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
+                throw new IJPluginsRuntimeException(e);
             }
         }
     }
