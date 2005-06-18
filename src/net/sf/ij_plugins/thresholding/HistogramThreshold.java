@@ -27,7 +27,7 @@ import java.util.List;
  * histogram based thresholding.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class HistogramThreshold {
     final static private double EPSILON = Double.MIN_VALUE;
@@ -39,6 +39,9 @@ public final class HistogramThreshold {
      * Calculate maximum entropy split of a histogram. For more inforamtion see: J.N. Kapur, P.K.
      * Sahoo and A.K.C. Wong, "A New Method for Gray-Level Picture Thresholding Using the Entropy of
      * the Histogram", <i>CVGIP</i>, (29), pp.273-285 , 1985.
+     * <p/>
+     * Returned value indicates split position <code>t</code>. First interval are values less than
+     * <code>t</code>, second interval are values equal or larger than <code>t</code>.
      *
      * @param hist histogram to be thresholded.
      * @return index of the maximum entropy split.
@@ -103,11 +106,13 @@ public final class HistogramThreshold {
         // Find histogram index with maximum entropy
         double jMax = hB[0] + hW[0];
         int tMax = 0;
-        for (int t = 1; t < hist.length; ++t) {
+        for (int t = 0; t < hist.length; ++t) {
             final double j = hB[t] + hW[t];
-            if (j > jMax) {
+            System.out.println("j[" + t + "] = " + j);
+            if (jMax < j) {
+                System.out.println("jMax = " + j);
                 jMax = j;
-                tMax = t;
+                tMax = t + 1;
             }
         }
 
@@ -147,11 +152,19 @@ public final class HistogramThreshold {
                 e += intervalEntropy(h, lastT, t);
                 lastT = t;
             }
+//            System.out.println("e["+i+"] = "+e);
             e += intervalEntropy(h, lastT, max);
 
+            System.out.println("e[" + i + "] = " + e);
+
             if (bestE < e) {
+                System.out.print("bestE = " + e);
                 bestE = e;
                 bestInterval = interval;
+                for (int j = 0; j < interval.length; j++) {
+                    System.out.print(", " + interval[j]);
+                }
+                System.out.println("");
             }
         }
 
