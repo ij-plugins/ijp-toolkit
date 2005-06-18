@@ -27,7 +27,7 @@ import java.util.List;
  * histogram based thresholding.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class HistogramThreshold {
     final static private double EPSILON = Double.MIN_VALUE;
@@ -108,9 +108,7 @@ public final class HistogramThreshold {
         int tMax = 0;
         for (int t = 0; t < hist.length; ++t) {
             final double j = hB[t] + hW[t];
-            System.out.println("j[" + t + "] = " + j);
             if (jMax < j) {
-                System.out.println("jMax = " + j);
                 jMax = j;
                 tMax = t + 1;
             }
@@ -152,19 +150,13 @@ public final class HistogramThreshold {
                 e += intervalEntropy(h, lastT, t);
                 lastT = t;
             }
-//            System.out.println("e["+i+"] = "+e);
             e += intervalEntropy(h, lastT, max);
 
-            System.out.println("e[" + i + "] = " + e);
-
             if (bestE < e) {
-                System.out.print("bestE = " + e);
                 bestE = e;
                 bestInterval = interval;
                 for (int j = 0; j < interval.length; j++) {
-                    System.out.print(", " + interval[j]);
                 }
-                System.out.println("");
             }
         }
 
