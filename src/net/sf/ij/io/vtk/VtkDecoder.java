@@ -47,7 +47,7 @@ public class VtkDecoder implements PlugIn {
     private final static int MAX_LINE_SIZE = 260;
     private final static int MAX_HEADER_SIZE = MAX_LINE_SIZE * (2 + 9);
 
-    private String DIALOG_CAPTION = "VTK Reader";
+    private final String DIALOG_CAPTION = "VTK Reader";
 
     private FileInfo fileInfo = null;
     private Calibration calibration = null;
@@ -233,9 +233,9 @@ public class VtkDecoder implements PlugIn {
 
     /**
      * Open file VTK image file and decode header information. Decoded information is stored in
-     * <code>fileInfo</code> and <code>calibration</code> member variables, so standard ImageJ methods
-     * can be used to read image data. <code>calibration</code> stores pixel dimensions and image
-     * origin information.
+     * <code>fileInfo</code> and <code>calibration</code> member variables, so standard ImageJ
+     * methods can be used to read image data. <code>calibration</code> stores pixel dimensions and
+     * image origin information.
      *
      * @param file VTK image file.
      * @throws VtkImageException In case of I/O errors or incorrect header format.
@@ -581,12 +581,12 @@ public class VtkDecoder implements PlugIn {
 
 
     /**
-     *  Extract lines of text from a binary buffer.
+     * Extract lines of text from a binary buffer.
      *
-     * @author     Jarek Sacha
-     * @created    June 21, 2002
+     * @author Jarek Sacha
+     * @created June 21, 2002
      */
-    private static class LineExtractor {
+    private static final class LineExtractor {
         private final static int NEW_LINE_MODE_NULL = 0;
         private final static int NEW_LINE_MODE_UNKNOWN = -1;
         private final static int NEW_LINE_MODE_MAC = 1;
@@ -597,9 +597,9 @@ public class VtkDecoder implements PlugIn {
         // '\r'
         private final static byte CARRIAGE_RETURN_CHAR = 10;
 
-        private byte[] buffer;
-        private int dataOffset;
-        private int dataLength;
+        private final byte[] buffer;
+        private final int dataOffset;
+        private final int dataLength;
 
         private int startOfCurrentLine;
         private int startOfNextLine;
@@ -635,8 +635,9 @@ public class VtkDecoder implements PlugIn {
 
 
         /**
-         * Current guess about the OS type on which the file was written, based how the text lines are
-         * ended. This can be used to guess byte order, For PC it is LSB, for MAC and UNIX it is MSB.
+         * Current guess about the OS type on which the file was written, based how the text lines
+         * are ended. This can be used to guess byte order, For PC it is LSB, for MAC and UNIX it is
+         * MSB.
          *
          * @return The NewLineMode value
          */
@@ -701,14 +702,13 @@ public class VtkDecoder implements PlugIn {
 
 
         /**
-         *  Extract next line.
+         * Extract next line.
          *
-         * @param  lineMustBePresent      If 'true' an exception will be thrown if
-         *      line cannot be extracted.
-         * @return                        Text representation of the extracted line,
-         *      'null' if no line was extracted.
-         * @exception  VtkImageException  If a line can not be extracted and <code>lineMustBePresent</code>
-         *      is 'true'.
+         * @param lineMustBePresent If 'true' an exception will be thrown if line cannot be
+         *                          extracted.
+         * @return Text representation of the extracted line, 'null' if no line was extracted.
+         * @throws VtkImageException If a line can not be extracted and <code>lineMustBePresent</code>
+         *                           is 'true'.
          */
         public String nextLine(boolean lineMustBePresent) throws VtkImageException {
             int newPosition = startOfNextLine;
@@ -770,6 +770,6 @@ public class VtkDecoder implements PlugIn {
                 newLineMode = NEW_LINE_MODE_UNKNOWN;
             }
             return currentLine;
+        }
     }
-  }
 }

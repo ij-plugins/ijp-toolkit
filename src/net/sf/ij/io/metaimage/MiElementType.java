@@ -26,58 +26,58 @@ import net.sf.ij.util.Enumeration;
  * Represents types of element values in MetaImage files.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-05 03:57:17 $
+ * @version $Revision: 1.2 $ $Date: 2005-06-18 02:11:44 $
  * @created June 18, 2002
  */
 public class MiElementType extends Enumeration {
     /**
      * MET_UCHAR
      */
-    public static MiElementType MET_UCHAR = new MiElementType("MET_UCHAR");
+    final public static MiElementType MET_UCHAR = new MiElementType("MET_UCHAR");
     /**
      * MET_CHAR
      */
-    public static MiElementType MET_CHAR = new MiElementType("MET_CHAR");
+    final public static MiElementType MET_CHAR = new MiElementType("MET_CHAR");
     /**
      * MET_USHORT
      */
-    public static MiElementType MET_USHORT = new MiElementType("MET_USHORT");
+    final public static MiElementType MET_USHORT = new MiElementType("MET_USHORT");
     /**
      * MET_SHORT
      */
-    public static MiElementType MET_SHORT = new MiElementType("MET_SHORT");
+    final public static MiElementType MET_SHORT = new MiElementType("MET_SHORT");
     /**
      * MET_UINT
      */
-    public static MiElementType MET_UINT = new MiElementType("MET_UINT");
+    final public static MiElementType MET_UINT = new MiElementType("MET_UINT");
     /**
      * MET_INT
      */
-    public static MiElementType MET_INT = new MiElementType("MET_INT");
+    final public static MiElementType MET_INT = new MiElementType("MET_INT");
     /**
      * MET_ULONG
      */
-    public static MiElementType MET_ULONG = new MiElementType("MET_ULONG");
+    final public static MiElementType MET_ULONG = new MiElementType("MET_ULONG");
     /**
      * MET_LONG
      */
-    public static MiElementType MET_LONG = new MiElementType("MET_LONG");
+    final public static MiElementType MET_LONG = new MiElementType("MET_LONG");
     /**
      * MET_FLOAT
      */
-    public static MiElementType MET_FLOAT = new MiElementType("MET_FLOAT");
+    final public static MiElementType MET_FLOAT = new MiElementType("MET_FLOAT");
     /**
      * MET_DOUBLE
      */
-    public static MiElementType MET_DOUBLE = new MiElementType("MET_DOUBLE");
+    final public static MiElementType MET_DOUBLE = new MiElementType("MET_DOUBLE");
 
 
     /**
-     *  Constructor for the MiElementType object
+     * Constructor for the MiElementType object
      *
-     *@param  name  Description of the Parameter
+     * @param name Description of the Parameter
      */
     private MiElementType(String name) {
         super(name);
-  }
+    }
 }

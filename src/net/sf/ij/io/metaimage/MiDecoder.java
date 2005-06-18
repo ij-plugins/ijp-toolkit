@@ -37,19 +37,19 @@ import java.io.*;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @created July 31, 2002
  * @todo Validate MetaImage tag dependency (some tags need always be present, some only if other
  * tags are present, etc.)
  */
 
 public class MiDecoder implements PlugIn {
-    private static String DIALOG_CAPTION = "MetaImage Reader";
+    final private static String DIALOG_CAPTION = "MetaImage Reader";
 
     /**
      * Symbol separating a tag from its value in the MetaImage header.
      */
-    public static String ASSIGNMENT_SYMBOL = "=";
+    final public static String ASSIGNMENT_SYMBOL = "=";
 
 
     /**
@@ -126,8 +126,8 @@ public class MiDecoder implements PlugIn {
      * @throws MiException In case of I/O errors or incorrect header format.
      */
     private FileInfo decodeHeader(File file) throws MiException {
-        BufferedReader reader = null;
-        FileInfo fileInfo = new FileInfo();
+        final FileInfo fileInfo = new FileInfo();
+        final BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException ex) {
@@ -252,7 +252,7 @@ public class MiDecoder implements PlugIn {
                 }
                 // TAG: ElementType
                 else if (tag.id == MiTag.ElementType) {
-                    MiElementType elementType = null;
+                    final MiElementType elementType;
                     try {
                         elementType = (MiElementType) MiElementType.MET_CHAR.byName(tag.value);
                     }
@@ -348,9 +348,9 @@ public class MiDecoder implements PlugIn {
 
 
     /**
-     *  Main processing method for the MiDecoder object
+     * Main processing method for the MiDecoder object
      *
-     * @param  arg  Description of the Parameter
+     * @param arg Description of the Parameter
      */
     public void run(String arg) {
         try {
@@ -383,6 +383,6 @@ public class MiDecoder implements PlugIn {
         }
         catch (Throwable t) {
             t.printStackTrace();
+        }
     }
-  }
 }

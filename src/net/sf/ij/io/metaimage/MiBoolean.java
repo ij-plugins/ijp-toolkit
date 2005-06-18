@@ -26,24 +26,24 @@ import net.sf.ij.util.Enumeration;
  * Representation of boolean values in MetaImage header files.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-05 03:57:17 $
+ * @version $Revision: 1.2 $ $Date: 2005-06-18 02:11:44 $
  * @created June 18, 2002
  */
 public class MiBoolean extends Enumeration {
     /**
      * Represents boolean symbol 'True' used by MetaImage file format.
      */
-    public static MiBoolean True = new MiBoolean("True");
+    final public static MiBoolean True = new MiBoolean("True");
     /**
      * Represents boolean symbol 'False' used by MetaImage file format.
      */
-    public static MiBoolean False = new MiBoolean("False");
+    final public static MiBoolean False = new MiBoolean("False");
 
 
     /**
-     *  Constructor for the MiBoolean object
+     * Constructor for the MiBoolean object
      *
-     *@param  name  Description of the Parameter
+     * @param name Description of the Parameter
      */
     private MiBoolean(String name) {
         super(name);

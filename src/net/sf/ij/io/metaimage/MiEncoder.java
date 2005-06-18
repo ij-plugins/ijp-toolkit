@@ -41,7 +41,7 @@ import java.io.IOException;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @created June 18, 2002
  * @todo Fix MetaImage format for unambiguous element size, e.g. MET_LONG could be 32 bit on 32 bit
  * processors and 64 bit on 64 bit processors. A fix would be to use MET_INT32.
@@ -178,7 +178,7 @@ public class MiEncoder implements PlugIn {
         header.append(LINE_SEPARATOR);
 
         // ElementType
-        String elementType = null;
+        final String elementType;
         switch (imp.getType()) {
             case ImagePlus.COLOR_256:
             case ImagePlus.COLOR_RGB:
