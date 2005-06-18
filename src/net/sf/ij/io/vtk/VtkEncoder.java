@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ import java.io.*;
  */
 
 public class VtkEncoder implements PlugIn {
-    private String DIALOG_CAPTION = "VTK Writer";
+    private final static String DIALOG_CAPTION = "VTK Writer";
     private final static String TAG_SEPARATOR = " ";
     private final static String vtkFileVersion = "3.0";
 
@@ -52,36 +52,36 @@ public class VtkEncoder implements PlugIn {
      * @param asciiFormat Description of Parameter
      * @return Description of the Returned Value
      */
-    private static String createHeader(ImagePlus imp, boolean asciiFormat) {
+    private static String createHeader(final ImagePlus imp, final boolean asciiFormat) {
 
-        StringBuffer header = new StringBuffer(VtkTag.DATA_FILE_VERSION
-                + vtkFileVersion + "\n");
+        final StringBuffer header = new StringBuffer();
+        header.append(VtkTag.DATA_FILE_VERSION).append(vtkFileVersion).append("\n");
 
-        header.append(imp.getTitle() + "\n");
+        header.append(imp.getTitle()).append("\n");
 
         header.append(asciiFormat ? VtkDataFormat.ASCII : VtkDataFormat.BINARY);
         header.append("\n");
 
-        header.append("" + VtkTag.DATASET + TAG_SEPARATOR
-                + VtkDataSetType.STRUCTURED_POINTS + "\n");
+        header.append(VtkTag.DATASET).append(TAG_SEPARATOR)
+                .append(VtkDataSetType.STRUCTURED_POINTS).append("\n");
 
-        int width = imp.getWidth();
-        int height = imp.getHeight();
-        int depth = imp.getStackSize();
-        header.append("" + VtkTag.DIMENSIONS + TAG_SEPARATOR
-                + width + " " + height + " " + depth + "\n");
+        final int width = imp.getWidth();
+        final int height = imp.getHeight();
+        final int depth = imp.getStackSize();
+        header.append(VtkTag.DIMENSIONS).append(TAG_SEPARATOR).append(width).append(" ")
+                .append(height).append(" ").append(depth).append("\n");
 
-        Calibration c = imp.getCalibration();
-        header.append("" + VtkTag.SPACING + TAG_SEPARATOR
-                + c.pixelWidth + " " + c.pixelHeight + " " + c.pixelDepth + "\n");
+        final Calibration c = imp.getCalibration();
+        header.append(VtkTag.SPACING).append(TAG_SEPARATOR).append(c.pixelWidth).append(" ")
+                .append(c.pixelHeight).append(" ").append(c.pixelDepth).append("\n");
 
-        header.append("" + VtkTag.ORIGIN + TAG_SEPARATOR
-                + c.xOrigin + " " + c.yOrigin + " " + c.zOrigin + "\n");
+        header.append(VtkTag.ORIGIN).append(TAG_SEPARATOR).append(c.xOrigin).append(" ")
+                .append(c.yOrigin).append(" ").append(c.zOrigin + "\n");
 
-        header.append("" + VtkTag.POINT_DATA + TAG_SEPARATOR
-                + (width * height * depth) + "\n");
+        header.append(VtkTag.POINT_DATA).append(TAG_SEPARATOR).append(width * height * depth)
+                .append("\n");
 
-        String scalarName = null;
+        final String scalarName;
         switch (imp.getType()) {
             case ImagePlus.GRAY8:
                 scalarName = VtkScalarType.UNSIGNED_CHAR.toString();
@@ -96,11 +96,10 @@ public class VtkEncoder implements PlugIn {
                 throw new IllegalArgumentException("Unsupported image type. "
                         + "Only images of types: GRAY8, GRAY16, and GRAY32 are supported.");
         }
-        header.append("" + VtkTag.SCALARS + TAG_SEPARATOR
-                + "volume_scalars " + scalarName + " 1\n");
+        header.append(VtkTag.SCALARS).append(TAG_SEPARATOR).append("volume_scalars ")
+                .append(scalarName).append(" 1\n");
 
-        header.append("" + VtkTag.LOOKUP_TABLE + TAG_SEPARATOR
-                + "default\n");
+        header.append(VtkTag.LOOKUP_TABLE).append(TAG_SEPARATOR).append("default\n");
 
         return header.toString();
     }
@@ -114,22 +113,22 @@ public class VtkEncoder implements PlugIn {
      * @throws FileNotFoundException Description of Exception
      * @throws IOException           Description of Exception
      */
-    private static void saveAsVtkBinary(String fileName, ImagePlus imp)
+    private static void saveAsVtkBinary(final String fileName, final ImagePlus imp)
             throws FileNotFoundException, IOException {
 
-        BufferedOutputStream bos = new BufferedOutputStream(
+        final BufferedOutputStream bos = new BufferedOutputStream(
                 new FileOutputStream(fileName));
 
-        String header = createHeader(imp, false);
+        final String header = createHeader(imp, false);
         bos.write(header.getBytes());
 
-        ImageWriter imageWriter = new ImageWriter(imp.getFileInfo());
+        final ImageWriter imageWriter = new ImageWriter(imp.getFileInfo());
         imageWriter.write(bos);
 
         bos.close();
     }
 
-    public static void save(String fileName, ImagePlus imp) throws IOException {
+    public static void save(final String fileName, final ImagePlus imp) throws IOException {
         saveAsVtkBinary(fileName, imp);
     }
 
