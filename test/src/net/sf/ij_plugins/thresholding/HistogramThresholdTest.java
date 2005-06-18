@@ -76,7 +76,7 @@ public class HistogramThresholdTest extends TestCase {
         int min = 0;
         int max = 256;
         int[][] intervals = HistogramThreshold.intervals(n, min, max);
-        print(intervals, n, min, max);
+//        print(intervals, n, min, max);
     }
 
 
@@ -87,10 +87,10 @@ public class HistogramThresholdTest extends TestCase {
             int lastD = min;
             for (int j = 0; j < interval.length; j++) {
                 int d = interval[j];
-                System.out.print("[" + lastD + ", " + d + ") ");
+//                System.out.print("[" + lastD + ", " + d + ") ");
                 lastD = d;
             }
-            System.out.println("[" + lastD + ", " + max + ")");
+//            System.out.println("[" + lastD + ", " + max + ")");
         }
     }
 

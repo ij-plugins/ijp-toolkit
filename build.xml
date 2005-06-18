@@ -367,7 +367,6 @@
             <batchtest todir="${test.results.dir}" unless="testcase">
                 <fileset dir="${test.classes.dir}">
                     <include name="**/*Test.class"/>
-                    <include name="**/Text*.class"/>
                 </fileset>
             </batchtest>
         </junit>
