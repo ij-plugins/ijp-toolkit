@@ -27,9 +27,6 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij.filters.FastMedianUInt8;
-import net.sf.ij.filters.RunningFilter;
-import net.sf.ij.filters.RunningMedianOperator;
 
 /**
  * @author Jarek Sacha

@@ -22,7 +22,7 @@ package net.sf.ij_plugins.filters;
 
 import ij.ImagePlus;
 import ij.process.ByteProcessor;
-import net.sf.ij.io.IOUtils;
+import net.sf.ij_plugins.io.IOUtils;
 
 import java.io.IOException;
 

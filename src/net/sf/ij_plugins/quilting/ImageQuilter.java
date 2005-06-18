@@ -26,7 +26,7 @@ package net.sf.ij_plugins.quilting;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.*;
-import net.sf.ij.IJPluginsRuntimeException;
+import net.sf.ij_plugins.IJPluginsRuntimeException;
 
 import java.util.LinkedList;
 
