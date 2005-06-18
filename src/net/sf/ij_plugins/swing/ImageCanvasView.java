@@ -116,6 +116,7 @@ public class ImageCanvasView extends JComponent {
     }
 
     public static void main(String[] args) {
+        // TODO: Convert to JDemo
         ImageCanvasView canvas = new ImageCanvasView();
 //        canvas.setPreferredSize(new Dimension(256,256));
 
