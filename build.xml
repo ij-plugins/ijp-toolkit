@@ -75,6 +75,23 @@
         <fileset refid="library.files"/>
     </path>
 
+    <!-- Test directory structure -->
+    <property name="junit.fork" value="yes"/>
+    <property name="test.dir" location="${build.dir}/tests"/>
+    <property name="test.src.dir" location="${src.dir}"/>
+    <property name="test.data.dir" location="$test.dir}/data"/>
+    <property name="test.lib.dir" location="$test.dir}/lib"/>
+    <property name="test.classes.dir" location="${test.dir}/classes"/>
+    <property name="test.results.dir" location="${test.dir}/results"/>
+    <property name="test.reports.dir" location="${test.dir}/reports"/>
+
+    <!-- test classpath -->
+    <path id="test.classpath">
+        <path refid="compile.classpath"/>
+        <pathelement location="${test.lib.dir}/junit-3.8.1.jar"/>
+        <pathelement location="${test.classes.dir}"/>
+    </path>
+
 
     <!-- ================= -->
     <!--  Primary targets  -->
@@ -143,7 +160,7 @@
     </target>
 
     <target name="clean-all"
-            depends="clean"
+            depends="clean, clean-test"
             description="Remove all files and directories created during build.">
         <delete dir="${jar.dir}"/>
         <delete dir="${sandbox.plugins.dir}"/>
@@ -151,6 +168,12 @@
         <delete dir="${javadoc.dir}"/>
         <delete dir="${dist.dir}"/>
     </target>
+
+    <!-- Run unit tests -->
+    <target name="test"
+            depends="run-tests"
+            description="Run unit tests"/>
+
 
     <!-- ================= -->
     <!-- Secondary targets -->
@@ -300,4 +323,72 @@
             <param name="cvsweb" expression="${tagdiff.cvsweb}"/>
         </style>
     </target>
+
+
+    <!-- ================= -->
+    <!-- Test targets -->
+    <!-- ================= -->
+
+    <target name="init-test" depends="init">
+        <!-- Create the build directory structure used by test -->
+        <mkdir dir="${test.dir}"/>
+        <mkdir dir="${test.classes.dir}"/>
+        <mkdir dir="${test.results.dir}"/>
+        <mkdir dir="${test.reports.dir}"/>
+    </target>
+
+    <target name="test-compile" depends="compile,init-test">
+        <javac
+                srcdir="${test.src.dir}"
+                destdir="${test.classes.dir}">
+            <classpath refid="test.classpath"/>
+            <include name="**/*Test*.java"/>
+        </javac>
+    </target>
+
+    <target name="run-tests" depends="test-compile">
+        <junit printsummary="no"
+               errorproperty="test.failed"
+               failureproperty="test.failed"
+               fork="${junit.fork}">
+            <classpath refid="test.classpath"/>
+
+            <sysproperty key="test.data.dir" value="${test.data.dir}"/>
+
+            <formatter type="xml"/>
+            <formatter type="brief" usefile="false"/>
+
+            <!-- run single testcase if defined -->
+<!--
+            <test name="${testcase}" if="testcase"/>
+            -->
+
+            <!-- run all test cases if testcase not explicitly defined -->
+            <batchtest todir="${test.results.dir}" unless="testcase">
+                <fileset dir="${test.classes.dir}">
+                    <include name="**/*Test.class"/>
+                    <include name="**/Text*.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${test.reports.dir}">
+            <fileset dir="${test.results.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${test.reports.dir}"/>
+        </junitreport>
+
+        <fail if="test.failed">
+            Unit test failed. Check log or reports for details.
+        </fail>
+    </target>
+
+    <target name="clean-test">
+        <delete dir="${test.results.dir}"/>
+        <delete dir="${test.classes.dir}"/>
+        <delete dir="${test.dir}"/>
+    </target>
+
+
 </project>
