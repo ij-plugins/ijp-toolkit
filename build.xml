@@ -77,19 +77,21 @@
 
     <!-- Test directory structure -->
     <property name="junit.fork" value="yes"/>
-    <property name="test.dir" location="${build.dir}/tests"/>
-    <property name="test.src.dir" location="${src.dir}"/>
-    <property name="test.data.dir" location="$test.dir}/data"/>
-    <property name="test.lib.dir" location="$test.dir}/lib"/>
-    <property name="test.classes.dir" location="${test.dir}/classes"/>
-    <property name="test.results.dir" location="${test.dir}/results"/>
-    <property name="test.reports.dir" location="${test.dir}/reports"/>
+    <property name="test.dir" location="${base.dir}/test"/>
+    <property name="test.src.dir" location="${test.dir}/src"/>
+    <property name="test.data.dir" location="${test.dir}/data"/>
+    <property name="test.lib.dir" location="${test.dir}/lib"/>
+    <property name="test.build.dir" location="${build.dir}/test"/>
+    <property name="test.build.classes.dir" location="${test.build.dir}/classes"/>
+    <property name="test.build.results.dir" location="${test.build.dir}/results"/>
+    <property name="test.build.reports.dir" location="${test.build.dir}/reports"/>
 
     <!-- test classpath -->
     <path id="test.classpath">
         <path refid="compile.classpath"/>
+        <pathelement location="${build.classes.dir}"/>
         <pathelement location="${test.lib.dir}/junit-3.8.1.jar"/>
-        <pathelement location="${test.classes.dir}"/>
+        <pathelement location="${test.build.classes.dir}"/>
     </path>
 
 
@@ -331,16 +333,16 @@
 
     <target name="init-test" depends="init">
         <!-- Create the build directory structure used by test -->
-        <mkdir dir="${test.dir}"/>
-        <mkdir dir="${test.classes.dir}"/>
-        <mkdir dir="${test.results.dir}"/>
-        <mkdir dir="${test.reports.dir}"/>
+        <mkdir dir="${test.build.dir}"/>
+        <mkdir dir="${test.build.classes.dir}"/>
+        <mkdir dir="${test.build.results.dir}"/>
+        <mkdir dir="${test.build.reports.dir}"/>
     </target>
 
     <target name="test-compile" depends="compile,init-test">
         <javac
                 srcdir="${test.src.dir}"
-                destdir="${test.classes.dir}">
+                destdir="${test.build.classes.dir}">
             <classpath refid="test.classpath"/>
             <include name="**/*Test*.java"/>
         </javac>
@@ -364,18 +366,18 @@
             -->
 
             <!-- run all test cases if testcase not explicitly defined -->
-            <batchtest todir="${test.results.dir}" unless="testcase">
-                <fileset dir="${test.classes.dir}">
+            <batchtest todir="${test.build.results.dir}" unless="testcase">
+                <fileset dir="${test.build.classes.dir}">
                     <include name="**/*Test.class"/>
                 </fileset>
             </batchtest>
         </junit>
 
-        <junitreport todir="${test.reports.dir}">
-            <fileset dir="${test.results.dir}">
+        <junitreport todir="${test.build.reports.dir}">
+            <fileset dir="${test.build.results.dir}">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report format="frames" todir="${test.reports.dir}"/>
+            <report format="frames" todir="${test.build.reports.dir}"/>
         </junitreport>
 
         <fail if="test.failed">
@@ -384,9 +386,9 @@
     </target>
 
     <target name="clean-test">
-        <delete dir="${test.results.dir}"/>
-        <delete dir="${test.classes.dir}"/>
-        <delete dir="${test.dir}"/>
+        <delete dir="${test.build.results.dir}"/>
+        <delete dir="${test.build.classes.dir}"/>
+        <delete dir="${test.build.dir}"/>
     </target>
 
 
