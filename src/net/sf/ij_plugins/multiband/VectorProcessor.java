@@ -36,7 +36,7 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class VectorProcessor {
     final int width;
@@ -200,7 +200,7 @@ public class VectorProcessor {
         }
     }
 
-    static final private ImagePlus duplicate(final ImagePlus imp) {
+    static private ImagePlus duplicate(final ImagePlus imp) {
         // TODO: remove duplicate method in KMeansClusteringPlugin
         final Duplicater duplicater = new Duplicater();
         duplicater.setup(null, imp);
@@ -208,7 +208,7 @@ public class VectorProcessor {
     }
 
     /**
-     * Return pixel value at coordinates (<code>x</code>, <code>y</code>)
+     * Return pixel value at coordinates (<code>x</code>, <code>y</code>).
      */
     public float[] get(final int x, final int y, float[] dest) {
         if (x < 0 || x >= width || y < 0 || y >= width) {
@@ -228,33 +228,43 @@ public class VectorProcessor {
     }
 
     /**
+     * Set value of pixel value at coordinates (<code>x</code>, <code>y</code>).
+     */
+    public void set(final int x, final int y, float[] v) {
+        if (x < 0 || x >= width || y < 0 || y >= width) {
+            throw new IllegalArgumentException("Value of coordinates (x,y) is out of range.");
+        }
+        if (v == null) {
+            throw new IllegalArgumentException("Argument 'v' cannot be null.");
+        }
+        if (v.length != numberOfValues) {
+            throw new IllegalArgumentException("Invalid size of argument 'v' expecting " + numberOfValues
+                    + ", got " + v.length + ".");
+        }
+        final int offset = x + y * width;
+        final float[] s = pixels[offset];
+        System.arraycopy(v, 0, s, 0, v.length);
+    }
+
+
+    /**
      * Represents 3x3 neighbourhood. the center pixel is <code>p5</code>. Pixels <code>p1</code> to
      * <code>p3</code> are in the top row, <code>p4</code> to <code>p6</code> in the middle, and
      * <code>p7</code> to <code>p9</code> in the bottom of the neighbourhood.
      */
     public static class Neighborhood3x3 {
-        float[] p1
-        ,
-        p2
-        ,
-        p3
-        ,
-        p4
-        ,
-        p5
-        ,
-        p6
-        ,
-        p7
-        ,
-        p8
-        ,
-        p9;
-        int x
-        ,
-        y
-        ,
-        offset;
+        float[] p1,
+                p2,
+                p3,
+                p4,
+                p5,
+                p6,
+                p7,
+                p8,
+                p9;
+        int x,
+                y,
+                offset;
     }
 
     /**
