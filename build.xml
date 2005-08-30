@@ -4,7 +4,7 @@
         ij-plugins Toolkit
     </description>
 
-<!--
+    <!--
       @TODO: Readme files for the distribution.
       @TODO: Package the binary distribution.
     -->
@@ -148,7 +148,7 @@
             </fileset>
             <footer>
                 <![CDATA[<a href="http://ij-plugins.sourceforge.net">
-            <img src="http://sourceforge.net/sflogo.php?group_id=49871&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo">
+            <img src="http://sourceforge.net/sflogo.php?group_id=49871&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net_Logo">
             </a>]]>
             </footer>
             <classpath refid="compile.classpath"/>
@@ -361,7 +361,7 @@
             <formatter type="brief" usefile="false"/>
 
             <!-- run single testcase if defined -->
-<!--
+            <!--
             <test name="${testcase}" if="testcase"/>
             -->
 
