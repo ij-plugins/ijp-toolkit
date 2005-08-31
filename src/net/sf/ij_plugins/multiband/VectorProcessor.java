@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,7 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class VectorProcessor {
     final int width;
@@ -44,6 +44,7 @@ public class VectorProcessor {
     final int numberOfValues;
     final float[][] pixels;
     Rectangle roi;
+    // TODO: use net.sf.ij_plugins.util.progress instead of ij.gui.ProgressBar for more flexibility.
     private ProgressBar progressBar;
 
 
@@ -65,9 +66,9 @@ public class VectorProcessor {
         height = stack.getHeight();
         numberOfValues = stack.getSize();
         pixels = new float[width * height][numberOfValues];
-        Object[] slices = stack.getImageArray();
+        final Object[] slices = stack.getImageArray();
         for (int i = 0; i < numberOfValues; ++i) {
-            float[] values = (float[]) slices[i];
+            final float[] values = (float[]) slices[i];
             for (int j = 0; j < values.length; j++) {
                 pixels[j][i] = values[j];
             }
@@ -118,7 +119,7 @@ public class VectorProcessor {
     /**
      * @see {@link #getRoi()}
      */
-    public void setRoi(Rectangle roi) {
+    public void setRoi(final Rectangle roi) {
         this.roi = roi;
     }
 
@@ -126,7 +127,7 @@ public class VectorProcessor {
         return progressBar;
     }
 
-    public void setProgressBar(ProgressBar progressBar) {
+    public void setProgressBar(final ProgressBar progressBar) {
         this.progressBar = progressBar;
     }
 
@@ -145,15 +146,15 @@ public class VectorProcessor {
     }
 
     /**
-     * Convert VectorProessor to FloatProcessor stack
+     * Convert VectorProcessor to FloatProcessor stack
      *
-     * @return
+     * @return ImagePlus representation of this object.
      */
     public ImagePlus toFloatStack() {
-        ImageStack stack = new ImageStack(width, height);
+        final ImageStack stack = new ImageStack(width, height);
         for (int i = 0; i < numberOfValues; ++i) {
             FloatProcessor fp = new FloatProcessor(width, height);
-            float[] values = (float[]) fp.getPixels();
+            final float[] values = (float[]) fp.getPixels();
             for (int j = 0; j < values.length; j++) {
                 values[j] = pixels[j][i];
             }
@@ -162,13 +163,13 @@ public class VectorProcessor {
         return new ImagePlus("From VectorProcessor", stack);
     }
 
-    static final private ImageStack convertToFloatStack(ImagePlus imp) {
+    static private ImageStack convertToFloatStack(final ImagePlus src) {
         // TODO: remove duplicate method in KMeansClusteringPlugin
 
-        imp = duplicate(imp);
+        final ImagePlus imp = duplicate(src);
 
         // Remember scaling setup
-        boolean doScaling = ImageConverter.getDoScaling();
+        final boolean doScaling = ImageConverter.getDoScaling();
 
         try {
             // Disable scaling
@@ -190,10 +191,9 @@ public class VectorProcessor {
                 ic.convertToGray32();
             }
 
-            final ImageStack stack = imp.getStack();
             // FIXME: make sure that there are no memory leaks
 //            imp.flush();
-            return stack;
+            return imp.getStack();
         } finally {
             // Restore original scaling option
             ImageConverter.setDoScaling(doScaling);
@@ -211,14 +211,15 @@ public class VectorProcessor {
      * Return pixel value at coordinates (<code>x</code>, <code>y</code>).
      */
     public float[] get(final int x, final int y, float[] dest) {
-        if (x < 0 || x >= width || y < 0 || y >= width) {
-            throw new IllegalArgumentException("Value of coordinates (x,y) is out of range.");
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            throw new IllegalArgumentException("Value of coordinates (x,y)=(" + x + "," + y
+                    + ") is out of range [" + width + "," + height + "].");
         }
         if (dest == null) {
             dest = new float[numberOfValues];
         } else {
             if (dest.length != numberOfValues) {
-                throw new IllegalArgumentException("Invalid leghth of array dest.");
+                throw new IllegalArgumentException("Invalid length of array dest.");
             }
         }
         final int offset = x + y * width;
@@ -231,7 +232,7 @@ public class VectorProcessor {
      * Set value of pixel value at coordinates (<code>x</code>, <code>y</code>).
      */
     public void set(final int x, final int y, float[] v) {
-        if (x < 0 || x >= width || y < 0 || y >= width) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new IllegalArgumentException("Value of coordinates (x,y) is out of range.");
         }
         if (v == null) {
@@ -273,7 +274,6 @@ public class VectorProcessor {
     public class PixelIterator implements java.util.Iterator {
         final int xMin = roi.x - 1;
         final int xMax = roi.x + roi.width - 1;
-        ;
         final int rowOffset = width;
         final int yMin = roi.y;
         final int yMax = roi.y + roi.height - 1;
@@ -317,7 +317,7 @@ public class VectorProcessor {
         }
 
         /**
-         * Not suported.
+         * Not supported.
          */
         public void remove() {
             throw new UnsupportedOperationException("Method remove() not supported.");
@@ -335,7 +335,6 @@ public class VectorProcessor {
     public class Iterator implements java.util.Iterator {
         final int xMin = roi.x - 1;
         final int xMax = roi.x + roi.width - 1;
-        ;
         final int rowOffset = width;
         final int yMin = roi.y;
         final int yMax = roi.y + roi.height - 1;
@@ -386,7 +385,7 @@ public class VectorProcessor {
         }
 
         /**
-         * Not suported.
+         * Not supported.
          */
         public void remove() {
             throw new UnsupportedOperationException("Method remove() not supported.");
