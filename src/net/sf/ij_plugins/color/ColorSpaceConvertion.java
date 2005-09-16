@@ -29,7 +29,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ColorSpaceConvertion {
 
@@ -318,7 +318,8 @@ public class ColorSpaceConvertion {
      */
     public static ColorProcessor labToColorProcessor(final VectorProcessor vp) {
         final float[][] pixels = vp.getPixels();
-        final float[] tmp = new float[3];
+        final float[] tmpXYZ = new float[3];
+        final float[] tmpRGB = new float[3];
 
         final int width = vp.getWidth();
         final int height = vp.getHeight();
@@ -327,7 +328,6 @@ public class ColorSpaceConvertion {
         final byte[] green = new byte[sliceSize];
         final byte[] blue = new byte[sliceSize];
 
-
         // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
         final int progressStep = Math.max(pixels.length / 10, 1);
         for (int i = 0; i < pixels.length; i++) {
@@ -335,11 +335,11 @@ public class ColorSpaceConvertion {
                 IJ.showProgress(i, pixels.length);
             }
             final float[] pixel = pixels[i];
-            ColorSpaceConvertion.labToXYZ(pixel, tmp);
-            ColorSpaceConvertion.xyzToRGB(tmp, pixel);
-            int r = Math.min(Math.max(Math.round(pixel[0]), 0), 255);
-            int g = Math.min(Math.max(Math.round(pixel[1]), 0), 255);
-            int b = Math.min(Math.max(Math.round(pixel[2]), 0), 255);
+            ColorSpaceConvertion.labToXYZ(pixel, tmpXYZ);
+            ColorSpaceConvertion.xyzToRGB(tmpXYZ, tmpRGB);
+            int r = Math.min(Math.max(Math.round(tmpRGB[0]), 0), 255);
+            int g = Math.min(Math.max(Math.round(tmpRGB[1]), 0), 255);
+            int b = Math.min(Math.max(Math.round(tmpRGB[2]), 0), 255);
             red[i] = (byte) (r & 0xff);
             green[i] = (byte) (g & 0xff);
             blue[i] = (byte) (b & 0xff);
