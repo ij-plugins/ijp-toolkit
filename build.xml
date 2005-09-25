@@ -47,7 +47,8 @@
 
     <fileset id="library.files"
              dir="${lib.dir}">
-        <include name="**/l2fprod-common-all.jar"/>
+        <include name="**/commons-beanutils-core-*.jar"/>
+        <include name="**/commons-logging-*.jar"/>
     </fileset>
 
     <fileset id="config.files"
