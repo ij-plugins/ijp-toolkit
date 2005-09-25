@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,9 +29,7 @@ import net.sf.ij_plugins.operators.PixelIterator;
  * @author Jarek Sacha
  * @version $ Revision: $
  */
-public class PeronMalikAnisotropicDiffusion {
-    private double timeStep = 0.2;
-    private int numberOfIterations = 10;
+public class PeronMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusion {
     private boolean bigRegionFunction = true;
     private float k = 10;
     private float inv_k = 1 / k;
@@ -53,43 +51,10 @@ public class PeronMalikAnisotropicDiffusion {
         this.bigRegionFunction = bigRegionFunction;
     }
 
-    public int getNumberOfIterations() {
-        return numberOfIterations;
-    }
-
-    public void setNumberOfIterations(int numberOfIterations) {
-        this.numberOfIterations = numberOfIterations;
-    }
-
-    public double getTimeStep() {
-        return timeStep;
-    }
-
-    public void setTimeStep(double timeStep) {
-        this.timeStep = timeStep;
-    }
-
-    public FloatProcessor process(FloatProcessor src) {
-        FloatProcessor fp1 = (FloatProcessor) src.duplicate();
-        FloatProcessor fp2 = (FloatProcessor) src.duplicate();
-
-        for (int i = 0; i < numberOfIterations; i++) {
-            diffuse(fp1, fp2);
-
-            // swap
-            FloatProcessor tmp = fp2;
-            fp2 = fp1;
-            fp1 = tmp;
-        }
-
-        return fp1;
-    }
-
-
     /**
      * Perform single diffusion operation
      */
-    private void diffuse(FloatProcessor src, FloatProcessor dest) {
+    protected void diffuse(FloatProcessor src, FloatProcessor dest) {
         float[] destPixels = (float[]) dest.getPixels();
         PixelIterator iterator = new PixelIterator(src);
 
@@ -115,7 +80,7 @@ public class PeronMalikAnisotropicDiffusion {
             //
             //      double sqrt2div2 = .707106781;
             //      double newValue = (n.center + timeStep * (sum4component + sqrt2div2 * sum8component));
-            double newValue = n.center + (timeStep * (sum4component));
+            double newValue = n.center + (getTimeStep() * (sum4component));
 
             destPixels[n.offset] = (float) newValue;
         }

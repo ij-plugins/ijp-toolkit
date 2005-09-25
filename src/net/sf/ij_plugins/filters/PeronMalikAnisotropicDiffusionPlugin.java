@@ -20,70 +20,18 @@
  */
 package net.sf.ij_plugins.filters;
 
-import com.l2fprod.common.propertysheet.PropertySheet;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import ij.IJ;
-import ij.ImagePlus;
-import ij.plugin.filter.PlugInFilter;
-import ij.process.FloatProcessor;
-import ij.process.ImageProcessor;
-
-import javax.swing.*;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.SimpleBeanInfo;
-
 /**
  * @author Jarek Sacha
  * @version $ Revision: $
  */
 
-public class PeronMalikAnisotropicDiffusionPlugin implements PlugInFilter {
-    public int setup(String s, ImagePlus imagePlus) {
-        return DOES_8G | DOES_16 | DOES_32 | DOES_STACKS | NO_CHANGES;
+public class PeronMalikAnisotropicDiffusionPlugin extends AbstractAnisotropicDiffusionPlugin {
+
+    public PeronMalikAnisotropicDiffusionPlugin() {
+        super("Peron-Malik Anisotropic Diffusion");
     }
 
-    public void run(ImageProcessor ip) {
-        FloatProcessor src = (FloatProcessor) ip.convertToFloat();
-        PeronMalikAnisotropicDiffusion gad = new PeronMalikAnisotropicDiffusion();
-
-
-        if (!showBeanEditDialog(gad)) {
-            return;
-        }
-
-        long start = System.currentTimeMillis();
-        FloatProcessor dest = gad.process(src);
-        long end = System.currentTimeMillis();
-
-        new ImagePlus("Peron-Malik Anisotropic Diffusion", dest).show();
-        IJ.showStatus("Filtering completed in " + (end - start) + "ms.");
-    }
-
-    private boolean showBeanEditDialog(Object bean) {
-        BeanInfo beanInfo = new SimpleBeanInfo();
-        try {
-            beanInfo = Introspector.getBeanInfo(bean.getClass());
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
-
-        final PropertySheetPanel sheet = new PropertySheetPanel();
-        sheet.setMode(PropertySheet.VIEW_AS_FLAT_LIST);
-        sheet.setToolBarVisible(true);
-        sheet.setDescriptionVisible(true);
-        sheet.setBeanInfo(beanInfo);
-        sheet.readFromObject(bean);
-
-        int status = JOptionPane.showConfirmDialog(null, sheet,
-                "Flux Anisotropic Diffusion", JOptionPane.YES_NO_CANCEL_OPTION);
-
-        if (status == JOptionPane.YES_OPTION) {
-            sheet.writeToObject(bean);
-            return true;
-        } else {
-            return false;
-        }
+    protected AbstractAnisotropicDiffusion createFilter() {
+        return new PeronMalikAnisotropicDiffusion();
     }
 }
