@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +20,16 @@
  */
 package net.sf.ij_plugins.filters;
 
-import java.beans.SimpleBeanInfo;
+import net.sf.ij_plugins.util.IJPluginsSimpleBeanInfo;
 
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class FluxAnisotropicDiffusionFilterBeanInfo extends SimpleBeanInfo {
+public class FluxAnisotropicDiffusionFilterBeanInfo extends IJPluginsSimpleBeanInfo {
+
+    public FluxAnisotropicDiffusionFilterBeanInfo() {
+        super(FluxAnisotropicDiffusionFilter.class);
+    }
 }
