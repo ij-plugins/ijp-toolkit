@@ -33,7 +33,7 @@ import java.beans.PropertyDescriptor;
  */
 public class SRADBeanInfo extends IJPluginsSimpleBeanInfo {
 
-    protected SRADBeanInfo() {
+    public SRADBeanInfo() {
         super(SRAD.class);
     }
 

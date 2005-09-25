@@ -20,19 +20,12 @@
  */
 package net.sf.ij_plugins.filters;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.IJPluginsRuntimeException;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 import net.sf.ij_plugins.util.DialogUtil;
-import org.apache.commons.beanutils.PropertyUtils;
-
-import java.beans.*;
-import java.lang.reflect.InvocationTargetException;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
  * @author Jarek Sacha

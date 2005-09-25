@@ -31,7 +31,7 @@ import java.beans.PropertyDescriptor;
  */
 public class AbstractAnisotropicDiffusionBeanInfo extends IJPluginsSimpleBeanInfo {
 
-    protected AbstractAnisotropicDiffusionBeanInfo() {
+    public AbstractAnisotropicDiffusionBeanInfo() {
         super(AbstractAnisotropicDiffusion.class);
     }
 
