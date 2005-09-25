@@ -20,19 +20,11 @@
  */
 package net.sf.ij_plugins.filters;
 
-import com.l2fprod.common.propertysheet.PropertySheet;
-import com.l2fprod.common.propertysheet.PropertySheetPanel;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-
-import javax.swing.*;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.SimpleBeanInfo;
+import net.sf.ij_plugins.util.DialogUtil;
 
 /**
  * @author Jarek Sacha
@@ -40,49 +32,23 @@ import java.beans.SimpleBeanInfo;
  */
 
 public class DirectionalCoherencePlugin implements PlugInFilter {
-    public int setup(String s, ImagePlus imagePlus) {
+    private final static String TITLE = "Directional Coherence";
+
+    public int setup(final String s, final ImagePlus imagePlus) {
         return DOES_8G | DOES_16 | DOES_32 | DOES_STACKS | NO_CHANGES;
     }
 
-    public void run(ImageProcessor ip) {
-        FloatProcessor src = (FloatProcessor) ip.convertToFloat();
+    public void run(final ImageProcessor ip) {
+        final FloatProcessor src = (FloatProcessor) ip.convertToFloat();
 
-        DirectionalCoherenceFilter filter = new DirectionalCoherenceFilter();
-        if (!showBeanEditDialog(filter)) {
+        final DirectionalCoherenceFilter filter = new DirectionalCoherenceFilter();
+        if (!DialogUtil.showGenericDialog(filter, TITLE)) {
             return;
         }
 
-        long start = System.currentTimeMillis();
         FloatProcessor dest = filter.run(src);
-        long end = System.currentTimeMillis();
 
-        new ImagePlus("Directional Coherence", dest).show();
-        IJ.showStatus("Filtering completed in " + (end - start) + "ms.");
+        new ImagePlus(TITLE, dest).show();
     }
 
-    private boolean showBeanEditDialog(Object bean) {
-        BeanInfo beanInfo = new SimpleBeanInfo();
-        try {
-            beanInfo = Introspector.getBeanInfo(bean.getClass());
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
-
-        final PropertySheetPanel sheet = new PropertySheetPanel();
-        sheet.setMode(PropertySheet.VIEW_AS_FLAT_LIST);
-        sheet.setToolBarVisible(true);
-        sheet.setDescriptionVisible(true);
-        sheet.setBeanInfo(beanInfo);
-        sheet.readFromObject(bean);
-
-        int status = JOptionPane.showConfirmDialog(null, sheet,
-                "Flux Anisotropic Diffusion", JOptionPane.YES_NO_CANCEL_OPTION);
-
-        if (status == JOptionPane.YES_OPTION) {
-            sheet.writeToObject(bean);
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
