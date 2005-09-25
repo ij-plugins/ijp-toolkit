@@ -138,22 +138,5 @@ public class DialogUtil {
         }
 
         return true;
-
-//        final PropertySheetPanel sheet = new PropertySheetPanel();
-//        sheet.setMode(PropertySheet.VIEW_AS_FLAT_LIST);
-//        sheet.setToolBarVisible(true);
-//        sheet.setDescriptionVisible(true);
-//        sheet.setBeanInfo(beanInfo);
-//        sheet.readFromObject(bean);
-//
-//        // TODO use non null parent component
-//        int status = JOptionPane.showConfirmDialog(null, sheet, title, JOptionPane.OK_CANCEL_OPTION);
-//
-//        if (status == JOptionPane.YES_OPTION) {
-//            sheet.writeToObject(bean);
-//            return true;
-//        } else {
-//            return false;
-//        }
     }
 }
