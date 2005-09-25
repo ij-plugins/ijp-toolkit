@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,29 +25,55 @@ package net.sf.ij_plugins.operators;
  * @version $ Revision: $
  */
 
+/**
+ * Pixel numbers:
+ * <pre>
+ *  4 3 2
+ *  5 0 1
+ *  6 7 8
+ * </pre>
+ */
 public class Neighborhood3x3 {
     private final float[] neighbors = new float[9];
+    /**
+     * Value of pixel located at the center of neighborhood, that is at  (<code>x</code>,<code>y</code>).
+     */
     public float center;
-    public float neighbor1
-    ,
-    neighbor2
-    ,
-    neighbor3
-    ,
-    neighbor4
-    ,
-    neighbor5
-    ,
-    neighbor6
-    ,
-    neighbor7
-    ,
-    neighbor8;
-    public int x
-    ,
-    y
-    ,
-    offset;
+    /**
+     * Value of pixel located at (<code>x+1</code>,<code>y</code>).
+     */
+    public float neighbor1;
+    /**
+     * Value of pixel located at (<code>x+1</code>,<code>y-1</code>).
+     */
+    public float neighbor2;
+    /**
+     * Value of pixel located at (<code>x</code>,<code>y-1</code>-1).
+     */
+    public float neighbor3;
+    /**
+     * Value of pixel located at (<code>x</code>-1,<code>y</code>-1).
+     */
+    public float neighbor4;
+    /**
+     * Value of pixel located at (<code>x</code>-1,<code>y</code>).
+     */
+    public float neighbor5;
+    /**
+     * Value of pixel located at (<code>x</code>-1,<code>y</code>+1).
+     */
+    public float neighbor6;
+    /**
+     * Value of pixel located at (<code>x</code>,<code>y</code>+1).
+     */
+    public float neighbor7;
+    /**
+     * Value of pixel located at (<code>x</code>+1,<code>y</code>+1).
+     */
+    public float neighbor8;
+    public int x;
+    public int y;
+    public int offset;
 
     public float[] getNeighbors() {
         neighbors[0] = center;
