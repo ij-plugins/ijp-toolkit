@@ -25,13 +25,13 @@ package net.sf.ij_plugins.filters;
  * @version $ Revision: $
  */
 
-public class PeronMalikAnisotropicDiffusionPlugin extends AbstractAnisotropicDiffusionPlugin {
+public class PeronaMalikAnisotropicDiffusionPlugin extends AbstractAnisotropicDiffusionPlugin {
 
-    public PeronMalikAnisotropicDiffusionPlugin() {
+    public PeronaMalikAnisotropicDiffusionPlugin() {
         super("Peron-Malik Anisotropic Diffusion");
     }
 
     protected AbstractAnisotropicDiffusion createFilter() {
-        return new PeronMalikAnisotropicDiffusion();
+        return new PeronaMalikAnisotropicDiffusion();
     }
 }

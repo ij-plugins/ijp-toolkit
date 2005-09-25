@@ -29,7 +29,7 @@ import net.sf.ij_plugins.operators.PixelIterator;
  * @author Jarek Sacha
  * @version $ Revision: $
  */
-public class PeronMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusion {
+public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusion {
     private boolean bigRegionFunction = true;
     private float k = 10;
     private float inv_k = 1 / k;

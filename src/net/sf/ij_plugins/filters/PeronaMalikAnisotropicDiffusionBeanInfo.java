@@ -23,16 +23,18 @@ package net.sf.ij_plugins.filters;
 import net.sf.ij_plugins.IJPluginsRuntimeException;
 import net.sf.ij_plugins.util.IJPluginsSimpleBeanInfo;
 
-import java.beans.*;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 
 /**
- *
  * @author Jarek Sacha
  */
-public class PeronMalikAnisotropicDiffusionBeanInfo extends IJPluginsSimpleBeanInfo {
+public class PeronaMalikAnisotropicDiffusionBeanInfo extends IJPluginsSimpleBeanInfo {
 
-    public PeronMalikAnisotropicDiffusionBeanInfo() {
-        super(PeronMalikAnisotropicDiffusion.class);
+    public PeronaMalikAnisotropicDiffusionBeanInfo() {
+        super(PeronaMalikAnisotropicDiffusion.class);
     }
 
 
