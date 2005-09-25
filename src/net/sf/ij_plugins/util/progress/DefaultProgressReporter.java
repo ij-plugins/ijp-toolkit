@@ -34,7 +34,7 @@ public class DefaultProgressReporter implements ProgressReporter {
     final protected List progressListeners = new ArrayList();
     private double currentProgress = 0;
 
-    public double getCurrentProgress() {
+    public double currentProgress() {
         return currentProgress;
     }
 
@@ -80,10 +80,10 @@ public class DefaultProgressReporter implements ProgressReporter {
     }
 
     /**
-     * Set new progress value and notify listeners. A convinience method that can be used instread
+     * Set new progress value and notify listeners. A convenience method that can be used instead
      * calling {@link #setCurrentProgress(double)} and {@link #notifyProgressListeners()}.
      *
-     * @param progress new value of {@link #getCurrentProgress}.
+     * @param progress new value of {@link #currentProgress}.
      * @see #setCurrentProgress(double)
      * @see #notifyProgressListeners()
      */

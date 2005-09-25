@@ -29,7 +29,7 @@ import java.util.Set;
  * Utility for aggregating progress events from multiple {@link ProgressReporter}'s
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ProgressAccumulator
         extends DefaultProgressReporter
@@ -90,8 +90,7 @@ public class ProgressAccumulator
      * @param message  message that will be reported when this reporter send progress event. If
      *                 <code>null</code> the original message send by reporter will be used.
      */
-    public void addProgressReporter(final ProgressReporter reporter, final double weight, final String message)
-    {
+    public void addProgressReporter(final ProgressReporter reporter, final double weight, final String message) {
         if (reporter == null) {
             return;
         }
@@ -146,7 +145,7 @@ public class ProgressAccumulator
             final Map.Entry entry = (Map.Entry) i.next();
             final Data data = (Data) entry.getValue();
             weightSum += data.weight;
-            double progress = ((ProgressReporter) entry.getKey()).getCurrentProgress();
+            double progress = ((ProgressReporter) entry.getKey()).currentProgress();
             progressSum += progress * data.weight;
         }
 

@@ -26,7 +26,7 @@ package net.sf.ij_plugins.util.progress;
  * @author Jarek Sacha
  */
 public interface ProgressReporter {
-    public double getCurrentProgress();
+    public double currentProgress();
 
     public void addProgressListener(ProgressListener l);
 
