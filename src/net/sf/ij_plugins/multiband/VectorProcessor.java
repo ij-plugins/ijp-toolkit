@@ -36,7 +36,7 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class VectorProcessor {
     final int width;
@@ -47,6 +47,14 @@ public class VectorProcessor {
     // TODO: use net.sf.ij_plugins.util.progress instead of ij.gui.ProgressBar for more flexibility.
     private ProgressBar progressBar;
 
+
+    public VectorProcessor(final int width, final int height, final int numberOfValues) {
+        this.width = width;
+        this.height = height;
+        this.numberOfValues = numberOfValues;
+        pixels = new float[width * height][numberOfValues];
+        roi = new Rectangle(0, 0, width, height);
+    }
 
     public VectorProcessor(final ColorProcessor cp) {
         this(new ImagePlus("", cp));
@@ -60,12 +68,9 @@ public class VectorProcessor {
      * @param stack a stack of {@link FloatProcessor}s.
      */
     public VectorProcessor(final ImageStack stack) {
+        this(stack.getWidth(), stack.getHeight(), stack.getSize());
 
-        // Create vector valued representation
-        width = stack.getWidth();
-        height = stack.getHeight();
-        numberOfValues = stack.getSize();
-        pixels = new float[width * height][numberOfValues];
+        // Copy data
         final Object[] slices = stack.getImageArray();
         for (int i = 0; i < numberOfValues; ++i) {
             final float[] values = (float[]) slices[i];
@@ -73,8 +78,6 @@ public class VectorProcessor {
                 pixels[j][i] = values[j];
             }
         }
-
-        roi = new Rectangle(0, 0, width, height);
     }
 
 
@@ -245,6 +248,20 @@ public class VectorProcessor {
         final int offset = x + y * width;
         final float[] s = pixels[offset];
         System.arraycopy(v, 0, s, 0, v.length);
+    }
+
+    public VectorProcessor duplicate() {
+        final VectorProcessor r = new VectorProcessor(this.width, this.height, this.numberOfValues);
+        r.roi = (Rectangle) (roi != null ? roi.clone() : null);
+        // TODO: ignore progress bar?
+        r.progressBar = null;
+
+        // copy data
+        for (int i = 0; i < pixels.length; ++i) {
+            System.arraycopy(pixels[i], 0, r.pixels[i], 0, numberOfValues);
+        }
+
+        return r;
     }
 
 
