@@ -20,6 +20,7 @@
  */
 package net.sf.ij_plugins.filters;
 
+import ij.IJ;
 import ij.process.FloatProcessor;
 import net.sf.ij_plugins.util.progress.ProgressEvent;
 import net.sf.ij_plugins.util.progress.ProgressListener;
@@ -134,8 +135,9 @@ abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
 
             // test change in images
             final double mse = meanSquareDifference((float[]) fp1.getPixels(), (float[]) fp2.getPixels());
-            updateCurrentProgress((double) (i + 1) / (double) numberOfIterations, "Iteration: " + i +
-                    ", mean square error: " + decimalFormat.format(mse));
+            final String msg = "Iteration: " + i + ", mean square error: " + decimalFormat.format(mse);
+            updateCurrentProgress((double) (i + 1) / (double) numberOfIterations, msg);
+            IJ.log(msg);
             if (mse <= meanSquareError) {
                 break;
             }
