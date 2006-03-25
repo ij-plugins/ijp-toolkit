@@ -24,13 +24,15 @@ import ij.IJ;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.progress.ProgressEvent;
+import net.sf.ij_plugins.util.progress.ProgressListener;
 
 /**
  * Color space conversion utility, assuming two degree observer and illuminant D65. Conversion based
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ColorSpaceConvertion {
 
@@ -373,10 +375,16 @@ public class ColorSpaceConvertion {
      * Cb, Cr           in {16, 17, ..., 240}
      * </pre>
      *
-     * @param src source image.
+     * @param src              source image.
+     * @param progressListener progress listener.
      * @return array of color bands: Y, Cb, Cr, respectively.
      */
-    public static ByteProcessor[] rgbToYCbCr(final ColorProcessor src) {
+    public static ByteProcessor[] rgbToYCbCr(final ColorProcessor src, final ProgressListener progressListener) {
+
+        final String progressMessage = "Converting RGB to YCbCr...";
+        if (progressListener != null) {
+            progressListener.progressNotification(new ProgressEvent(src, 0.0, progressMessage));
+        }
 
         final int width = src.getWidth();
         final int height = src.getHeight();
@@ -391,18 +399,27 @@ public class ColorSpaceConvertion {
         final byte[] cbPixels = new byte[nbPixels];
         final byte[] crPixels = new byte[nbPixels];
 
+        final int progressStep = nbPixels / 10;
         for (int i = 0; i < nbPixels; i++) {
             final int r = 0xff & rPixels[i];
             final int g = 0xff & gPixels[i];
             final int b = 0xff & bPixels[i];
 
-            double y = 16 + 1d / 256d * (65.738 * r + 129.057 * g + 25.064 * b);
-            double cb = 128 + 1d / 256d * (- 37.945 * r - 74.494 * g + 112.439 * b);
-            double cr = 128 + 1d / 256d * (112.439 * r - 94.154 * g - 18.285 * b);
+            final double y = 16 + 0.25678906250000 * r + 0.50412890625000 * g + 0.09790625000000 * b;
+            final double cb = 128 - 0.14822265625000 * r - 0.29099218750000 * g + 0.43921484375000 * b;
+            final double cr = 128 + 0.43921484375000 * r - 0.36778906250000 * g - 0.07142578125000 * b;
 
             yPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(y), 0), 255));
             cbPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(cb), 0), 255));
             crPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(cr), 0), 255));
+
+            if ((progressListener != null) && (i % progressStep == 0)) {
+                progressListener.progressNotification(new ProgressEvent(src, i / (double) nbPixels, progressMessage));
+            }
+        }
+
+        if (progressListener != null) {
+            progressListener.progressNotification(new ProgressEvent(src, 1.0, progressMessage));
         }
 
         return new ByteProcessor[]{
@@ -411,6 +428,16 @@ public class ColorSpaceConvertion {
                 new ByteProcessor(width, height, crPixels, null),
         };
 
+    }
+
+    /**
+     * Converts image pixels from RGB color space to YCbCr color space.
+     * Equivalent to calling <code>rgbToYCbCr(src, null)</code>.
+     *
+     * @see #rgbToYCbCr(ij.process.ColorProcessor, net.sf.ij_plugins.util.progress.ProgressListener)
+     */
+    public static ByteProcessor[] rgbToYCbCr(final ColorProcessor src) {
+        return rgbToYCbCr(src, null);
     }
 
     /**
@@ -430,7 +457,7 @@ public class ColorSpaceConvertion {
      * @param src source image, array of color bands: Y, Cb, Cr, respectively.
      * @return RGB image.
      */
-    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] src) {
+    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] src, final ProgressListener progressListener) {
 
         if (src == null) {
             throw new IllegalArgumentException("Argument 'src' cannot be null.");
@@ -438,6 +465,11 @@ public class ColorSpaceConvertion {
 
         if (src.length != 3) {
             throw new IllegalArgumentException("Argument's 'src' length must be 3, got " + src.length + ".");
+        }
+
+        final String progressMessage = "Converting YCbCr to RGB...";
+        if (progressListener != null) {
+            progressListener.progressNotification(new ProgressEvent(src, 0.0, progressMessage));
         }
 
         final int width = src[0].getWidth();
@@ -452,26 +484,43 @@ public class ColorSpaceConvertion {
         final byte[] cbPixels = (byte[]) src[1].getPixels();
         final byte[] crPixels = (byte[]) src[2].getPixels();
 
+        final int progressStep = nbPixels / 10;
         for (int i = 0; i < nbPixels; i++) {
 
             final int y = (0xff & yPixels[i]) - 16;
             final int cb = (0xff & cbPixels[i]) - 128;
             final int cr = (0xff & crPixels[i]) - 128;
 
-            final double r = (298.081952524118 * y - 000.001711624973 * cb + 408.582641764512 * cr) / 256d;
-            final double g = (298.081952524118 * y - 100.290891128080 * cb - 208.120396471735 * cr) / 256d;
-            final double b = (298.081952524118 * y + 516.412147108167 * cb - 000.000466679809 * cr) / 256d;
+            final double r = 1.16438262704734 * y - 0.00000668603505 * cb + 1.59602594439262 * cr;
+            final double g = 1.16438262704734 * y - 0.39176129346906 * cb - 0.81297029871772 * cr;
+            final double b = 1.16438262704734 * y + 2.01723494964128 * cb - 0.00000182296800 * cr;
 
             rPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(r), 0), 255));
             gPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(g), 0), 255));
             bPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(b), 0), 255));
 
+            if ((progressListener != null) && (i % progressStep == 0)) {
+                progressListener.progressNotification(new ProgressEvent(src, i / (double) nbPixels, progressMessage));
+            }
         }
 
         final ColorProcessor dest = new ColorProcessor(width, height);
         dest.setRGB(rPixels, gPixels, bPixels);
 
+        if (progressListener != null) {
+            progressListener.progressNotification(new ProgressEvent(src, 1.0, progressMessage));
+        }
+
         return dest;
     }
 
+    /**
+     * Converts image pixels from RGB color space to YCbCr color space.
+     * Equivalent to calling <code>ycbcrToRGB(src, null)</code>.
+     *
+     * @see #ycbcrToRGB(ij.process.ByteProcessor[], net.sf.ij_plugins.util.progress.ProgressListener)
+     */
+    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] src) {
+        return ycbcrToRGB(src, null);
+    }
 }

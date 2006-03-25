@@ -26,12 +26,13 @@ import ij.Macro;
 import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
  * Converts image pixels from CIE L*a*b* color space to RGB color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConvertYCbCrToRGBPlugin implements PlugIn {
     final private static String PLUGIN_NAME = "Convert YCbCr to RGB";
@@ -70,7 +71,8 @@ public class ConvertYCbCrToRGBPlugin implements PlugIn {
         imp.setSlice(currentSlice);
 
         IJ.showStatus(PLUGIN_NAME);
-        final ColorProcessor dest = ColorSpaceConvertion.ycbcrToRGB(src);
+        final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+        final ColorProcessor dest = ColorSpaceConvertion.ycbcrToRGB(src, progressBarAdapter);
         new ImagePlus(imp.getTitle() + " - RGB", dest).show();
     }
 }

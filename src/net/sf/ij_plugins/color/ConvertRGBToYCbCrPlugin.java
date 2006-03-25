@@ -28,12 +28,13 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
  * Converts image pixels from RGB color space to YCbCr color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
     final private static String PLUGIN_NAME = "Convert RGB to YCbCr";
@@ -63,7 +64,8 @@ public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
         IJ.showStatus(ConvertRGBToYCbCrPlugin.PLUGIN_NAME);
 
         final ColorProcessor cp = (ColorProcessor) ip;
-        final ByteProcessor[] bps = ColorSpaceConvertion.rgbToYCbCr(cp);
+        final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+        final ByteProcessor[] bps = ColorSpaceConvertion.rgbToYCbCr(cp, progressBarAdapter);
         final ImageStack stack = new ImageStack(ip.getWidth(), ip.getHeight());
         stack.addSlice("Y", bps[0]);
         stack.addSlice("Cb", bps[1]);
