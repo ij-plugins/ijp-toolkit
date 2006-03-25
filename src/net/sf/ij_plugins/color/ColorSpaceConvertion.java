@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2005 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@
 package net.sf.ij_plugins.color;
 
 import ij.IJ;
+import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
 
@@ -29,7 +30,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ColorSpaceConvertion {
 
@@ -350,4 +351,127 @@ public class ColorSpaceConvertion {
 
         return cp;
     }
+
+    /**
+     * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
+     * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
+     * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
+     * <a href="http://en.wikipedia.org/wiki/YCrCb">http://en.wikipedia.org/wiki/YCbCr</a>.
+     * <p/>
+     * YCbCb (601) from "digital 8-bit R'G'B'  "
+     * <pre>
+     * ========================================================================
+     * Y  = 16  + 1/256 * (   65.738  * R +  129.057  * G +  25.064  * B)
+     * Cb = 128 + 1/256 * ( - 37.945  * R -   74.494  * G + 112.439  * B)
+     * Cr = 128 + 1/256 * (  112.439  * R -   94.154  * G -  18.285  * B)
+     * ........................................................................
+     * R, G, B          in {0, 1, 2, ..., 255}
+     * Y                in {16, 17, ..., 235}
+     *    with footroom in {1, 2, ..., 15}
+     *         headroom in {236, 237, ..., 254}
+     *         sync.    in {0, 255}
+     * Cb, Cr           in {16, 17, ..., 240}
+     * </pre>
+     *
+     * @param src source image.
+     * @return array of color bands: Y, Cb, Cr, respectively.
+     */
+    public static ByteProcessor[] rgbToYCbCr(final ColorProcessor src) {
+
+        final int width = src.getWidth();
+        final int height = src.getHeight();
+        final int nbPixels = width * height;
+
+        final byte[] rPixels = new byte[nbPixels];
+        final byte[] gPixels = new byte[nbPixels];
+        final byte[] bPixels = new byte[nbPixels];
+        src.getRGB(rPixels, gPixels, bPixels);
+
+        final byte[] yPixels = new byte[nbPixels];
+        final byte[] cbPixels = new byte[nbPixels];
+        final byte[] crPixels = new byte[nbPixels];
+
+        for (int i = 0; i < nbPixels; i++) {
+            final int r = 0xff & rPixels[i];
+            final int g = 0xff & gPixels[i];
+            final int b = 0xff & bPixels[i];
+
+            double y = 16 + 1d / 256d * (65.738 * r + 129.057 * g + 25.064 * b);
+            double cb = 128 + 1d / 256d * (- 37.945 * r - 74.494 * g + 112.439 * b);
+            double cr = 128 + 1d / 256d * (112.439 * r - 94.154 * g - 18.285 * b);
+
+            yPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(y), 0), 255));
+            cbPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(cb), 0), 255));
+            crPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(cr), 0), 255));
+        }
+
+        return new ByteProcessor[]{
+                new ByteProcessor(width, height, yPixels, null),
+                new ByteProcessor(width, height, cbPixels, null),
+                new ByteProcessor(width, height, crPixels, null),
+        };
+
+    }
+
+    /**
+     * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
+     * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
+     * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
+     * <a href="http://en.wikipedia.org/wiki/YCrCb">http://en.wikipedia.org/wiki/YCbCr</a>.
+     * <p/>
+     * YCbCb (601) from "digital 8-bit R'G'B'  "
+     * <pre>
+     * ========================================================================
+     * R = 1/256 * (298.081952524118 * (Y -16) +   0.001711624973 * (Cb - 128) + 408.582641764512 * (Cr-128))
+     * G = 1/256 * (298.081952524118 * (Y -16) - 100.290891128080 * (Cb - 128) - 208.120396471735 * (Cr-128))
+     * B = 1/256 * (298.081952524118 * (Y -16) + 516.412147108167 * (Cb - 128) -   0.000466679809 * (Cr-128))
+     * </pre>
+     *
+     * @param src source image, array of color bands: Y, Cb, Cr, respectively.
+     * @return RGB image.
+     */
+    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] src) {
+
+        if (src == null) {
+            throw new IllegalArgumentException("Argument 'src' cannot be null.");
+        }
+
+        if (src.length != 3) {
+            throw new IllegalArgumentException("Argument's 'src' length must be 3, got " + src.length + ".");
+        }
+
+        final int width = src[0].getWidth();
+        final int height = src[0].getHeight();
+        final int nbPixels = width * height;
+
+        final byte[] rPixels = new byte[nbPixels];
+        final byte[] gPixels = new byte[nbPixels];
+        final byte[] bPixels = new byte[nbPixels];
+
+        final byte[] yPixels = (byte[]) src[0].getPixels();
+        final byte[] cbPixels = (byte[]) src[1].getPixels();
+        final byte[] crPixels = (byte[]) src[2].getPixels();
+
+        for (int i = 0; i < nbPixels; i++) {
+
+            final int y = (0xff & yPixels[i]) - 16;
+            final int cb = (0xff & cbPixels[i]) - 128;
+            final int cr = (0xff & crPixels[i]) - 128;
+
+            final double r = (298.081952524118 * y - 000.001711624973 * cb + 408.582641764512 * cr) / 256d;
+            final double g = (298.081952524118 * y - 100.290891128080 * cb - 208.120396471735 * cr) / 256d;
+            final double b = (298.081952524118 * y + 516.412147108167 * cb - 000.000466679809 * cr) / 256d;
+
+            rPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(r), 0), 255));
+            gPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(g), 0), 255));
+            bPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(b), 0), 255));
+
+        }
+
+        final ColorProcessor dest = new ColorProcessor(width, height);
+        dest.setRGB(rPixels, gPixels, bPixels);
+
+        return dest;
+    }
+
 }
