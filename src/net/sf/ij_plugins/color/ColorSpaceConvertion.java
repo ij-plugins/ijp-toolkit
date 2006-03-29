@@ -32,7 +32,7 @@ import net.sf.ij_plugins.util.progress.ProgressListener;
  * on formulas provided at http://www.easyrgb.com/math.php
  *
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ColorSpaceConvertion {
 
@@ -358,9 +358,9 @@ public class ColorSpaceConvertion {
      * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
      * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
-     * <a href="http://en.wikipedia.org/wiki/YCrCb">http://en.wikipedia.org/wiki/YCbCr</a>.
+     * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
      * <p/>
-     * YCbCb (601) from "digital 8-bit R'G'B'  "
+     * YCbCb (601) from "digital 8-bit RGB  "
      * <pre>
      * ========================================================================
      * Y  = 16  + 1/256 * (   65.738  * R +  129.057  * G +  25.064  * B)
@@ -444,9 +444,9 @@ public class ColorSpaceConvertion {
      * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
      * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
-     * <a href="http://en.wikipedia.org/wiki/YCrCb">http://en.wikipedia.org/wiki/YCbCr</a>.
+     * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
      * <p/>
-     * YCbCb (601) from "digital 8-bit R'G'B'  "
+     * "digital 8-bit RGB" from YCbCb (601)
      * <pre>
      * ========================================================================
      * R = 1/256 * (298.081952524118 * (Y -16) +   0.001711624973 * (Cb - 128) + 408.582641764512 * (Cr-128))
