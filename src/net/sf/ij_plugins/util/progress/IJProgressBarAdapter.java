@@ -22,6 +22,9 @@ package net.sf.ij_plugins.util.progress;
 
 import ij.IJ;
 
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Simple adapter for attaching a {@link ProgressReporter} to ImageJ's progress bar.
  * <p/>
@@ -32,11 +35,26 @@ import ij.IJ;
  * </pre>
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class IJProgressBarAdapter implements ProgressListener {
-    public void progressNotification(ProgressEvent e) {
-        IJ.showStatus(e.getMessage());
-        IJ.showProgress(e.getProgress());
+    public void progressNotification(final ProgressEvent e) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            IJ.showStatus(e.getMessage());
+            IJ.showProgress(e.getProgress());
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        IJ.showStatus(e.getMessage());
+                        IJ.showProgress(e.getProgress());
+                    }
+                });
+            } catch (InterruptedException ex) {
+                IJ.log("InterruptedException " + ex.getMessage());
+            } catch (InvocationTargetException ex) {
+                IJ.log("InvocationTargetException" + ex.getMessage());
+            }
+        }
     }
 }
