@@ -20,6 +20,8 @@
  */
 package net.sf.ij_plugins.thresholding;
 
+import net.sf.ij_plugins.util.IJDebug;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +29,10 @@ import java.util.List;
  * histogram based thresholding.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class HistogramThreshold {
-    final static private double EPSILON = Double.MIN_VALUE;
+    private static final double EPSILON = Double.MIN_VALUE;
 
     private HistogramThreshold() {
     }
@@ -46,7 +48,7 @@ public final class HistogramThreshold {
      * @param hist histogram to be thresholded.
      * @return index of the maximum entropy split.
      */
-    final public static int maximumEntropy(final int[] hist) {
+    public static final int maximumEntropy(final int[] hist) {
         // Normalize histogram, that is makes the sum of all bins equal to 1.
         double sum = 0;
         for (int i = 0; i < hist.length; ++i) {
@@ -126,7 +128,7 @@ public final class HistogramThreshold {
      * @param nbDivisions desired number of thresholds.
      * @return array contraining values of maximum entropy thresholds.
      */
-    final static public int[] maximumEntropy(int hist[], int nbDivisions) {
+    public static final int[] maximumEntropy(int hist[], int nbDivisions) {
 
         // FIXME: Optimize implementation for larger values of nbDivisions.
 
@@ -136,12 +138,19 @@ public final class HistogramThreshold {
         double[] h = normalize(hist);
 
         // Create candidate intevals
+        IJDebug.log("Create candidate intevals");
         int [][] intervals = intervals(nbDivisions, 0, hist.length);
 
         // Find an interval that maximizes the entropy
+        IJDebug.log("Find an interval that maximizes the entropy");
         double bestE = Double.NEGATIVE_INFINITY;
         int[] bestInterval = null;
+        final int progressStep = intervals.length > 100 ? intervals.length / 100 : 1;
         for (int i = 0; i < intervals.length; i++) {
+            if (i % progressStep == 0) {
+                final int percProgress = (int) Math.round(i / (double) intervals.length * 100);
+                IJDebug.log("Percent intervals analyzed " + percProgress);
+            }
             int[] interval = intervals[i];
             double e = 0;
             int lastT = min;
@@ -192,11 +201,6 @@ public final class HistogramThreshold {
 
     /**
      * Generate all possible divisions of a range of numbers <code>min</code> to <code>max</code>.
-     *
-     * @param nbDivisions
-     * @param min
-     * @param max
-     * @return
      */
     public static int[][] intervals(int nbDivisions, int min, int max) {
         if (nbDivisions <= 0) {
@@ -233,12 +237,11 @@ public final class HistogramThreshold {
      * @param hist  normalized histogram
      * @param begin first index to evaluate (inclusive).
      * @param end   last index to evaluate (exclusive).
-     * @return
      */
-    final static double intervalEntropy(final double[] hist, int begin, int end) {
+    static final double intervalEntropy(final double[] hist, int begin, int end) {
 
         final double hSum = sum(hist, begin, end);
-        assert hSum < 1 + EPSILON;
+//        assert hSum < 1 + EPSILON;
         if (hSum < EPSILON) {
             return 0;
         }
@@ -255,7 +258,7 @@ public final class HistogramThreshold {
         return e;
     }
 
-    final static double sum(final double[] hist, int begin, int end) {
+    static final double sum(final double[] hist, int begin, int end) {
         double s = 0;
         for (int i = begin; i < end; ++i) {
             s += hist[i];

@@ -36,7 +36,7 @@ import ij.process.ImageProcessor;
  * @author Jarek Sacha
  */
 public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
-    private final static String aboutMessage =
+    private static final String ABOUT_MESSAGE =
             "Automatic multiple thresholding technique, generalization of a single maximum\n" +
                     "entropy thresholding of Kapur, Sahoo, and Wond:\n" +
                     "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
@@ -49,7 +49,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
     public final int setup(final String s, final ImagePlus imagePlus) {
 
         if ("about".equalsIgnoreCase(s)) {
-            IJ.showMessage(TITLE, aboutMessage);
+            IJ.showMessage(TITLE, ABOUT_MESSAGE);
             return PlugInFilter.DONE;
         }
 
@@ -79,7 +79,9 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
 
 
         final int[] hist = imageProcessor.getHistogram();
-        final int[] thresholds = HistogramThreshold.maximumEntropy(hist, nbThresholds);
+//        final int[] thresholds = HistogramThreshold.maximumEntropy(hist, nbThresholds);
+        final MaximumEntropyMultiThreshold maximumEntropyMultiThreshold = new MaximumEntropyMultiThreshold();
+        final int[] thresholds = maximumEntropyMultiThreshold.maximumEntropy(hist, nbThresholds);
         String logMsg = "Thresholds: ";
         for (int i = 0; i < thresholds.length; i++) {
             int threshold = thresholds[i];
