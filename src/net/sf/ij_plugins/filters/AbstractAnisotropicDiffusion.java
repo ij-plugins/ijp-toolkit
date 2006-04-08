@@ -20,8 +20,8 @@
  */
 package net.sf.ij_plugins.filters;
 
-import ij.IJ;
 import ij.process.FloatProcessor;
+import net.sf.ij_plugins.util.IJDebug;
 import net.sf.ij_plugins.util.progress.ProgressEvent;
 import net.sf.ij_plugins.util.progress.ProgressListener;
 import net.sf.ij_plugins.util.progress.ProgressReporter;
@@ -33,13 +33,14 @@ import java.util.List;
 
 
 /**
- * Base class for implementing anisotropic diffusion filters. extending classes need only to implement single
- * diffusion step: {@link #diffuse(ij.process.FloatProcessor, ij.process.FloatProcessor)} .
+ * Base class for implementing anisotropic diffusion filters. extending classes need only to
+ * implement single diffusion step: {@link #diffuse(ij.process.FloatProcessor,
+ * ij.process.FloatProcessor)} .
  *
  * @author Jarek Sacha
  * @version $ Revision: $
  */
-abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
+public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
 
     // Properties
     private int numberOfIterations = 100;
@@ -47,12 +48,12 @@ abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
     private double meanSquareError = 0.01;
 
     // Internal variables
-    final protected List progressListeners = new ArrayList();
-    private double currentProgress = 0;
-    private double lastRepotedProgress = 0;
+    protected final List progressListeners = new ArrayList();
+    private double currentProgress;
+    private double lastRepotedProgress;
     private double minProgress = 0.01;
     private DecimalFormat decimalFormat = new DecimalFormat("0.######");
-    private double time = 0;
+    private double time;
 
     public int getNumberOfIterations() {
         return numberOfIterations;
@@ -84,7 +85,8 @@ abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
 
     private void updateCurrentProgress(final double progress, final String message) {
         this.currentProgress = progress;
-        if (progressListeners.size() > 0 && Math.abs(progress - lastRepotedProgress) > minProgress) {
+        if (progressListeners.size() > 0 && Math.abs(progress - lastRepotedProgress) > minProgress)
+        {
             final ProgressEvent event = new ProgressEvent(this, this.currentProgress, message);
             for (final Iterator iterator = progressListeners.iterator(); iterator.hasNext();) {
                 final ProgressListener progressListener = (ProgressListener) iterator.next();
@@ -111,9 +113,9 @@ abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
 
 
     /**
-     * Performs anisotropic diffusion. Makes <code>numberOfIterations</code> calls to
-     * {@link #diffuse(ij.process.FloatProcessor, ij.process.FloatProcessor)}, updating value of <code>time</code>
-     * before each call.
+     * Performs anisotropic diffusion. Makes <code>numberOfIterations</code> calls to {@link
+     * #diffuse(ij.process.FloatProcessor, ij.process.FloatProcessor)}, updating value of
+     * <code>time</code> before each call.
      *
      * @param src input image to which to apply anisotropic diffusion.
      * @return result of anisotropic diffusion filtering.
@@ -137,7 +139,7 @@ abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
             final double mse = meanSquareDifference((float[]) fp1.getPixels(), (float[]) fp2.getPixels());
             final String msg = "Iteration: " + i + ", mean square error: " + decimalFormat.format(mse);
             updateCurrentProgress((double) (i + 1) / (double) numberOfIterations, msg);
-            IJ.log(msg);
+            IJDebug.log(msg);
             if (mse <= meanSquareError) {
                 break;
             }
@@ -150,9 +152,10 @@ abstract public class AbstractAnisotropicDiffusion implements ProgressReporter {
 
 
     /**
-     * Perform single diffusion operation, called iteratively by {@link #process(ij.process.FloatProcessor)}.
+     * Perform single diffusion operation, called iteratively by {@link
+     * #process(ij.process.FloatProcessor)}.
      */
-    abstract protected void diffuse(FloatProcessor src, FloatProcessor dest);
+    protected abstract void diffuse(FloatProcessor src, FloatProcessor dest);
 
     protected double time() {
         return time;

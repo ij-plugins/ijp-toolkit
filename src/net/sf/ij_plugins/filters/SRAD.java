@@ -20,16 +20,16 @@
  */
 package net.sf.ij_plugins.filters;
 
-import ij.IJ;
 import ij.process.FloatProcessor;
 import net.sf.ij_plugins.operators.Neighborhood3x3;
 import net.sf.ij_plugins.operators.PixelIterator;
+import net.sf.ij_plugins.util.IJDebug;
 
 
 /**
- * Speckle Reducing Anisotropic Diffusion (SRAD) filter based on paper:<br/>
- * Y. Yu and T. Acton, "Speckle Reducing Anisotropic Diffusion", <i>IEEE Transactions on Image Processing</i>,
- * Vol.11, No.11, 2002.<br>
+ * Speckle Reducing Anisotropic Diffusion (SRAD) filter based on paper:<br/> Y. Yu and T. Acton,
+ * "Speckle Reducing Anisotropic Diffusion", <i>IEEE Transactions on Image Processing</i>, Vol.11,
+ * No.11, 2002.<br>
  *
  * @author Jarek Sacha
  * @version $ Revision: $
@@ -42,7 +42,8 @@ public class SRAD extends AbstractAnisotropicDiffusion {
     private double cThreshold = 0.1;
 
     /**
-     * Speckle coefficient of variation in the observer image, for correlated data it should be set to less than 1.
+     * Speckle coefficient of variation in the observer image, for correlated data it should be set
+     * to less than 1.
      */
     private double q0 = 1;
 
@@ -88,7 +89,7 @@ public class SRAD extends AbstractAnisotropicDiffusion {
         // Precalculate diffusion coefficient c(q)
         final double q0t = q0 * Math.exp(-ro * time());
         final double q0t2 = q0t * q0t;
-        IJ.log("time=" + time() + ", q0=" + q0 + ", q0t=" + q0t);
+        IJDebug.log("time=" + time() + ", q0=" + q0 + ", q0t=" + q0t);
         while (iterator.hasNext()) {
             final Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
 
