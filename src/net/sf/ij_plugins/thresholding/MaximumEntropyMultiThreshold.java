@@ -21,15 +21,16 @@
 package net.sf.ij_plugins.thresholding;
 
 import net.sf.ij_plugins.util.IJDebug;
+import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class MaximumEntropyMultiThreshold {
+public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
     private static final double EPSILON = Double.MIN_VALUE;
     private double histogram[];
@@ -43,33 +44,39 @@ public class MaximumEntropyMultiThreshold {
      *
      * @param hist        histogram to be partitioned.
      * @param nbDivisions desired number of thresholds.
-     * @return array contraining values of maximum entropy thresholds.
+     * @return array containing values of maximum entropy thresholds.
      */
     public final int[] maximumEntropy(final int hist[], final int nbDivisions) {
 
-        // FIXME: Optimize implementation for larger values of nbDivisions.
+        // FIXME: Optimize memory use using iterator over intervals instead of generation array of all possible intervals
+
+        notifyProgressListeners(0, "Maximum Entropy Multi-Threshold");
 
         final int min = 0;
         final int max = hist.length;
 
         intervalEntropy = new Double[257][257];
 
+        notifyProgressListeners(0.01, "Normalizing histogram");
         histogram = HistogramThreshold.normalize(hist);
 
-        // Create candidate intevals
-        IJDebug.log("Create candidate intevals");
+        // Create candidate intervals
+        notifyProgressListeners(0.02, "Create candidate intervals");
         final int [][] intervals = intervals(nbDivisions, 0, histogram.length);
 
         // Find an interval that maximizes the entropy
         IJDebug.log("Find an interval that maximizes the entropy");
+        notifyProgressListeners(0.02, "Find an interval that maximizes the entropy");
         double bestE = Double.NEGATIVE_INFINITY;
         int[] bestInterval = null;
-//        final int progressStep = intervals.length > 100 ? intervals.length / 100 : 1;
+        final int percStep = 10;
+        final int progressStep = intervals.length > percStep ? intervals.length / percStep : 1;
         for (int i = 0; i < intervals.length; i++) {
-//            if (i % progressStep == 0) {
-//                final int percProgress = (int) Math.round(i / (double) intervals.length * 100);
-//                IJDebug.log("Percent intervals analyzed " + percProgress);
-//            }
+            if (i % progressStep == 0) {
+                final int percProgress = (int) Math.round(i / (double) intervals.length * 100);
+                IJDebug.log("Interval analysis " + percProgress + "%");
+                notifyProgressListeners(percProgress / 100.0, "Interval analysis " + percProgress + "%");
+            }
             final int[] interval = intervals[i];
             double e = 0;
             int lastT = min;
@@ -92,6 +99,8 @@ public class MaximumEntropyMultiThreshold {
         intervalEntropy = null;
         histogram = null;
 
+        setCurrentProgress(1);
+
         return bestInterval;
     }
 
@@ -101,7 +110,7 @@ public class MaximumEntropyMultiThreshold {
      */
     private static int[][] intervals(int nbDivisions, int min, int max) {
         if (nbDivisions <= 0) {
-            throw new IllegalArgumentException("Argument 'nbdivisions' must be greater than 0.");
+            throw new IllegalArgumentException("Argument 'nbDivisions' must be greater than 0.");
         }
 
         final List intervals = new ArrayList();

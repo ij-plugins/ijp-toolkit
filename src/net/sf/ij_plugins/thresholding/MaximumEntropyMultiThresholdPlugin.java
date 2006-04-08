@@ -27,6 +27,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
  * Automatic thresholding technique based on the maximum entropy of the histogram. See: P.K. Sahoo,
@@ -81,6 +82,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         final int[] hist = imageProcessor.getHistogram();
 //        final int[] thresholds = HistogramThreshold.maximumEntropy(hist, nbThresholds);
         final MaximumEntropyMultiThreshold maximumEntropyMultiThreshold = new MaximumEntropyMultiThreshold();
+        maximumEntropyMultiThreshold.addProgressListener(new IJProgressBarAdapter());
         final int[] thresholds = maximumEntropyMultiThreshold.maximumEntropy(hist, nbThresholds);
         String logMsg = "Thresholds: ";
         for (int i = 0; i < thresholds.length; i++) {
