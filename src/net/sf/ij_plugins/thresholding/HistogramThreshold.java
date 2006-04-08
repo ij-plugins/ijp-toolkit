@@ -29,7 +29,7 @@ import java.util.List;
  * histogram based thresholding.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public final class HistogramThreshold {
     private static final double EPSILON = Double.MIN_VALUE;
@@ -127,10 +127,9 @@ public final class HistogramThreshold {
      * @param hist        histogram to be partitioned.
      * @param nbDivisions desired number of thresholds.
      * @return array contraining values of maximum entropy thresholds.
+     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
      */
     public static final int[] maximumEntropy(int hist[], int nbDivisions) {
-
-        // FIXME: Optimize implementation for larger values of nbDivisions.
 
         final int min = 0;
         final int max = hist.length;
@@ -201,6 +200,8 @@ public final class HistogramThreshold {
 
     /**
      * Generate all possible divisions of a range of numbers <code>min</code> to <code>max</code>.
+     *
+     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
      */
     public static int[][] intervals(int nbDivisions, int min, int max) {
         if (nbDivisions <= 0) {
@@ -237,6 +238,7 @@ public final class HistogramThreshold {
      * @param hist  normalized histogram
      * @param begin first index to evaluate (inclusive).
      * @param end   last index to evaluate (exclusive).
+     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
      */
     static final double intervalEntropy(final double[] hist, int begin, int end) {
 
@@ -258,6 +260,9 @@ public final class HistogramThreshold {
         return e;
     }
 
+    /**
+     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
+     */
     static final double sum(final double[] hist, int begin, int end) {
         double s = 0;
         for (int i = begin; i < end; ++i) {
