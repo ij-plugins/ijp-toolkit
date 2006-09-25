@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2006 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,23 +35,14 @@ import java.io.*;
  * GRAY8, GRAY16, GRAY32.
  *
  * @author Jarek Sacha
- * @version 1.0
- * @created April 28, 2002
  */
 
 public class VtkEncoder implements PlugIn {
-    private final static String DIALOG_CAPTION = "VTK Writer";
-    private final static String TAG_SEPARATOR = " ";
-    private final static String vtkFileVersion = "3.0";
+    private static final String DIALOG_CAPTION = "VTK Writer";
+    private static final String TAG_SEPARATOR = " ";
+    private static final String vtkFileVersion = "3.0";
 
 
-    /**
-     * Description of the Method
-     *
-     * @param imp         Description of Parameter
-     * @param asciiFormat Description of Parameter
-     * @return Description of the Returned Value
-     */
     private static String createHeader(final ImagePlus imp, final boolean asciiFormat) {
 
         final StringBuffer header = new StringBuffer();
@@ -62,8 +53,7 @@ public class VtkEncoder implements PlugIn {
         header.append(asciiFormat ? VtkDataFormat.ASCII : VtkDataFormat.BINARY);
         header.append("\n");
 
-        header.append(VtkTag.DATASET).append(TAG_SEPARATOR)
-                .append(VtkDataSetType.STRUCTURED_POINTS).append("\n");
+        header.append(VtkTag.DATASET).append(TAG_SEPARATOR).append(VtkDataSetType.STRUCTURED_POINTS).append("\n");
 
         final int width = imp.getWidth();
         final int height = imp.getHeight();
@@ -76,7 +66,7 @@ public class VtkEncoder implements PlugIn {
                 .append(c.pixelHeight).append(" ").append(c.pixelDepth).append("\n");
 
         header.append(VtkTag.ORIGIN).append(TAG_SEPARATOR).append(c.xOrigin).append(" ")
-                .append(c.yOrigin).append(" ").append(c.zOrigin + "\n");
+                .append(c.yOrigin).append(" ").append(c.zOrigin).append("\n");
 
         header.append(VtkTag.POINT_DATA).append(TAG_SEPARATOR).append(width * height * depth)
                 .append("\n");
@@ -105,27 +95,19 @@ public class VtkEncoder implements PlugIn {
     }
 
 
-    /**
-     * Description of the Method
-     *
-     * @param fileName Description of Parameter
-     * @param imp      Description of Parameter
-     * @throws FileNotFoundException Description of Exception
-     * @throws IOException           Description of Exception
-     */
     private static void saveAsVtkBinary(final String fileName, final ImagePlus imp)
             throws FileNotFoundException, IOException {
 
-        final BufferedOutputStream bos = new BufferedOutputStream(
-                new FileOutputStream(fileName));
+        final BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileName));
+        try {
+            final String header = createHeader(imp, false);
+            bos.write(header.getBytes());
 
-        final String header = createHeader(imp, false);
-        bos.write(header.getBytes());
-
-        final ImageWriter imageWriter = new ImageWriter(imp.getFileInfo());
-        imageWriter.write(bos);
-
-        bos.close();
+            final ImageWriter imageWriter = new ImageWriter(imp.getFileInfo());
+            imageWriter.write(bos);
+        } finally {
+            bos.close();
+        }
     }
 
     public static void save(final String fileName, final ImagePlus imp) throws IOException {
@@ -140,48 +122,39 @@ public class VtkEncoder implements PlugIn {
      * @param imp      Image to be saved.
      * @throws IOException In case of I/O errors.
      */
-    private static void saveAsVtkAscii(String fileName, ImagePlus imp)
+    private static void saveAsVtkAscii(final String fileName, final ImagePlus imp)
             throws IOException {
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        final int oldSlice = imp.getCurrentSlice();
 
-        IJ.showProgress(0);
+        final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        try {
+            IJ.showProgress(0);
 
-        String header = createHeader(imp, true);
-        writer.write(header);
+            final String header = createHeader(imp, true);
+            writer.write(header);
 
-        int oldSlice = imp.getCurrentSlice();
-        int width = imp.getWidth();
-        int height = imp.getHeight();
-        int depth = imp.getStackSize();
-        int sliceSize = width * height;
-        Object[] pixels = imp.getStack().getImageArray();
-        for (int z = 0; z < depth; ++z) {
-            writeArray(pixels[z], sliceSize, writer, width);
-            IJ.showProgress((double) z / (double) depth);
+            final int width = imp.getWidth();
+            final int height = imp.getHeight();
+            final int depth = imp.getStackSize();
+            final int sliceSize = width * height;
+            final Object[] pixels = imp.getStack().getImageArray();
+            for (int z = 0; z < depth; ++z) {
+                writeArray(pixels[z], sliceSize, writer, width);
+                IJ.showProgress((double) z / (double) depth);
+            }
+        } finally {
+            writer.close();
         }
-        writer.close();
         IJ.showProgress(1);
 
         imp.setSlice(oldSlice);
     }
 
 
-    /*
-    *
-    */
+    private static void writeArray(final Object a, final int length, final Writer writer, final int lineSize)
+            throws IOException {
 
-    /**
-     * Description of the Method
-     *
-     * @param a        Description of the Parameter
-     * @param length   Description of the Parameter
-     * @param writer   Description of the Parameter
-     * @param lineSize Description of the Parameter
-     * @throws IOException Description of the Exception
-     */
-    private static void writeArray(Object a, int length,
-                                   Writer writer, int lineSize) throws IOException {
         if (a instanceof byte[]) {
             writeArray((byte[]) a, length, writer, lineSize);
         } else if (a instanceof short[]) {
@@ -194,23 +167,10 @@ public class VtkEncoder implements PlugIn {
     }
 
 
-    /*
-    *
-    */
+    private static void writeArray(final byte[] a, final int length, final Writer writer, final int lineSize)
+            throws IOException {
 
-    /**
-     * Description of the Method
-     *
-     * @param a        Description of the Parameter
-     * @param length   Description of the Parameter
-     * @param writer   Description of the Parameter
-     * @param lineSize Description of the Parameter
-     * @throws IOException Description of the Exception
-     */
-    private static void writeArray(byte[] a, int length,
-                                   Writer writer, int lineSize) throws IOException {
-        int c = 0;
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         for (int i = 0; i < length; ++i) {
             buf.append(a[i] & 0xff);
             if (i > 0 && (i % lineSize) == 0) {
@@ -225,21 +185,9 @@ public class VtkEncoder implements PlugIn {
     }
 
 
-    /*
-    *
-    */
+    private static void writeArray(final short[] a, final int length, final Writer writer, final int lineSize)
+            throws IOException {
 
-    /**
-     * Description of the Method
-     *
-     * @param a        Description of the Parameter
-     * @param length   Description of the Parameter
-     * @param writer   Description of the Parameter
-     * @param lineSize Description of the Parameter
-     * @throws IOException Description of the Exception
-     */
-    private static void writeArray(short[] a, int length,
-                                   Writer writer, int lineSize) throws IOException {
         int c = 0;
         for (int i = 0; i < length; ++i) {
             writer.write("" + (a[i] & 0xffff));
@@ -249,21 +197,9 @@ public class VtkEncoder implements PlugIn {
     }
 
 
-    /*
-    *
-    */
+    private static void writeArray(final float[] a, final int length, final Writer writer, final int lineSize)
+            throws IOException {
 
-    /**
-     * Description of the Method
-     *
-     * @param a        Description of the Parameter
-     * @param length   Description of the Parameter
-     * @param writer   Description of the Parameter
-     * @param lineSize Description of the Parameter
-     * @throws IOException Description of the Exception
-     */
-    private static void writeArray(float[] a, int length,
-                                   Writer writer, int lineSize) throws IOException {
         int c = 0;
         for (int i = 0; i < length; ++i) {
             writer.write("" + a[i]);
@@ -279,35 +215,33 @@ public class VtkEncoder implements PlugIn {
      * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
      *            (MSB).
      */
-    public void run(String arg) {
-        ImagePlus imp = WindowManager.getCurrentImage();
+    public void run(final String arg) {
+
+        final ImagePlus imp = WindowManager.getCurrentImage();
         if (imp == null) {
             IJ.showMessage(DIALOG_CAPTION, "No image to save.");
             return;
         }
 
-        SaveDialog saveDialog
-                = new SaveDialog("Save as VTK", imp.getTitle(), ".vtk");
+        final SaveDialog saveDialog = new SaveDialog("Save as VTK", imp.getTitle(), ".vtk");
 
         if (saveDialog.getFileName() == null) {
             return;
         }
 
         IJ.showStatus("Saving current image as '" + saveDialog.getFileName() + "'...");
-        String fileName = saveDialog.getDirectory() + File.separator
-                + saveDialog.getFileName();
+        final String fileName = saveDialog.getDirectory() + File.separator + saveDialog.getFileName();
 
         try {
-            long tStart = System.currentTimeMillis();
+            final long tStart = System.currentTimeMillis();
             if (arg.compareToIgnoreCase("ASCII") == 0) {
                 saveAsVtkAscii(fileName, imp);
             } else {
                 saveAsVtkBinary(fileName, imp);
             }
-            long tStop = System.currentTimeMillis();
-            IJ.showStatus("Saving of '" + saveDialog.getFileName()
-                    + "' completed in " + (tStop - tStart) + " ms.");
-        } catch (Exception ex) {
+            final long tStop = System.currentTimeMillis();
+            IJ.showStatus("Saving of '" + saveDialog.getFileName() + "' completed in " + (tStop - tStart) + " ms.");
+        } catch (final Exception ex) {
             ex.printStackTrace();
             String msg = ex.getMessage();
             if (msg == null) {
@@ -316,8 +250,7 @@ public class VtkEncoder implements PlugIn {
                 msg = "\n" + msg;
             }
 
-            IJ.showMessage(DIALOG_CAPTION, "Error writing file '" + fileName + "'."
-                    + msg);
+            IJ.showMessage(DIALOG_CAPTION, "Error writing file '" + fileName + "'." + msg);
         }
     }
 }
