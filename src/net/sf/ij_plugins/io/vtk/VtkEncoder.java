@@ -82,14 +82,28 @@ public class VtkEncoder implements PlugIn {
             case ImagePlus.GRAY32:
                 scalarName = VtkScalarType.FLOAT.toString();
                 break;
+                // BEG KEESH RGB UPDATE
+            case ImagePlus.COLOR_RGB:
+                scalarName = VtkScalarType.UNSIGNED_CHAR.toString();
+                break;
+                // END KEESH RGB UPDATE
             default:
                 throw new IllegalArgumentException("Unsupported image type. "
                         + "Only images of types: GRAY8, GRAY16, and GRAY32 are supported.");
         }
-        header.append(VtkTag.SCALARS).append(TAG_SEPARATOR).append("volume_scalars ")
-                .append(scalarName).append(" 1\n");
-
-        header.append(VtkTag.LOOKUP_TABLE).append(TAG_SEPARATOR).append("default\n");
+        // BEG KEESH RGB UPDATE
+        if (imp.getType() != ImagePlus.COLOR_RGB) {
+            header.append(VtkTag.SCALARS).append(TAG_SEPARATOR).append("volume_scalars ")
+                    .append(scalarName).append(" 1\n");
+        } else {
+            header.append(VtkTag.COLOR_SCALARS).append(TAG_SEPARATOR).append("volume_scalars ")
+                    .append("3\n");  // no scalar name as per VTK spec
+        }
+        // Writing LUT tag for RGB images incorrectly offsets image data
+        if (imp.getType() != ImagePlus.COLOR_RGB) {
+            header.append(VtkTag.LOOKUP_TABLE).append(TAG_SEPARATOR).append("default\n");
+        }
+        // END KEESH RGB UPDATE
 
         return header.toString();
     }
@@ -161,6 +175,10 @@ public class VtkEncoder implements PlugIn {
             writeArray((short[]) a, length, writer, lineSize);
         } else if (a instanceof float[]) {
             writeArray((float[]) a, length, writer, lineSize);
+            // BEG KEESH RGB UPDATE
+        } else if (a instanceof int[]) {
+            writeArray((int[]) a, length, writer, lineSize);
+            // END KEESH RGB UPDATE
         } else {
             throw new IllegalArgumentException("Unsupported array type: " + a);
         }
@@ -208,6 +226,26 @@ public class VtkEncoder implements PlugIn {
         }
     }
 
+    // BEG KEESH RGB UPDATE
+    private static void writeArray(final int[] a, final int length, final Writer writer, final int lineSize)
+            throws IOException {
+
+        int c = 0;
+        for (int i = 0; i < length; ++i) {
+            // Need to convert to [0,1] for VTK
+            int val = (a[i] & 0xffffffff);  // extract 32-bit integer
+            int r = (val & 0xff0000) >> 16;  // extract red
+            int g = (val & 0xff00) >> 8;     // extract green
+            int b = val & 0xff;            // extract blue
+            float fr = r / 255.0f;  // normalize to [0,1]
+            float fg = g / 255.0f;
+            float fb = b / 255.0f;
+            writer.write("" + fr + " " + fg + " " + fb);
+            c++;
+            writer.write((c % lineSize) == 0 ? "\n" : " ");
+        }
+    }
+    // END KEESH RGB UPDATE
 
     /**
      * Main processing method for the VtkEncoder plugin

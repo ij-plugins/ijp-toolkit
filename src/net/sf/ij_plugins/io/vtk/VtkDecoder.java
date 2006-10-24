@@ -412,21 +412,16 @@ public class VtkDecoder implements PlugIn {
                     }
                     if (st.hasMoreTokens()) {
                         String dataType = st.nextToken();
-                        if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_CHAR.toString()) == 0)
-                        {
+                        if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_CHAR.toString()) == 0) {
                             fileInfo.fileType = FileInfo.GRAY8;
-                        } else if (dataType.compareToIgnoreCase(VtkScalarType.SHORT.toString()) == 0)
-                        {
+                        } else if (dataType.compareToIgnoreCase(VtkScalarType.SHORT.toString()) == 0) {
                             //@todo: Should calibration function be set here?
                             fileInfo.fileType = FileInfo.GRAY16_SIGNED;
-                        } else if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_SHORT.toString()) == 0)
-                        {
+                        } else if (dataType.compareToIgnoreCase(VtkScalarType.UNSIGNED_SHORT.toString()) == 0) {
                             fileInfo.fileType = FileInfo.GRAY16_UNSIGNED;
-                        } else if (dataType.compareToIgnoreCase(VtkScalarType.INT.toString()) == 0)
-                        {
+                        } else if (dataType.compareToIgnoreCase(VtkScalarType.INT.toString()) == 0) {
                             fileInfo.fileType = FileInfo.GRAY32_INT;
-                        } else if (dataType.compareToIgnoreCase(VtkScalarType.FLOAT.toString()) == 0)
-                        {
+                        } else if (dataType.compareToIgnoreCase(VtkScalarType.FLOAT.toString()) == 0) {
                             fileInfo.fileType = FileInfo.GRAY32_FLOAT;
                         } else {
                             throw new VtkImageException("Unsupported data type: '" + dataType + "'.");
@@ -455,13 +450,18 @@ public class VtkDecoder implements PlugIn {
                     // nValues
                     if (st.hasMoreTokens()) {
                         String numComp = st.nextToken().trim();
-                        if (numComp.length() > 0 && !numComp.startsWith("1")) {
-                            throw new VtkImageException("Supported number of components for scalars is 1, got '"
+                        // BEG KEESH RGB UPDATE
+                        if (numComp.length() > 0 && (!numComp.startsWith("1") && (!numComp.startsWith("3")))) {
+                            throw new VtkImageException("Supported number of components for color scalars is 1 or 3, got '"
                                     + numComp + "'.");
                         }
+                        // END KEESH RGB UPDATE
                     }
                     //@todo: Should calibration function be reset here to NONE?
-                    fileInfo.fileType = FileInfo.GRAY8;
+                    // BEG KEESH RGB UPDATE
+                    //fileInfo.fileType = FileInfo.GRAY8;
+                    fileInfo.fileType = FileInfo.RGB;
+                    // END KEESH RGB UPDATE
                     // COLOR_SCALARS should be the last tag line before the data.
                     break;
                 } else if (line.startsWith(VtkTag.LOOKUP_TABLE.toString())) {
