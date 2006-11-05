@@ -129,6 +129,17 @@
         </jar>
     </target>
 
+    <target name="jar-nodep" depends="compile"
+            description="Create plugins' JAR, do not include dependent libraries.">
+
+        <!-- Create library jar -->
+        <jar destfile="${jar.dir}/${package.name}-nodep.jar"
+             basedir="${build.classes.dir}"
+             compress="true">
+            <fileset refid="resource.files"/>
+        </jar>
+    </target>
+
     <!-- Create API documentation -->
     <target name="javadoc"
             depends="compile"
