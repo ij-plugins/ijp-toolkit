@@ -269,12 +269,20 @@
         <ant antfile="${cvs.dir}/build.xml" target="jar">
             <property name="jar.dir" location="${base.dir}/dist"/>
         </ant>
+	
+        <ant antfile="${cvs.dir}/build.xml" target="jar-nodep">
+            <property name="jar.dir" location="${base.dir}/dist"/>
+        </ant>
+
 
         <!-- ZIP binaries -->
         <zip basedir="${base.dir}/dist"
              includes="${package.name}.jar"
              destfile="${dist.dir}/${package.name}_bin_${package.version}_${DSTAMP}.zip"/>
 
+        <zip basedir="${base.dir}/dist"
+             includes="${package.name}-nodep.jar"
+             destfile="${dist.dir}/${package.name}-nodep_bin_${package.version}_${DSTAMP}.zip"/>
     </target>
 
     <!-- Checkout sources drom CVS repository -->
