@@ -20,7 +20,7 @@
     <property name="ant.home" location="/usr/share/ant"/>
 
     <!-- CVS setup -->
-    <property name="cvs.root" value=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ij-plugins"/>
+    <property name="cvs.root" value=":pserver:anonymous@ij-plugins.cvs.sourceforge.net:/cvsroot/ij-plugins"/>
     <property name="cvs.module" value="ij-plugins"/>
 
     <!-- Set default properties for this build -->
