@@ -2,6 +2,43 @@
  ij-plugins Toolkit Changelog 
 ******************************
 
+--------------------------------------------------------------------------
+Version 1.1
+--------------------------------------------------------------------------
+
+Bug fixes:
+* Correct spelling of PeronaMalikAnisotropicDiffusion* classes.
+
+Improvements:
+* VectorProcessor improvements.
+
+* ProgressReporter - Change method names for access and update of current progress.
+
+* Remove dependency on L2FProf library, use DialogUtils instead.
+
+* Speedup computation of maximum entropy multi threshold by caching interval
+  entropy computation (about 30x speedup for 3-threshold).
+
+* VTKEncoder/Decoder - Add support for reading/writing RGB images in VTK
+  format. Contributed by keesh on 2006-10-22.
+
+
+New:
+* DialogUtil: utilities for simplifying creation of property editor dialogs.
+
+* AbstractAnisotropicDiffusion*: Abstract base classes to simplify creation of
+  anisotropic diffusion filters and plugins.
+
+* SRAD - Spackle Reducing Anisotropic Diffusion
+
+* RGB to YCbCr color space conversion.
+
+* IJDebug utility for logging only when IJ.debugMode is on.
+
+--------------------------------------------------------------------------
+Version 1.0
+--------------------------------------------------------------------------
+
 * Jar file renamed from 'ij-plugins-toolkit.jar' to 'ij-plugins_toolkit.jar',
   So it can be recognized bu ImageJ plugin discovery (presence of '_' in file 
   name needed.
