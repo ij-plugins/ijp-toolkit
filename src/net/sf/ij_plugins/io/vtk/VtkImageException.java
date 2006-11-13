@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2006 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,7 @@ package net.sf.ij_plugins.io.vtk;
  * Exception specific to VTK image I/O classes.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-18 13:13:51 $
+ * @version $Revision: 1.2 $ $Date: 2006-11-13 04:50:15 $
  * @created June 18, 2002
  */
 public class VtkImageException extends Exception {
@@ -35,7 +35,12 @@ public class VtkImageException extends Exception {
      *
      * @param message Description of Parameter
      */
-    public VtkImageException(String message) {
+    public VtkImageException(final String message) {
         super(message);
+    }
+
+
+    public VtkImageException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 }
