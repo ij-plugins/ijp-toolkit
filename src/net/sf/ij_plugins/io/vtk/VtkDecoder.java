@@ -439,7 +439,8 @@ public class VtkDecoder implements PlugIn {
                     }
                 } else if (line.startsWith(VtkTag.COLOR_SCALARS.toString())) {
                     // COLOR_SCALARS
-                    StringTokenizer st = new StringTokenizer(line.substring(VtkTag.COLOR_SCALARS.toString().length()));
+                    final StringTokenizer st = new StringTokenizer(line.substring(VtkTag.COLOR_SCALARS.toString().length()));
+
                     // dataName
                     if (st.hasMoreTokens()) {
                         String dataName = st.nextToken();
@@ -447,21 +448,29 @@ public class VtkDecoder implements PlugIn {
                         throw new VtkImageException("Error parsing header tag: '"
                                 + VtkTag.COLOR_SCALARS + "'. Cannot extract dataName.");
                     }
+
                     // nValues
+                    final int nValues;
                     if (st.hasMoreTokens()) {
-                        String numComp = st.nextToken().trim();
-                        // BEG KEESH RGB UPDATE
-                        if (numComp.length() > 0 && (!numComp.startsWith("1") && (!numComp.startsWith("3")))) {
+                        final String nValuesStr = st.nextToken().trim();
+                        nValues = Integer.parseInt(nValuesStr);
+                    } else {
+                        throw new VtkImageException("Error parsing header tag: '"
+                                + VtkTag.COLOR_SCALARS + "'. Cannot extract number of values (nValues).");
+                    }
+
+                    switch (nValues) {
+                        case 1:
+                            fileInfo.fileType = FileInfo.GRAY8;
+                            break;
+                        case 3:
+                            fileInfo.fileType = FileInfo.RGB;
+                            break;
+                        default:
                             throw new VtkImageException("Supported number of components for color scalars is 1 or 3, got '"
-                                    + numComp + "'.");
-                        }
-                        // END KEESH RGB UPDATE
+                                    + nValues + "'.");
                     }
                     //@todo: Should calibration function be reset here to NONE?
-                    // BEG KEESH RGB UPDATE
-                    //fileInfo.fileType = FileInfo.GRAY8;
-                    fileInfo.fileType = FileInfo.RGB;
-                    // END KEESH RGB UPDATE
                     // COLOR_SCALARS should be the last tag line before the data.
                     break;
                 } else if (line.startsWith(VtkTag.LOOKUP_TABLE.toString())) {
