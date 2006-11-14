@@ -269,7 +269,7 @@
         <ant antfile="${cvs.dir}/build.xml" target="jar">
             <property name="jar.dir" location="${base.dir}/dist"/>
         </ant>
-	
+
         <ant antfile="${cvs.dir}/build.xml" target="jar-nodep">
             <property name="jar.dir" location="${base.dir}/dist"/>
         </ant>
@@ -293,7 +293,7 @@
              command="checkout -P"
              package="${cvs.module}"
              dest="${checkout.dir}"
-	     failonerror="yes"/>
+             failonerror="yes"/>
     </target>
 
     <!-- Target: changelog -->
@@ -389,6 +389,7 @@
             <batchtest todir="${test.build.results.dir}" unless="testcase">
                 <fileset dir="${test.build.classes.dir}">
                     <include name="**/*Test.class"/>
+                    <exclude name="**/Abstract*.class"/>
                 </fileset>
             </batchtest>
         </junit>
