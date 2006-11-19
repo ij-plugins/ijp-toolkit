@@ -11,7 +11,7 @@
 
     <!-- Package name and version -->
     <property name="package.name" value="ij-plugins_toolkit"/>
-    <property name="package.version" value="1.1"/>
+    <property name="package.version" value="1.1.1"/>
 
     <!-- Customize properties, e.g., cvs.root.-->
     <property file="build.properties"/>
