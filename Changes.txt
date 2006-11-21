@@ -7,6 +7,17 @@ Version 1.1
 --------------------------------------------------------------------------
 
 Bug fixes:
+* BUG-1594780: Correct reading of COLOR_SCALARS: use GRAY8 when nValue==1, use 
+  RGB when nValue==3.
+ 
+Improvements:
+* Fast Median Filter Plugin: add support for RGB images.
+
+--------------------------------------------------------------------------
+Version 1.1
+--------------------------------------------------------------------------
+
+Bug fixes:
 * Correct spelling of PeronaMalikAnisotropicDiffusion* classes.
 
 Improvements:
