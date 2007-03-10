@@ -43,11 +43,11 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
                     "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
                     "\"Thresholding Using the Entropy of the Histogram\"CVGIP, (29), pp.273-285,\n" +
                     "1985.";
-    public static final String TITLE = "Maximum Entropy Multi-Theshold";
+    private static final String TITLE = "Maximum Entropy Multi-Theshold";
 
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
 
-    public final int setup(final String s, final ImagePlus imagePlus) {
+    public int setup(final String s, final ImagePlus imagePlus) {
 
         if ("about".equalsIgnoreCase(s)) {
             IJ.showMessage(TITLE, ABOUT_MESSAGE);
@@ -57,7 +57,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         return PlugInFilter.DOES_8G | PlugInFilter.DOES_STACKS;
     }
 
-    public final void run(final ImageProcessor imageProcessor) {
+    public void run(final ImageProcessor imageProcessor) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
         dialog.addNumericField("Number of thresolds:", 2, 0);
@@ -78,28 +78,26 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
             return;
         }
 
-
         final int[] hist = imageProcessor.getHistogram();
-//        final int[] thresholds = HistogramThreshold.maximumEntropy(hist, nbThresholds);
         final MaximumEntropyMultiThreshold maximumEntropyMultiThreshold = new MaximumEntropyMultiThreshold();
         maximumEntropyMultiThreshold.addProgressListener(new IJProgressBarAdapter());
         final int[] thresholds = maximumEntropyMultiThreshold.maximumEntropy(hist, nbThresholds);
-        String logMsg = "Thresholds: ";
+        String logMsg = "Maximum Entropy Thresholds: ";
         for (int i = 0; i < thresholds.length; i++) {
-            int threshold = thresholds[i];
+            final int threshold = thresholds[i];
             logMsg += " " + threshold;
         }
         IJ.log(logMsg);
         encode((ByteProcessor) imageProcessor, thresholds);
     }
 
-    private void encode(ByteProcessor ip, int[] thresholds) {
+    private void encode(final ByteProcessor ip, final int[] thresholds) {
         final int[] values = new int[thresholds.length + 1];
         double inc = 255.0 / thresholds.length;
         for (int i = 0; i < values.length; i++) {
             values[i] = (int) Math.round(i * inc);
         }
-        String logMsg = "Values: ";
+        String logMsg = "Levels in thresholoded image: ";
         for (int i = 0; i < values.length; i++) {
             int v = values[i];
             logMsg += " " + v;

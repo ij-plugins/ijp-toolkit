@@ -20,16 +20,11 @@
  */
 package net.sf.ij_plugins.thresholding;
 
-import net.sf.ij_plugins.util.IJDebug;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * histogram based thresholding.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class HistogramThreshold {
     private static final double EPSILON = Double.MIN_VALUE;
@@ -48,7 +43,7 @@ public final class HistogramThreshold {
      * @param hist histogram to be thresholded.
      * @return index of the maximum entropy split.
      */
-    public static final int maximumEntropy(final int[] hist) {
+    public static int maximumEntropy(final int[] hist) {
         // Normalize histogram, that is makes the sum of all bins equal to 1.
         double sum = 0;
         for (int i = 0; i < hist.length; ++i) {
@@ -120,61 +115,6 @@ public final class HistogramThreshold {
     }
 
     /**
-     * Find maximum entropy split of a histogram. It is a generalization of single split presented
-     * by J.N. Kapur, P.K. Sahoo and A.K.C. Wong, "A New Method for Gray-Level Picture Thresholding
-     * Using the Entropy of the Histogram", <i>CVGIP</i>, (29), pp.273-285 , 1985.
-     *
-     * @param hist        histogram to be partitioned.
-     * @param nbDivisions desired number of thresholds.
-     * @return array contraining values of maximum entropy thresholds.
-     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
-     */
-    public static final int[] maximumEntropy(int hist[], int nbDivisions) {
-
-        final int min = 0;
-        final int max = hist.length;
-
-        double[] h = normalize(hist);
-
-        // Create candidate intevals
-        IJDebug.log("Create candidate intevals");
-        int [][] intervals = intervals(nbDivisions, 0, hist.length);
-
-        // Find an interval that maximizes the entropy
-        IJDebug.log("Find an interval that maximizes the entropy");
-        double bestE = Double.NEGATIVE_INFINITY;
-        int[] bestInterval = null;
-        final int progressStep = intervals.length > 100 ? intervals.length / 100 : 1;
-        for (int i = 0; i < intervals.length; i++) {
-            if (i % progressStep == 0) {
-                final int percProgress = (int) Math.round(i / (double) intervals.length * 100);
-                IJDebug.log("Percent intervals analyzed " + percProgress);
-            }
-            int[] interval = intervals[i];
-            double e = 0;
-            int lastT = min;
-            for (int j = 0; j < interval.length; j++) {
-                int t = interval[j];
-                e += intervalEntropy(h, lastT, t);
-                lastT = t;
-            }
-            e += intervalEntropy(h, lastT, max);
-
-            if (bestE < e) {
-                bestE = e;
-                bestInterval = interval;
-                for (int j = 0; j < interval.length; j++) {
-                }
-            }
-        }
-
-        assert bestInterval != null;
-        assert bestInterval.length == nbDivisions;
-
-        return bestInterval;
-    }
-
-    /**
      * Normalize histogram: divide all elemnts of the histogram by a fixed values so sum of the
      * elements is equal 1.
      *
@@ -198,76 +138,4 @@ public final class HistogramThreshold {
         return normalizedHist;
     }
 
-    /**
-     * Generate all possible divisions of a range of numbers <code>min</code> to <code>max</code>.
-     *
-     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
-     */
-    public static int[][] intervals(int nbDivisions, int min, int max) {
-        if (nbDivisions <= 0) {
-            throw new IllegalArgumentException("Argument 'nbdivisions' must be greater than 0.");
-        }
-
-        final List intervals = new ArrayList();
-        if (nbDivisions == 1) {
-            for (int n = min + 1; n < max; ++n) {
-                intervals.add(new int[]{n});
-            }
-
-        } else {
-            for (int n = min + 1; n <= max - nbDivisions + 1; ++n) {
-                int[][] subIntervals = intervals(nbDivisions - 1, n, max);
-
-                // combine
-                for (int i = 0; i < subIntervals.length; i++) {
-                    int[] subInterval = subIntervals[i];
-                    int[] interval = new int[subInterval.length + 1];
-                    interval[0] = n;
-                    for (int j = 0; j < subInterval.length; j++) {
-                        interval[j + 1] = subInterval[j];
-                    }
-                    intervals.add(interval);
-                }
-            }
-        }
-
-        return (int[][]) intervals.toArray(new int[intervals.size()][]);
-    }
-
-    /**
-     * @param hist  normalized histogram
-     * @param begin first index to evaluate (inclusive).
-     * @param end   last index to evaluate (exclusive).
-     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
-     */
-    static final double intervalEntropy(final double[] hist, int begin, int end) {
-
-        final double hSum = sum(hist, begin, end);
-//        assert hSum < 1 + EPSILON;
-        if (hSum < EPSILON) {
-            return 0;
-        }
-
-        double e = 0;
-        for (int i = begin; i < end; ++i) {
-            double h = hist[i];
-            if (h > EPSILON) {
-                double a = hist[i] / hSum;
-                e -= a * Math.log(a);
-            }
-        }
-
-        return e;
-    }
-
-    /**
-     * @deprecated Use {@link MaximumEntropyMultiThreshold} class.
-     */
-    static final double sum(final double[] hist, int begin, int end) {
-        double s = 0;
-        for (int i = begin; i < end; ++i) {
-            s += hist[i];
-        }
-        return s;
-    }
 }

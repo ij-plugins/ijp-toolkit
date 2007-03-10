@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class HistogramThresholdTest extends TestCase {
     public HistogramThresholdTest(String test) {
@@ -39,70 +39,4 @@ public class HistogramThresholdTest extends TestCase {
     }
 
 
-    public void testEntropyMultipleThreshold_01() {
-        final int hist[] = {0, 1, 2, 3, 4, 3, 2, 1, 0, 1, 2, 3, 4, 3, 2, 1, 0};
-        final int[] t = HistogramThreshold.maximumEntropy(hist, 1);
-        assertNotNull(t);
-        assertEquals(t.length, 1);
-        assertEquals(8, t[0]);
-    }
-
-
-    public void testEntropyMultipleThreshold_02() {
-        final int hist[] = {0, 1, 2, 3, 4, 3, 2, 1, 0, 1, 2, 3, 4, 3, 2, 1, 0, 1, 2, 3, 4, 3, 2, 1, 0};
-        final int[] t = HistogramThreshold.maximumEntropy(hist, 2);
-        assertNotNull(t);
-        assertEquals(t.length, 2);
-        assertEquals(8, t[0]);
-        assertEquals(16, t[1]);
-    }
-
-
-    public void testIintervals001() throws Exception {
-        int[][] intervals = HistogramThreshold.intervals(1, 0, 5);
-        print(intervals, 1, 0, 5);
-    }
-
-    public void testIintervals002() throws Exception {
-        int n = 2;
-        int min = 0;
-        int max = 5;
-        int[][] intervals = HistogramThreshold.intervals(n, min, max);
-        print(intervals, n, min, max);
-    }
-
-    public void testIintervals256() throws Exception {
-        int n = 2;
-        int min = 0;
-        int max = 256;
-        int[][] intervals = HistogramThreshold.intervals(n, min, max);
-//        print(intervals, n, min, max);
-    }
-
-
-    private static void print(int[][] intervals, int nbDiv, int min, int max) {
-        System.out.println("# divisions: " + nbDiv + ", min: " + min + ", max: " + max + ", # intervals: " + intervals.length);
-        for (int i = 0; i < intervals.length; i++) {
-            int[] interval = intervals[i];
-            int lastD = min;
-            for (int j = 0; j < interval.length; j++) {
-                int d = interval[j];
-//                System.out.print("[" + lastD + ", " + d + ") ");
-                lastD = d;
-            }
-//            System.out.println("[" + lastD + ", " + max + ")");
-        }
-    }
-
-    /**
-     * The fixture set up called before every test method
-     */
-    protected void setUp() throws Exception {
-    }
-
-    /**
-     * The fixture clean up called after every test method
-     */
-    protected void tearDown() throws Exception {
-    }
 }

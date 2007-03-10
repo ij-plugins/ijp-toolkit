@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
@@ -62,7 +62,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
         // Create candidate intervals
         notifyProgressListeners(0.02, "Create candidate intervals");
-        final int [][] intervals = intervals(nbDivisions, 0, histogram.length);
+        final int[][] intervals = intervals(nbDivisions, 0, histogram.length);
 
         // Find an interval that maximizes the entropy
         IJDebug.log("Find an interval that maximizes the entropy");
@@ -128,9 +128,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
                     int[] subInterval = subIntervals[i];
                     int[] interval = new int[subInterval.length + 1];
                     interval[0] = n;
-                    for (int j = 0; j < subInterval.length; j++) {
-                        interval[j + 1] = subInterval[j];
-                    }
+                    System.arraycopy(subInterval, 0, interval, 1, subInterval.length);
                     intervals.add(interval);
                 }
             }
@@ -142,6 +140,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
     /**
      * @param begin first index to evaluate (inclusive).
      * @param end   last index to evaluate (exclusive).
+     * @return entropy with in the interval.
      */
     private double intervalEntropy(int begin, int end) {
 
@@ -168,7 +167,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
         return ie.doubleValue();
     }
 
-    static final double sum(final double[] hist, int begin, int end) {
+    private static double sum(final double[] hist, final int begin, final int end) {
         double s = 0;
         for (int i = begin; i < end; ++i) {
             s += hist[i];

@@ -34,32 +34,25 @@ import ij.process.ImageProcessor;
  * @author Jarek Sacha
  */
 public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
-    private final static String aboutMessage =
+    private static final String ABOUT_MESSAGE =
             "Automatic thresholding technique based on the maximum entropy of the\n" +
                     "histogram. See:\n" +
                     "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
                     "\"Thresholding Using the Entropy of the Histogram\"CVGIP, (29), pp.273-285,\n" +
                     "1985.";
 
-    // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
+    // TODO: Make this plugin available for 2D, 3D, and stacks
 
-    /*
-     *
-     */
-    public final int setup(final java.lang.String s, final ImagePlus imagePlus) {
-
+    public int setup(final java.lang.String s, final ImagePlus imagePlus) {
         if ("about".equalsIgnoreCase(s)) {
-            IJ.showMessage("Maximum Entropy Theshold", aboutMessage);
+            IJ.showMessage("Maximum Entropy Theshold", ABOUT_MESSAGE);
             return PlugInFilter.DONE;
         }
 
         return PlugInFilter.DOES_8G | PlugInFilter.DOES_STACKS;
     }
 
-    /*
-     *
-     */
-    public final void run(final ImageProcessor imageProcessor) {
+    public void run(final ImageProcessor imageProcessor) {
         final int[] hist = imageProcessor.getHistogram();
         final int threshold = HistogramThreshold.maximumEntropy(hist);
         imageProcessor.threshold(threshold);
