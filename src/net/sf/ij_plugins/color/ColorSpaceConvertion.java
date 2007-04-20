@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2007 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,264 +28,198 @@ import net.sf.ij_plugins.util.progress.ProgressEvent;
 import net.sf.ij_plugins.util.progress.ProgressListener;
 
 /**
- * Color space conversion utility, assuming two degree observer and illuminant D65. Conversion based
- * on formulas provided at http://www.easyrgb.com/math.php
+ * Basic color space conversion utilities, assuming two degree observer and illuminant D65.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
-public class ColorSpaceConvertion {
-
-//    public final static double REF_X = 95.047;
-//    public final static double REF_Y = 100.000;
-//    public final static double REF_Z = 108.883;
-    public final static double REF_X = 100.000;
-    public final static double REF_Y = 100.000;
-    public final static double REF_Z = 100.000;
-
+public final class ColorSpaceConvertion {
+    private static final double X_D65 = 0.950467;
+    private static final double Y_D65 = 1.0000;
+    private static final double Z_D65 = 1.088969;
+    private static final double CIE_EPSILON = 0.008856;
+    private static final double CIE_KAPPA = 903.3;
+    private static final double CIE_KAPPA_EPSILON = CIE_EPSILON * CIE_KAPPA;
 
     private ColorSpaceConvertion() {
     }
 
     /**
-     * Conversion from XYZ to RGB assuming Observer. = 2°, Illuminant = D65.<p/>
-     * <p/>
-     * Conversion based on formulas provided at http://www.easyrgb.com/math.php?MATH=M1#text1
+     * Conversion from CIE XYZ to sRGB as defined in the IEC 619602-1 standard
+     * (http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf)
      * <pre>
-     * ref_X =  95.047        //Observer = 2°, Illuminant = D65
-     * ref_Y = 100.000
-     * ref_Z = 108.883
-     * <p/>
-     * var_X = X / 100        //X = From 0 to ref_X
-     * var_Y = Y / 100        //Y = From 0 to ref_Y
-     * var_Z = Z / 100        //Z = From 0 to ref_Y
-     * <p/>
-     * var_R = var_X *  3.2406 + var_Y * -1.5372 + var_Z * -0.4986
-     * var_G = var_X * -0.9689 + var_Y *  1.8758 + var_Z *  0.0415
-     * var_B = var_X *  0.0557 + var_Y * -0.2040 + var_Z *  1.0570
-     * <p/>
-     * if ( var_R > 0.0031308 ) var_R = 1.055 * ( var_R ^ ( 1 / 2.4 ) ) - 0.055
-     * else                     var_R = 12.92 * var_R
-     * if ( var_G > 0.0031308 ) var_G = 1.055 * ( var_G ^ ( 1 / 2.4 ) ) - 0.055
-     * else                     var_G = 12.92 * var_G
-     * if ( var_B > 0.0031308 ) var_B = 1.055 * ( var_B ^ ( 1 / 2.4 ) ) - 0.055
-     * else                     var_B = 12.92 * var_B
-     * <p/>
-     * R = var_R * 255
-     * G = var_G * 255
-     * B = var_B * 255
-     * </pre>
+     * r_linear = +3.2406 * X - 1.5372 * Y - 0.4986 * Z;
+     * g_linear = -0.9689 * X + 1.8758 * Y + 0.0415 * Z;
+     * b_linear = +0.0557 * X - 0.2040 * Y + 1.0570 * Z;
+     * r = r_linear > 0.0031308
+     *       ? 1.055 * Math.pow(r_linear, (1 / 2.4)) - 0.055
+     *       : 12.92 * r_linear;
+     * g = g_linear > 0.0031308
+     *       ? 1.055 * Math.pow(g_linear, (1 / 2.4)) - 0.055
+     *       : 12.92 * g_linear;
+     * b = b_linear > 0.0031308
+     *       ? 1.055 * Math.pow(b_linear, (1 / 2.4)) - 0.055
+     *       : 12.92 * b_linear;
+     * R = r * 255
+     * G = r * 255
+     * B = r * 255
+     * <pre>
+     *
+     * @param xyz input CIE XYZ values.
+     * @param rgb output sRGB values in [0, 255] range.
      */
     public static void xyzToRGB(final float[] xyz, final float[] rgb) {
-        final double var_X = xyz[0] / REF_X;        //X = From 0 to ref_X
-        final double var_Y = xyz[1] / REF_Y;        //Y = From 0 to ref_Y
-        final double var_Z = xyz[2] / REF_Z;        //Z = From 0 to ref_Y
+        final double x = xyz[0];
+        final double y = xyz[1];
+        final double z = xyz[2];
 
-        double var_R = var_X * 3.2406 + var_Y * -1.5372 + var_Z * -0.4986;
-        double var_G = var_X * -0.9689 + var_Y * 1.8758 + var_Z * 0.0415;
-        double var_B = var_X * 0.0557 + var_Y * -0.2040 + var_Z * 1.0570;
+        //  http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf
+        final double r_linear = +3.2406 * x - 1.5372 * y - 0.4986 * z;
+        final double g_linear = -0.9689 * x + 1.8758 * y + 0.0415 * z;
+        final double b_linear = +0.0557 * x - 0.2040 * y + 1.0570 * z;
 
-        if (var_R > 0.0031308) {
-            var_R = 1.055 * Math.pow(var_R, (1 / 2.4)) - 0.055;
-        } else {
-            var_R = 12.92 * var_R;
-        }
+        final double r = r_linear > 0.0031308
+                ? 1.055 * Math.pow(r_linear, (1 / 2.4)) - 0.055
+                : 12.92 * r_linear;
 
-        if (var_G > 0.0031308) {
-            var_G = 1.055 * Math.pow(var_G, (1 / 2.4)) - 0.055;
-        } else {
-            var_G = 12.92 * var_G;
-        }
-        if (var_B > 0.0031308) {
-            var_B = 1.055 * Math.pow(var_B, (1 / 2.4)) - 0.055;
-        } else {
-            var_B = 12.92 * var_B;
-        }
+        final double g = g_linear > 0.0031308
+                ? 1.055 * Math.pow(g_linear, (1 / 2.4)) - 0.055
+                : 12.92 * g_linear;
 
-        rgb[0] = (float) (var_R * 255);
-        rgb[1] = (float) (var_G * 255);
-        rgb[2] = (float) (var_B * 255);
+        final double b = b_linear > 0.0031308
+                ? 1.055 * Math.pow(b_linear, (1 / 2.4)) - 0.055
+                : 12.92 * b_linear;
+
+        rgb[0] = (float) (r * 255);
+        rgb[1] = (float) (g * 255);
+        rgb[2] = (float) (b * 255);
     }
 
     /**
-     * Conversion from  CIE L*a*b* to XYZ assuming Observer. = 2°, Illuminant = D65.<p/>
-     * <p/>
-     * Conversion based on formulas provided at http://www.easyrgb.com/math.php?MATH=M8#text8
-     * <pre>
-     * var_Y = ( CIE-L* + 16 ) / 116
-     * var_X = CIE-a* / 500 + var_Y
-     * var_Z = var_Y - CIE-b* / 200
-     * <p/>
-     * if ( var_Y^3 > 0.008856 ) var_Y = var_Y^3
-     * else                      var_Y = ( var_Y - 16 / 116 ) / 7.787
-     * if ( var_X^3 > 0.008856 ) var_X = var_X^3
-     * else                      var_X = ( var_X - 16 / 116 ) / 7.787
-     * if ( var_Z^3 > 0.008856 ) var_Z = var_Z^3
-     * else                      var_Z = ( var_Z - 16 / 116 ) / 7.787
-     * <p/>
-     * X = ref_X * var_X     //ref_X =  95.047  Observer= 2°, Illuminant= D65
-     * Y = ref_Y * var_Y     //ref_Y = 100.000
-     * Z = ref_Z * var_Z     //ref_Z = 108.883
-     * </pre>
+     * Conversion from  CIE L*a*b* to CIE XYZ assuming Observer. = 2°, Illuminant = D65.
+     * Conversion based on formulas provided at http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+     *
+     * @param lab input CIE L*a*b* values.
+     * @param xyz output CIE XYZ values.
      */
     public static void labToXYZ(final float[] lab, final float[] xyz) {
-        double var_Y = (lab[0] + 16) / 116;
-        double var_X = lab[1] / 500 + var_Y;
-        double var_Z = var_Y - lab[2] / 200;
 
-//        if (var_Y ^ 3 > 0.008856)
-        if (var_Y > 0.206893) {
-            var_Y = Math.pow(var_Y, 3);
-        } else {
-            var_Y = (var_Y - 16.0 / 116.0) / 7.787;
-        }
-//        if (var_X ^ 3 > 0.008856)
-        if (var_X > 0.206893) {
-            var_X = Math.pow(var_X, 3);
-        } else {
-            var_X = (var_X - 16.0 / 116.0) / 7.787;
-        }
-//        if (var_Z ^ 3 > 0.008856)
-        if (var_Z > 0.206893) {
-            var_Z = Math.pow(var_Z, 3);
-        } else {
-            var_Z = (var_Z - 16.0 / 116.0) / 7.787;
-        }
+        final double l = lab[0];
+        final double a = lab[1];
+        final double b = lab[2];
 
-        xyz[0] = (float) (REF_X * var_X);     //ref_X =  95.047  Observer= 2°, Illuminant= D65
-        xyz[1] = (float) (REF_Y * var_Y);     //ref_Y = 100.000
-        xyz[2] = (float) (REF_Z * var_Z);     //ref_Z = 108.883
+
+        final double yr = l > CIE_KAPPA_EPSILON
+                ? Math.pow((l + 16) / 116, 3)
+                : l / CIE_KAPPA;
+
+        final double fy = yr > CIE_EPSILON
+                ? (l + 16) / 116.0
+                : (CIE_KAPPA * yr + 16) / 116.0;
+
+        final double fx = a / 500 + fy;
+        final double fx3 = fx * fx * fx;
+
+        final double xr = fx3 > CIE_EPSILON
+                ? fx3
+                : (116 * fx - 16) / CIE_KAPPA;
+
+        final double fz = fy - b / 200.0;
+        final double fz3 = fz * fz * fz;
+        final double zr = fz3 > CIE_EPSILON
+                ? fz3
+                : (116 * fz - 16) / CIE_KAPPA;
+
+        xyz[0] = (float) (xr * X_D65);
+        xyz[1] = (float) (yr * Y_D65);
+        xyz[2] = (float) (zr * Z_D65);
     }
 
 
     /**
-     * Conversion from RGB to XYZ assuming Observer. = 2°, Illuminant = D65.<p/>
-     * <p/>
-     * Conversion based on formulas provided at http://www.easyrgb.com/math.php?MATH=M2#text2
+     * Conversion from sRGB to CIE XYZ  as defined in the IEC 619602-1 standard
+     * (http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf)
      * <pre>
-     * var_R = ( R / 255 )        //R = From 0 to 255
-     * var_G = ( G / 255 )        //G = From 0 to 255
-     * var_B = ( B / 255 )        //B = From 0 to 255
-     * <p/>
-     * if ( var_R > 0.04045 ) var_R = ( ( var_R + 0.055 ) / 1.055 ) ^ 2.4
-     * else                   var_R = var_R / 12.92
-     * if ( var_G > 0.04045 ) var_G = ( ( var_G + 0.055 ) / 1.055 ) ^ 2.4
-     * else                   var_G = var_G / 12.92
-     * if ( var_B > 0.04045 ) var_B = ( ( var_B + 0.055 ) / 1.055 ) ^ 2.4
-     * else                   var_B = var_B / 12.92
-     * <p/>
-     * var_R = var_R * 100
-     * var_G = var_G * 100
-     * var_B = var_B * 100
-     * <p/>
-     * //Observer. = 2°, Illuminant = D65
-     * X = var_R * 0.4124 + var_G * 0.3576 + var_B * 0.1805
-     * Y = var_R * 0.2126 + var_G * 0.7152 + var_B * 0.0722
-     * Z = var_R * 0.0193 + var_G * 0.1192 + var_B * 0.9505
+     * r = R / 255;
+     * g = G / 255;
+     * b = B / 255;
+     * r_linear = r > 0.04045
+     *          ? Math.pow((r + 0.055) / 1.055, 2.4)
+     *          : r / 12.92;
+     * g_linear = g > 0.04045
+     *          ? Math.pow((g + 0.055) / 1.055, 2.4)
+     *          : g / 12.92;
+     * b_linear = b > 0.04045
+     *          ? Math.pow((b + 0.055) / 1.055, 2.4)
+     *          : b / 12.92;
+     * X = 0.4124 * r_linear + 0.3576 * g_linear + 0.1805 * b_linear;
+     * Y = 0.2126 * r_linear + 0.7152 * g_linear + 0.0722 * b_linear;
+     * Z = 0.0193 * r_linear + 0.1192 * g_linear + 0.9505 * b_linear;
      * </pre>
      *
-     * @param src  source RGB values. Size of array <code>src</code> must be at least 3. If size of
-     *             array <code>src</code> larger than three then only first 3 values are used.
-     * @param dest destinaltion XYZ values. Size of array <code>dest</code> must be at least 3. If
-     *             size of array <code>dest</code> larger than three then only first 3 values are
-     *             used.
+     * @param rgb source sRGB values. Size of array <code>rgb</code> must be at least 3. If size of
+     *            array <code>rgb</code> larger than three then only first 3 values are used.
+     * @param xyz destinaltion CIE XYZ values. Size of array <code>xyz</code> must be at least 3. If
+     *            size of array <code>xyz</code> larger than three then only first 3 values are
+     *            used.
      */
-    public static void rgbToXYZ(final float[] src, final float[] dest) {
-        double var_R = src[0] / 255;        //R = From 0 to 255
-        double var_G = src[1] / 255;        //G = From 0 to 255
-        double var_B = src[2] / 255;        //B = From 0 to 255
+    public static void rgbToXYZ(final float[] rgb, final float[] xyz) {
+        final double r = rgb[0] / 255;
+        final double g = rgb[1] / 255;
+        final double b = rgb[2] / 255;
 
-        if (var_R > 0.04045) {
-            var_R = Math.pow((var_R + 0.055) / 1.055, 2.4);
-        } else {
-            var_R = var_R / 12.92;
-        }
+        final double r_linear = r > 0.04045
+                ? Math.pow((r + 0.055) / 1.055, 2.4)
+                : r / 12.92;
 
-        if (var_G > 0.04045) {
-            var_G = Math.pow((var_G + 0.055) / 1.055, 2.4);
-        } else {
-            var_G = var_G / 12.92;
-        }
+        final double g_linear = g > 0.04045
+                ? Math.pow((g + 0.055) / 1.055, 2.4)
+                : g / 12.92;
 
-        if (var_B > 0.04045) {
-            var_B = Math.pow((var_B + 0.055) / 1.055, 2.4);
-        } else {
-            var_B = var_B / 12.92;
-        }
+        final double b_linear = b > 0.04045
+                ? Math.pow((b + 0.055) / 1.055, 2.4)
+                : b / 12.92;
 
-        var_R *= REF_X;
-        var_G *= REF_Y;
-        var_B *= REF_Z;
+        final double x = 0.4124 * r_linear + 0.3576 * g_linear + 0.1805 * b_linear;
+        final double y = 0.2126 * r_linear + 0.7152 * g_linear + 0.0722 * b_linear;
+        final double z = 0.0193 * r_linear + 0.1192 * g_linear + 0.9505 * b_linear;
 
-        //Observer. = 2°, Illuminant = D65
-        final double x = var_R * 0.4124 + var_G * 0.3576 + var_B * 0.1805;
-        final double y = var_R * 0.2126 + var_G * 0.7152 + var_B * 0.0722;
-        final double z = var_R * 0.0193 + var_G * 0.1192 + var_B * 0.9505;
-
-        dest[0] = (float) x;
-        dest[1] = (float) y;
-        dest[2] = (float) z;
+        xyz[0] = (float) x;
+        xyz[1] = (float) y;
+        xyz[2] = (float) z;
     }
 
     /**
-     * Conversion from XYZ color space to CIELab color space assuming Observer. = 2°, Illuminant =
-     * D65.<p/>
-     * <p/>
-     * Conversion based on formulas provided at http://www.easyrgb.com/math.php?MATH=M2#text2
-     * <pre>
-     * var_X = X /  95.047          //Observer = 2°, Illuminant = D65
-     * var_Y = Y / 100.000
-     * var_Z = Z / 108.883
-     * <p/>
-     * if ( var_X > 0.008856 ) var_X = var_X ^ ( 1/3 )
-     * else                    var_X = ( 7.787 * var_X ) + ( 16 / 116 )
-     * if ( var_Y > 0.008856 ) var_Y = var_Y ^ ( 1/3 )
-     * else                    var_Y = ( 7.787 * var_Y ) + ( 16 / 116 )
-     * if ( var_Z > 0.008856 ) var_Z = var_Z ^ ( 1/3 )
-     * else                    var_Z = ( 7.787 * var_Z ) + ( 16 / 116 )
-     * <p/>
-     * CIE-L* = ( 116 * var_Y ) - 16
-     * CIE-a* = 500 * ( var_X - var_Y )
-     * CIE-b* = 200 * ( var_Y - var_Z )
-     * </pre>
+     * /**
+     * Conversion from  CIE XYZ to CIE L*a*b* assuming Observer. = 2°, Illuminant = D65.
+     * Conversion based on formulas provided at http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
      *
-     * @param src  source XYZ values. Size of array <code>src</code> must be at least 3. If size of
-     *             array <code>src</code> larger than three then only first 3 values are used.
-     * @param dest destinaltion CIE Lab values. Size of array <code>dest</code> must be at least 3.
-     *             If size of array <code>dest</code> larger than three then only first 3 values are
-     *             used.
+     * @param xyz source CIE XYZ values. Size of array <code>xyz</code> must be at least 3. If size of
+     *            array <code>xyz</code> larger than three then only first 3 values are used.
+     * @param lab destinaltion CIE L*a*b* values. Size of array <code>lab</code> must be at least 3.
+     *            If size of array <code>lab</code> larger than three then only first 3 values are
+     *            used.
      */
-    public static void xyzToLab(final float[] src, final float[] dest) {
-        //Observer = 2°, Illuminant = D65
-        double var_X = src[0] / REF_X;
-        double var_Y = src[1] / REF_Y;
-        double var_Z = src[2] / REF_Z;
+    public static void xyzToLab(final float[] xyz, final float[] lab) {
+        final double xr = xyz[0] / X_D65;
+        final double yr = xyz[1] / Y_D65;
+        final double zr = xyz[2] / Z_D65;
 
-        if (var_X > 0.008856) {
-            var_X = Math.pow(var_X, 1.0 / 3.0);
-        } else {
-            var_X = (7.787 * var_X) + (16.0 / 116.0);
-        }
+        final double fx = xr > CIE_EPSILON
+                ? Math.pow(xr, 1.0 / 3.0)
+                : (CIE_KAPPA * xr + 16) / 116.0;
 
-        if (var_Y > 0.008856) {
-            var_Y = Math.pow(var_Y, 1.0 / 3.0);
-        } else {
-            var_Y = (7.787 * var_Y) + (16.0 / 116.0);
-        }
+        final double fy = yr > CIE_EPSILON
+                ? Math.pow(yr, 1.0 / 3.0)
+                : (CIE_KAPPA * yr + 16) / 116.0;
 
-        if (var_Z > 0.008856) {
-            var_Z = Math.pow(var_Z, 1.0 / 3.0);
-        } else {
-            var_Z = (7.787 * var_Z) + (16.0 / 116.0);
-        }
+        final double fz = zr > CIE_EPSILON
+                ? Math.pow(zr, 1.0 / 3.0)
+                : (CIE_KAPPA * zr + 16) / 116.0;
 
-        final double l = 116 * var_Y - 16;
-        final double a = 500 * (var_X - var_Y);
-        final double b = 200 * (var_Y - var_Z);
-
-        dest[0] = (float) l;
-        dest[1] = (float) a;
-        dest[2] = (float) b;
+        lab[0] = (float) (116 * fy - 16);
+        lab[1] = (float) (500 * (fx - fy));
+        lab[2] = (float) (200 * (fy - fz));
     }
 
     /**
@@ -294,7 +228,9 @@ public class ColorSpaceConvertion {
      * @param cp RGB image to be converted
      * @return CIE L*a*b* image represented by {@link VectorProcessor}.
      */
-    public static VectorProcessor rgbToLabVectorProcessor(final ColorProcessor cp) {
+    public static VectorProcessor rgbToLabVectorProcessor
+            (
+                    final ColorProcessor cp) {
         final VectorProcessor vp = new VectorProcessor(cp);
         final float[][] pixels = vp.getPixels();
         final float[] tmp = new float[3];
@@ -432,12 +368,14 @@ public class ColorSpaceConvertion {
 
     /**
      * Converts image pixels from RGB color space to YCbCr color space.
-     * Equivalent to calling <code>rgbToYCbCr(src, null)</code>.
+     * Equivalent to calling <code>rgbToYCbCr(rgb, null)</code>.
      *
-     * @see #rgbToYCbCr(ij.process.ColorProcessor, net.sf.ij_plugins.util.progress.ProgressListener)
+     * @param rgb inpuit image in sRGB color space.
+     * @return array of ByteProcessor representing color planes: Y, Cb, and Cr.
+     * @see #rgbToYCbCr(ij.process.ColorProcessor,net.sf.ij_plugins.util.progress.ProgressListener)
      */
-    public static ByteProcessor[] rgbToYCbCr(final ColorProcessor src) {
-        return rgbToYCbCr(src, null);
+    public static ByteProcessor[] rgbToYCbCr(final ColorProcessor rgb) {
+        return rgbToYCbCr(rgb, null);
     }
 
     /**
@@ -454,35 +392,36 @@ public class ColorSpaceConvertion {
      * B = 1/256 * (298.081952524118 * (Y -16) + 516.412147108167 * (Cb - 128) -   0.000466679809 * (Cr-128))
      * </pre>
      *
-     * @param src source image, array of color bands: Y, Cb, Cr, respectively.
+     * @param ybr              source image, array of color bands: Y, Cb, Cr, respectively.
+     * @param progressListener progress listener, can be null.
      * @return RGB image.
      */
-    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] src, final ProgressListener progressListener) {
+    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] ybr, final ProgressListener progressListener) {
 
-        if (src == null) {
-            throw new IllegalArgumentException("Argument 'src' cannot be null.");
+        if (ybr == null) {
+            throw new IllegalArgumentException("Argument 'ybr' cannot be null.");
         }
 
-        if (src.length != 3) {
-            throw new IllegalArgumentException("Argument's 'src' length must be 3, got " + src.length + ".");
+        if (ybr.length != 3) {
+            throw new IllegalArgumentException("Argument's 'ybr' length must be 3, got " + ybr.length + ".");
         }
 
         final String progressMessage = "Converting YCbCr to RGB...";
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(src, 0.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(ybr, 0.0, progressMessage));
         }
 
-        final int width = src[0].getWidth();
-        final int height = src[0].getHeight();
+        final int width = ybr[0].getWidth();
+        final int height = ybr[0].getHeight();
         final int nbPixels = width * height;
 
         final byte[] rPixels = new byte[nbPixels];
         final byte[] gPixels = new byte[nbPixels];
         final byte[] bPixels = new byte[nbPixels];
 
-        final byte[] yPixels = (byte[]) src[0].getPixels();
-        final byte[] cbPixels = (byte[]) src[1].getPixels();
-        final byte[] crPixels = (byte[]) src[2].getPixels();
+        final byte[] yPixels = (byte[]) ybr[0].getPixels();
+        final byte[] cbPixels = (byte[]) ybr[1].getPixels();
+        final byte[] crPixels = (byte[]) ybr[2].getPixels();
 
         final int progressStep = nbPixels / 10;
         for (int i = 0; i < nbPixels; i++) {
@@ -500,7 +439,7 @@ public class ColorSpaceConvertion {
             bPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(b), 0), 255));
 
             if ((progressListener != null) && (i % progressStep == 0)) {
-                progressListener.progressNotification(new ProgressEvent(src, i / (double) nbPixels, progressMessage));
+                progressListener.progressNotification(new ProgressEvent(ybr, i / (double) nbPixels, progressMessage));
             }
         }
 
@@ -508,7 +447,7 @@ public class ColorSpaceConvertion {
         dest.setRGB(rPixels, gPixels, bPixels);
 
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(src, 1.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(ybr, 1.0, progressMessage));
         }
 
         return dest;
@@ -516,11 +455,13 @@ public class ColorSpaceConvertion {
 
     /**
      * Converts image pixels from RGB color space to YCbCr color space.
-     * Equivalent to calling <code>ycbcrToRGB(src, null)</code>.
+     * Equivalent to calling <code>ycbcrToRGB(ybr, null)</code>.
      *
-     * @see #ycbcrToRGB(ij.process.ByteProcessor[], net.sf.ij_plugins.util.progress.ProgressListener)
+     * @param ybr array of ByteProcessor representing color planes: Y, Cb, and Cr.
+     * @return ColorProcessor representin image in sRGB color space.
+     * @see #ycbcrToRGB(ij.process.ByteProcessor[],net.sf.ij_plugins.util.progress.ProgressListener)
      */
-    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] src) {
-        return ycbcrToRGB(src, null);
+    public static ColorProcessor ycbcrToRGB(final ByteProcessor[] ybr) {
+        return ycbcrToRGB(ybr, null);
     }
 }
