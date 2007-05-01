@@ -26,7 +26,7 @@ import junit.framework.TestCase;
  * Unit test for {@linkColorSpaceConvertion}.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ColorSpaceConvertionTest extends TestCase {
 
@@ -183,6 +183,77 @@ public class ColorSpaceConvertionTest extends TestCase {
     }
 
 
-    public void testRgbToYCbCr() {
+    public void testRgbToYCbCr_1() {
+        final byte[] rgb = new byte[]{(byte) (0xff & 233), (byte) (0xff & 161), (byte) (0xff & 25)};
+        final byte[] ybr = new byte[3];
+
+        ColorSpaceConvertion.rgbToYCbCr(rgb, ybr);
+
+        final byte[] ybrExpected = new byte[]{(byte) (0xff & 159), (byte) (0xff & 58), (byte) (0xff & 169)};
+        assertEquals("Y", ybrExpected[0], ybr[0]);
+        assertEquals("Cb", ybrExpected[1], ybr[1]);
+        assertEquals("Cr", ybrExpected[2], ybr[2]);
     }
+
+    public void testRgbToYCbCr_2() {
+        final byte[] rgb = new byte[]{(byte) (0xff & 71), (byte) (0xff & 139), (byte) (0xff & 244)};
+        final byte[] ybr = new byte[3];
+
+        ColorSpaceConvertion.rgbToYCbCr(rgb, ybr);
+
+        final byte[] ybrExpected = new byte[]{(byte) (0xff & 128), (byte) (0xff & 184), (byte) (0xff & 91)};
+        assertEquals("Y", ybrExpected[0], ybr[0]);
+        assertEquals("Cb", ybrExpected[1], ybr[1]);
+        assertEquals("Cr", ybrExpected[2], ybr[2]);
+    }
+
+    public void testRgbToYCbCr_3() {
+        final byte[] rgb = new byte[]{(byte) (0xff & 246), (byte) (0xff & 40), (byte) (0xff & 248)};
+        final byte[] ybr = new byte[3];
+
+        ColorSpaceConvertion.rgbToYCbCr(rgb, ybr);
+
+        final byte[] ybrExpected = new byte[]{(byte) (0xff & 124), (byte) (0xff & 189), (byte) (0xff & 204)};
+        assertEquals("Y", ybrExpected[0], ybr[0]);
+        assertEquals("Cb", ybrExpected[1], ybr[1]);
+        assertEquals("Cr", ybrExpected[2], ybr[2]);
+    }
+
+    public void testYCbCrToRGB_1() {
+        final byte[] ybr = new byte[]{(byte) (0xff & 159), (byte) (0xff & 58), (byte) (0xff & 169)};
+        final byte[] rgb = new byte[3];
+
+        ColorSpaceConvertion.ycbcrToRGB(ybr, rgb);
+
+        final byte[] rgbExpected = new byte[]{(byte) (0xff & 232), (byte) (0xff & 161), (byte) (0xff & 25)};
+        assertEquals("R", rgbExpected[0], rgb[0]);
+        assertEquals("G", rgbExpected[1], rgb[1]);
+        assertEquals("B", rgbExpected[2], rgb[2]);
+    }
+
+    public void testYCbCrToRGB_2() {
+        final byte[] ybr = new byte[]{(byte) (0xff & 128), (byte) (0xff & 184), (byte) (0xff & 91)};
+        final byte[] rgb = new byte[3];
+
+        ColorSpaceConvertion.ycbcrToRGB(ybr, rgb);
+
+        final byte[] rgbExpected = new byte[]{(byte) (0xff & 71), (byte) (0xff & 139), (byte) (0xff & 243)};
+        assertEquals("R", rgbExpected[0], rgb[0]);
+        assertEquals("G", rgbExpected[1], rgb[1]);
+        assertEquals("B", rgbExpected[2], rgb[2]);
+    }
+
+    public void testYCbCrToRGB_3() {
+        final byte[] ybr = new byte[]{(byte) (0xff & 124), (byte) (0xff & 189), (byte) (0xff & 204)};
+        final byte[] rgb = new byte[3];
+
+        ColorSpaceConvertion.ycbcrToRGB(ybr, rgb);
+
+        final byte[] rgbExpected = new byte[]{(byte) (0xff & 247), (byte) (0xff & 40), (byte) (0xff & 249)};
+        assertEquals("R", rgbExpected[0], rgb[0]);
+        assertEquals("G", rgbExpected[1], rgb[1]);
+        assertEquals("B", rgbExpected[2], rgb[2]);
+    }
+
+
 }

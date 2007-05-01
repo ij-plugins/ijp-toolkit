@@ -31,7 +31,7 @@ import net.sf.ij_plugins.util.progress.ProgressListener;
  * Basic color space conversion utilities, assuming two degree observer and illuminant D65.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public final class ColorSpaceConvertion {
     private static final double X_D65 = 0.950467;
@@ -311,6 +311,44 @@ public final class ColorSpaceConvertion {
      * Cb, Cr           in {16, 17, ..., 240}
      * </pre>
      *
+     * @param rgb source RGB (cannot be null).
+     * @param ybr destination Y, Cb, and Cr (cannot be null).
+     */
+    static void rgbToYCbCr(byte[] rgb, byte[] ybr) {
+        final int r = 0xff & rgb[0];
+        final int g = 0xff & rgb[1];
+        final int b = 0xff & rgb[2];
+
+        final double y = 16 + 0.25678906250000 * r + 0.50412890625000 * g + 0.09790625000000 * b;
+        final double cb = 128 - 0.14822265625000 * r - 0.29099218750000 * g + 0.43921484375000 * b;
+        final double cr = 128 + 0.43921484375000 * r - 0.36778906250000 * g - 0.07142578125000 * b;
+
+        ybr[0] = (byte) (0xff & Math.min(Math.max(Math.round(y), 0), 255));
+        ybr[1] = (byte) (0xff & Math.min(Math.max(Math.round(cb), 0), 255));
+        ybr[2] = (byte) (0xff & Math.min(Math.max(Math.round(cr), 0), 255));
+    }
+
+    /**
+     * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
+     * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
+     * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
+     * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
+     * <p/>
+     * YCbCb (601) from "digital 8-bit RGB  "
+     * <pre>
+     * ========================================================================
+     * Y  = 16  + 1/256 * (   65.738  * R +  129.057  * G +  25.064  * B)
+     * Cb = 128 + 1/256 * ( - 37.945  * R -   74.494  * G + 112.439  * B)
+     * Cr = 128 + 1/256 * (  112.439  * R -   94.154  * G -  18.285  * B)
+     * ........................................................................
+     * R, G, B          in {0, 1, 2, ..., 255}
+     * Y                in {16, 17, ..., 235}
+     *    with footroom in {1, 2, ..., 15}
+     *         headroom in {236, 237, ..., 254}
+     *         sync.    in {0, 255}
+     * Cb, Cr           in {16, 17, ..., 240}
+     * </pre>
+     *
      * @param src              source image.
      * @param progressListener progress listener.
      * @return array of color bands: Y, Cb, Cr, respectively.
@@ -336,18 +374,18 @@ public final class ColorSpaceConvertion {
         final byte[] crPixels = new byte[nbPixels];
 
         final int progressStep = nbPixels / 10;
+        final byte[] rgb = new byte[3];
+        final byte[] ybr = new byte[3];
         for (int i = 0; i < nbPixels; i++) {
-            final int r = 0xff & rPixels[i];
-            final int g = 0xff & gPixels[i];
-            final int b = 0xff & bPixels[i];
+            rgb[0] = rPixels[i];
+            rgb[1] = gPixels[i];
+            rgb[2] = bPixels[i];
 
-            final double y = 16 + 0.25678906250000 * r + 0.50412890625000 * g + 0.09790625000000 * b;
-            final double cb = 128 - 0.14822265625000 * r - 0.29099218750000 * g + 0.43921484375000 * b;
-            final double cr = 128 + 0.43921484375000 * r - 0.36778906250000 * g - 0.07142578125000 * b;
+            rgbToYCbCr(rgb, ybr);
 
-            yPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(y), 0), 255));
-            cbPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(cb), 0), 255));
-            crPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(cr), 0), 255));
+            yPixels[i] = ybr[0];
+            cbPixels[i] = ybr[1];
+            crPixels[i] = ybr[2];
 
             if ((progressListener != null) && (i % progressStep == 0)) {
                 progressListener.progressNotification(new ProgressEvent(src, i / (double) nbPixels, progressMessage));
@@ -366,6 +404,7 @@ public final class ColorSpaceConvertion {
 
     }
 
+
     /**
      * Converts image pixels from RGB color space to YCbCr color space.
      * Equivalent to calling <code>rgbToYCbCr(rgb, null)</code>.
@@ -376,6 +415,37 @@ public final class ColorSpaceConvertion {
      */
     public static ByteProcessor[] rgbToYCbCr(final ColorProcessor rgb) {
         return rgbToYCbCr(rgb, null);
+    }
+
+    /**
+     * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
+     * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
+     * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
+     * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
+     * <p/>
+     * "digital 8-bit RGB" from YCbCb (601)
+     * <pre>
+     * ========================================================================
+     * R = 1/256 * (298.081952524118 * (Y -16) +   0.001711624973 * (Cb - 128) + 408.582641764512 * (Cr-128))
+     * G = 1/256 * (298.081952524118 * (Y -16) - 100.290891128080 * (Cb - 128) - 208.120396471735 * (Cr-128))
+     * B = 1/256 * (298.081952524118 * (Y -16) + 516.412147108167 * (Cb - 128) -   0.000466679809 * (Cr-128))
+     * </pre>
+     *
+     * @param ybr source Y, Cb, and Cr (cannot ne null).
+     * @param rgb destination RGB (cannot be null).
+     */
+    public static void ycbcrToRGB(final byte[] ybr, final byte[] rgb) {
+        final int y = (0xff & ybr[0]) - 16;
+        final int cb = (0xff & ybr[1]) - 128;
+        final int cr = (0xff & ybr[2]) - 128;
+
+        final double r = 1.16438262704734 * y - 0.00000668603505 * cb + 1.59602594439262 * cr;
+        final double g = 1.16438262704734 * y - 0.39176129346906 * cb - 0.81297029871772 * cr;
+        final double b = 1.16438262704734 * y + 2.01723494964128 * cb - 0.00000182296800 * cr;
+
+        rgb[0] = (byte) (0xff & Math.min(Math.max(Math.round(r), 0), 255));
+        rgb[1] = (byte) (0xff & Math.min(Math.max(Math.round(g), 0), 255));
+        rgb[2] = (byte) (0xff & Math.min(Math.max(Math.round(b), 0), 255));
     }
 
     /**
@@ -452,6 +522,7 @@ public final class ColorSpaceConvertion {
 
         return dest;
     }
+
 
     /**
      * Converts image pixels from RGB color space to YCbCr color space.
