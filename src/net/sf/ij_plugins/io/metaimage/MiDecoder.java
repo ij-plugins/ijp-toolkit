@@ -37,7 +37,7 @@ import java.io.*;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @created July 31, 2002
  * @todo Validate MetaImage tag dependency (some tags need always be present, some only if other
  * tags are present, etc.)
@@ -192,6 +192,15 @@ public class MiDecoder implements PlugIn {
                     }
                 }
                 // TAG: ElementByteOrderMSB
+                else if (tag.id == MiTag.CompressedData) {
+                    if (tag.value.compareToIgnoreCase("false") != 0) {
+                        throw new MiException("Data compression not supported. Got '"
+                                + MiTag.CompressedData
+                                + "="
+                                + tag.value + "'.");
+                    }
+                }
+                // TAG: ElementByteOrderMSB
                 else if (tag.id == MiTag.ElementByteOrderMSB) {
                     if (tag.value.compareToIgnoreCase("true") == 0) {
                         fileInfo.intelByteOrder = false;
@@ -321,6 +330,7 @@ public class MiDecoder implements PlugIn {
                     reader.close();
                 }
                 catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         }

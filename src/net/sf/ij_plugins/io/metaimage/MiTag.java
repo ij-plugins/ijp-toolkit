@@ -26,7 +26,7 @@ import net.sf.ij_plugins.util.Enumeration;
  * MetaImage tags.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-18 13:13:50 $
+ * @version $Revision: 1.2 $ $Date: 2007-10-17 02:03:36 $
  * @created June 18, 2002
  */
 public class MiTag extends Enumeration {
@@ -34,10 +34,16 @@ public class MiTag extends Enumeration {
      * Number of dimensions, e.g. '3'.
      */
     final public static MiTag NDims = new MiTag("NDims");
+
     /**
      * Size for each of the dimensions separated by spaces, e.g. '256 256 480'.
      */
     final public static MiTag DimSize = new MiTag("DimSize");
+
+    /**
+     * Compressed Data
+     */
+    final public static MiTag CompressedData = new MiTag("CompressedData");
 
     /**
      * Atomic data type.
@@ -112,6 +118,10 @@ public class MiTag extends Enumeration {
      */
     final public static MiTag ElementNumberOfChannels = new MiTag("ElementNumberOfChannels");
 
+    final public static MiTag TransformMatrix = new MiTag("TransformMatrix");
+    final public static MiTag Offset = new MiTag("Offset");
+    final public static MiTag CenterOfRotation = new MiTag("CenterOfRotation");
+    final public static MiTag AnatomicalOrientation = new MiTag("AnatomicalOrientation");
 
     /**
      * Constructor for the MiTag object
