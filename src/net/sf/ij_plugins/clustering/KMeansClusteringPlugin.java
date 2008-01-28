@@ -82,12 +82,12 @@ public final class KMeansClusteringPlugin implements PlugIn {
 
         // Create configuration dialog
         final GenericDialog dialog = new GenericDialog("K-means Configuration");
-        dialog.addNumericField("Number of clusters", config.getNumberOfClusters(), 0);
-        dialog.addNumericField("Cluster center tolerance", config.getTolerance(), 8);
-        dialog.addCheckbox("Enable randomization seed", config.isRandomizationSeedEnabled());
-        dialog.addNumericField("Randomization seed", config.getRandomizationSeed(), 0);
-        dialog.addCheckbox("Show clusters as centrid value", showCentroidImage);
-        dialog.addCheckbox("Enable clustering animation", config.isClusterAnimationEnabled());
+        dialog.addNumericField("Number_of_clusters", config.getNumberOfClusters(), 0);
+        dialog.addNumericField("Cluster_center_tolerance", config.getTolerance(), 8);
+        dialog.addCheckbox("Enable_randomization_seed", config.isRandomizationSeedEnabled());
+        dialog.addNumericField("Randomization_seed", config.getRandomizationSeed(), 0);
+        dialog.addCheckbox("Show_clusters_as_centrid_value", showCentroidImage);
+        dialog.addCheckbox("Enable_clustering_animation", config.isClusterAnimationEnabled());
         dialog.addCheckbox("Print optimization trace", config.isPrintTraceEnabled());
 
         // Show dialog
@@ -216,8 +216,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         }
     }
 
-    private static ImagePlus createCentroidImage(int originalImageType, ImageStack centroidValueStack)
-    {
+    private static ImagePlus createCentroidImage(int originalImageType, ImageStack centroidValueStack) {
         boolean doScaling = ImageConverter.getDoScaling();
         try {
             ImageConverter.setDoScaling(false);
