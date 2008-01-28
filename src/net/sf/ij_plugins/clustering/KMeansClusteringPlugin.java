@@ -2,7 +2,7 @@ package net.sf.ij_plugins.clustering;
 
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,17 +39,17 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @see KMeans
  */
 public final class KMeansClusteringPlugin implements PlugIn {
-    private static KMeans.Config config = new KMeans.Config();
-    private static boolean showCentroidImage = false;
 
-    private static final boolean applayLut = false;
-    private static final boolean autoBrightness = true;
+    private static final KMeans.Config CONFIG = new KMeans.Config();
+    private static boolean showCentroidImage;
 
-    private static final String aboutMessage =
+    private static final boolean APPLY_LUT = false;
+    private static final boolean AUTO_BRIGHTNESS = true;
+
+    private static final String ABOUT =
             "k-means Clustering performs pixel-based segmentation of multi-band\n" +
                     "images. An image stack is interpreted as a set of bands corresponding to\n" +
                     "the same image. For instance, an RGB color images has three bands: red,\n" +
@@ -66,10 +66,10 @@ public final class KMeansClusteringPlugin implements PlugIn {
                     "Prentice Hall, 1988.\n" +
                     "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
 
-    final public void run(final String s) {
+    public void run(final String s) {
 
         if ("about".equalsIgnoreCase(s)) {
-            IJ.showMessage("About k-means Clustering", aboutMessage);
+            IJ.showMessage("About k-means Clustering", ABOUT);
             return;
         }
 
@@ -77,18 +77,18 @@ public final class KMeansClusteringPlugin implements PlugIn {
         final ImagePlus imp = IJ.getImage();
 
         if (imp.getType() == ImagePlus.COLOR_256) {
-            throw new RuntimeException("Unsupporte image type: COLOR_256");
+            throw new RuntimeException("Unsupported image type: COLOR_256");
         }
 
         // Create configuration dialog
         final GenericDialog dialog = new GenericDialog("K-means Configuration");
-        dialog.addNumericField("Number_of_clusters", config.getNumberOfClusters(), 0);
-        dialog.addNumericField("Cluster_center_tolerance", config.getTolerance(), 8);
-        dialog.addCheckbox("Enable_randomization_seed", config.isRandomizationSeedEnabled());
-        dialog.addNumericField("Randomization_seed", config.getRandomizationSeed(), 0);
+        dialog.addNumericField("Number_of_clusters", CONFIG.getNumberOfClusters(), 0);
+        dialog.addNumericField("Cluster_center_tolerance", CONFIG.getTolerance(), 8);
+        dialog.addCheckbox("Enable_randomization_seed", CONFIG.isRandomizationSeedEnabled());
+        dialog.addNumericField("Randomization_seed", CONFIG.getRandomizationSeed(), 0);
         dialog.addCheckbox("Show_clusters_as_centrid_value", showCentroidImage);
-        dialog.addCheckbox("Enable_clustering_animation", config.isClusterAnimationEnabled());
-        dialog.addCheckbox("Print optimization trace", config.isPrintTraceEnabled());
+        dialog.addCheckbox("Enable_clustering_animation", CONFIG.isClusterAnimationEnabled());
+        dialog.addCheckbox("Print optimization trace", CONFIG.isPrintTraceEnabled());
 
         // Show dialog
         dialog.showDialog();
@@ -98,19 +98,19 @@ public final class KMeansClusteringPlugin implements PlugIn {
         }
 
         // Read configuration from dialog
-        config.setNumberOfClusters((int) Math.round(dialog.getNextNumber()));
-        config.setTolerance((float) dialog.getNextNumber());
-        config.setRandomizationSeedEnabled(dialog.getNextBoolean());
-        config.setRandomizationSeed((int) Math.round(dialog.getNextNumber()));
+        CONFIG.setNumberOfClusters((int) Math.round(dialog.getNextNumber()));
+        CONFIG.setTolerance((float) dialog.getNextNumber());
+        CONFIG.setRandomizationSeedEnabled(dialog.getNextBoolean());
+        CONFIG.setRandomizationSeed((int) Math.round(dialog.getNextNumber()));
         showCentroidImage = dialog.getNextBoolean();
-        config.setClusterAnimationEnabled(dialog.getNextBoolean());
-        config.setPrintTraceEnabled(dialog.getNextBoolean());
+        CONFIG.setClusterAnimationEnabled(dialog.getNextBoolean());
+        CONFIG.setPrintTraceEnabled(dialog.getNextBoolean());
 
         // Convert to a stack of float images
         final ImagePlus stack = convertToFloatStack(imp);
 
         // Run clustering
-        final KMeans kMeans = new KMeans(config);
+        final KMeans kMeans = new KMeans(CONFIG);
 //        Roi roi =  imp.getRoi();
 //        ByteProcessor mask = (ByteProcessor) imp.getMask();
 //        kMeans.setRoi(roi.getBoundingRect());
@@ -119,12 +119,12 @@ public final class KMeansClusteringPlugin implements PlugIn {
         final ByteProcessor bp = kMeans.run(stack.getStack());
         final long endTime = System.currentTimeMillis();
 
-        // Applay default color map
-        if (applayLut) {
+        // Apply default color map
+        if (APPLY_LUT) {
             bp.setColorModel(defaultColorModel());
         }
-        if (autoBrightness) {
-            bp.setMinAndMax(0, config.getNumberOfClusters());
+        if (AUTO_BRIGHTNESS) {
+            bp.setMinAndMax(0, CONFIG.getNumberOfClusters());
         }
 
         // Show result image
@@ -132,17 +132,17 @@ public final class KMeansClusteringPlugin implements PlugIn {
         r.show();
 
         // Show animation
-        if (config.isClusterAnimationEnabled()) {
+        if (CONFIG.isClusterAnimationEnabled()) {
             final ImageStack animationStack = kMeans.getClusterAnimation();
-            if (applayLut) {
+            if (APPLY_LUT) {
                 animationStack.setColorModel(defaultColorModel());
             }
             final ImagePlus animation = new ImagePlus("Cluster animation", animationStack);
             animation.show();
-            if (autoBrightness) {
+            if (AUTO_BRIGHTNESS) {
                 for (int i = 0; i < animationStack.getSize(); i++) {
                     animation.setSlice(i + 1);
-                    animation.getProcessor().setMinAndMax(0, config.getNumberOfClusters());
+                    animation.getProcessor().setMinAndMax(0, CONFIG.getNumberOfClusters());
                 }
                 animation.setSlice(1);
                 animation.updateAndDraw();
@@ -161,8 +161,10 @@ public final class KMeansClusteringPlugin implements PlugIn {
 
     /**
      * Create 3-3-2-RGB color model
+     *
+     * @return 3-3-2-RGB color model.
      */
-    static final private ColorModel defaultColorModel() {
+    private static ColorModel defaultColorModel() {
         final byte[] reds = new byte[256];
         final byte[] greens = new byte[256];
         final byte[] blues = new byte[256];
@@ -178,15 +180,15 @@ public final class KMeansClusteringPlugin implements PlugIn {
     /**
      * Convert image to a stack of FloatProcessors.
      *
-     * @param imp
-     * @return
+     * @param imp image to convert.
+     * @return float stack.
      */
-    static final private ImagePlus convertToFloatStack(ImagePlus imp) {
+    private static ImagePlus convertToFloatStack(ImagePlus imp) {
 
         imp = duplicate(imp);
 
         // Remember scaling setup
-        boolean doScaling = ImageConverter.getDoScaling();
+        final boolean doScaling = ImageConverter.getDoScaling();
 
         try {
             // Disable scaling
@@ -196,16 +198,16 @@ public final class KMeansClusteringPlugin implements PlugIn {
                 if (imp.getStackSize() > 1) {
                     throw new RuntimeException("Unsupported image type: stack of COLOR_RGB");
                 }
-                final ImageConverter ic = new ImageConverter(imp);
-                ic.convertToRGBStack();
+                final ImageConverter converter = new ImageConverter(imp);
+                converter.convertToRGBStack();
             }
 
             if (imp.getStackSize() > 1) {
-                final StackConverter sc = new StackConverter(imp);
-                sc.convertToGray32();
+                final StackConverter converter = new StackConverter(imp);
+                converter.convertToGray32();
             } else {
-                final ImageConverter ic = new ImageConverter(imp);
-                ic.convertToGray32();
+                final ImageConverter converter = new ImageConverter(imp);
+                converter.convertToGray32();
             }
 
             return imp;
@@ -216,46 +218,46 @@ public final class KMeansClusteringPlugin implements PlugIn {
         }
     }
 
-    private static ImagePlus createCentroidImage(int originalImageType, ImageStack centroidValueStack) {
-        boolean doScaling = ImageConverter.getDoScaling();
+    private static ImagePlus createCentroidImage(final int originalImageType, final ImageStack centroidValueStack) {
+        final boolean doScaling = ImageConverter.getDoScaling();
         try {
             ImageConverter.setDoScaling(false);
-            ImagePlus cvImp = new ImagePlus("Cluster centroid values", centroidValueStack);
+            final ImagePlus cvImp = new ImagePlus("Cluster centroid values", centroidValueStack);
             if (centroidValueStack.getSize() > 1) {
-                StackConverter sc = new StackConverter(cvImp);
+                final StackConverter stackConverter = new StackConverter(cvImp);
                 switch (originalImageType) {
                     case ImagePlus.COLOR_RGB:
-                        sc.convertToGray8();
-                        ImageConverter ic = new ImageConverter(cvImp);
-                        ic.convertRGBStackToRGB();
+                        stackConverter.convertToGray8();
+                        final ImageConverter imageConverter = new ImageConverter(cvImp);
+                        imageConverter.convertRGBStackToRGB();
                         break;
                     case ImagePlus.GRAY8:
-                        sc.convertToGray8();
+                        stackConverter.convertToGray8();
                         break;
                     case ImagePlus.GRAY16:
-                        sc.convertToGray16();
+                        stackConverter.convertToGray16();
                         break;
                     case ImagePlus.GRAY32:
-                        // No actcion needed
+                        // No action needed
                         break;
                     default:
                         throw new RuntimeException("Unsupported input image type: "
                                 + originalImageType);
                 }
             } else {
-                ImageConverter ic = new ImageConverter(cvImp);
+                final ImageConverter converter = new ImageConverter(cvImp);
                 // Convert image back to original type
                 switch (originalImageType) {
                     case ImagePlus.COLOR_RGB:
                         throw new RuntimeException("Internal error: RGB image cannot have a single band.");
                     case ImagePlus.GRAY8:
-                        ic.convertToGray8();
+                        converter.convertToGray8();
                         break;
                     case ImagePlus.GRAY16:
-                        ic.convertToGray16();
+                        converter.convertToGray16();
                         break;
                     case ImagePlus.GRAY32:
-                        // No actcion needed
+                        // No action needed
                         break;
                     default:
                         throw new RuntimeException("Unsupported input image type: "
@@ -273,10 +275,10 @@ public final class KMeansClusteringPlugin implements PlugIn {
     /**
      * Duplicate input image.
      *
-     * @param imp
-     * @return
+     * @param imp input image.
+     * @return copy of input.
      */
-    static final private ImagePlus duplicate(final ImagePlus imp) {
+    private static ImagePlus duplicate(final ImagePlus imp) {
         final Duplicater duplicater = new Duplicater();
         duplicater.setup(null, imp);
         return duplicater.duplicateStack(imp, imp.getTitle() + "-duplicate");
