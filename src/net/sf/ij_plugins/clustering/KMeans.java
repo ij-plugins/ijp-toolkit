@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,6 @@ import java.util.Random;
  * Pixel-based multi-band image segmentation using k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public final class KMeans {
     private static Config config = new Config();
@@ -77,7 +76,6 @@ public final class KMeans {
         // TODO: add support for using ROI. ROI of the first slice is applied to all slices.
 //    Rectangle roi = stack.getProcessor(1).getRoi();
 //    int[] mask = stack.getProcessor(1).getMask();
-
 
         // TODO Verify that ROI and mask are consistent with the input image.
 
@@ -163,7 +161,7 @@ public final class KMeans {
             final StringBuffer buffer = new StringBuffer("  (");
             for (int j = 0; j < clusterCenter.length; j++) {
                 final float vv = clusterCenter[j];
-                buffer.append(" " + vv + " ");
+                buffer.append(" ").append(vv).append(" ");
             }
             buffer.append(")");
             IJ.write(buffer.toString());
@@ -220,7 +218,6 @@ public final class KMeans {
 //            return histogram;
 //        }
 
-
         // Optimize cluster centers
         boolean converged = false;
         long count = 0;
@@ -240,7 +237,7 @@ public final class KMeans {
                 newClusterMeans[c].add(v);
             }
 
-            // Check for convergance
+            // Check for convergence
             float distanceSum = 0;
             for (int i = 0; i < clusterCenters.length; i++) {
                 final float[] clusterCenter = clusterCenters[i];
@@ -308,7 +305,7 @@ public final class KMeans {
     }
 
     /**
-     * @param p pattern dimentionality (number of bands in the input image)
+     * @param p pattern dimensionality (number of bands in the input image)
      * @return
      */
     private float[][] generateRandomClusterCenters(final int p) {
@@ -342,7 +339,7 @@ public final class KMeans {
                 ++count;
                 if (count > vp.getWidth() * vp.getHeight()) {
                     throw new RuntimeException("Unable to initialize " + centers.length +
-                            " unique clusater centroids.\n" +
+                            " unique cluster centroids.\n" +
                             "Input image may not have enough unique pixel values.");
                 }
             }
