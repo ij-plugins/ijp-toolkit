@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,50 +26,49 @@ import net.sf.ij_plugins.util.Enumeration;
  * Represents types of element values in MetaImage files.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-18 13:13:50 $
  * @created June 18, 2002
  */
 public class MiElementType extends Enumeration {
     /**
      * MET_UCHAR
      */
-    final public static MiElementType MET_UCHAR = new MiElementType("MET_UCHAR");
+    public static final MiElementType MET_UCHAR = new MiElementType("MET_UCHAR");
     /**
      * MET_CHAR
      */
-    final public static MiElementType MET_CHAR = new MiElementType("MET_CHAR");
+    public static final MiElementType MET_CHAR = new MiElementType("MET_CHAR");
     /**
      * MET_USHORT
      */
-    final public static MiElementType MET_USHORT = new MiElementType("MET_USHORT");
+    public static final MiElementType MET_USHORT = new MiElementType("MET_USHORT");
     /**
      * MET_SHORT
      */
-    final public static MiElementType MET_SHORT = new MiElementType("MET_SHORT");
+    public static final MiElementType MET_SHORT = new MiElementType("MET_SHORT");
     /**
      * MET_UINT
      */
-    final public static MiElementType MET_UINT = new MiElementType("MET_UINT");
+    public static final MiElementType MET_UINT = new MiElementType("MET_UINT");
     /**
      * MET_INT
      */
-    final public static MiElementType MET_INT = new MiElementType("MET_INT");
+    public static final MiElementType MET_INT = new MiElementType("MET_INT");
     /**
      * MET_ULONG
      */
-    final public static MiElementType MET_ULONG = new MiElementType("MET_ULONG");
+    public static final MiElementType MET_ULONG = new MiElementType("MET_ULONG");
     /**
      * MET_LONG
      */
-    final public static MiElementType MET_LONG = new MiElementType("MET_LONG");
+    public static final MiElementType MET_LONG = new MiElementType("MET_LONG");
     /**
      * MET_FLOAT
      */
-    final public static MiElementType MET_FLOAT = new MiElementType("MET_FLOAT");
+    public static final MiElementType MET_FLOAT = new MiElementType("MET_FLOAT");
     /**
      * MET_DOUBLE
      */
-    final public static MiElementType MET_DOUBLE = new MiElementType("MET_DOUBLE");
+    public static final MiElementType MET_DOUBLE = new MiElementType("MET_DOUBLE");
 
 
     /**

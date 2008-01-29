@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,49 +26,48 @@ import net.sf.ij_plugins.util.Enumeration;
  * MetaImage tags.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $ $Date: 2007-10-17 02:03:36 $
  * @created June 18, 2002
  */
 public class MiTag extends Enumeration {
     /**
      * Number of dimensions, e.g. '3'.
      */
-    final public static MiTag NDims = new MiTag("NDims");
+    public static final MiTag N_DIMS = new MiTag("NDims");
 
     /**
      * Size for each of the dimensions separated by spaces, e.g. '256 256 480'.
      */
-    final public static MiTag DimSize = new MiTag("DimSize");
+    public static final MiTag DIM_SIZE = new MiTag("DimSize");
 
     /**
      * Compressed Data
      */
-    final public static MiTag CompressedData = new MiTag("CompressedData");
+    public static final MiTag COMPRESSED_DATA = new MiTag("CompressedData");
 
     /**
      * Atomic data type.
      *
      * @see net.sf.ij_plugins.io.metaimage.MiElementType
      */
-    final public static MiTag ElementType = new MiTag("ElementType");
+    public static final MiTag ELEMENT_TYPE = new MiTag("ElementType");
 
     /**
      * Number of bytes before start of the image data. If <code>HeaderSize</code> is equal -1 then
      * header size should be calculated from the file size and image data size. Default value is 0.
      */
-    final public static MiTag HeaderSize = new MiTag("HeaderSize");
+    public static final MiTag HEADER_SIZE = new MiTag("HeaderSize");
 
     /**
      * Size of each voxel, e.g. '2.5 2.5 8'. Optional, by default is equal to
      * <code>ElementSpacing</code>, if that is not specified the it is 1 in each dimension.
      */
-    final public static MiTag ElementSize = new MiTag("ElementSize");
+    public static final MiTag ELEMENT_SIZE = new MiTag("ElementSize");
 
     /**
      * Spacing between voxels (for instance, MRI images often use overlapping slices), e.g. '2.5 2.5
      * 8'. Optional, default is 1 in each dimension.
      */
-    final public static MiTag ElementSpacing = new MiTag("ElementSpacing");
+    public static final MiTag ELEMENT_SPACING = new MiTag("ElementSpacing");
 
     /**
      * Equal to 'True' if image data are stored using MSB (most significant bye) order, otherwise
@@ -78,50 +77,50 @@ public class MiTag extends Enumeration {
      * compatible processors, e.g. Mac or most UNIX computers (excluding most flavors of Linux that
      * run on Intel compatible processors).
      */
-    final public static MiTag ElementByteOrderMSB = new MiTag("ElementByteOrderMSB");
+    public static final MiTag ELEMENT_BYTE_ORDER_MSB = new MiTag("ElementByteOrderMSB");
 
     /**
      * Location of the image data file. This tag must be last in the MetaImage header.
      */
-    final public static MiTag ElementDataFile = new MiTag("ElementDataFile");
+    public static final MiTag ELEMENT_DATA_FILE = new MiTag("ElementDataFile");
 
     /**
      * ObjectType
      */
-    final public static MiTag ObjectType = new MiTag("ObjectType");
+    public static final MiTag OBJECT_TYPE = new MiTag("ObjectType");
     /**
      * TransformType
      */
-    final public static MiTag TransformType = new MiTag("TransformType");
+    public static final MiTag TRANSFORM_TYPE = new MiTag("TransformType");
     /**
      * ID
      */
-    final public static MiTag ID = new MiTag("ID");
+    public static final MiTag ID = new MiTag("ID");
     /**
      * ParentID
      */
-    final public static MiTag ParentID = new MiTag("ParentID");
+    public static final MiTag PARENT_ID = new MiTag("ParentID");
     /**
      * BinaryData
      */
-    final public static MiTag BinaryData = new MiTag("BinaryData");
+    public static final MiTag BINARY_DATA = new MiTag("BinaryData");
     /**
      * BinaryDataByteOrderMSB
      */
-    final public static MiTag BinaryDataByteOrderMSB = new MiTag("BinaryDataByteOrderMSB");
+    public static final MiTag BINARY_DATA_BYTE_ORDER_MSB = new MiTag("BinaryDataByteOrderMSB");
     /**
      * Color
      */
-    final public static MiTag Color = new MiTag("Color");
+    public static final MiTag COLOR = new MiTag("Color");
     /**
      * ElementNumberOfChannels
      */
-    final public static MiTag ElementNumberOfChannels = new MiTag("ElementNumberOfChannels");
+    public static final MiTag ELEMENT_NUMBER_OF_CHANNELS = new MiTag("ElementNumberOfChannels");
 
-    final public static MiTag TransformMatrix = new MiTag("TransformMatrix");
-    final public static MiTag Offset = new MiTag("Offset");
-    final public static MiTag CenterOfRotation = new MiTag("CenterOfRotation");
-    final public static MiTag AnatomicalOrientation = new MiTag("AnatomicalOrientation");
+    public static final MiTag TRANSFORM_MATRIX = new MiTag("TransformMatrix");
+    public static final MiTag OFFSET = new MiTag("Offset");
+    public static final MiTag CENTER_OF_ROTATION = new MiTag("CenterOfRotation");
+    public static final MiTag ANATOMICAL_ORIENTATION = new MiTag("AnatomicalOrientation");
 
     /**
      * Constructor for the MiTag object

@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,18 +26,17 @@ import net.sf.ij_plugins.util.Enumeration;
  * Representation of boolean values in MetaImage header files.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-18 13:13:50 $
  * @created June 18, 2002
  */
 public class MiBoolean extends Enumeration {
     /**
-     * Represents boolean symbol 'True' used by MetaImage file format.
+     * Represents boolean symbol 'TRUE' used by MetaImage file format.
      */
-    final public static MiBoolean True = new MiBoolean("True");
+    public static final MiBoolean TRUE = new MiBoolean("True");
     /**
      * Represents boolean symbol 'False' used by MetaImage file format.
      */
-    final public static MiBoolean False = new MiBoolean("False");
+    public static final MiBoolean FALSE = new MiBoolean("False");
 
 
     /**

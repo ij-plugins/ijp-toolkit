@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -166,14 +166,12 @@ public class MiEncoder implements PlugIn {
 
         // NDims
         String nDims = imp.getStackSize() > 1 ? "3" : "2";
-        header.append(MiTag.NDims + ASSIGNMENT_SEPARATOR
-                + nDims + LINE_SEPARATOR);
+        header.append(MiTag.N_DIMS).append(ASSIGNMENT_SEPARATOR).append(nDims).append(LINE_SEPARATOR);
 
         // DimSize
-        header.append(MiTag.DimSize + ASSIGNMENT_SEPARATOR
-                + imp.getWidth() + " " + imp.getHeight());
+        header.append(MiTag.DIM_SIZE).append(ASSIGNMENT_SEPARATOR).append(imp.getWidth()).append(" ").append(imp.getHeight());
         if (imp.getStackSize() > 1) {
-            header.append(" " + imp.getStackSize());
+            header.append(" ").append(imp.getStackSize());
         }
         header.append(LINE_SEPARATOR);
 
@@ -199,13 +197,11 @@ public class MiEncoder implements PlugIn {
             default:
                 throw new MiException("Unrecognized ImagePlus type id: " + imp.getType());
         }
-        header.append(MiTag.ElementType + ASSIGNMENT_SEPARATOR
-                + elementType + LINE_SEPARATOR);
+        header.append(MiTag.ELEMENT_TYPE).append(ASSIGNMENT_SEPARATOR).append(elementType).append(LINE_SEPARATOR);
 
         // ElementByteOrderMSB
         // JVM always uses MSB, independent of the underlaying hardware platform.
-        header.append(MiTag.ElementByteOrderMSB + ASSIGNMENT_SEPARATOR
-                + MiBoolean.True + LINE_SEPARATOR);
+        header.append(MiTag.ELEMENT_BYTE_ORDER_MSB).append(ASSIGNMENT_SEPARATOR).append(MiBoolean.TRUE).append(LINE_SEPARATOR);
 
         // ElementSize
         // ElementSpacing
@@ -222,15 +218,12 @@ public class MiEncoder implements PlugIn {
             }
         }
         if (elementSize != null) {
-            header.append(MiTag.ElementSize + ASSIGNMENT_SEPARATOR
-                    + elementSize + LINE_SEPARATOR);
-            header.append(MiTag.ElementSpacing + ASSIGNMENT_SEPARATOR
-                    + elementSize + LINE_SEPARATOR);
+            header.append(MiTag.ELEMENT_SIZE).append(ASSIGNMENT_SEPARATOR).append(elementSize).append(LINE_SEPARATOR);
+            header.append(MiTag.ELEMENT_SPACING).append(ASSIGNMENT_SEPARATOR).append(elementSize).append(LINE_SEPARATOR);
         }
 
         // ElementDataFile, this should always be last.
-        header.append(MiTag.ElementDataFile + ASSIGNMENT_SEPARATOR
-                + rawDataFileName + LINE_SEPARATOR);
+        header.append(MiTag.ELEMENT_DATA_FILE).append(ASSIGNMENT_SEPARATOR).append(rawDataFileName).append(LINE_SEPARATOR);
 
         return header.toString();
     }
@@ -266,6 +259,7 @@ public class MiEncoder implements PlugIn {
                     fileOutputStream.close();
                 }
                 catch (IOException ex) {
+                    IJ.log("Failed to close output stream. " + ex.getMessage());
                 }
             }
         }

@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,12 +44,12 @@ import java.io.*;
  */
 
 public class MiDecoder implements PlugIn {
-    final private static String DIALOG_CAPTION = "MetaImage Reader";
+    private static final String DIALOG_CAPTION = "MetaImage Reader";
 
     /**
      * Symbol separating a tag from its value in the MetaImage header.
      */
-    final public static String ASSIGNMENT_SYMBOL = "=";
+    public static final String ASSIGNMENT_SYMBOL = "=";
 
 
     /**
@@ -96,22 +96,22 @@ public class MiDecoder implements PlugIn {
             throw new IllegalArgumentException("Argument 'line' cannot be null.");
         }
 
-        int pos = line.indexOf(ASSIGNMENT_SYMBOL);
-        if (pos < 0) {
+        int position = line.indexOf(ASSIGNMENT_SYMBOL);
+        if (position < 0) {
             throw new MiException(
                     "Missing tag or value: unable to locate the assignment symbol '"
                             + ASSIGNMENT_SYMBOL + "'.");
         }
-        String tagName = line.substring(0, pos).trim();
+        String tagName = line.substring(0, position).trim();
         MiTagValuePair tag = new MiTagValuePair();
         try {
-            tag.id = (MiTag) MiTag.DimSize.byName(tagName);
+            tag.id = (MiTag) MiTag.DIM_SIZE.byName(tagName);
         }
         catch (IllegalArgumentException ex) {
             throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.");
         }
 
-        tag.value = line.substring(pos + 1, line.length()).trim();
+        tag.value = line.substring(position + 1, line.length()).trim();
 
         return tag;
     }
@@ -148,27 +148,27 @@ public class MiDecoder implements PlugIn {
                 MiTagValuePair tag = extractTagAndValue(line);
 
                 // TAG: NDim
-                if (tag.id == MiTag.NDims) {
+                if (tag.id == MiTag.N_DIMS) {
                     nDims = TextUtil.parseInt(tag.value, -1);
                     if (nDims < 2 || nDims > 3) {
                         throw new MiException("Invalid value of header tag '"
-                                + MiTag.NDims + "'. Expecting value equal either 2 or 3, got '"
+                                + MiTag.N_DIMS + "'. Expecting value equal either 2 or 3, got '"
                                 + tag.value + "'. Header line=" + lineNb + ".");
                     }
                 }
                 // TAG: DimSize
-                else if (tag.id == MiTag.DimSize) {
+                else if (tag.id == MiTag.DIM_SIZE) {
                     if (nDims == -1) {
-                        throw new MiException("Got tag '" + MiTag.DimSize
-                                + "' but there was no tag '" + MiTag.NDims
+                        throw new MiException("Got tag '" + MiTag.DIM_SIZE
+                                + "' but there was no tag '" + MiTag.N_DIMS
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
                     int[] dimSize = TextUtil.parseIntArray(tag.value);
                     if (dimSize.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
-                                + MiTag.DimSize
-                                + "' does not match number of dimensions in tag '" + MiTag.NDims
+                                + MiTag.DIM_SIZE
+                                + "' does not match number of dimensions in tag '" + MiTag.N_DIMS
                                 + "'. Header line=" + lineNb + ".");
                     }
 
@@ -179,54 +179,54 @@ public class MiDecoder implements PlugIn {
                     }
                 }
                 // TAG: BinaryDataByteOrderMSB
-                else if (tag.id == MiTag.BinaryDataByteOrderMSB) {
+                else if (tag.id == MiTag.BINARY_DATA_BYTE_ORDER_MSB) {
                     if (tag.value.compareToIgnoreCase("true") == 0) {
                         fileInfo.intelByteOrder = false;
                     } else if (tag.value.compareToIgnoreCase("false") == 0) {
                         fileInfo.intelByteOrder = true;
                     } else {
                         throw new MiException("Invalid value of header tag '"
-                                + MiTag.BinaryDataByteOrderMSB
+                                + MiTag.BINARY_DATA_BYTE_ORDER_MSB
                                 + "'. Expecting either 'true' or 'false', got '"
                                 + tag.value + "'.");
                     }
                 }
                 // TAG: ElementByteOrderMSB
-                else if (tag.id == MiTag.CompressedData) {
+                else if (tag.id == MiTag.COMPRESSED_DATA) {
                     if (tag.value.compareToIgnoreCase("false") != 0) {
                         throw new MiException("Data compression not supported. Got '"
-                                + MiTag.CompressedData
+                                + MiTag.COMPRESSED_DATA
                                 + "="
                                 + tag.value + "'.");
                     }
                 }
                 // TAG: ElementByteOrderMSB
-                else if (tag.id == MiTag.ElementByteOrderMSB) {
+                else if (tag.id == MiTag.ELEMENT_BYTE_ORDER_MSB) {
                     if (tag.value.compareToIgnoreCase("true") == 0) {
                         fileInfo.intelByteOrder = false;
                     } else if (tag.value.compareToIgnoreCase("false") == 0) {
                         fileInfo.intelByteOrder = true;
                     } else {
                         throw new MiException("Invalid value of header tag '"
-                                + MiTag.ElementByteOrderMSB
+                                + MiTag.ELEMENT_BYTE_ORDER_MSB
                                 + "'. Expecting either 'true' or 'false', got '"
                                 + tag.value + "'.");
                     }
                 }
                 // TAG: ElementSpacing
-                else if (tag.id == MiTag.ElementSpacing) {
+                else if (tag.id == MiTag.ELEMENT_SPACING) {
                     if (nDims == -1) {
-                        throw new MiException("Got tag '" + MiTag.ElementSpacing
-                                + "' but there was no tag '" + MiTag.NDims
+                        throw new MiException("Got tag '" + MiTag.ELEMENT_SPACING
+                                + "' but there was no tag '" + MiTag.N_DIMS
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
                     float[] elementSpacing = TextUtil.parseFloatArray(tag.value);
                     if (elementSpacing.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
-                                + MiTag.DimSize
+                                + MiTag.DIM_SIZE
                                 + "' does not match number of dimensions in tag '"
-                                + MiTag.ElementSpacing + "'. Header line=" + lineNb + ".");
+                                + MiTag.ELEMENT_SPACING + "'. Header line=" + lineNb + ".");
                     }
                     fileInfo.pixelWidth = elementSpacing[0];
                     fileInfo.pixelHeight = elementSpacing[1];
@@ -238,19 +238,19 @@ public class MiDecoder implements PlugIn {
 
                 }
                 // TAG: ElementSize
-                else if (tag.id == MiTag.ElementSize && !elementSpacingDefined) {
+                else if (tag.id == MiTag.ELEMENT_SIZE && !elementSpacingDefined) {
                     if (nDims == -1) {
-                        throw new MiException("Got tag '" + MiTag.ElementSize
-                                + "' but there was no tag '" + MiTag.NDims
+                        throw new MiException("Got tag '" + MiTag.ELEMENT_SIZE
+                                + "' but there was no tag '" + MiTag.N_DIMS
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
                     float[] elementSize = TextUtil.parseFloatArray(tag.value);
                     if (elementSize.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
-                                + MiTag.DimSize
+                                + MiTag.DIM_SIZE
                                 + "' does not match number of dimensions in tag '"
-                                + MiTag.ElementSize + "'. Header line=" + lineNb + ".");
+                                + MiTag.ELEMENT_SIZE + "'. Header line=" + lineNb + ".");
                     }
                     fileInfo.pixelWidth = elementSize[0];
                     fileInfo.pixelHeight = elementSize[1];
@@ -260,7 +260,7 @@ public class MiDecoder implements PlugIn {
                     fileInfo.unit = "mm";
                 }
                 // TAG: ElementType
-                else if (tag.id == MiTag.ElementType) {
+                else if (tag.id == MiTag.ELEMENT_TYPE) {
                     final MiElementType elementType;
                     try {
                         elementType = (MiElementType) MiElementType.MET_CHAR.byName(tag.value);
@@ -283,7 +283,7 @@ public class MiDecoder implements PlugIn {
                     }
                 }
                 // TAG: HeaderSize
-                else if (tag.id == MiTag.HeaderSize) {
+                else if (tag.id == MiTag.HEADER_SIZE) {
                     try {
                         int headerSize = Integer.parseInt(tag.value);
                         if (headerSize < 0) {
@@ -298,7 +298,7 @@ public class MiDecoder implements PlugIn {
                     }
                 }
                 // TAG: ElementDataFile
-                else if (tag.id == MiTag.ElementDataFile) {
+                else if (tag.id == MiTag.ELEMENT_DATA_FILE) {
                     if ("LOCAL".compareTo(tag.value) == 0) {
                         throw new MiException(
                                 "Unsupported format MetaImage format variant. Tag '"

@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,6 @@ import java.util.ArrayList;
  * "Effective Java" 2001.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-18 13:13:54 $
  * @created June 18, 2002
  */
 public abstract class Enumeration {
@@ -77,7 +76,7 @@ public abstract class Enumeration {
      * @throws IllegalArgumentException If a member with given <code>memberName</code> cannot be
      *                                  found.
      */
-    final public Enumeration byName(final String memberName)
+    public final Enumeration byName(final String memberName)
             throws IllegalArgumentException {
         for (int i = 0; i < allMembers.size(); ++i) {
             final Enumeration member = (Enumeration) allMembers.get(i);
@@ -95,7 +94,7 @@ public abstract class Enumeration {
      *
      * @return Description of the Returned Value
      */
-    final public String toString() {
+    public final String toString() {
         return name;
     }
 }

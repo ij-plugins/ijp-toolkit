@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,6 @@ package net.sf.ij_plugins.io.metaimage;
  * Exception specific to MetaImage I/O classes.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $ $Date: 2005-06-18 13:13:50 $
  * @created June 18, 2002
  */
 public class MiException extends Exception {
