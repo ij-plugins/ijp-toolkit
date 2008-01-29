@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,13 +29,13 @@ import java.awt.*;
 import java.io.IOException;
 
 /**
- * Implemnts iteratoin over an {@link RunningMedianOperator}.
+ * Implements iterations over an {@link RunningMedianOperator}.
  *
  * @author Jarek Sacha
  * @version $Revision: 1.1 $
  */
 public class RunningFilter {
-    final private IRunningMedianFloatOperator operator;
+    private final IRunningMedianFloatOperator operator;
     final int filterWidth;
     final int filterHeight;
     private ProgressBar progressBar;
@@ -44,7 +44,9 @@ public class RunningFilter {
     /**
      * Construct a filter using a given <code>operator</code>.
      *
-     * @param operator operator over which this filter iterates.
+     * @param operator     operator over which this filter iterates.
+     * @param filterWidth  filter width.
+     * @param filterHeight filter height.
      */
     public RunningFilter(final IRunningMedianFloatOperator operator,
                          final int filterWidth, final int filterHeight) {
@@ -88,7 +90,7 @@ public class RunningFilter {
             // Initialize median operator, with all but the last column in the structural key
             operator.clear();
             final int yyMin = Math.max(y - yr, yMin);
-            final int yyMax = Math.min(y + yr + 1, yMax);
+            final int yyMax = Math.min(y + yr, yMax);
             final int xxMin = xMin;
             final int xxMax = Math.min(xMin + xr, xMax);
             for (int xx = xxMin; xx < xxMax; ++xx) {
