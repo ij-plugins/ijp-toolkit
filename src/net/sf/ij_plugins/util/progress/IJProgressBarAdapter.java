@@ -30,9 +30,13 @@ import java.lang.reflect.InvocationTargetException;
  * <p/>
  * Example use:
  * <pre>
- *   ProgressReporter r = ...;
- *   r.addProgressListener(new IJProgressBarAdapter());
+ *   final ProgressReporter r = ...;
+ *   final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter()
+ *   r.addProgressListener(progressBarAdapter);
+ *   ...
+ *   r.removeProgressListener(progressBarAdapter);
  * </pre>
+ * Always remember to remove listeners when processing is done to avoid memory leaks.
  *
  * @author Jarek Sacha
  * @version $Revision: 1.2 $

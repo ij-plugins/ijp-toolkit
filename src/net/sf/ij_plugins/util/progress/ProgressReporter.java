@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,11 +26,31 @@ package net.sf.ij_plugins.util.progress;
  * @author Jarek Sacha
  */
 public interface ProgressReporter {
-    public double currentProgress();
+    /**
+     * Report what fraction of the processing task was already completed.
+     * Progress value is between 0 and 1 (meaning 100% completed).
+     * For instance, 0.25 means that 25% con the processing was completed.
+     *
+     * @return current progress.
+     */
+    double currentProgress();
 
-    public void addProgressListener(ProgressListener l);
+    /**
+     * Add progress listener.
+     *
+     * @param l listener to add.
+     */
+    void addProgressListener(ProgressListener l);
 
-    public void removeProgressListener(ProgressListener l);
+    /**
+     * Remove progress listener.
+     *
+     * @param l listener to remove.
+     */
+    void removeProgressListener(ProgressListener l);
 
-    public void removeAllProgressListener();
+    /**
+     * Remove all progress listener.
+     */
+    void removeAllProgressListener();
 }
