@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -120,7 +120,7 @@ public class VectorProcessor {
     }
 
     /**
-     * @see {@link #getRoi()}
+     * @see #getRoi()
      */
     public void setRoi(final Rectangle roi) {
         this.roi = roi;
@@ -166,7 +166,7 @@ public class VectorProcessor {
         return new ImagePlus("From VectorProcessor", stack);
     }
 
-    static private ImageStack convertToFloatStack(final ImagePlus src) {
+    private static ImageStack convertToFloatStack(final ImagePlus src) {
         // TODO: remove duplicate method in KMeansClusteringPlugin
 
         final ImagePlus imp = duplicate(src);
@@ -203,7 +203,7 @@ public class VectorProcessor {
         }
     }
 
-    static private ImagePlus duplicate(final ImagePlus imp) {
+    private static ImagePlus duplicate(final ImagePlus imp) {
         // TODO: remove duplicate method in KMeansClusteringPlugin
         final Duplicater duplicater = new Duplicater();
         duplicater.setup(null, imp);
