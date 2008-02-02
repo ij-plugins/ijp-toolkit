@@ -13,42 +13,62 @@
 
 <h1>ij-plugins Project Source Code</h1>
 
-<pre>
-    <font size="-2">$Date: 2005-06-05 04:39:29 $
-$Revision: 1.3 $
-$Source: /home/jarek-F8/projects/SourceForge/_backup_/ij-plugins_cvs/ij-plugins/doc/ij-plugins_Project_Source_Code.html,v $
-</font>
-</pre>
-
 <hr>
 
-<h2>ij-plugins CVS Repository</h2>
+<h2>ij-plugins SVN Repository</h2>
 
-<p>Currently there are 4 projects within ij-plugins CVS
+<p>
+The SVN repository has standard structure with trunk, branches, and tags. 
+Most of the time you want to check out only trunk or one of its subdirectories. 
+As URL of the repository use:
+https://ij-plugins.svn.sourceforge.net/svnroot/ij-plugins/trunk
+</p>
+
+<p>
+The repository can be browsed online at
+http://ij-plugins.svn.sourceforge.net/viewvc/ij-plugins/trunk/
+</p>
+
+<p>Currently there are 9 projects within ij-plugins CVS
     repository:</p>
 
 <dl>
     <dt><b>ij-plugins:</b></dt>
 
-    <dd>Contains majority of the code for plugins. Currently all of
-        the plugins there are contained in the 3D Toolkit plugin
-        bundle.</dd>
+    <dd>Contains code for plugins contained in ij-plugins toolkit.</dd>
+    
+    <dt><b>MRIAnalysisPak:</b></dt>
+
+    <dd>Plugins for the analysis of MRI and fMRI data.</dd>
+
+    <dt><b>Quickvol:</b></dt>
+
+    <dd>MRI Analysis and Volume Reconstruction Tools for ImageJ.</dd>
+
+    <dt><b>ij-VTK:</b></dt>
+
+    <dd>VTK ImageJ plugins and general utility classes to simplify
+        use of VTK from Java.</dd>
+	
+    <dt><b>ij-dcraw:</b></dt>
+
+    <dd>Plugin for reading raw images from many digital cameras using DCRAW tool from Dave Coffin.</dd>
 
     <dt><b>imageio:</b></dt>
 
     <dd>Code related to JAI-image I/O plugin bundle. Uses the JAI
         Sample IO code released by SUN (see the next project).</dd>
 
-    <dt><b>itk4j:</b></dt>
-
-    <dd>ITK Image/J plugins and general utility classes to simplify
-        use of ITK from Java.</dd>
-
     <dt><b>Sun_JAI_Sample_IO_Source_Code_v_1.1.1:</b></dt>
 
     <dd>JAI I/O source code released bu SUN. Probably the only thing
         added is an Ant build file to compile the code and create a JAR.
         Note that original source code had no package structure.</dd>
+
+    <dt><b>itk4j:</b></dt>
+
+    <dd>ITK Image/J plugins and general utility classes to simplify
+        use of ITK from Java.</dd>
 
     <dt><b>VTK-Examples:</b></dt>
 
@@ -167,11 +187,11 @@ structure.
 
 <h2>Recommended Reading</h2>
 
-<p>A. Hunt &amp; D. Thomas.<i>Pragmatic Version Control: with
-    CVS</i>. The Pragmatic Bookshelf, 2003.
+<p><i>Version Control with Subversion</i>. http://svnbook.red-bean.com 
+<p>Mike Mason. <i>Pragmatic Version Control using Subversion, 2nd Edition</i>. The Pragmatic Bookshelf, 2006.
     (http://www.pragmaticprogrammer.com)</p>
 
-<p>A. Hunt &amp; D. Thomas.<i>Pragmatic Unit Testing: in Java
+<p>A. Hunt &amp; D. Thomas. <i>Pragmatic Unit Testing: in Java
     with JUnit</i>. The Pragmatic Bookshelf, 2003.
     (http://www.pragmaticprogrammer.com)</p>
 </body>
