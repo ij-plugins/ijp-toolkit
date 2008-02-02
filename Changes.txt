@@ -3,6 +3,19 @@
 ******************************
 
 --------------------------------------------------------------------------
+Version 1.2
+--------------------------------------------------------------------------
+Improvements:
+* sRGB <-> XYZ <-> CIE L*a*b* conversion modified to use approach presented
+  at http://www.brucelindbloom.com/.
+* Improvements to maximum entropy threshold plugins.
+
+Bug fixes:
+* BUG-1503298: MetaImage Reader did not support some of MetaImage tags.
+* BUG-1812587: FastMedian Exception for even kernel size.
+* BUG-1881444: k-means macro always showed animations.
+
+--------------------------------------------------------------------------
 Version 1.1
 --------------------------------------------------------------------------
 
