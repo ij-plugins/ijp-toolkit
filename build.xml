@@ -294,10 +294,12 @@
         <!-- ................................................... -->
         <ant antfile="${svn.dir}/build.xml" target="jar" inheritall="false">
             <property name="jar.dir" location="${base.dir}/dist"/>
+	    <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
         </ant>
 
         <ant antfile="${svn.dir}/build.xml" target="jar-nodep" inheritall="false">
             <property name="jar.dir" location="${base.dir}/dist"/>
+	    <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
         </ant>
 
 
