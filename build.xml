@@ -19,9 +19,6 @@
     <!-- In case ant.home is not defined, set default value -->
     <property name="ant.home" location="/usr/share/ant"/>
 
-    <!-- CVS setup -->
-    <property name="cvs.root" value=":pserver:anonymous@ij-plugins.cvs.sourceforge.net:/cvsroot/ij-plugins"/>
-    <property name="cvs.module" value="ij-plugins"/>
 
     <!-- Set default properties for this build -->
     <property name="base.dir" location="${basedir}"/>
@@ -43,6 +40,21 @@
 
     <property name="ij.jar" location="${lib.dir}/ij.jar"/>
     <property name="license.file" location="License.txt"/>
+
+    <!-- SVN setup -->
+    <property name="svn.repository" value="https://ij-plugins.svn.sourceforge.net/svnroot/ij-plugins"/>
+    <property name="svn.module" value="ij-plugins"/>
+    <property name="checkout.dir" location="${build.dir}/checkout"/>
+    <property name="svn.module" value="ij-plugins"/>
+    <!-- path to the svnant libraries. Usually they will be located in ANT_HOME/lib -->
+    <property name="svnant.lib.dir" location="../vendor/svnant/lib"/>
+    <path id="svnant.classpath">
+        <fileset dir="${svnant.lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+    <!-- load the svn task -->
+    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath"/>
 
 
     <fileset id="library.files"
@@ -113,7 +125,7 @@
 
     <target name="dist"
             description="Create distribution files."
-            depends="dist-from-cvs">
+            depends="dist-from-svn">
     </target>
 
 
@@ -242,41 +254,49 @@
     </target>
 
     <!-- Build dictributin from current content of CVS -->
-    <target name="dist-from-cvs" depends="init">
+    <target name="dist-from-svn" depends="init">
 
-        <property name="cvs.dir" location="${checkout.dir}/${cvs.module}"/>
+        <property name="svn.dir" location="${checkout.dir}/${svn.module}"/>
 
         <!-- ................... -->
         <!-- Source distribution -->
         <!-- ................... -->
-        <!-- Cleanup CVS checkout directory -->
-        <delete dir="${cvs.dir}"/>
-        <!-- Fresh checkout from CVS -->
-        <echo message="CVS ROOT: ${cvs.root}"/>
+        <!-- Cleanup SVN checkout directory -->
+        <delete dir="${svn.dir}"/>
+
+        <!-- Fresh checkout from SVN -->
+        <echo message="SVN ROOT: ${svn.repository}"/>
         <antcall target="checkout" inheritall="false">
-            <param name="cvs.root" value="${cvs.root}"/>
+            <param name="svn.dir" value="${svn.dir}"/>
         </antcall>
 
+        <!-- Get revision number for checked out source -->
+        <echo message="svn.dir = ${svn.dir}"/>
+        <svn>
+            <status path="${svn.dir}" revisionProperty="svn.revision"/>
+        </svn>
+
         <!-- Copy dependencies -->
-        <mkdir dir="${cvs.dir}/lib"/>
-        <copy file="${ij.jar}" todir="${cvs.dir}/lib"/>
-        <copy file="${license.file}" todir="${cvs.dir}"/>
+        <mkdir dir="${svn.dir}/lib"/>
+        <copy file="${ij.jar}" todir="${svn.dir}/lib"/>
+        <copy file="${license.file}" todir="${svn.dir}"/>
 
         <!-- Provide custom 'build.properties' file -->
-        <move file="${cvs.dir}/build.properties.template" tofile="${cvs.dir}/build.properties"/>
+        <move file="${svn.dir}/build.properties.template" tofile="${svn.dir}/build.properties"/>
 
         <!-- ZIP source -->
-        <zip basedir="${cvs.dir}"
-             destfile="${dist.dir}/${package.name}_src_${package.version}_${DSTAMP}.zip"/>
+        <mkdir dir="${dist.dir}"/>
+        <zip basedir="${svn.dir}"
+             destfile="${dist.dir}/${package.name}src_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
 
         <!-- ................................................... -->
         <!-- Binary distribution from actual distribution source -->
         <!-- ................................................... -->
-        <ant antfile="${cvs.dir}/build.xml" target="jar">
+        <ant antfile="${svn.dir}/build.xml" target="jar" inheritall="false">
             <property name="jar.dir" location="${base.dir}/dist"/>
         </ant>
 
-        <ant antfile="${cvs.dir}/build.xml" target="jar-nodep">
+        <ant antfile="${svn.dir}/build.xml" target="jar-nodep" inheritall="false">
             <property name="jar.dir" location="${base.dir}/dist"/>
         </ant>
 
@@ -284,22 +304,33 @@
         <!-- ZIP binaries -->
         <zip basedir="${base.dir}/dist"
              includes="${package.name}.jar"
-             destfile="${dist.dir}/${package.name}_bin_${package.version}_${DSTAMP}.zip"/>
+             destfile="${dist.dir}/${package.name}_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
 
         <zip basedir="${base.dir}/dist"
              includes="${package.name}-nodep.jar"
-             destfile="${dist.dir}/${package.name}-nodep_bin_${package.version}_${DSTAMP}.zip"/>
+             destfile="${dist.dir}/${package.name}-nodep_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
     </target>
+
 
     <!-- Checkout sources drom CVS repository -->
     <target name="checkout"
             depends="init">
-        <!-- Checkout wrappers for ImageJ -->
-        <cvs cvsRoot="${cvs.root}"
-             command="checkout -P"
-             package="${cvs.module}"
-             dest="${checkout.dir}"
-             failonerror="yes"/>
+        <property name="svnant.latest.url" value="${svn.repository}/trunk/${svn.module}/"/>
+        <!--<property name="svnant.this.url"   url="${svn.repository}/tags/${svn.module}/${svnant.version}/"/>-->
+        <property name="svnant.repository.user" value="guest"/>
+        <property name="svnant.repository.passwd" value=""/>
+
+        <!-- Checkout latest sources -->
+        <mkdir dir="${svn.dir}"/>
+        <!--<svn username="${svnant.repository.user}" password="${svnant.repository.passwd}">-->
+        <!--<checkout url="${svnant.latest.url}" revision="HEAD" destPath="${svn.dir}"/>-->
+        <!--</svn>-->
+        <exec executable="svn">
+            <arg value="checkout"/>
+            <arg value="${svnant.latest.url}"/>
+            <arg value="${svn.dir}"/>
+        </exec>
+
     </target>
 
     <!-- Target: changelog -->
