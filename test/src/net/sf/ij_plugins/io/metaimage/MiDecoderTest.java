@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2007 Jarek Sacha. All Rights Reserved.
+ * Copyright (c) 2000-2008 Jarek Sacha. All Rights Reserved.
  *
  * Author's e-mail: jsacha at users.sf.net
  *
@@ -12,8 +12,7 @@ import junit.framework.TestCase;
 import java.io.File;
 
 /**
- * Date: Oct 16, 2007
- * Time: 9:35:27 PM
+ * Unit test for {@link net.sf.ij_plugins.io.metaimage.MiDecoder}.
  *
  * @author Jarek Sacha
  */
