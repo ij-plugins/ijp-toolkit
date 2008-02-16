@@ -41,7 +41,7 @@ import java.util.List;
  *
  * @author Jarek Sacha
  */
-public class SRG {
+public final class SRG {
     private static final int MAX_REGION_NUMBER = 254;
     private static final byte BACKGROUND_MARK = (byte) 0x00;
     private static final byte CANDIDATE_MARK = (byte) 0xff;
@@ -309,7 +309,7 @@ public class SRG {
         return backgroundPoints;
     }
 
-    protected final void addIfBackground(final int x, final int y, final List<Point> backgroundPoints) {
+    private void addIfBackground(final int x, final int y, final List<Point> backgroundPoints) {
         if (x < xMin || x >= xMax ||
                 y < yMin || y >= yMax) {
             return;
@@ -326,7 +326,7 @@ public class SRG {
     private static class RegionInfo {
         private long pointCount;
         private double sumIntensity;
-        private ByteProcessor image;
+        private final ByteProcessor image;
 
         public RegionInfo(ByteProcessor image) {
             this.image = image;
@@ -347,9 +347,9 @@ public class SRG {
     }
 
     private static class Candidate {
-        public Point point;
-        public int mostSimilarRegionId;
-        public double similarityDifference;
+        public final Point point;
+        public final int mostSimilarRegionId;
+        public final double similarityDifference;
 
         public Candidate(final Point point, final int mostSimilarRegionId, final double similarityDifference) {
             this.point = point;
