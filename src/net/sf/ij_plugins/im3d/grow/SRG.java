@@ -23,6 +23,8 @@ package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImageStack;
 import ij.process.ByteProcessor;
+import ij.process.FloatProcessor;
+import ij.process.ShortProcessor;
 
 import java.awt.*;
 import java.util.*;
@@ -47,7 +49,7 @@ public final class SRG {
     private static final byte CANDIDATE_MARK = (byte) 0xff;
 
     // External properties
-    private ByteProcessor image;
+    private FloatProcessor image;
     private Point[][] seeds;
     private ByteProcessor regionMask;
     private ImageStack animationStack;
@@ -61,7 +63,7 @@ public final class SRG {
     private int yMax;
     private int xSize;
     private byte[] regionMaskPixels;
-    private byte[] imagePixels;
+    private float[] imagePixels;
 
     private SortedSet<Candidate> ssl;
     private RegionInfo[] regionInfos;
@@ -69,7 +71,15 @@ public final class SRG {
 
 
     public void setImage(final ByteProcessor image) {
-        this.image = image;
+        this.image = (FloatProcessor) image.convertToFloat();
+    }
+
+    public void setImage(final ShortProcessor image) {
+        this.image = (FloatProcessor) image.convertToFloat();
+    }
+
+    public void setImage(final FloatProcessor image) {
+        this.image = (FloatProcessor) image.convertToFloat();
     }
 
     public void setSeeds(final Point[][] seeds) {
@@ -103,8 +113,8 @@ public final class SRG {
                 final int offset = seed.x + seed.y * xSize;
 
                 // Verify seeding consistency
-                if (regionMaskPixels[offset] != 0) {
-                    int oldRegionId = regionMaskPixels[offset] & 0xff + 1;
+                final int oldRegionId = regionMaskPixels[offset] & 0xff;
+                if (oldRegionId != 0 && oldRegionId != regionId) {
                     throw new IllegalArgumentException("Single point have two regions assignments. "
                             + "Point (" + seed.x + "," + seed.y + ") is assigned both to region " + oldRegionId
                             + " and region " + regionId + ".");
@@ -189,7 +199,7 @@ public final class SRG {
 
     private Candidate createCandidate(final Point point) {
         final int offset = point.x + point.y * xSize;
-        final int value = imagePixels[offset] & 0xff;
+        final float value = imagePixels[offset];
 
         // Mark as candidate
         regionMaskPixels[offset] = CANDIDATE_MARK;
@@ -260,7 +270,7 @@ public final class SRG {
         yMax = ySize;
         regionMask = new ByteProcessor(xSize, ySize);
         regionMaskPixels = (byte[]) regionMask.getPixels();
-        imagePixels = (byte[]) image.getPixels();
+        imagePixels = (float[]) image.getPixels();
         animationStack = new ImageStack(xSize, ySize);
 
         // Initialize region info structures
@@ -326,15 +336,15 @@ public final class SRG {
     private static class RegionInfo {
         private long pointCount;
         private double sumIntensity;
-        private final ByteProcessor image;
+        private final FloatProcessor image;
 
-        public RegionInfo(ByteProcessor image) {
+        public RegionInfo(FloatProcessor image) {
             this.image = image;
         }
 
         public void addPoint(final Point point) {
             ++pointCount;
-            sumIntensity += image.getPixel(point.x, point.y);
+            sumIntensity += image.getf(point.x, point.y);
         }
 
         public double mean() {
