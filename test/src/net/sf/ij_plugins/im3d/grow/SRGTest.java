@@ -49,7 +49,7 @@ public class SRGTest extends TestCase {
 
     public void testRamp() throws Exception {
         // Load test image
-        ByteProcessor image = null;
+        final ByteProcessor image;
         {
             Opener opener = new Opener();
             ImagePlus imp = opener.openImage(RAMP_FILE_NAME);
@@ -60,8 +60,8 @@ public class SRGTest extends TestCase {
         }
 
         Point[][] seeds = {
-        {new Point(1, 198)}, // dark
-        {new Point(198, 1)} // bright
+                {new Point(1, 198)}, // dark
+                {new Point(198, 1)} // bright
         };
 
         // Setup region growed
@@ -73,7 +73,7 @@ public class SRGTest extends TestCase {
         // Run growing
         srg.run();
 
-        ByteProcessor regionMask = srg.getRegionMask();
+        ByteProcessor regionMask = srg.getRegionMarkers();
         ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
 
         new File(OUTPUT_DIR).mkdirs();
@@ -92,7 +92,7 @@ public class SRGTest extends TestCase {
 
     public void testBlobs() throws Exception {
         // Load test image
-        ByteProcessor image = null;
+        final ByteProcessor image;
         {
             Opener opener = new Opener();
             ImagePlus imp = opener.openImage(BLOBS_FILE_NAME);
@@ -104,9 +104,9 @@ public class SRGTest extends TestCase {
 
 
         Point[][] seeds = {
-        {new Point(107, 144)}, // Background
-        {new Point(91, 159)}, // Blob 1
-        {new Point(119, 143)}, // Blob 2
+                {new Point(107, 144)}, // Background
+                {new Point(91, 159)}, // Blob 1
+                {new Point(119, 143)}, // Blob 2
         };
 
         // Setup region growed
@@ -118,7 +118,7 @@ public class SRGTest extends TestCase {
         // Run growing
         srg.run();
 
-        ByteProcessor regionMask = srg.getRegionMask();
+        ByteProcessor regionMask = srg.getRegionMarkers();
         ImagePlus imp = new ImagePlus("Region Mask", regionMask);
 
         new File(OUTPUT_DIR).mkdirs();

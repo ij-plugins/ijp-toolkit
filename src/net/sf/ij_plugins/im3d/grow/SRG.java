@@ -51,7 +51,7 @@ public final class SRG {
     // External properties
     private FloatProcessor image;
     private Point[][] seeds;
-    private ByteProcessor regionMask;
+    private ByteProcessor regionMarkers;
     private ImageStack animationStack;
     private int nbAnimationFrames;
 
@@ -62,7 +62,7 @@ public final class SRG {
     private int yMin;
     private int yMax;
     private int xSize;
-    private byte[] regionMaskPixels;
+    private byte[] regionMarkerPixels;
     private float[] imagePixels;
 
     private SortedSet<Candidate> ssl;
@@ -90,8 +90,8 @@ public final class SRG {
         this.nbAnimationFrames = nbAnimationFrames;
     }
 
-    public ByteProcessor getRegionMask() {
-        return regionMask;
+    public ByteProcessor getRegionMarkers() {
+        return regionMarkers;
     }
 
     public ImageStack getAnimationStack() {
@@ -113,15 +113,15 @@ public final class SRG {
                 final int offset = seed.x + seed.y * xSize;
 
                 // Verify seeding consistency
-                final int oldRegionId = regionMaskPixels[offset] & 0xff;
+                final int oldRegionId = regionMarkerPixels[offset] & 0xff;
                 if (oldRegionId != 0 && oldRegionId != regionId) {
                     throw new IllegalArgumentException("Single point have two regions assignments. "
                             + "Point (" + seed.x + "," + seed.y + ") is assigned both to region " + oldRegionId
                             + " and region " + regionId + ".");
                 }
 
-                // Add seed to regionMask
-                regionMaskPixels[offset] = (byte) (regionId & 0xff);
+                // Add seed to regionMarkers
+                regionMarkerPixels[offset] = (byte) (regionId & 0xff);
 
                 // Add seed to region info
                 thisRegionInfo.addPoint(seed);
@@ -138,7 +138,7 @@ public final class SRG {
         }
 
         if (nbAnimationFrames > 1) {
-            addAnimationFrame("Seeds", (ByteProcessor) regionMask.duplicate());
+            addAnimationFrame("Seeds", (ByteProcessor) regionMarkers.duplicate());
         }
 
         final long frameIncrement = this.nbAnimationFrames > 2
@@ -153,7 +153,7 @@ public final class SRG {
             ssl.remove(c);
 
             // Add this point to its most similar region
-            regionMaskPixels[c.point.x + c.point.y * xSize] = (byte) (c.mostSimilarRegionId & 0xff);
+            regionMarkerPixels[c.point.x + c.point.y * xSize] = (byte) (c.mostSimilarRegionId & 0xff);
 
             // Update region info to include this point
             regionInfos[c.mostSimilarRegionId - 1].addPoint(c.point);
@@ -163,12 +163,12 @@ public final class SRG {
             candidatesFromNeighbours(c.point);
 
             if (processedPixelCount % frameIncrement == 0) {
-                addAnimationFrame(null, (ByteProcessor) regionMask.duplicate());
+                addAnimationFrame(null, (ByteProcessor) regionMarkers.duplicate());
             }
         }
 
         if (nbAnimationFrames > 0) {
-            addAnimationFrame("Final regions", (ByteProcessor) regionMask.duplicate());
+            addAnimationFrame("Final regions", (ByteProcessor) regionMarkers.duplicate());
         }
     }
 
@@ -202,7 +202,7 @@ public final class SRG {
         final float value = imagePixels[offset];
 
         // Mark as candidate
-        regionMaskPixels[offset] = CANDIDATE_MARK;
+        regionMarkerPixels[offset] = CANDIDATE_MARK;
 
         // Get flags of neighbouring regions
         final boolean[] flags = neighbourRegionFlags(point);
@@ -246,7 +246,7 @@ public final class SRG {
                 y < yMin || y >= yMax) {
             return;
         }
-        final byte v = regionMaskPixels[x + y * xSize];
+        final byte v = regionMarkerPixels[x + y * xSize];
         if (v != BACKGROUND_MARK && v != CANDIDATE_MARK) {
             int regionId = v & 0xff;
             r[regionId - 1] = true;
@@ -256,7 +256,7 @@ public final class SRG {
 
     private void initializeStructures() {
         final int nbRegions = seeds.length;
-        // Verify that we can feet all region ID in the regionMask.
+        // Verify that we can feet all region ID in the regionMarkers.
         if (nbRegions > MAX_REGION_NUMBER) {
             throw new IllegalArgumentException("Number of regions cannot be larger than " + MAX_REGION_NUMBER + ".");
         }
@@ -268,8 +268,8 @@ public final class SRG {
         xMax = xSize;
         yMin = 0;
         yMax = ySize;
-        regionMask = new ByteProcessor(xSize, ySize);
-        regionMaskPixels = (byte[]) regionMask.getPixels();
+        regionMarkers = new ByteProcessor(xSize, ySize);
+        regionMarkerPixels = (byte[]) regionMarkers.getPixels();
         imagePixels = (float[]) image.getPixels();
         animationStack = new ImageStack(xSize, ySize);
 
@@ -326,7 +326,7 @@ public final class SRG {
         }
 
         final int offset = x + y * xSize;
-        if (regionMaskPixels[offset] == BACKGROUND_MARK) {
+        if (regionMarkerPixels[offset] == BACKGROUND_MARK) {
             // Add to unassigned pixels
             backgroundPoints.add(new Point(x, y));
         }
