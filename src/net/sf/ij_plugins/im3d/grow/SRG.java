@@ -71,18 +71,36 @@ public final class SRG {
 
 
     public void setImage(final ByteProcessor image) {
+        validateNotNull(image, "image");
         this.image = (FloatProcessor) image.convertToFloat();
     }
 
     public void setImage(final ShortProcessor image) {
+        validateNotNull(image, "image");
         this.image = (FloatProcessor) image.convertToFloat();
     }
 
     public void setImage(final FloatProcessor image) {
+        validateNotNull(image, "image");
         this.image = (FloatProcessor) image.convertToFloat();
     }
 
     public void setSeeds(final Point[][] seeds) {
+        validateNotNull(seeds, "Argument 'seeds' cannot be null");
+        if (seeds.length < 2) {
+            throw new IllegalArgumentException("Seeds for at least two regions required, got " + seeds.length + ".");
+        }
+        if (seeds.length > MAX_REGION_NUMBER) {
+            throw new IllegalArgumentException(
+                    "Maximum number of regions is " + MAX_REGION_NUMBER + ", got " + seeds.length + ".");
+        }
+        for (int i = 0; i < seeds.length; i++) {
+            if (seeds[i] == null || seeds[i].length < 1) {
+                throw new IllegalArgumentException(
+                        "Regions have to have at least one seeds point. Region " + i + ", got " + seeds[i].length + ".");
+            }
+        }
+
         this.seeds = seeds;
     }
 
@@ -332,6 +350,14 @@ public final class SRG {
         }
     }
 
+    private static void validateNotNull(final Object object, final String name) throws IllegalArgumentException {
+        if (object == null) {
+            throw new IllegalArgumentException(
+                    name != null
+                            ? "Argument '" + name + "' cannot be null."
+                            : "Argument cannot be null.");
+        }
+    }
 
     private static class RegionInfo {
         private long pointCount;
