@@ -44,14 +44,16 @@ import java.util.List;
  * @author Jarek Sacha
  */
 public final class SRG {
-    private static final int MAX_REGION_NUMBER = 254;
+    private static final int MAX_REGION_NUMBER = 253;
     private static final byte BACKGROUND_MARK = (byte) 0x00;
     private static final byte CANDIDATE_MARK = (byte) 0xff;
+    private static final byte OUTSIDE_MARK = (byte) 0xfe;
 
     // External properties
     private FloatProcessor image;
     private Point[][] seeds;
     private ByteProcessor regionMarkers;
+    private ByteProcessor mask;
     private ImageStack animationStack;
     private int nbAnimationFrames;
 
@@ -104,6 +106,10 @@ public final class SRG {
         this.seeds = seeds;
     }
 
+    public void setMask(final ByteProcessor mask) {
+        this.mask = mask;
+    }
+
     public void setNumberOfAnimationFrames(final int nbAnimationFrames) {
         this.nbAnimationFrames = nbAnimationFrames;
     }
@@ -122,6 +128,9 @@ public final class SRG {
     public void run() {
         initializeStructures();
 
+        // Mark pixels outside of the mask
+        fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
+
         // Mask seeds and create initial region info
         for (int i = 0; i < seeds.length; i++) {
             final Point[] regionSeeds = seeds[i];
@@ -129,6 +138,10 @@ public final class SRG {
             final int regionId = i + 1;
             for (final Point seed : regionSeeds) {
                 final int offset = seed.x + seed.y * xSize;
+
+                if (regionMarkerPixels[offset] == OUTSIDE_MARK) {
+                    continue;
+                }
 
                 // Verify seeding consistency
                 final int oldRegionId = regionMarkerPixels[offset] & 0xff;
@@ -144,14 +157,10 @@ public final class SRG {
                 // Add seed to region info
                 thisRegionInfo.addPoint(seed);
 
-                ++processedPixelCount;
-            }
-        }
+                // Initialize SSL - ordered list of bordering at least one of the regions
+                candidatesFromNeighbours(seed);
 
-        // Initialize SSL - ordered list of bordering at least one of the regions
-        for (final Point[] regionSeeds : seeds) {
-            for (final Point regionSeed : regionSeeds) {
-                candidatesFromNeighbours(regionSeed);
+                ++processedPixelCount;
             }
         }
 
@@ -188,6 +197,26 @@ public final class SRG {
         if (nbAnimationFrames > 0) {
             addAnimationFrame("Final regions", (ByteProcessor) regionMarkers.duplicate());
         }
+
+        // Mark pixels outside of the mask as 0
+        fillOutsideMask(regionMarkerPixels, (byte) 0);
+        if (animationStack != null) {
+            for (int i = 1; i <= animationStack.getSize(); i++) {
+                fillOutsideMask((byte[]) animationStack.getPixels(i), (byte) 0);
+            }
+        }
+    }
+
+    private void fillOutsideMask(final byte[] pixels, final byte value) {
+        if (mask != null) {
+            final byte[] maskPixels = (byte[]) mask.getPixels();
+            for (int i = 0; i < pixels.length; i++) {
+                if (maskPixels[i] == 0) {
+                    pixels[i] = value;
+                }
+            }
+        }
+
     }
 
     private void addAnimationFrame(final String title, final ByteProcessor bp) {
@@ -260,12 +289,12 @@ public final class SRG {
     }
 
     private void assignRegionFlag(final int x, final int y, final boolean[] r) {
-        if (x < xMin || x >= xMax ||
-                y < yMin || y >= yMax) {
+        if (x < xMin || x >= xMax || y < yMin || y >= yMax) {
             return;
         }
+
         final byte v = regionMarkerPixels[x + y * xSize];
-        if (v != BACKGROUND_MARK && v != CANDIDATE_MARK) {
+        if (v != BACKGROUND_MARK && v != CANDIDATE_MARK && v != OUTSIDE_MARK) {
             int regionId = v & 0xff;
             r[regionId - 1] = true;
         }
@@ -273,6 +302,13 @@ public final class SRG {
 
 
     private void initializeStructures() {
+        xSize = image.getWidth();
+        final int ySize = image.getHeight();
+
+        if (mask != null && (mask.getWidth() != xSize || mask.getHeight() != ySize)) {
+            throw new IllegalArgumentException("Mask has to have the same dimension as input image.");
+        }
+
         final int nbRegions = seeds.length;
         // Verify that we can feet all region ID in the regionMarkers.
         if (nbRegions > MAX_REGION_NUMBER) {
@@ -280,8 +316,6 @@ public final class SRG {
         }
         regionInfos = new RegionInfo[nbRegions];
 
-        xSize = image.getWidth();
-        final int ySize = image.getHeight();
         xMin = 0;
         xMax = xSize;
         yMin = 0;

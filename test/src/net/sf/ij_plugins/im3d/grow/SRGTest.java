@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImagePlus;
@@ -64,7 +65,7 @@ public class SRGTest extends TestCase {
                 {new Point(198, 1)} // bright
         };
 
-        // Setup region growed
+        // Setup region growing
         SRG srg = new SRG();
         srg.setImage(image);
         srg.setSeeds(seeds);
@@ -90,6 +91,63 @@ public class SRGTest extends TestCase {
 
     }
 
+    public void testRampWithMask() throws Exception {
+        // Load test image
+        final ByteProcessor image;
+        {
+            final Opener opener = new Opener();
+            final ImagePlus imp = opener.openImage(RAMP_FILE_NAME);
+            if (imp == null) {
+                throw new Exception("Cannot open image: " + RAMP_FILE_NAME);
+            }
+            image = (ByteProcessor) imp.getProcessor();
+        }
+
+        final Point[][] seeds = {
+                {new Point(90, 100)}, // dark
+                {new Point(110, 100)} // bright
+        };
+
+        final ByteProcessor mask = new ByteProcessor(image.getWidth(), image.getHeight());
+        mask.setRoi(50, 50, 100, 100);
+        mask.setColor(255);
+        mask.fill();
+
+        // Setup region growing
+        final SRG srg = new SRG();
+        srg.setImage(image);
+        srg.setSeeds(seeds);
+        srg.setMask(mask);
+        srg.setNumberOfAnimationFrames(50);
+
+        // Run growing
+        srg.run();
+
+        final ByteProcessor regionMarkers = srg.getRegionMarkers();
+        ImagePlus imp1 = new ImagePlus("Region Markers", regionMarkers);
+
+        new File(OUTPUT_DIR).mkdirs();
+
+        final FileSaver fileSaver = new FileSaver(imp1);
+        if (!fileSaver.saveAsTiff(OUTPUT_DIR + "/srg_ramp_with_mask_test_output.tif")) {
+            throw new Exception("Error saving output image.");
+        }
+
+        final FileSaver fileSaver1 = new FileSaver(new ImagePlus("Growth", srg.getAnimationStack()));
+        if (!fileSaver1.saveAsTiffStack(OUTPUT_DIR + "/srg_ramp_with_mask_test_animation.tif")) {
+            throw new Exception("Error saving output image.");
+        }
+
+        // Mask
+        assertEquals(0, regionMarkers.get(10, 10));
+        assertEquals(0, regionMarkers.get(190, 190));
+        // Region 1
+        assertEquals(1, regionMarkers.get(60, 60));
+        // Region 2
+        assertEquals(2, regionMarkers.get(120, 60));
+    }
+
+
     public void testBlobs() throws Exception {
         // Load test image
         final ByteProcessor image;
@@ -109,7 +167,7 @@ public class SRGTest extends TestCase {
                 {new Point(119, 143)}, // Blob 2
         };
 
-        // Setup region growed
+        // Setup region growing
         SRG srg = new SRG();
         srg.setImage(image);
         srg.setSeeds(seeds);
