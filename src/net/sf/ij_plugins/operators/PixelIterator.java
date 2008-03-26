@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,16 +24,14 @@ import ij.process.FloatProcessor;
 
 import java.awt.*;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author Jarek Sacha
- * @version $ Revision: $
  */
 
 public class PixelIterator implements Iterator {
     private final int width;
-    private final int height;
-    private final Rectangle roi;
     private final float[] pixels;
     private final int xMin;
     private final int xMax;
@@ -45,9 +43,8 @@ public class PixelIterator implements Iterator {
     private final Neighborhood3x3 neighborhood3x3 = new Neighborhood3x3();
 
     public PixelIterator(FloatProcessor fp) {
-        roi = fp.getRoi();
+        final Rectangle roi = fp.getRoi();
         width = fp.getWidth();
-        height = fp.getHeight();
         pixels = (float[]) fp.getPixels();
         xMin = roi.x + 1;
         xMax = roi.x + roi.width - 2;
@@ -65,17 +62,18 @@ public class PixelIterator implements Iterator {
         // Update center location
         if (x < xMax) {
             ++x;
-        } else {
-            if (y < yMax) {
-                x = xMin;
-                ++y;
-            }
+        } else if (y < yMax) {
+            x = xMin;
+            ++y;
 //      IJ.showProgress(y, yMax);
+        } else {
+            throw new NoSuchElementException("No more elements.");
         }
+
         // ENH: offset can be incremented rather than computed each time
         int offset = x + y * width;
 
-        // Update neighborhod information
+        // Update neighborhood information
         neighborhood3x3.neighbor4 = pixels[offset - rowOffset - 1];
         neighborhood3x3.neighbor3 = pixels[offset - rowOffset];
         neighborhood3x3.neighbor2 = pixels[offset - rowOffset + 1];
@@ -96,7 +94,7 @@ public class PixelIterator implements Iterator {
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("Metod remove() not supported.");
+        throw new UnsupportedOperationException("Method remove() not supported.");
     }
 
     /**
