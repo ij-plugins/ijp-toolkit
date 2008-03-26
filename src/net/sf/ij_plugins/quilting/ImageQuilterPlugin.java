@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2004 Jarek Sacha
+ * Copyright (C) 2004-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,17 +28,17 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsRuntimeException;
 
-public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
-    final private static String DEST_WIDTH_LABEL = "Output width";
-    final private static String DEST_HEIGHT_LABEL = "Output height";
-    final private static String PATCH_SIZE_LABEL = "Patch size";
-    final private static String PATCH_OVERLAP_LABEL = "Patch overlap";
-    final private static String ENABLE_HORIZ_PATHS_LABEL = "Allow horizontal paths";
-    final private static String PATCH_COST_WEIGHT_LABEL = "Patch cost weight";
+public class ImageQuilterPlugin implements PlugInFilter {
+    private static final String DEST_WIDTH_LABEL = "Output width";
+    private static final String DEST_HEIGHT_LABEL = "Output height";
+    private static final String PATCH_SIZE_LABEL = "Patch size";
+    private static final String PATCH_OVERLAP_LABEL = "Patch overlap";
+    private static final String ENABLE_HORIZ_PATHS_LABEL = "Allow horizontal paths";
+    private static final String PATCH_COST_WEIGHT_LABEL = "Patch cost weight";
 
-    final private static String PLUGIN_NAME = "Image Quilter";
-    final private static String ABOUT_COMMAND = "about";
-    final private static String ABOUT_MESSAGE =
+    private static final String PLUGIN_NAME = "Image Quilter";
+    private static final String ABOUT_COMMAND = "about";
+    private static final String ABOUT_MESSAGE =
             "Image Quilter plugin performs texture synthesis using image quilting\n"
                     + "algorithms of Efros and Freeman:\n" +
                     "http://www.cs.berkeley.edu/~efros/research/quilting.html\n" +
@@ -57,7 +57,7 @@ public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
                     "Original code and description is available at: http://www.cs.wisc.edu/~vavra/cs766/.\n" +
                     "ImageJ port and info is available at: http://ij-plugins.sf.net/plugins/texturesynthesis/.";
 
-    private static final Config config = new Config();
+    private static final Config CONFIG = new Config();
 
     private String imageTitle;
 
@@ -67,7 +67,7 @@ public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
         int height = 256;
         int patchSize = ImageQuilter.DEFAULT_PATCH_SIZE;
         int overlapSize = ImageQuilter.DEFAULT_OVERLAP_SIZE;
-        boolean allowHorizontalPaths = false;
+        boolean allowHorizontalPaths;
         double pathCostWeight = 0.1;
 
         public Config duplicate() {
@@ -98,13 +98,13 @@ public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
     public void run(ImageProcessor input) {
 
         final GenericDialog dialog = new GenericDialog(PLUGIN_NAME + " options");
-        synchronized (config) {
-            dialog.addNumericField(DEST_WIDTH_LABEL, config.width, 0);
-            dialog.addNumericField(DEST_HEIGHT_LABEL, config.height, 0);
-            dialog.addNumericField(PATCH_SIZE_LABEL, config.patchSize, 0);
-            dialog.addNumericField(PATCH_OVERLAP_LABEL, config.overlapSize, 0);
-            dialog.addCheckbox(ENABLE_HORIZ_PATHS_LABEL, config.allowHorizontalPaths);
-            dialog.addNumericField(PATCH_COST_WEIGHT_LABEL, config.pathCostWeight, 4);
+        synchronized (CONFIG) {
+            dialog.addNumericField(DEST_WIDTH_LABEL, CONFIG.width, 0);
+            dialog.addNumericField(DEST_HEIGHT_LABEL, CONFIG.height, 0);
+            dialog.addNumericField(PATCH_SIZE_LABEL, CONFIG.patchSize, 0);
+            dialog.addNumericField(PATCH_OVERLAP_LABEL, CONFIG.overlapSize, 0);
+            dialog.addCheckbox(ENABLE_HORIZ_PATHS_LABEL, CONFIG.allowHorizontalPaths);
+            dialog.addNumericField(PATCH_COST_WEIGHT_LABEL, CONFIG.pathCostWeight, 4);
         }
 
         dialog.showDialog();
@@ -113,14 +113,14 @@ public class ImageQuilterPlugin implements PlugInFilter, Cloneable {
         }
 
         final Config localConfig;
-        synchronized (config) {
-            config.width = (int) Math.round(dialog.getNextNumber());
-            config.height = (int) Math.round(dialog.getNextNumber());
-            config.patchSize = (int) Math.round(dialog.getNextNumber());
-            config.overlapSize = (int) Math.round(dialog.getNextNumber());
-            config.allowHorizontalPaths = dialog.getNextBoolean();
-            config.pathCostWeight = dialog.getNextNumber();
-            localConfig = config.duplicate();
+        synchronized (CONFIG) {
+            CONFIG.width = (int) Math.round(dialog.getNextNumber());
+            CONFIG.height = (int) Math.round(dialog.getNextNumber());
+            CONFIG.patchSize = (int) Math.round(dialog.getNextNumber());
+            CONFIG.overlapSize = (int) Math.round(dialog.getNextNumber());
+            CONFIG.allowHorizontalPaths = dialog.getNextBoolean();
+            CONFIG.pathCostWeight = dialog.getNextNumber();
+            localConfig = CONFIG.duplicate();
         }
 
         final ImagePlus impPreview = new ImagePlus("Preview: Quilting of " + imageTitle, input.duplicate());
