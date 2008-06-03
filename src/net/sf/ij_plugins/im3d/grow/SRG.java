@@ -144,8 +144,12 @@ public final class SRG {
                 }
 
                 // Verify seeding consistency
-                final int oldRegionId = regionMarkerPixels[offset] & 0xff;
-                if (oldRegionId != 0 && oldRegionId != regionId) {
+                final int oldRegionIdByte = regionMarkerPixels[offset];
+                final int oldRegionId = oldRegionIdByte & 0xff;
+                if (oldRegionIdByte == CANDIDATE_MARK) {
+                    // Remove candidate, it will be changed to a regionMarker
+                    ssl.remove(new Candidate(seed, 0, 0));
+                } else if (oldRegionId != 0 && oldRegionId != regionId) {
                     throw new IllegalArgumentException("Single point have two regions assignments. "
                             + "Point (" + seed.x + "," + seed.y + ") is assigned both to region " + oldRegionId
                             + " and region " + regionId + ".");
