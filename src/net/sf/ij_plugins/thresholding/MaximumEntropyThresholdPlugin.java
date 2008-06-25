@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,7 +37,7 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
     private static final String ABOUT_MESSAGE =
             "Automatic thresholding technique based on the maximum entropy of the\n" +
                     "histogram. See:\n" +
-                    "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
+                    "J.N. Kapur, P.K. Sahoo and A.K.C. Wong, A New Method for Gray-Level Picture\n" +
                     "\"Thresholding Using the Entropy of the Histogram\"CVGIP, (29), pp.273-285,\n" +
                     "1985.";
 
@@ -45,11 +45,11 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
 
     public int setup(final java.lang.String s, final ImagePlus imagePlus) {
         if ("about".equalsIgnoreCase(s)) {
-            IJ.showMessage("Maximum Entropy Theshold", ABOUT_MESSAGE);
+            IJ.showMessage("Maximum Entropy Threshold", ABOUT_MESSAGE);
             return PlugInFilter.DONE;
         }
 
-        return PlugInFilter.DOES_8G | PlugInFilter.DOES_STACKS;
+        return PlugInFilter.DOES_8G | PlugInFilter.DOES_16 | PlugInFilter.DOES_STACKS;
     }
 
     public void run(final ImageProcessor imageProcessor) {

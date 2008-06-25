@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +22,8 @@ package net.sf.ij_plugins.thresholding;
 
 import junit.framework.TestCase;
 
+import java.util.Random;
+
 /**
  * @author Jarek Sacha
  * @version $Revision: 1.2 $
@@ -36,6 +38,16 @@ public class HistogramThresholdTest extends TestCase {
         final int hist[] = {0, 1, 2, 3, 4, 3, 2, 1, 0, 1, 2, 3, 4, 3, 2, 1, 0};
         final int t = HistogramThreshold.maximumEntropy(hist);
         assertEquals(8, t);
+    }
+
+    public void testEntropySingleThreshold_16() {
+        final int hist[] = new int[10000];
+        final Random random = new Random(0);
+        for (int i = 0; i < hist.length; i++) {
+            hist[i] = random.nextInt(255);
+        }
+        final int t = HistogramThreshold.maximumEntropy(hist);
+        assertEquals(0, t);
     }
 
 
