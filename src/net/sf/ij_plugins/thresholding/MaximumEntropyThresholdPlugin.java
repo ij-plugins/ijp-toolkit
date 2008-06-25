@@ -25,6 +25,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
  * Automatic thresholding technique based on the maximum entropy of the histogram. See: P.K. Sahoo,
@@ -42,6 +43,7 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
                     "1985.";
 
     // TODO: Make this plugin available for 2D, 3D, and stacks
+    // TODO: Improve performance on 16bit images by trimming zero tails of the histogram.
 
     public int setup(final java.lang.String s, final ImagePlus imagePlus) {
         if ("about".equalsIgnoreCase(s)) {
@@ -54,7 +56,8 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
 
     public void run(final ImageProcessor imageProcessor) {
         final int[] hist = imageProcessor.getHistogram();
-        final int threshold = HistogramThreshold.maximumEntropy(hist);
+        final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+        final int threshold = HistogramThreshold.maximumEntropy(hist, progressBarAdapter);
         imageProcessor.threshold(threshold);
     }
 
