@@ -35,18 +35,67 @@ public final class HistogramThreshold {
     }
 
     /**
-     * Calculate maximum entropy split of a histogram. For more inforamtion see: J.N. Kapur, P.K.
+     * Equivalent to calling  maximumEntropy(hist, null).
+     *
+     * @param hist histogram to be thresholded.
+     * @return index of the maximum entropy split.
+     * @see #maximumEntropy(int[], net.sf.ij_plugins.util.progress.ProgressListener)
+     */
+    public static int maximumEntropy(final int[] hist) {
+        return maximumEntropy(hist, null);
+    }
+
+    /**
+     * Calculate maximum entropy split of a histogram. For more information see: J.N. Kapur, P.K.
      * Sahoo and A.K.C. Wong, "A New Method for Gray-Level Picture Thresholding Using the Entropy of
      * the Histogram", <i>CVGIP</i>, (29), pp.273-285 , 1985.
      * <p/>
      * Returned value indicates split position <code>t</code>. First interval are values less than
      * <code>t</code>, second interval are values equal or larger than <code>t</code>.
+     * <p/>
+     * If all values in <code>hist</code> are zero, the split, return value, is set to zero.
      *
      * @param hist             histogram to be thresholded.
      * @param progressListener progress listener, can be <code>null</code>.
      * @return index of the maximum entropy split.
      */
     public static int maximumEntropy(final int[] hist, final ProgressListener progressListener) {
+
+        // Trim leading and trailing zeros
+        final int leadingOffset = leadingOffset(hist);
+        final int trailingOffset = trailingOffset(hist);
+        final int trimmedLength = trailingOffset - leadingOffset;
+
+        final int threshold;
+        if (trimmedLength > 0) {
+            final int[] histTrimmed = new int[trimmedLength];
+            System.arraycopy(hist, leadingOffset, histTrimmed, 0, trimmedLength);
+            threshold = leadingOffset + maximumEntropy_impl(histTrimmed, progressListener);
+        } else {
+            threshold = 0;
+        }
+
+        return threshold;
+    }
+
+
+    private static int leadingOffset(final int[] hist) {
+        for (int i = 0; i < hist.length; i++) {
+            if (hist[i] != 0)
+                return i;
+        }
+        return hist.length;
+    }
+
+    private static int trailingOffset(final int[] hist) {
+        for (int i = hist.length - 1; i >= 0; i--) {
+            if (hist[i] != 0)
+                return i + 1;
+        }
+        return 0;
+    }
+
+    private static int maximumEntropy_impl(final int[] hist, final ProgressListener progressListener) {
 
         final String progressMessage = "Maximum entropy threshold...";
         final Object progressSource = HistogramThreshold.class;
@@ -55,19 +104,7 @@ public final class HistogramThreshold {
         }
 
         // Normalize histogram, that is makes the sum of all bins equal to 1.
-        double sum = 0;
-        for (int i = 0; i < hist.length; ++i) {
-            sum += hist[i];
-        }
-        if (sum == 0) {
-            // This should not normally happen, but...
-            throw new IllegalArgumentException("Empty histogram: sum of all bins is zero.");
-        }
-
-        final double[] normalizedHist = new double[hist.length];
-        for (int i = 0; i < hist.length; i++) {
-            normalizedHist[i] = hist[i] / sum;
-        }
+        final double[] normalizedHist = normalize(hist);
 
         //
         final double[] pT = new double[hist.length];
@@ -130,16 +167,6 @@ public final class HistogramThreshold {
         return tMax;
     }
 
-    /**
-     * Equivalent to calling  maximumEntropy(hist, null).
-     *
-     * @param hist histogram to be thresholded.
-     * @return index of the maximum entropy split.
-     * @see #maximumEntropy(int[], net.sf.ij_plugins.util.progress.ProgressListener)
-     */
-    public static int maximumEntropy(final int[] hist) {
-        return maximumEntropy(hist, null);
-    }
 
     /**
      * Normalize histogram: divide all elements of the histogram by a fixed values so sum of the

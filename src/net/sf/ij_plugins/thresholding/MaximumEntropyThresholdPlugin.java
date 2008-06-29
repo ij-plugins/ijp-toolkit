@@ -43,7 +43,6 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
                     "1985.";
 
     // TODO: Make this plugin available for 2D, 3D, and stacks
-    // TODO: Improve performance on 16bit images by trimming zero tails of the histogram.
 
     public int setup(final java.lang.String s, final ImagePlus imagePlus) {
         if ("about".equalsIgnoreCase(s)) {
