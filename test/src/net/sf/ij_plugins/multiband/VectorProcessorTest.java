@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.multiband;
 
@@ -29,12 +30,42 @@ import java.util.Random;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class VectorProcessorTest extends TestCase {
     public VectorProcessorTest(String test) {
         super(test);
     }
+
+
+    public void testPixelIteratorXY() {
+        final int width = 13;
+        final int height = 7;
+        final VectorProcessor vp = new VectorProcessor(width, height, 1);
+        final VectorProcessor.PixelIterator i = vp.pixelIterator();
+        while (i.hasNext()) {
+            i.next();
+            final int x = i.getX();
+            final int y = i.getY();
+            assertTrue("x=" + x, x >= 0 && x < width);
+            assertTrue("y=" + y, y >= 0 && y < height);
+        }
+
+    }
+
+    public void testPixelIteratorCount() {
+        final int width = 13;
+        final int height = 7;
+        final VectorProcessor vp = new VectorProcessor(width, height, 1);
+        final VectorProcessor.PixelIterator i = vp.pixelIterator();
+        int count = 0;
+        while (i.hasNext()) {
+            i.next();
+            count++;
+        }
+
+        assertEquals("Count", width * height, count);
+    }
+
 
     public void testConversion() throws Exception {
         final int nbBands = 5;
