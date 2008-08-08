@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.clustering;
 
@@ -41,10 +42,10 @@ public final class KMeansTest extends junit.framework.TestCase {
         final File imageFile = new File("test/data/clown24.png");
         final double tolerance = 0.01;
         final double[][] expectedCenters = {
-        {182.407, 108.690, 45.752},
-        {224.589, 187.087, 151.137},
-        {30.590, 10.600, 5.617},
-        {115.772, 51.208, 20.245},
+                {182.389, 108.690, 45.733},
+                {224.589, 187.087, 151.137},
+                {30.557, 10.600, 5.617},
+                {115.623, 51.116, 20.329},
         };
 
         assertTrue("File exists", imageFile.exists());
@@ -122,17 +123,5 @@ public final class KMeansTest extends junit.framework.TestCase {
 //    }
 //
 //
-    }
-
-    /**
-     * The fixture set up called before every test method
-     */
-    protected void setUp() throws java.lang.Exception {
-    }
-
-    /**
-     * The fixture clean up called after every test method
-     */
-    protected void tearDown() throws java.lang.Exception {
     }
 }

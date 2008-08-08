@@ -36,7 +36,6 @@ import java.awt.*;
  * numbers.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.5 $
  */
 public class VectorProcessor {
     final int width;
@@ -120,6 +119,7 @@ public class VectorProcessor {
     }
 
     /**
+     * @param roi new ROI.
      * @see #getRoi()
      */
     public void setRoi(final Rectangle roi) {
@@ -182,16 +182,16 @@ public class VectorProcessor {
                 if (imp.getStackSize() > 1) {
                     throw new RuntimeException("Unsupported image type: stack of COLOR_RGB");
                 }
-                final ImageConverter ic = new ImageConverter(imp);
-                ic.convertToRGBStack();
+                final ImageConverter converter = new ImageConverter(imp);
+                converter.convertToRGBStack();
             }
 
             if (imp.getStackSize() > 1) {
-                final StackConverter sc = new StackConverter(imp);
-                sc.convertToGray32();
+                final StackConverter converter = new StackConverter(imp);
+                converter.convertToGray32();
             } else {
-                final ImageConverter ic = new ImageConverter(imp);
-                ic.convertToGray32();
+                final ImageConverter converter = new ImageConverter(imp);
+                converter.convertToGray32();
             }
 
             // FIXME: make sure that there are no memory leaks
@@ -212,6 +212,11 @@ public class VectorProcessor {
 
     /**
      * Return pixel value at coordinates (<code>x</code>, <code>y</code>).
+     *
+     * @param x    x
+     * @param y    y
+     * @param dest array to store pixel value, can be {@code null}.
+     * @return pixel value
      */
     public float[] get(final int x, final int y, float[] dest) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -233,6 +238,10 @@ public class VectorProcessor {
 
     /**
      * Set value of pixel value at coordinates (<code>x</code>, <code>y</code>).
+     *
+     * @param x x
+     * @param y y
+     * @param v pixel value
      */
     public void set(final int x, final int y, float[] v) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -286,51 +295,55 @@ public class VectorProcessor {
     }
 
     /**
-     * Iterator over 3x3 neighbourhood of vector valued pixels.
+     * Iterator over pixel values.
      */
     public class PixelIterator implements java.util.Iterator {
-        final int xMin = roi.x - 1;
-        final int xMax = roi.x + roi.width - 1;
+        final int xMin = roi.x;
+        final int xMax1 = roi.x + roi.width - 1;
         final int rowOffset = width;
         final int yMin = roi.y;
-        final int yMax = roi.y + roi.height - 1;
-        int x = roi.x;
+        final int yMax1 = roi.y + roi.height - 1;
+        int x = roi.x - 1;
         int y = roi.y;
-        float[] value = new float[numberOfValues];
 
         private PixelIterator() {
         }
 
         public int getX() {
+            if (x < xMin || x > xMax1) {
+                throw new IllegalStateException("Illegal value of x, " + x + ".");
+            }
             return x;
         }
 
         public int getY() {
+            if (y < yMin || y > yMax1) {
+                throw new IllegalStateException("Illegal value of y, " + y + ".");
+            }
             return y;
         }
 
         public boolean hasNext() {
-            return x < xMax || y < yMax;
+            return x < xMax1 || y < yMax1;
         }
 
-        public Object next() {
+        public float[] next() {
             // Update center location
-            if (x < xMax) {
+            if (x < xMax1) {
                 ++x;
             } else {
-                if (y < yMax) {
+                if (y < yMax1) {
                     x = xMin;
                     ++y;
                 }
                 if (progressBar != null) {
-                    progressBar.show(y - yMin, yMax - yMin);
+                    progressBar.show(y - yMin, yMax1 - yMin);
                 }
             }
-            int offset = x + y * width;
 
-            value = pixels[offset];
+            final int offset = x + y * width;
 
-            return value;
+            return pixels[offset];
         }
 
         /**
@@ -349,14 +362,14 @@ public class VectorProcessor {
     /**
      * Iterator over 3x3 neighbourhood of vector valued pixels.
      */
-    public class Iterator implements java.util.Iterator {
-        final int xMin = roi.x - 1;
-        final int xMax = roi.x + roi.width - 1;
+    public class Iterator implements java.util.Iterator<Neighborhood3x3> {
+        final int xMin = Math.max(roi.x, 1);
+        final int xMax = Math.min(roi.x + roi.width, width - 1) - 1;
         final int rowOffset = width;
-        final int yMin = roi.y;
-        final int yMax = roi.y + roi.height - 1;
-        int x = roi.x;
-        int y = roi.y;
+        final int yMin = Math.max(roi.y, 1);
+        final int yMax = Math.min(roi.y + roi.height, height - 1) - 1;
+        int x = xMin - 1;
+        int y = yMin;
         final Neighborhood3x3 neighborhood3x3 = new Neighborhood3x3();
 
         private Iterator() {
@@ -366,7 +379,7 @@ public class VectorProcessor {
             return x < xMax || y < yMax;
         }
 
-        public Object next() {
+        public Neighborhood3x3 next() {
             // Update center location
             if (x < xMax) {
                 ++x;

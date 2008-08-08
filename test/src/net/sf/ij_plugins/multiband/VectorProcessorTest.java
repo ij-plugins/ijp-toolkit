@@ -37,6 +37,31 @@ public class VectorProcessorTest extends TestCase {
     }
 
 
+    public void testPixelIterator() {
+        final int width = 13;
+        final int height = 7;
+        final VectorProcessor vp = new VectorProcessor(width, height, 1);
+        final VectorProcessor.PixelIterator i = vp.pixelIterator();
+        while (i.hasNext()) {
+            float[] v = i.next();
+            final int x = i.getX();
+            final int y = i.getY();
+            v[0] = 1000 * (x + 1) + (y + 1) + 21;
+        }
+
+        final float[][] pixels = vp.getPixels();
+        for (int y = 0; y < height; y++) {
+            final int yOffset = y * width;
+            for (int x = 0; x < width; x++) {
+                final int v = Math.round(pixels[x + yOffset][0] - 21);
+                final int xx = (v / 1000) - 1;
+                assertEquals("x", x, xx);
+                final int yy = (v % 1000) - 1;
+                assertEquals("y", y, yy);
+            }
+        }
+    }
+
     public void testPixelIteratorXY() {
         final int width = 13;
         final int height = 7;
@@ -49,7 +74,6 @@ public class VectorProcessorTest extends TestCase {
             assertTrue("x=" + x, x >= 0 && x < width);
             assertTrue("y=" + y, y >= 0 && y < height);
         }
-
     }
 
     public void testPixelIteratorCount() {
@@ -64,6 +88,35 @@ public class VectorProcessorTest extends TestCase {
         }
 
         assertEquals("Count", width * height, count);
+    }
+
+
+    public void testIteratorXY() {
+        final int width = 13;
+        final int height = 7;
+        final VectorProcessor vp = new VectorProcessor(width, height, 1);
+        final VectorProcessor.Iterator i = vp.iterator();
+        while (i.hasNext()) {
+            final VectorProcessor.Neighborhood3x3 n = i.next();
+            final int x = n.x;
+            final int y = n.y;
+            assertTrue("x=" + x, x >= 0 && x < width);
+            assertTrue("y=" + y, y >= 0 && y < height);
+        }
+    }
+
+    public void testIteratorCount() {
+        final int width = 13;
+        final int height = 7;
+        final VectorProcessor vp = new VectorProcessor(width, height, 1);
+        final VectorProcessor.Iterator i = vp.iterator();
+        int count = 0;
+        while (i.hasNext()) {
+            i.next();
+            count++;
+        }
+
+        assertEquals("Count", (width - 2) * (height - 2), count);
     }
 
 
