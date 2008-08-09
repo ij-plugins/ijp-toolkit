@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,27 +17,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io;
 
 import ij.ImagePlus;
 import ij.io.Opener;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class IOUtils {
     private IOUtils() {
     }
 
     public static ImagePlus openImage(final String fileName) throws IOException {
+        final File file = new File(fileName);
+        if (!file.exists()) {
+            throw new IOException("Image does not exist: " + file.getAbsolutePath());
+        }
+
         final Opener opener = new Opener();
-        final ImagePlus imp = opener.openImage(fileName);
+        final ImagePlus imp = opener.openImage(file.getAbsolutePath());
         if (imp == null) {
-            throw new IOException("Unable to open image file: " + fileName);
+            throw new IOException("Cannot open image: " + file.getAbsolutePath());
         }
 
         return imp;
