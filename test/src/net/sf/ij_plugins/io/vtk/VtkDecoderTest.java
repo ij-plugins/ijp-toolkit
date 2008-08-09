@@ -22,7 +22,8 @@
 package net.sf.ij_plugins.io.vtk;
 
 import ij.ImagePlus;
-import net.sf.ij_plugins.AbstractImageTest;
+import junit.framework.TestCase;
+import net.sf.ij_plugins.AssertUtils;
 import net.sf.ij_plugins.io.IOUtils;
 
 import java.io.File;
@@ -31,7 +32,7 @@ import java.io.File;
  * @author Jarek Sacha
  * @since 11:05:51 PM  Nov 12, 2006
  */
-public final class VtkDecoderTest extends AbstractImageTest {
+public final class VtkDecoderTest extends TestCase {
     public VtkDecoderTest(String test) {
         super(test);
     }
@@ -46,6 +47,6 @@ public final class VtkDecoderTest extends AbstractImageTest {
         assertTrue(actualImageFile.exists());
         final ImagePlus actualImp = VtkDecoder.open(actualImageFile);
 
-        assertEquals(expectedImp, actualImp, 0);
+        AssertUtils.equals(expectedImp, actualImp, 0);
     }
 }
