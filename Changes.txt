@@ -5,6 +5,10 @@
 --------------------------------------------------------------------------
 Version 1.2.1
 --------------------------------------------------------------------------
+Improvements:
+ * Maximum Entropy Threshold plugin now supports 16 bit images.
+ * Several improvements to SRG algorithm (available through API).
+
 Bug fixes:
  * BUG-2037287: VectorProcessor: iterators bugs. Results in corrections
    to plugins that used VectorProcessor, like k-means and vector edge
