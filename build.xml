@@ -177,10 +177,18 @@
              destfile="${dist.dir}/${package.name}_src_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
 
         <!-- ................................................... -->
+        <!-- Run tests                                           -->
+        <!-- ................................................... -->
+        <ant antfile="${svn.dir}/build.xml" target="test" inheritall="false">
+            <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
+        </ant>
+
+
+        <!-- ................................................... -->
         <!-- Binary distribution from actual distribution source -->
         <!-- ................................................... -->
         <ant antfile="${svn.dir}/build.xml" target="jar-all" inheritall="false">
-            <property name="jar.dir" location="${base.dir}/dist"/>
+            <property name="jar.dir" location="${dist.dir}"/>
             <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
         </ant>
 
@@ -191,9 +199,9 @@
 
 
         <!-- ZIP binaries -->
-        <!--<zip basedir="${base.dir}/dist"-->
-        <!--includes="${package.name}.jar"-->
-        <!--destfile="${dist.dir}/${package.name}_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>-->
+        <zip basedir="${dist.dir}"
+             includes="${package.name}.jar"
+             destfile="${dist.dir}/${package.name}_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
 
         <!--<zip basedir="${base.dir}/dist"-->
         <!--includes="${package.name}-nodep.jar"-->
