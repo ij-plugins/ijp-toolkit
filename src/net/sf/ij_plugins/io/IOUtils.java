@@ -83,7 +83,13 @@ public class IOUtils {
      */
     public static void saveAsTiff(final ImagePlus imp, final File file) throws IOException {
         final FileSaver fileSaver = new FileSaver(imp);
-        if (!fileSaver.saveAsTiff(file.getAbsolutePath())) {
+        final boolean ok;
+        if (imp.getStackSize() > 1) {
+            ok = fileSaver.saveAsTiffStack(file.getAbsolutePath());
+        } else {
+            ok = fileSaver.saveAsTiff(file.getAbsolutePath());
+        }
+        if (!ok) {
             throw new IOException("Error saving image to file: '" + file.getAbsolutePath() + "'.");
         }
     }
