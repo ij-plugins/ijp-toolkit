@@ -22,8 +22,6 @@
 package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.io.FileSaver;
 import ij.process.ByteProcessor;
 import junit.framework.TestCase;
 import net.sf.ij_plugins.io.IOUtils;
@@ -66,20 +64,10 @@ public class SRGTest extends TestCase {
         srg.run();
 
         final ByteProcessor regionMask = srg.getRegionMarkers();
-        final ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
-
-        new File(OUTPUT_DIR).mkdirs();
-
-        final FileSaver fileSaver = new FileSaver(imp1);
-        if (!fileSaver.saveAsTiff(OUTPUT_DIR + "/srg_ramp_test_output.tif")) {
-            throw new Exception("Error saving output image.");
-        }
-
-        FileSaver fileSaver1 = new FileSaver(new ImagePlus("Growth", srg.getAnimationStack()));
-        if (!fileSaver1.saveAsTiffStack(OUTPUT_DIR + "/srg_ramp_test_animation.tif")) {
-            throw new Exception("Error saving output image.");
-        }
-
+//        final ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
+//        new File(OUTPUT_DIR).mkdirs();
+//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_output.tif"));
+//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_animation.tif"));
     }
 
     public void testRampWithMask() throws Exception {
@@ -107,12 +95,10 @@ public class SRGTest extends TestCase {
         srg.run();
 
         final ByteProcessor regionMarkers = srg.getRegionMarkers();
-        ImagePlus imp1 = new ImagePlus("Region Markers", regionMarkers);
-
-        new File(OUTPUT_DIR).mkdirs();
-
-        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_output.tif"));
-        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_animation.tif"));
+//        ImagePlus imp1 = new ImagePlus("Region Markers", regionMarkers);
+//        new File(OUTPUT_DIR).mkdirs();
+//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_output.tif"));
+//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_animation.tif"));
 
         // Mask
         assertEquals(0, regionMarkers.get(10, 10));
@@ -150,15 +136,7 @@ public class SRGTest extends TestCase {
 
         new File(OUTPUT_DIR).mkdirs();
 
-        final FileSaver fileSaver = new FileSaver(imp);
-        if (!fileSaver.saveAsTiff(OUTPUT_DIR + "/srg_test_output.tif")) {
-            throw new Exception("Error saving output image.");
-        }
-
-        final ImageStack animationStack = srg.getAnimationStack();
-        FileSaver fileSaver1 = new FileSaver(new ImagePlus("Growth", animationStack));
-        if (!fileSaver1.saveAsTiffStack(OUTPUT_DIR + "/srg_test_animation.tif")) {
-            throw new Exception("Error saving output image.");
-        }
+        IOUtils.saveAsTiff(imp, new File(OUTPUT_DIR, "srg_test_output.tif"));
+        IOUtils.saveAsTiff(imp, new File(OUTPUT_DIR, "srg_test_animation.tif"));
     }
 }
