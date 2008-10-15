@@ -22,13 +22,13 @@ package net.sf.ij_plugins.io.vtk;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.io.Opener;
 import ij.measure.Calibration;
 import ij.process.Blitter;
 import ij.process.ImageStatistics;
 import ij.process.StackProcessor;
 import ij.process.StackStatistics;
 import junit.framework.TestCase;
+import net.sf.ij_plugins.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,8 +53,7 @@ public class VtkEncoderDecoderTest extends TestCase {
         assertTrue("Check file existance", imageFile.exists());
 
         // Read test image
-        final Opener opener = new Opener();
-        final ImagePlus imp = opener.openImage(imageFile.getAbsolutePath());
+        final ImagePlus imp = IOUtils.openImage(imageFile.getAbsolutePath());
         assertNotNull("Cannot open image: " + imageFile.getAbsolutePath(), imp);
         assertEquals("Expecting color image.", ImagePlus.COLOR_RGB, imp.getType());
 

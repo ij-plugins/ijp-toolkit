@@ -23,10 +23,12 @@ package net.sf.ij_plugins.quilting;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.io.Opener;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsRuntimeException;
+import net.sf.ij_plugins.io.IOUtils;
+
+import java.io.IOException;
 
 public class ImageQuilterPlugin implements PlugInFilter {
     private static final String DEST_WIDTH_LABEL = "Output width";
@@ -155,7 +157,7 @@ public class ImageQuilterPlugin implements PlugInFilter {
     }
 
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
         final Config config = new Config();
         config.width = 128;
         config.height = 128;
@@ -164,8 +166,7 @@ public class ImageQuilterPlugin implements PlugInFilter {
         config.allowHorizontalPaths = false;
         config.pathCostWeight = 0.1;
 
-        final Opener opener = new Opener();
-        final ImagePlus imp = opener.openImage("images/3.tif");
+        final ImagePlus imp = IOUtils.openImage("images/3.tif");
 
         System.out.println("Input image size:" + imp.getWidth() + "x" + imp.getHeight());
 

@@ -22,10 +22,10 @@
 package net.sf.ij_plugins.clustering;
 
 import ij.ImagePlus;
-import ij.io.Opener;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.StackConverter;
+import net.sf.ij_plugins.io.IOUtils;
 
 import java.io.File;
 
@@ -51,11 +51,7 @@ public final class KMeansTest extends junit.framework.TestCase {
         assertTrue("File exists", imageFile.exists());
 
         // Read test image
-        final Opener opener = new Opener();
-        final ImagePlus imp = opener.openImage(imageFile.getAbsolutePath());
-        if (imp == null) {
-            throw new java.lang.Exception("Cannot open image: " + imageFile.getAbsolutePath());
-        }
+        final ImagePlus imp = IOUtils.openImage(imageFile);
 
         if (imp.getType() != ImagePlus.COLOR_RGB) {
             throw new java.lang.Exception("Expecting color image.");

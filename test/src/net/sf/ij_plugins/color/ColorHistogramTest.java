@@ -21,11 +21,11 @@
 package net.sf.ij_plugins.color;
 
 import ij.ImagePlus;
-import ij.io.Opener;
 import ij.process.ColorProcessor;
 import junit.framework.TestCase;
+import net.sf.ij_plugins.io.IOUtils;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 
 /**
@@ -43,46 +43,30 @@ public class ColorHistogramTest extends TestCase {
         assertTrue("Check file existance", imageFile.exists());
 
         // Read test image
-        final Opener opener = new Opener();
-        final ImagePlus imp = opener.openImage(imageFile.getAbsolutePath());
-        if (imp == null) {
-            throw new java.lang.Exception("Cannot open image: " + imageFile.getAbsolutePath());
-        }
+        final ImagePlus imp = IOUtils.openImage(imageFile);
 
         if (imp.getType() != ImagePlus.COLOR_RGB) {
             throw new java.lang.Exception("Expecting color image.");
         }
 
 
-        net.sf.ij_plugins.color.ColorHistogram colorHistogram = new net.sf.ij_plugins.color.ColorHistogram();
+        final ColorHistogram colorHistogram = new net.sf.ij_plugins.color.ColorHistogram();
         colorHistogram.setBinsPerBand(2);
         colorHistogram.run((ColorProcessor) imp.getProcessor());
 
-        int[][][] bins = colorHistogram.getBins();
-        Color[][][] binColors = colorHistogram.getBinColors();
+        final int[][][] bins = colorHistogram.getBins();
+        final Color[][][] binColors = colorHistogram.getBinColors();
         for (int r = 0; r < bins.length; r++) {
-            int[][] binGB = bins[r];
+            final int[][] binGB = bins[r];
             for (int g = 0; g < binGB.length; g++) {
-                int[] binB = binGB[g];
+                final int[] binB = binGB[g];
                 for (int b = 0; b < binB.length; b++) {
-                    int count = binB[b];
+                    final int count = binB[b];
                     System.out.println("[" + r + "," + g + "," + b + "]: " + count);
                 }
 
             }
         }
 
-    }
-
-    /**
-     * The fixture set up called before every test method
-     */
-    protected void setUp() throws Exception {
-    }
-
-    /**
-     * The fixture clean up called after every test method
-     */
-    protected void tearDown() throws Exception {
     }
 }
