@@ -22,30 +22,69 @@
 package net.sf.ij_plugins.io;
 
 import ij.ImagePlus;
+import ij.io.FileSaver;
 import ij.io.Opener;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
+ * I/O utilities.
+ *
  * @author Jarek Sacha
  */
 public class IOUtils {
+
     private IOUtils() {
     }
 
-    public static ImagePlus openImage(final String fileName) throws IOException {
-        final File file = new File(fileName);
+
+    /**
+     * Open an image using ImageJ image reader.
+     *
+     * @param file image file.
+     * @return read image
+     * @throws IOException when image cannot be open.
+     */
+    public static ImagePlus openImage(final File file) throws IOException {
         if (!file.exists()) {
-            throw new IOException("Image does not exist: " + file.getAbsolutePath());
+            throw new IOException("Image does not exist: '" + file.getAbsolutePath() + "'.");
         }
 
         final Opener opener = new Opener();
         final ImagePlus imp = opener.openImage(file.getAbsolutePath());
         if (imp == null) {
-            throw new IOException("Cannot open image: " + file.getAbsolutePath());
+            throw new IOException("Cannot open image: '" + file.getAbsolutePath() + "'.");
         }
 
         return imp;
+    }
+
+
+    /**
+     * Open an image using ImageJ image reader.
+     *
+     * @param fileName image file name.
+     * @return read image
+     * @throws IOException when image cannot be open.
+     * @see #openImage(java.io.File)
+     */
+    public static ImagePlus openImage(final String fileName) throws IOException {
+        return openImage(new File(fileName));
+    }
+
+
+    /**
+     * Save image to a file using image TIFF encoder.
+     *
+     * @param imp  image.
+     * @param file destination file.
+     * @throws IOException when image cannot be saved.
+     */
+    public static void saveAsTiff(final ImagePlus imp, final File file) throws IOException {
+        final FileSaver fileSaver = new FileSaver(imp);
+        if (!fileSaver.saveAsTiff(file.getAbsolutePath())) {
+            throw new IOException("Error saving image to file: '" + file.getAbsolutePath() + "'.");
+        }
     }
 }
