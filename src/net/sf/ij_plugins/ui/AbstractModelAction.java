@@ -39,23 +39,28 @@ public abstract class AbstractModelAction<M extends Model> extends AbstractActio
     private M model;
     private final ModelChangeListener changeListener = new ModelChangeListener();
 
+
     protected AbstractModelAction(final String name) {
         super(name);
     }
+
 
     protected AbstractModelAction(final String name, final M model) {
         this(name);
         setModel(model);
     }
 
+
     @Override
     public boolean isEnabled() {
         return /* super.isEnabled()  && */ model != null;
     }
 
+
     public M getModel() {
         return model;
     }
+
 
     public void setModel(final M model) {
         if (model == this.model) {
@@ -73,6 +78,7 @@ public abstract class AbstractModelAction<M extends Model> extends AbstractActio
         }
         setEnabled(isEnabled());
     }
+
 
     private class ModelChangeListener implements PropertyChangeListener {
         public void propertyChange(final PropertyChangeEvent evt) {
