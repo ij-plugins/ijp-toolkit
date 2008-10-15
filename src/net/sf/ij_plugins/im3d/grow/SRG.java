@@ -26,24 +26,46 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ShortProcessor;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.*;
-import java.util.List;
 
 /**
  * Seeded region growing algorithm based on article by Rolf Adams and Leanne Bischof, "Seeded Region
  * Growing", <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i>, vol. 16, no. 6,
  * June 1994.
  * <p/>
- * The algorithms assumes that seeds for objects and background be provided. The condition of growth
- * is difference of a gray level of a candidate pixel and mean grey level intensity of a neighboring
- * region. At each step of the algorithm a candidate with a smallest difference to some neighboring
+ * The algorithms assumes that seeds for objects and the background be provided.
+ * Seeds are used to compute compute initial mean gray level for each region.
+ * The condition of growth is difference of a gray level of a candidate pixel and mean grey level
+ * intensity of a neighboring region.
+ * At each step of the algorithm a candidate with a smallest difference to some neighboring
  * region is added to that region and all neighboring points of that that are not yet assigned to
  * any region are added to candidate list.
+ * <p/>
+ * An example of segmenting an image. Seeds are set for three regions: background, blob 1, and blob 2.
+ * <pre>
+ * // Setup growing
+ * final ByteProcessor image = ...;
+ * final Point[][] seeds = {
+ *         {new Point(107, 144)}, // Background
+ *         {new Point(91, 159)},  // Blob 1
+ *         {new Point(119, 143)}, // Blob 2
+ *     };
+ * final SRG srg = new SRG();
+ * srg.setImage(image);
+ * srg.setSeeds(seeds);
+ * srg.setNumberOfAnimationFrames(50);
+ * // Run growing
+ * srg.run();
+ * // Extract results
+ * final ByteProcessor regionMask = srg.getRegionMarkers();
+ * final ImageStack animationStack = srg.getAnimationStack();
+ * </pre>
  *
  * @author Jarek Sacha
  */
 public final class SRG {
+
     private static final int MAX_REGION_NUMBER = 253;
     private static final byte BACKGROUND_MARK = (byte) 0x00;
     private static final byte CANDIDATE_MARK = (byte) 0xff;
@@ -56,7 +78,6 @@ public final class SRG {
     private ByteProcessor mask;
     private ImageStack animationStack;
     private int nbAnimationFrames;
-
 
     // Internal variables
     private int xMin;
@@ -72,21 +93,45 @@ public final class SRG {
     private long processedPixelCount;
 
 
+    /**
+     * Set image to be segmented.
+     *
+     * @param image image.
+     */
     public void setImage(final ByteProcessor image) {
         validateNotNull(image, "image");
         this.image = (FloatProcessor) image.convertToFloat();
     }
 
+
+    /**
+     * Set image to be segmented.
+     *
+     * @param image image.
+     */
     public void setImage(final ShortProcessor image) {
         validateNotNull(image, "image");
         this.image = (FloatProcessor) image.convertToFloat();
     }
 
+
+    /**
+     * Set image to be segmented.
+     *
+     * @param image image.
+     */
     public void setImage(final FloatProcessor image) {
         validateNotNull(image, "image");
-        this.image = (FloatProcessor) image.convertToFloat();
+        this.image = (FloatProcessor) image.duplicate();
     }
 
+
+    /**
+     * Set region seeds. The first index in the {@code seeds} array refers to the region.
+     * Second index is a seeds with a region.
+     *
+     * @param seeds region seeds.
+     */
     public void setSeeds(final Point[][] seeds) {
         validateNotNull(seeds, "Argument 'seeds' cannot be null");
         if (seeds.length < 2) {
@@ -331,8 +376,7 @@ public final class SRG {
 
         // Initialize region info structures
         for (int i = 0; i < seeds.length; i++) {
-            final RegionInfo thisRegionInfo = new RegionInfo(image);
-            regionInfos[i] = thisRegionInfo;
+            regionInfos[i] = new RegionInfo(image);
         }
 
         // Create candidate list and define rules for ordering of its elements
