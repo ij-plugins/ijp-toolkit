@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.filters;
 
@@ -28,7 +29,6 @@ import net.sf.ij_plugins.util.progress.ProgressReporter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -38,7 +38,6 @@ import java.util.List;
  * ij.process.FloatProcessor)} .
  *
  * @author Jarek Sacha
- * @version $ Revision: $
  */
 public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
 
@@ -48,51 +47,57 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     private double meanSquareError = 0.01;
 
     // Internal variables
-    protected final List progressListeners = new ArrayList();
+    protected final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
     private double currentProgress;
-    private double lastRepotedProgress;
+    private double lastReportedProgress;
     private double minProgress = 0.01;
     private DecimalFormat decimalFormat = new DecimalFormat("0.######");
     private double time;
+
 
     public int getNumberOfIterations() {
         return numberOfIterations;
     }
 
+
     public void setNumberOfIterations(final int numberOfIterations) {
         this.numberOfIterations = numberOfIterations;
     }
+
 
     public double getTimeStep() {
         return timeStep;
     }
 
+
     public void setTimeStep(double timeStep) {
         this.timeStep = timeStep;
     }
+
 
     public double getMeanSquareError() {
         return meanSquareError;
     }
 
+
     public void setMeanSquareError(double meanSquareError) {
         this.meanSquareError = meanSquareError;
     }
+
 
     public double currentProgress() {
         return currentProgress;
     }
 
+
     private void updateCurrentProgress(final double progress, final String message) {
         this.currentProgress = progress;
-        if (progressListeners.size() > 0 && Math.abs(progress - lastRepotedProgress) > minProgress)
-        {
+        if (progressListeners.size() > 0 && Math.abs(progress - lastReportedProgress) > minProgress) {
             final ProgressEvent event = new ProgressEvent(this, this.currentProgress, message);
-            for (final Iterator iterator = progressListeners.iterator(); iterator.hasNext();) {
-                final ProgressListener progressListener = (ProgressListener) iterator.next();
+            for (final ProgressListener progressListener : progressListeners) {
                 progressListener.progressNotification(event);
             }
-            lastRepotedProgress = currentProgress;
+            lastReportedProgress = currentProgress;
         }
     }
 
@@ -103,9 +108,11 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
         }
     }
 
+
     public void removeProgressListener(final ProgressListener l) {
         progressListeners.remove(l);
     }
+
 
     public void removeAllProgressListener() {
         progressListeners.clear();
@@ -154,8 +161,12 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     /**
      * Perform single diffusion operation, called iteratively by {@link
      * #process(ij.process.FloatProcessor)}.
+     *
+     * @param src  source image
+     * @param dest destination image
      */
-    protected abstract void diffuse(FloatProcessor src, FloatProcessor dest);
+    protected abstract void diffuse(final FloatProcessor src, final FloatProcessor dest);
+
 
     protected double time() {
         return time;
