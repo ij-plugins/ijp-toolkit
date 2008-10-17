@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.filters;
 
@@ -27,17 +28,18 @@ import java.util.List;
  * Implements a red-black tree.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
-final public class RedBlackTreeFloat {
+public final class RedBlackTreeFloat {
     private Node root;
 
     private static final int RED = 0;
     private static final int BLACK = 1;
 
+
     public RedBlackTreeFloat() {
         root = Node.NULL;
     }
+
 
     public void verify() throws IllegalStateException {
 
@@ -53,6 +55,7 @@ final public class RedBlackTreeFloat {
 
         verify(root);
     }
+
 
     private void verify(final Node node) {
         if (node == Node.NULL) {
@@ -72,27 +75,27 @@ final public class RedBlackTreeFloat {
         }
 
         // FIXME: Rule 5
-        List leaves = new ArrayList();
+        final List<Node> leaves = new ArrayList<Node>();
         findLeaves(node, leaves);
         if (leaves.size() > 0) {
-            final int blackInPath = countBlackToParent((Node) leaves.get(0), node);
+            final int blackInPath = countBlackToParent(leaves.get(0), node);
             for (int i = 0; i < leaves.size(); i++) {
-                Node c = (Node) leaves.get(i);
+                Node c = leaves.get(i);
                 final int n = countBlackToParent(c, node);
                 if (n != blackInPath) {
-                    throw new IllegalStateException("Black path mismatch in subtree: "
+                    throw new IllegalStateException("Black path mismatch in sub-tree: "
                             + node.toString() + ". Path 0=" + blackInPath + ", path " + i + "=" + n + ".");
                 }
             }
         }
 
-
-        // FIXME: Rule 6 - size of the subtree agrees wit node.size field.
+        // FIXME: Rule 6 - size of the sub-tree agrees wit node.size field.
 
         // Verify children
         verify(node.left);
         verify(node.left);
     }
+
 
     private int countBlackToParent(Node leaf, Node node) {
 
@@ -109,7 +112,8 @@ final public class RedBlackTreeFloat {
         return r + countBlackToParent(leaf.parent, node);
     }
 
-    private void findLeaves(Node node, List leaves) {
+
+    private void findLeaves(final Node node, final List<Node> leaves) {
         if (node == Node.NULL) {
             return;
         }
@@ -136,11 +140,13 @@ final public class RedBlackTreeFloat {
         }
     }
 
+
     public int size() {
         return root.size;
     }
 
-    final public void insert(final float key) {
+
+    public void insert(final float key) {
 
         Node y = Node.NULL;
         Node x = root;
@@ -167,9 +173,11 @@ final public class RedBlackTreeFloat {
         insertFixup(z);
     }
 
+
     public boolean remove(final float key) {
         return remove(find(root, key));
     }
+
 
     private boolean remove(final Node node) {
         final Node z = node;
@@ -220,15 +228,16 @@ final public class RedBlackTreeFloat {
 
     }
 
+
     /**
      * Select <code>i</code>-th key in the tree (key with rank <code>i</code>).
      *
-     * @param i rank of the kay to elect.
-     * @return valye of key with rank <code>i</code>.
+     * @param i rank of the key to elect.
+     * @return value of key with rank <code>i</code>.
      */
     public float select(final int i) {
         if (i < 1) {
-            throw new IllegalArgumentException("Rank argiment i must be larger than zero.");
+            throw new IllegalArgumentException("Rank argument i must be larger than zero.");
         }
         Node n = select(root, i);
         if (n == Node.NULL) {
@@ -238,6 +247,7 @@ final public class RedBlackTreeFloat {
         return n.key;
     }
 
+
     private Node select(final Node x, final int i) {
         int r = x.left.size + 1;
         if (i == r) {
@@ -246,6 +256,7 @@ final public class RedBlackTreeFloat {
             return i < r ? select(x.left, i) : select(x.right, i - r);
         }
     }
+
 
     /**
      * Test if tree contains <code>key</code>.
@@ -257,6 +268,7 @@ final public class RedBlackTreeFloat {
         return find(root, key) != Node.NULL;
     }
 
+
     /**
      * Test if the tree is logically empty.
      *
@@ -266,11 +278,13 @@ final public class RedBlackTreeFloat {
         return root == Node.NULL;
     }
 
+
     public void printTree() {
         printTree(root);
     }
 
-    final private void insertFixup(final Node node) {
+
+    private void insertFixup(final Node node) {
         Node z = node;
         while (z.parent.color == RED) {
             if (z.parent == z.parent.parent.left) {
@@ -309,6 +323,7 @@ final public class RedBlackTreeFloat {
         }
         root.color = BLACK;
     }
+
 
     private void rightRotate(final Node x) {
         final Node y = x.left;
@@ -360,10 +375,11 @@ final public class RedBlackTreeFloat {
         x.size = x.left.size + x.right.size + 1;
     }
 
+
     /**
      * Finds node with a smallest key greater than key of given <code>node</code>.
      *
-     * @param node nore to find successor for.
+     * @param node node to find successor for.
      * @return node that is successor of the input node.
      */
     private Node successor(final Node node) {
@@ -380,6 +396,7 @@ final public class RedBlackTreeFloat {
         return y;
     }
 
+
     private Node treeMinimum(final Node node) {
         Node x = node;
         while (x.left != Node.NULL) {
@@ -388,6 +405,7 @@ final public class RedBlackTreeFloat {
 
         return x;
     }
+
 
     private void deleteFixup(final Node node) {
         Node x = node;
@@ -445,6 +463,7 @@ final public class RedBlackTreeFloat {
         x.color = BLACK;
     }
 
+
     private Node find(final Node node, final float key) {
         Node x = node;
         //        if (x == Node.NULL || key == x.key) {
@@ -460,6 +479,7 @@ final public class RedBlackTreeFloat {
         return x;
     }
 
+
     private void printTree(final Node node) {
         if (node != Node.NULL) {
             printTree(node.left);
@@ -467,6 +487,7 @@ final public class RedBlackTreeFloat {
             printTree(node.right);
         }
     }
+
 
     /**
      * Tree node.
@@ -490,6 +511,7 @@ final public class RedBlackTreeFloat {
         int color;
         int size;
 
+
         static {
             NULL = new Node(Float.NaN);
             NULL.key = Float.NaN;
@@ -500,6 +522,7 @@ final public class RedBlackTreeFloat {
             NULL.size = 0;
         }
 
+
         Node(float element) {
             this.key = element;
             this.left = NULL;
@@ -509,16 +532,18 @@ final public class RedBlackTreeFloat {
             this.size = 1;
         }
 
+
         public String toString() {
-            StringBuffer buf = new StringBuffer();
-            buf.append("key: ");
-            buf.append(key);
-            buf.append(", size: ");
-            buf.append(size);
-            buf.append(", color: ");
-            buf.append(color == RED ? "RED" : color == BLACK ? "BLACK" : "?");
-            return buf.toString();
+            final StringBuilder builder = new StringBuilder();
+            builder.append("key: ");
+            builder.append(key);
+            builder.append(", size: ");
+            builder.append(size);
+            builder.append(", color: ");
+            builder.append(color == RED ? "RED" : color == BLACK ? "BLACK" : "?");
+            return builder.toString();
         }
+
 
         public void clear() {
             if (this != NULL) {
@@ -530,6 +555,7 @@ final public class RedBlackTreeFloat {
                 this.size = 1;
             }
         }
+
 
         static boolean verifyNull() {
             assert Float.isNaN(NULL.key);

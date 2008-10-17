@@ -1,4 +1,4 @@
-/***
+/*
  * Image/J Plugins
  * Copyright (C) 2002-2008 Jarek Sacha
  *
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.util.progress;
 
@@ -31,30 +32,35 @@ import java.util.List;
  * @author Jarek Sacha
  */
 public class DefaultProgressReporter implements ProgressReporter {
-    protected final List progressListeners = new ArrayList();
+    protected final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
     private double currentProgress;
+
 
     public double currentProgress() {
         return currentProgress;
     }
 
-    public void addProgressListener(ProgressListener l) {
+
+    public void addProgressListener(final ProgressListener l) {
         progressListeners.add(l);
     }
 
-    public void removeProgressListener(ProgressListener l) {
+
+    public void removeProgressListener(final ProgressListener l) {
         progressListeners.remove(l);
     }
+
 
     public void removeAllProgressListener() {
         progressListeners.clear();
     }
 
+
     /**
      * Update value of {@link #currentProgress}, value must be not less than 0 and not more than 1.
      * <p/>
      * This method is used when progress needs to be updated <strong>without notifying the listeners</strong>.
-     * To update profress and update listeners use {@link #notifyProgressListeners(double)}.
+     * To update progress and update listeners use {@link #notifyProgressListeners(double)}.
      *
      * @param progress new value of {@link #currentProgress}.
      * @see #notifyProgressListeners()
@@ -69,6 +75,7 @@ public class DefaultProgressReporter implements ProgressReporter {
         currentProgress = progress;
     }
 
+
     /**
      * Notify listeners of current value of progress.
      * Progress message is an empty string.
@@ -80,11 +87,12 @@ public class DefaultProgressReporter implements ProgressReporter {
         if (numberOfListeners > 0) {
             final ProgressEvent e = new ProgressEvent(this, currentProgress);
             for (int i = 0; i < numberOfListeners; i++) {
-                final ProgressListener l = (ProgressListener) progressListeners.get(i);
+                final ProgressListener l = progressListeners.get(i);
                 l.progressNotification(e);
             }
         }
     }
+
 
     /**
      * Set new progress value and notify listeners. A convenience method that can be used instead
@@ -99,6 +107,7 @@ public class DefaultProgressReporter implements ProgressReporter {
         notifyProgressListeners(progress, "");
     }
 
+
     /**
      * Set new progress value and notify listeners.
      *
@@ -111,7 +120,7 @@ public class DefaultProgressReporter implements ProgressReporter {
         if (numberOfListeners > 0) {
             final ProgressEvent e = new ProgressEvent(this, currentProgress, message);
             for (int i = 0; i < numberOfListeners; i++) {
-                final ProgressListener l = (ProgressListener) progressListeners.get(i);
+                final ProgressListener l = progressListeners.get(i);
                 l.progressNotification(e);
             }
         }

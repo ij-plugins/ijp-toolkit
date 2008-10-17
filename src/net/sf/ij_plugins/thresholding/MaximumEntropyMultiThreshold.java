@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2006 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.thresholding;
 
@@ -28,7 +29,6 @@ import java.util.List;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
  */
 public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
@@ -69,19 +69,18 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
         notifyProgressListeners(0.02, "Find an interval that maximizes the entropy");
         double bestE = Double.NEGATIVE_INFINITY;
         int[] bestInterval = null;
-        final int percStep = 10;
-        final int progressStep = intervals.length > percStep ? intervals.length / percStep : 1;
+        final int percentStep = 10;
+        final int progressStep = intervals.length > percentStep ? intervals.length / percentStep : 1;
         for (int i = 0; i < intervals.length; i++) {
             if (i % progressStep == 0) {
-                final int percProgress = (int) Math.round(i / (double) intervals.length * 100);
-                IJDebug.log("Interval analysis " + percProgress + "%");
-                notifyProgressListeners(percProgress / 100.0, "Interval analysis " + percProgress + "%");
+                final int percentProgress = (int) Math.round(i / (double) intervals.length * 100);
+                IJDebug.log("Interval analysis " + percentProgress + "%");
+                notifyProgressListeners(percentProgress / 100.0, "Interval analysis " + percentProgress + "%");
             }
             final int[] interval = intervals[i];
             double e = 0;
             int lastT = min;
-            for (int j = 0; j < interval.length; j++) {
-                final int t = interval[j];
+            for (final int t : interval) {
                 e += intervalEntropy(lastT, t);
                 lastT = t;
             }
@@ -113,7 +112,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
             throw new IllegalArgumentException("Argument 'nbDivisions' must be greater than 0.");
         }
 
-        final List intervals = new ArrayList();
+        final List<int[]> intervals = new ArrayList<int[]>();
         if (nbDivisions == 1) {
             for (int n = min + 1; n < max; ++n) {
                 intervals.add(new int[]{n});
@@ -124,8 +123,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
                 int[][] subIntervals = intervals(nbDivisions - 1, n, max);
 
                 // combine
-                for (int i = 0; i < subIntervals.length; i++) {
-                    int[] subInterval = subIntervals[i];
+                for (final int[] subInterval : subIntervals) {
                     int[] interval = new int[subInterval.length + 1];
                     interval[0] = n;
                     System.arraycopy(subInterval, 0, interval, 1, subInterval.length);
@@ -134,15 +132,16 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
             }
         }
 
-        return (int[][]) intervals.toArray(new int[intervals.size()][]);
+        return intervals.toArray(new int[intervals.size()][]);
     }
+
 
     /**
      * @param begin first index to evaluate (inclusive).
      * @param end   last index to evaluate (exclusive).
      * @return entropy with in the interval.
      */
-    private double intervalEntropy(int begin, int end) {
+    private double intervalEntropy(final int begin, final int end) {
 
         Double ie = intervalEntropy[begin][end];
         if (ie == null) {
@@ -159,13 +158,14 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
                     e -= a * Math.log(a);
                 }
             }
-            ie = new Double(e);
+            ie = e;
             intervalEntropy[begin][end] = ie;
         }
 
 
-        return ie.doubleValue();
+        return ie;
     }
+
 
     private static double sum(final double[] hist, final int begin, final int end) {
         double s = 0;

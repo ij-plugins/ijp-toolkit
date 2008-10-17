@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.util;
 
@@ -24,12 +25,12 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Text related utilities.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @created July 16, 2002
  */
 
@@ -49,13 +50,15 @@ public class TextUtil {
      *                     number.
      * @return Strung value interpreted as a floating point number.
      */
-    public static float parseFloat(String str, float defaultValue) {
+    public static float parseFloat(final String str, final float defaultValue) {
+
         float f = defaultValue;
         if (str != null) {
             try {
                 f = Float.parseFloat(str);
             }
-            catch (NumberFormatException ex) {
+            catch (final NumberFormatException ex) {
+                f = defaultValue;
             }
         }
 
@@ -70,13 +73,14 @@ public class TextUtil {
      * @param defaultValue Value returned if <code>str</code> can not be parsed as a integer.
      * @return String value interpreted as an integer.
      */
-    public static int parseInt(String str, int defaultValue) {
+    public static int parseInt(final String str, final int defaultValue) {
         int i = defaultValue;
         if (str != null) {
             try {
                 i = Integer.parseInt(str);
             }
-            catch (NumberFormatException ex) {
+            catch (final NumberFormatException ex) {
+                i = defaultValue;
             }
         }
 
@@ -91,20 +95,20 @@ public class TextUtil {
      * @return int array containing parsed numbers
      * @throws IllegalArgumentException In case of parsing error.
      */
-    public static int[] parseIntArray(String str)
-            throws IllegalArgumentException {
-        StringReader reader = new StringReader(str);
-        StreamTokenizer tokenizer = new StreamTokenizer(reader);
+    public static int[] parseIntArray(final String str) throws IllegalArgumentException {
+
+        final StringReader reader = new StringReader(str);
+        final StreamTokenizer tokenizer = new StreamTokenizer(reader);
         tokenizer.parseNumbers();
 
-        ArrayList tokens = new ArrayList();
+        final List<Integer> tokens = new ArrayList<Integer>();
         try {
             int id = tokenizer.nextToken();
             while (id != StreamTokenizer.TT_EOF) {
                 if (id != StreamTokenizer.TT_NUMBER) {
                     throw new IllegalArgumentException("Cannot parse string as an array of integers...");
                 }
-                tokens.add(new Integer((int) tokenizer.nval));
+                tokens.add((int) tokenizer.nval);
                 id = tokenizer.nextToken();
             }
 
@@ -112,13 +116,13 @@ public class TextUtil {
                 throw new IllegalArgumentException("Input string does not contain any numbers.");
             }
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
             throw new IllegalArgumentException("Unexpected error extracting tokens: " + ex);
         }
 
-        int[] a = new int[tokens.size()];
+        final int[] a = new int[tokens.size()];
         for (int i = 0; i < a.length; ++i) {
-            a[i] = ((Integer) tokens.get(i)).intValue();
+            a[i] = tokens.get(i);
         }
 
         return a;
@@ -132,13 +136,13 @@ public class TextUtil {
      * @return float array containing parsed numbers.
      * @throws IllegalArgumentException In case of parsing error.
      */
-    public static float[] parseFloatArray(String str)
-            throws IllegalArgumentException {
-        StringReader reader = new StringReader(str);
-        StreamTokenizer tokenizer = new StreamTokenizer(reader);
+    public static float[] parseFloatArray(final String str) throws IllegalArgumentException {
+
+        final StringReader reader = new StringReader(str);
+        final StreamTokenizer tokenizer = new StreamTokenizer(reader);
         tokenizer.parseNumbers();
 
-        ArrayList tokens = new ArrayList();
+        final List<Float> tokens = new ArrayList<Float>();
         try {
             int id = tokenizer.nextToken();
             while (id != StreamTokenizer.TT_EOF) {
@@ -153,13 +157,13 @@ public class TextUtil {
                 throw new IllegalArgumentException("Input string does not contain any numbers.");
             }
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
             throw new IllegalArgumentException("Unexpected error extracting tokens: " + ex);
         }
 
-        float[] f = new float[tokens.size()];
+        final float[] f = new float[tokens.size()];
         for (int i = 0; i < f.length; ++i) {
-            f[i] = ((Float) tokens.get(i)).floatValue();
+            f[i] = tokens.get(i);
         }
 
         return f;

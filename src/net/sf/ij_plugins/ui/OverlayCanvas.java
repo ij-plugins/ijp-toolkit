@@ -36,7 +36,10 @@ import java.awt.geom.AffineTransform;
  * @since Feb 11, 2008
  */
 public final class OverlayCanvas extends ImageCanvas {
+
     private Iterable<ShapeOverlay> overlays;
+    private static final long serialVersionUID = 4763707694765672142L;
+
 
     public OverlayCanvas(final ImagePlus imp) {
         super(imp);

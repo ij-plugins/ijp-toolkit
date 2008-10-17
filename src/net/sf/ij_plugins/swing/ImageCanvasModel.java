@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,52 +17,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.swing;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Initial implemntation based on class PaintModel from Andrei Cioroianu article <i>Prototyping
+ * Initial implementation based on class PaintModel from Andrei Cioroianu article <i>Prototyping
  * Desktop Applications</i> (http://www.onjava.com/pub/a/onjava/2004/04/28/desktop.html).
  */
 public class ImageCanvasModel extends PropertyChangeSupport {
     private static final long serialVersionUID = 1L;
 
-    public static final String BACK_COLOR_PROPERTY
-            = "BACK_COLOR_PROPERTY";
-    public static final String BACK_IMAGE_PROPERTY
-            = "BACK_IMAGE_PROPERTY";
-    public static final String ZOOM_FACTOR_PROPERTY
-            = "ZOOM_FACTOR_PROPERTY";
-    public static final String TOOL_CLASS_PROPERTY
-            = "TOOL_CLASS_PROPERTY";
-    public static final String TOOL_COLOR_PROPERTY
-            = "TOOL_COLOR_PROPERTY";
-    public static final String TOOL_STROKE_PROPERTY
-            = "TOOL_STROKE_PROPERTY";
-    public static final String LAST_TOOL_PROPERTY
-            = "LAST_TOOL_PROPERTY";
+    public static final String BACK_COLOR_PROPERTY = "BACK_COLOR_PROPERTY";
+    public static final String BACK_IMAGE_PROPERTY = "BACK_IMAGE_PROPERTY";
+    public static final String ZOOM_FACTOR_PROPERTY = "ZOOM_FACTOR_PROPERTY";
+    public static final String TOOL_CLASS_PROPERTY = "TOOL_CLASS_PROPERTY";
+    public static final String TOOL_COLOR_PROPERTY = "TOOL_COLOR_PROPERTY";
+    public static final String TOOL_STROKE_PROPERTY = "TOOL_STROKE_PROPERTY";
+    public static final String LAST_TOOL_PROPERTY = "LAST_TOOL_PROPERTY";
 
     public static final String IMAGE_PROPERTY = "image";
 
-    public static final Color BACK_COLOR_INIT_VALUE
-            = Color.white;
-    public static final Image BACK_IMAGE_INIT_VALUE
-            = null;
-    public static final float ZOOM_FACTOR_INIT_VALUE
-            = 1.0f;
-//    public static final Class TOOL_CLASS_INIT_VALUE
-//            = NoteTool.class;
-    public static final Color TOOL_COLOR_INIT_VALUE
-            = Color.black;
+    public static final Color BACK_COLOR_INIT_VALUE = Color.white;
+    public static final Image BACK_IMAGE_INIT_VALUE = null;
+    public static final float ZOOM_FACTOR_INIT_VALUE = 1.0f;
+    //    public static final Class TOOL_CLASS_INIT_VALUE = NoteTool.class;
+    public static final Color TOOL_COLOR_INIT_VALUE = Color.black;
     public static final BasicStroke TOOL_STROKE_INIT_VALUE
-            = new BasicStroke(5, BasicStroke.CAP_ROUND,
-            BasicStroke.JOIN_ROUND);
+            = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 
     private Color backColor;
     private Image backImage;
@@ -70,11 +61,12 @@ public class ImageCanvasModel extends PropertyChangeSupport {
     private Class toolClass;
     private Color toolColor;
     private Stroke toolStroke;
-//    private LinkedList toolList;
+    //    private LinkedList toolList;
     private BufferedImage image;
-    private Map itemMap = new HashMap();
+    private Map<String, ImageCanvasItem> itemMap = new HashMap<String, ImageCanvasItem>();
 
-    public ImageCanvasModel(Object source) {
+
+    public ImageCanvasModel(final Object source) {
         super(source);
         backColor = BACK_COLOR_INIT_VALUE;
         backImage = BACK_IMAGE_INIT_VALUE;
@@ -84,6 +76,7 @@ public class ImageCanvasModel extends PropertyChangeSupport {
         toolStroke = TOOL_STROKE_INIT_VALUE;
 //        toolList = new LinkedList();
     }
+
 
     /**
      * Associates the specified <code>item</code> with the specified <code>key</code> that is
@@ -99,18 +92,17 @@ public class ImageCanvasModel extends PropertyChangeSupport {
      * being stored in this map. java.lang.IllegalArgumentException - if some aspect of this key or
      * value prevents it from being stored in this map. java.lang.NullPointerException - this map
      * does not permit null keys or values, and the specified key or value is null.
-     *
-     * @param key
-     * @param item
      */
-    public void putItem(String key, ImageCanvasItem item) {
+    public void putItem(final String key, final ImageCanvasItem item) {
         // TODO: Correct javadoc
         itemMap.put(key, item);
     }
 
+
     public Color getBackColor() {
         return backColor;
     }
+
 
     public void setBackColor(Color newBackColor) {
         Color oldBackColor = backColor;
@@ -119,9 +111,11 @@ public class ImageCanvasModel extends PropertyChangeSupport {
                 oldBackColor, newBackColor);
     }
 
+
     public Image getBackImage() {
         return backImage;
     }
+
 
     public void setBackImage(Image newBackImage) {
         Image oldBackImage = backImage;
@@ -130,21 +124,23 @@ public class ImageCanvasModel extends PropertyChangeSupport {
                 oldBackImage, newBackImage);
     }
 
+
     public float getZoomFactor() {
         return zoomFactor;
     }
 
+
     public void setZoomFactor(float newZoomFactor) {
         float oldZoomFactor = zoomFactor;
         zoomFactor = newZoomFactor;
-        firePropertyChange(ZOOM_FACTOR_PROPERTY,
-                new Float(oldZoomFactor),
-                new Float(newZoomFactor));
+        firePropertyChange(ZOOM_FACTOR_PROPERTY, oldZoomFactor, newZoomFactor);
     }
+
 
     public Class getToolClass() {
         return toolClass;
     }
+
 
     public void setToolClass(Class newToolClass) {
         Class oldToolClass = toolClass;
@@ -153,9 +149,11 @@ public class ImageCanvasModel extends PropertyChangeSupport {
                 oldToolClass, newToolClass);
     }
 
+
     public Color getToolColor() {
         return toolColor;
     }
+
 
     public void setToolColor(Color newToolColor) {
         Color oldToolColor = toolColor;
@@ -164,9 +162,11 @@ public class ImageCanvasModel extends PropertyChangeSupport {
                 oldToolColor, newToolColor);
     }
 
+
     public Stroke getToolStroke() {
         return toolStroke;
     }
+
 
     public void setToolStroke(Stroke newToolStroke) {
         Stroke oldToolStroke = toolStroke;
@@ -175,9 +175,11 @@ public class ImageCanvasModel extends PropertyChangeSupport {
                 oldToolStroke, newToolStroke);
     }
 
+
     public BufferedImage getImage() {
         return image;
     }
+
 
     public void setImage(BufferedImage image) {
         BufferedImage oldImage = this.image;

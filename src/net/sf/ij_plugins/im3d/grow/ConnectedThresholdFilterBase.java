@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002,2003 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.im3d.grow;
 
@@ -30,54 +31,41 @@ import java.util.LinkedList;
  * intensities are within given threshold limits. Min limit is inclusive, max limit is exclusive.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @since April 29, 2002
  */
 
-abstract public class ConnectedThresholdFilterBase {
+public abstract class ConnectedThresholdFilterBase {
     /**
      * Value of a member pixel in output image
      */
-    public final static byte MARKER = (byte) 0xff;
+    public static final byte MARKER = (byte) 0xff;
 
     /**
      * Value of background (not member) pixel in output image
      */
-    public final static byte BACKGROUND = (byte) 0x00;
+    public static final byte BACKGROUND = (byte) 0x00;
 
     /**
      * Used to mark pixels that were determined to not be members. This value is changed to
      * BACKGROUND in the output image.
      */
-    protected final static byte NOT_MEMBER = (byte) 0x01;
+    protected static final byte NOT_MEMBER = (byte) 0x01;
 
     /**
-     * Pixels of the destibation image
+     * Pixels of the destination image
      */
     protected byte[][] destPixels = null;
 
     /**
      * Grow candidates
      */
-    protected LinkedList candidatePoints = new LinkedList();
+    protected LinkedList<Point3DInt> candidatePoints = new LinkedList<Point3DInt>();
 
-    protected int xSize
-    ,
-    ySize
-    ,
-    zSize;
-    protected int xMin
-    ,
-    xMax;
-    protected int yMin
-    ,
-    yMax;
-    protected int zMin
-    ,
-    zMax;
-    protected int valueMin
-    ,
-    valueMax;
+    protected int xSize, ySize, zSize;
+    protected int xMin, xMax;
+    protected int yMin, yMax;
+    protected int zMin, zMax;
+    protected int valueMin, valueMax;
 
 
     /**
@@ -85,7 +73,7 @@ abstract public class ConnectedThresholdFilterBase {
      *
      * @param valueMax The new ValueMax value
      */
-    final public void setValueMax(int valueMax) {
+    public final void setValueMax(final int valueMax) {
         this.valueMax = valueMax;
     }
 
@@ -95,7 +83,7 @@ abstract public class ConnectedThresholdFilterBase {
      *
      * @param valueMin The new ValueMin value
      */
-    final public void setValueMin(int valueMin) {
+    public final void setValueMin(final int valueMin) {
         this.valueMin = valueMin;
     }
 
@@ -105,7 +93,7 @@ abstract public class ConnectedThresholdFilterBase {
      *
      * @return The ValueMax value
      */
-    final public int getValueMax() {
+    public final int getValueMax() {
         return valueMax;
     }
 
@@ -115,7 +103,7 @@ abstract public class ConnectedThresholdFilterBase {
      *
      * @return The ValueMin value
      */
-    final public int getValueMin() {
+    public final int getValueMin() {
         return valueMin;
     }
 
@@ -128,7 +116,7 @@ abstract public class ConnectedThresholdFilterBase {
      * @return Image in which extracted pixels have value MARKER all other pixels have value
      *         BACKGROUND.
      */
-    final public ImageStack run(ImageStack src, Point3DInt seed) {
+    public final ImageStack run(final ImageStack src, final Point3DInt seed) {
 
         initialize(src);
 
@@ -137,7 +125,7 @@ abstract public class ConnectedThresholdFilterBase {
 
         // Iterate while there are still candidates to check.
         while (!candidatePoints.isEmpty()) {
-            Point3DInt p = (Point3DInt) candidatePoints.removeFirst();
+            Point3DInt p = candidatePoints.removeFirst();
             checkForGrow(p.x - 1, p.y, p.z);
             checkForGrow(p.x + 1, p.y, p.z);
             checkForGrow(p.x, p.y - 1, p.z);
@@ -150,7 +138,6 @@ abstract public class ConnectedThresholdFilterBase {
         return createOutputStack();
     }
 
-
     /*
     *
     */
@@ -160,7 +147,7 @@ abstract public class ConnectedThresholdFilterBase {
      *
      * @param src Description of the Parameter
      */
-    final private void initialize(ImageStack src) {
+    private void initialize(final ImageStack src) {
         createHandleToSrcPixels(src);
 
         candidatePoints.clear();
@@ -184,10 +171,12 @@ abstract public class ConnectedThresholdFilterBase {
 
     /**
      * Create handle to source pixels, e.g. byte[][] srcPixels. This method is called at the
-     * begining of the initialize method. This method should only modify handle to source piels that
+     * beginning of the initialize method. This method should only modify handle to source pixels that
      * is defined in the derived class. This handle is used by checkForGrow()
+     *
+     * @param src source stack.
      */
-    abstract protected void createHandleToSrcPixels(ImageStack src);
+    protected abstract void createHandleToSrcPixels(final ImageStack src);
 
 
     /**
@@ -196,22 +185,23 @@ abstract public class ConnectedThresholdFilterBase {
      * <p/>
      * This method modifies 'candidatePoints' and 'destPixels'.
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param z z coordinate
      */
-    abstract protected void checkForGrow(int x, int y, int z);
+    protected abstract void checkForGrow(final int x, final int y, final int z);
+
 
     /**
      * Description of the Method
      *
      * @return Description of the Return Value
      */
-    final private ImageStack createOutputStack() {
-        ImageStack dest = new ImageStack(xSize, ySize);
-        int sliceSize = xSize * ySize;
+    private ImageStack createOutputStack() {
+        final ImageStack dest = new ImageStack(xSize, ySize);
+        final int sliceSize = xSize * ySize;
         for (int z = 0; z < zSize; ++z) {
-            byte[] slicePixels = destPixels[z];
+            final byte[] slicePixels = destPixels[z];
             for (int i = 0; i < sliceSize; ++i) {
                 if (slicePixels[i] == NOT_MEMBER) {
                     slicePixels[i] = BACKGROUND;

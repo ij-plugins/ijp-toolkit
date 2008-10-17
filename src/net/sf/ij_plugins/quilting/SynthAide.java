@@ -2,7 +2,7 @@
  * Copyright (C) 2002 Nick Vavra
  *
  * Image/J Plugins
- * Copyright (C) 2004 Jarek Sacha
+ * Copyright (C) 2004-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -95,7 +95,7 @@ public class SynthAide {
      */
     public static LinkedList lessThanEqual(double[][] vals, double threshold) {
 
-        LinkedList list = new LinkedList();
+        final LinkedList<TwoDLoc> list = new LinkedList<TwoDLoc>();
         for (int r = 0; r < vals.length; r++) {
             for (int c = 0; c < vals[r].length; c++) {
                 if (vals[r][c] >= 0 && vals[r][c] <= threshold) {
@@ -127,7 +127,7 @@ public class SynthAide {
 
 
     /**
-     * This computes the sum (accross channels) of squared differences between the pixel values at
+     * This computes the sum (across channels) of squared differences between the pixel values at
      * the given coordinate in the given views.
      */
     public static int ssd(View view1, View view2, int x, int y) {

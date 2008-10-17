@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,49 +17,50 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
+
 package net.sf.ij_plugins.multiband;
 
 import ij.ImagePlus;
 import ij.process.FloatProcessor;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
- * Finds edges in a vector valued image by computing maximum Euclidian distance within 3x3
+ * Finds edges in a vector valued image by computing maximum Euclidean distance within 3x3
  * neighbourhood. The distance is computed between opposite pixels in the neighbourhood, that is
  * four different distances are compared.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class VectorDifferenceEdgeOperator {
-    public static FloatProcessor run(ImagePlus imp) {
-        VectorProcessor vp = new VectorProcessor(imp);
-        imp = null;
+
+
+    public static FloatProcessor run(final ImagePlus imp) {
+        final VectorProcessor vp = new VectorProcessor(imp);
         return run(vp);
     }
 
 
-    public static FloatProcessor run(VectorProcessor vp) {
+    public static FloatProcessor run(final VectorProcessor vp) {
 
         final int width = vp.getWidth();
         final int height = vp.getHeight();
 
-        FloatProcessor dest = new FloatProcessor(width, height);
+        final FloatProcessor dest = new FloatProcessor(width, height);
 
-        Rectangle roi = new Rectangle(1, 1, width - 2, height - 2);
+        final Rectangle roi = new Rectangle(1, 1, width - 2, height - 2);
         vp.setRoi(roi);
 
-        VectorProcessor.Iterator iterator = vp.iterator();
+        final VectorProcessor.Iterator iterator = vp.iterator();
         while (iterator.hasNext()) {
-            VectorProcessor.Neighborhood3x3 vn = (VectorProcessor.Neighborhood3x3) iterator.next();
+            VectorProcessor.Neighborhood3x3 vn = iterator.next();
 
             double d = VectorMath.distance(vn.p1, vn.p6);
             d = Math.max(d, VectorMath.distance(vn.p2, vn.p7));
             d = Math.max(d, VectorMath.distance(vn.p3, vn.p8));
             d = Math.max(d, VectorMath.distance(vn.p4, vn.p9));
-
 
             dest.putPixelValue(vn.x, vn.y, d);
         }

@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,23 +17,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
+
 package net.sf.ij_plugins.util.progress;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Utility for aggregating progress events from multiple {@link ProgressReporter}'s
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
  */
 public class ProgressAccumulator
         extends DefaultProgressReporter
         implements ProgressListener {
+
+
     private static class Data {
         double weight;
         String message;
@@ -44,13 +45,16 @@ public class ProgressAccumulator
         }
     }
 
-    final private Map reporters = new HashMap();
+
+    private final Map<ProgressReporter, Data> reporters = new HashMap<ProgressReporter, Data>();
     private double minimumChange = 0.01;
     private double lastReportedProgress = -1;
+
 
     public double getMinimumChange() {
         return minimumChange;
     }
+
 
     public void setMinimumChange(final double minimumChange) {
         if (minimumChange < 0 || minimumChange > 1) {
@@ -60,33 +64,36 @@ public class ProgressAccumulator
         this.minimumChange = minimumChange;
     }
 
+
     /**
      * Add progress reporter with default weight of <code>1</code>. If reporter already exists its
      * weight will be changed to <code>1</code>.
      *
-     * @param reporter
+     * @param reporter reporter
      */
     public void addProgressReporter(final ProgressReporter reporter) {
         addProgressReporter(reporter, 1);
     }
 
-    /**
-     * Add progress <code>reporter</code> with given <code>weight</code>. If reporter already exists
-     * its <code>weight</code> and <code>message</code> will be updated.
-     *
-     * @param reporter
-     * @param weight
-     */
-    public void addProgressReporter(final ProgressReporter reporter, final double weight) {
-        addProgressReporter(reporter, weight, null);
-    }
 
     /**
      * Add progress <code>reporter</code> with given <code>weight</code>. If reporter already exists
      * its <code>weight</code> and <code>message</code> will be updated.
      *
-     * @param reporter
-     * @param weight
+     * @param reporter reporter
+     * @param weight   weight
+     */
+    public void addProgressReporter(final ProgressReporter reporter, final double weight) {
+        addProgressReporter(reporter, weight, null);
+    }
+
+
+    /**
+     * Add progress <code>reporter</code> with given <code>weight</code>. If reporter already exists
+     * its <code>weight</code> and <code>message</code> will be updated.
+     *
+     * @param reporter reporter
+     * @param weight   weight
      * @param message  message that will be reported when this reporter send progress event. If
      *                 <code>null</code> the original message send by reporter will be used.
      */
@@ -109,9 +116,7 @@ public class ProgressAccumulator
     }
 
     public void removeAllProgressReporter() {
-        final Set keys = reporters.keySet();
-        for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
-            final ProgressReporter progressReporter = (ProgressReporter) iterator.next();
+        for (final ProgressReporter progressReporter : reporters.keySet()) {
             progressReporter.removeProgressListener(this);
         }
         reporters.clear();
@@ -140,12 +145,10 @@ public class ProgressAccumulator
         // Sum all weight
         double weightSum = 0;
         double progressSum = 0;
-        final Set entries = reporters.entrySet();
-        for (final Iterator i = entries.iterator(); i.hasNext();) {
-            final Map.Entry entry = (Map.Entry) i.next();
-            final Data data = (Data) entry.getValue();
+        for (final Map.Entry<ProgressReporter, Data> entry : reporters.entrySet()) {
+            final Data data = entry.getValue();
             weightSum += data.weight;
-            double progress = ((ProgressReporter) entry.getKey()).currentProgress();
+            double progress = entry.getKey().currentProgress();
             progressSum += progress * data.weight;
         }
 
@@ -153,7 +156,7 @@ public class ProgressAccumulator
         assert weightSum > 0;
 
         final double progress = progressSum / weightSum;
-        final Data data = (Data) reporters.get(reporter);
+        final Data data = reporters.get(reporter);
 
         final String message = data.message != null
                 ? data.message

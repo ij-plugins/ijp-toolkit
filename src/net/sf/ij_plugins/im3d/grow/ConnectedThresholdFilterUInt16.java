@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002,2003 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.im3d.grow;
 
@@ -28,7 +29,6 @@ import net.sf.ij_plugins.im3d.Point3DInt;
  * intensities are within given threshold limits. Min limit is inclusive, max limit is exclusive.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @since April 29, 2002
  */
 
@@ -42,10 +42,10 @@ public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase
     /*
     *
     */
-    final protected void createHandleToSrcPixels(ImageStack src) {
-        Object[] imageArray = src.getImageArray();
+    protected final void createHandleToSrcPixels(final ImageStack src) {
+        final Object[] imageArray = src.getImageArray();
 
-        int n = src.getSize();
+        final int n = src.getSize();
         srcPixels = new short[n][];
         for (int z = 0; z < n; ++z) {
             srcPixels[z] = (short[]) imageArray[z];
@@ -59,16 +59,16 @@ public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase
     /*
     *
     */
-    final protected void checkForGrow(int x, int y, int z) {
+    protected final void checkForGrow(final int x, final int y, final int z) {
         if (x < xMin || x >= xMax ||
                 y < yMin || y >= yMax ||
                 z < zMin || z >= zMax) {
             return;
         }
 
-        int offset = y * xSize + x;
+        final int offset = y * xSize + x;
         if (destPixels[z][offset] == BACKGROUND) {
-            int value = srcPixels[z][offset] & 0xffff;
+            final int value = srcPixels[z][offset] & 0xffff;
             if (value >= valueMin && value < valueMax) {
                 destPixels[z][offset] = MARKER;
                 candidatePoints.addLast(new Point3DInt(x, y, z));
