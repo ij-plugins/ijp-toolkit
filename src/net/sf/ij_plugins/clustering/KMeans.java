@@ -26,7 +26,7 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.Random;
 
 /**
@@ -60,12 +60,12 @@ public final class KMeans {
     }
 
     /**
-     * Perform k-means clostering of the input <code>stack</code>. Elements of the
+     * Perform k-means clustering of the input <code>stack</code>. Elements of the
      * <code>stack</code> must be of type <code>FloatProcessor</code>.
      *
      * @param stack stack representing a multi-band image.
      */
-    final public ByteProcessor run(final ImageStack stack) {
+    public ByteProcessor run(final ImageStack stack) {
 
         if (stack.getSize() < 1) {
             throw new IllegalArgumentException("Input stack cannot be empty");
@@ -88,9 +88,9 @@ public final class KMeans {
     /**
      * Return location of cluster centers.
      *
-     * @return array of clustr centers. First index refers to cluster number.
+     * @return array of cluster centers. First index refers to cluster number.
      */
-    final public float[][] getClusterCenters() {
+    public float[][] getClusterCenters() {
         return clusterCenters;
     }
 
@@ -101,7 +101,7 @@ public final class KMeans {
      *
      * @return stack representing cluster optimization, can return <code>null</code>.
      */
-    final public ImageStack getClusterAnimation() {
+    public ImageStack getClusterAnimation() {
         return clusterAnimation;
     }
 
@@ -109,7 +109,7 @@ public final class KMeans {
      * Returns stack where discovered clusters can be represented by replacing pixel values in a
      * cluster by the value of the centroid of that cluster.
      */
-    final public ImageStack getCentroidValueImage() {
+    public ImageStack getCentroidValueImage() {
         if (clusterCenters == null) {
             throw new IllegalStateException("Need to perform clustering first.");
         }
@@ -123,7 +123,7 @@ public final class KMeans {
         final ByteProcessor dest = new ByteProcessor(vp.getWidth(), vp.getHeight());
         final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
         while (iterator.hasNext()) {
-            final float[] v = (float[]) iterator.next();
+            final float[] v = iterator.next();
             final int c = closestCluster(v, clusterCenters);
             dest.putPixel(iterator.getX(), iterator.getY(), c);
         }
@@ -143,10 +143,10 @@ public final class KMeans {
         final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
         final Object[] pixels = s.getImageArray();
         while (iterator.hasNext()) {
-            final float[] v = (float[]) iterator.next();
+            final float[] v = iterator.next();
             final int c = closestCluster(v, clusterCenters);
             for (int j = 0; j < numberOfValues; ++j) {
-                ((float[]) pixels[j])[iterator.getOffset()] = (float) clusterCenters[c][j];
+                ((float[]) pixels[j])[iterator.getOffset()] = clusterCenters[c][j];
             }
         }
 
@@ -156,11 +156,9 @@ public final class KMeans {
 
     private void printClusters(final String message) {
         IJ.write(message);
-        for (int i = 0; i < clusterCenters.length; i++) {
-            final float[] clusterCenter = clusterCenters[i];
+        for (final float[] clusterCenter : clusterCenters) {
             final StringBuffer buffer = new StringBuffer("  (");
-            for (int j = 0; j < clusterCenter.length; j++) {
-                final float vv = clusterCenter[j];
+            for (final float vv : clusterCenter) {
                 buffer.append(" ").append(vv).append(" ");
             }
             buffer.append(")");
@@ -173,7 +171,7 @@ public final class KMeans {
      */
     private void cluster() {
 
-        // Select initial partitioning - intialize cluster centers
+        // Select initial partitioning - initialize cluster centers
         clusterCenters = generateRandomClusterCenters(vp.getNumberOfValues());
         if (config.isPrintTraceEnabled()) {
             printClusters("Initial clusters");
@@ -232,7 +230,7 @@ public final class KMeans {
             // Compute new cluster centers as the centroids of the clusters
             VectorProcessor.PixelIterator iterator = vp.pixelIterator();
             while (iterator.hasNext()) {
-                final float[] v = (float[]) iterator.next();
+                final float[] v = iterator.next();
                 final int c = closestCluster(v, clusterCenters);
                 newClusterMeans[c].add(v);
             }
@@ -404,8 +402,8 @@ public final class KMeans {
         }
 
         /**
-         * If <code>true</code>, random number generator will be initalized with a
-         * <code>randomizationSeed</code>. If <code>false</code> rundom number generator will be
+         * If <code>true</code>, random number generator will be initialized with a
+         * <code>randomizationSeed</code>. If <code>false</code> random number generator will be
          * initialized using 'current' time.
          *
          * @see #getRandomizationSeed()
@@ -430,7 +428,7 @@ public final class KMeans {
          * Return tolerance used to determine cluster centroid distance. This tolerance is used to
          * determine if a centroid changed location between iterations.
          *
-         * @return cluster centroid location tolerunce.
+         * @return cluster centroid location tolerance.
          */
         public double getTolerance() {
             return tolerance;
@@ -441,7 +439,7 @@ public final class KMeans {
         }
 
         /**
-         * Return <code>true</code> if when an animation ilustrating cluster optimization is
+         * Return <code>true</code> if when an animation illustrating cluster optimization is
          * enabled.
          */
         public boolean isClusterAnimationEnabled() {
@@ -466,7 +464,7 @@ public final class KMeans {
         /**
          * Make duplicate of this object. This a convenience wrapper for {@link #clone()} method.
          *
-         * @return duplivcate of this object.
+         * @return duplicate of this object.
          */
         public Config duplicate() {
             try {
