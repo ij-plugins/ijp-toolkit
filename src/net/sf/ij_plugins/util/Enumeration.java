@@ -1,4 +1,4 @@
-/***
+/*
  * Image/J Plugins
  * Copyright (C) 2002-2008 Jarek Sacha
  *
@@ -17,12 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.util;
 
 import net.sf.ij_plugins.IJPluginsRuntimeException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract base class for representing enumeration. Based on pattern presented by Joshua Bloch in
@@ -32,7 +34,8 @@ import java.util.ArrayList;
  * @created June 18, 2002
  */
 public abstract class Enumeration {
-    private static ArrayList allMembers = new ArrayList();
+
+    private static List<Enumeration> allMembers = new ArrayList<Enumeration>();
 
     private String name;
 
@@ -76,10 +79,8 @@ public abstract class Enumeration {
      * @throws IllegalArgumentException If a member with given <code>memberName</code> cannot be
      *                                  found.
      */
-    public final Enumeration byName(final String memberName)
-            throws IllegalArgumentException {
-        for (int i = 0; i < allMembers.size(); ++i) {
-            final Enumeration member = (Enumeration) allMembers.get(i);
+    public final Enumeration byName(final String memberName) throws IllegalArgumentException {
+        for (final Enumeration member : allMembers) {
             if (member.name.equals(memberName)) {
                 return member;
             }
