@@ -20,6 +20,7 @@
  */
 package net.sf.ij_plugins.grow;
 
+import ij.IJ;
 import ij.plugin.PlugIn;
 
 import javax.swing.*;
@@ -36,19 +37,18 @@ public final class RegionGrowingPlugIn implements PlugIn {
     private static final String TITLE = "Seeded Region Growing";
 
     private static RegionGrowingView view;
-    private static JFrame frame;
+    private static JDialog dialog;
 
     public void run(String arg) {
         if (view == null) {
             view = new RegionGrowingView();
-            frame = new JFrame();
-            frame.setTitle(TITLE);
-            frame.getContentPane().add(view);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            dialog = new JDialog(IJ.getInstance(), TITLE, false);
+            dialog.getContentPane().add(view);
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
 
-        frame.setVisible(true);
+        dialog.setVisible(true);
     }
 }
