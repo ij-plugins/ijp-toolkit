@@ -35,7 +35,7 @@ import java.util.Random;
  * @author Jarek Sacha
  */
 public final class KMeans {
-    private static Config config = new Config();
+    private Config config;
 
     private Rectangle roi;
     private ByteProcessor mask;
@@ -45,10 +45,11 @@ public final class KMeans {
     private ImageStack clusterAnimation;
 
     public KMeans() {
+        this.config = new Config();
     }
 
     public KMeans(final Config config) {
-        KMeans.config = config.duplicate();
+        this.config = config.duplicate();
     }
 
     public void setRoi(final Rectangle roi) {
@@ -64,6 +65,7 @@ public final class KMeans {
      * <code>stack</code> must be of type <code>FloatProcessor</code>.
      *
      * @param stack stack representing a multi-band image.
+     * @return segmented image.
      */
     public ByteProcessor run(final ImageStack stack) {
 
@@ -108,6 +110,8 @@ public final class KMeans {
     /**
      * Returns stack where discovered clusters can be represented by replacing pixel values in a
      * cluster by the value of the centroid of that cluster.
+     *
+     * @return centroid value image
      */
     public ImageStack getCentroidValueImage() {
         if (clusterCenters == null) {
@@ -172,7 +176,7 @@ public final class KMeans {
     private void cluster() {
 
         // Select initial partitioning - initialize cluster centers
-        clusterCenters = generateRandomClusterCenters(vp.getNumberOfValues());
+        clusterCenters = generateRandomClusterCenters();
         if (config.isPrintTraceEnabled()) {
             printClusters("Initial clusters");
         }
@@ -264,11 +268,11 @@ public final class KMeans {
     }
 
     /**
-     * Return index of closest cluster to point <code>x</code>.
+     * Return index of the closest cluster to point <code>x</code>.
      *
-     * @param x
-     * @param clusterCenters
-     * @return
+     * @param x              point coordinates.
+     * @param clusterCenters cluster centers.
+     * @return index of the closest cluster
      */
     private static int closestCluster(final float[] x, final float[][] clusterCenters) {
         double minDistance = Double.MAX_VALUE;
@@ -289,9 +293,9 @@ public final class KMeans {
     /**
      * Distance between points <code>a</code> and <code>b</code>.
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a first point.
+     * @param b second point.
+     * @return distance.
      */
     private static double distance(final float[] a, final float[] b) {
         float sum = 0;
@@ -303,10 +307,9 @@ public final class KMeans {
     }
 
     /**
-     * @param p pattern dimensionality (number of bands in the input image)
-     * @return
+     * @return cluster centers.
      */
-    private float[][] generateRandomClusterCenters(final int p) {
+    private float[][] generateRandomClusterCenters() {
 
         final Random random = config.isRandomizationSeedEnabled()
                 ? new Random(config.getRandomizationSeed())
@@ -352,7 +355,7 @@ public final class KMeans {
      */
     private static final class MeanElement {
         final float[] sum;
-        int count = 0;
+        int count;
 
         public MeanElement(final int elementSize) {
             sum = new float[elementSize];
@@ -390,8 +393,8 @@ public final class KMeans {
         private boolean randomizationSeedEnabled = true;
         private double tolerance = 0.0001;
         private int numberOfClusters = 4;
-        private boolean clusterAnimationEnabled = false;
-        private boolean printTraceEnabled = false;
+        private boolean clusterAnimationEnabled;
+        private boolean printTraceEnabled;
 
         public int getRandomizationSeed() {
             return randomizationSeed;
@@ -406,6 +409,7 @@ public final class KMeans {
          * <code>randomizationSeed</code>. If <code>false</code> random number generator will be
          * initialized using 'current' time.
          *
+         * @return {@code true} when randomization seed is enabled.
          * @see #getRandomizationSeed()
          */
         public boolean isRandomizationSeedEnabled() {
@@ -441,6 +445,8 @@ public final class KMeans {
         /**
          * Return <code>true</code> if when an animation illustrating cluster optimization is
          * enabled.
+         *
+         * @return {@code true} when cluster animation is enabled.
          */
         public boolean isClusterAnimationEnabled() {
             return clusterAnimationEnabled;
@@ -452,6 +458,8 @@ public final class KMeans {
 
         /**
          * Return <code>true</code> if a trace is printed to the ImageJ's Result window.
+         *
+         * @return {@code true} when printing of trace is enabled.
          */
         public boolean isPrintTraceEnabled() {
             return printTraceEnabled;
