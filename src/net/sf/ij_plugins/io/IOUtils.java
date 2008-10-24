@@ -24,6 +24,7 @@ package net.sf.ij_plugins.io;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.io.Opener;
+import ij.process.ImageProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,5 +93,17 @@ public class IOUtils {
         if (!ok) {
             throw new IOException("Error saving image to file: '" + file.getAbsolutePath() + "'.");
         }
+    }
+
+
+    /**
+     * Save image to a file using image TIFF encoder.
+     *
+     * @param ip   image.
+     * @param file destination file.
+     * @throws IOException when image cannot be saved.
+     */
+    public static void saveAsTiff(final ImageProcessor ip, final File file) throws IOException {
+        saveAsTiff(new ImagePlus(file.getName(), ip), file);
     }
 }
