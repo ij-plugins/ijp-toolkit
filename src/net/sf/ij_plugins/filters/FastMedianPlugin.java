@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2006 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,79 +23,88 @@ package net.sf.ij_plugins.filters;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
+import ij.gui.DialogListener;
 import ij.gui.GenericDialog;
-import ij.plugin.filter.PlugInFilter;
-import ij.process.ByteProcessor;
-import ij.process.ColorProcessor;
-import ij.process.FloatProcessor;
+import ij.plugin.filter.ExtendedPlugInFilter;
+import ij.plugin.filter.PlugInFilterRunner;
+import ij.process.Blitter;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.color.ColorProcessorUtils;
+
+import java.awt.AWTEvent;
 
 /**
  * @author Jarek Sacha
- * @version $ Revision: $
  */
 
-public class FastMedianPlugin implements PlugInFilter {
+public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
+
+    private static final int FLAGS = DOES_8G | DOES_16 | DOES_32 | DOES_RGB | KEEP_PREVIEW | PARALLELIZE_STACKS;
+    private static final String TITLE = "Fast Median Filter";
+    private static final String PREFERENCES_PREFIX = FastMedianPlugin.class.getName();
+    private static final String PROPERTYNAME_FILTER_SIZE = "filterSize";
+
+    private int filterSize = 5;
+
     public int setup(String s, ImagePlus imagePlus) {
-        return DOES_8G | DOES_16 | DOES_32 | DOES_RGB | NO_CHANGES;
+        return FLAGS;
     }
+
 
     public void run(final ImageProcessor ip) {
 
-        final GenericDialog genericDialog = new GenericDialog("Fast median parameters");
-        genericDialog.addNumericField("Filter size", 3, 0, 3, "pixels");
-        genericDialog.showDialog();
-
-        if (genericDialog.wasCanceled()) {
-            return;
-        }
-
-        int filterSize = (int) Math.round(genericDialog.getNextNumber());
-
-        final ImageProcessor dest;
         final long start = System.currentTimeMillis();
-        if (ip instanceof ByteProcessor) {
-            dest = run((ByteProcessor) ip, filterSize);
-        } else if (ip instanceof ColorProcessor) {
-            final ByteProcessor[] srcBps = ColorProcessorUtils.splitRGB((ColorProcessor) ip);
-            for (int i = 0; i < srcBps.length; i++) {
-                srcBps[i] = run(srcBps[i], filterSize);
-            }
-            dest = ColorProcessorUtils.mergeRGB(srcBps);
-        } else {
-            final FloatProcessor src = (FloatProcessor) (ip instanceof FloatProcessor
-                    ? ip
-                    : ip.convertToFloat());
-
-            final RunningFilter filter
-                    = new RunningFilter(new RunningMedianOperator(), filterSize, filterSize);
-
-            // Set progress bar
-            if (IJ.getInstance() != null) {
-                filter.setProgressBar(IJ.getInstance().getProgressBar());
-            }
-
-            // Perform filtering
-            dest = filter.run(src);
-        }
+        process(ip, filterSize);
         final long end = System.currentTimeMillis();
-
-        // Show results
-        new ImagePlus("Median", dest).show();
 
         if (IJ.debugMode) {
             IJ.write("Median filtering completed in " + (end - start) + "ms.");
         }
     }
 
-    private static ByteProcessor run(ByteProcessor src, int filterSize) {
-        final FastMedianUInt8 filter = new FastMedianUInt8();
 
-        // Set progress bar
-        if (IJ.getInstance() != null) {
-            filter.setProgressBar(IJ.getInstance().getProgressBar());
+    public int showDialog(final ImagePlus imp, final String command, final PlugInFilterRunner pfr) {
+        loadFromIJPref();
+
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addNumericField("Filter size (n x n)", filterSize, 0, 3, "pixels");
+        dialog.addPreviewCheckbox(pfr);
+        dialog.addDialogListener(this);
+
+        dialog.showDialog();
+
+        if (dialog.wasCanceled()) {
+            return DONE;
         }
-        return filter.run(src, filterSize, filterSize);
+
+        saveToIJPref();
+        return IJ.setupDialog(imp, FLAGS);
+    }
+
+
+    public void setNPasses(final int nPasses) {
+        // ?
+    }
+
+
+    public boolean dialogItemChanged(final GenericDialog dialog, final AWTEvent e) {
+        filterSize = (int) Math.round(dialog.getNextNumber());
+        return filterSize >= 0;
+    }
+
+
+    private void saveToIJPref() {
+        Prefs.set(PREFERENCES_PREFIX + "." + PROPERTYNAME_FILTER_SIZE, filterSize);
+    }
+
+
+    private void loadFromIJPref() {
+        filterSize = (int) Math.round(Prefs.get(PREFERENCES_PREFIX + "." + PROPERTYNAME_FILTER_SIZE, filterSize));
+    }
+
+
+    private static void process(final ImageProcessor ip, final int filterSize) {
+        final ImageProcessor dest = FastMedian.process(ip, filterSize);
+        ip.copyBits(dest, 0, 0, Blitter.COPY);
     }
 }
