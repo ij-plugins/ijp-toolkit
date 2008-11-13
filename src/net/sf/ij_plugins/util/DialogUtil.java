@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.util;
 
@@ -41,13 +42,14 @@ public class DialogUtil {
 
     /**
      * Utility to automatically create ImageJ's GenericDialog for editing bean properties. It uses BeanInfo to extract
-     * display names for each field. If a fields type is not supported irs name will be displayed with a tag
+     * display names for each field. If a fields type is not supported its name will be displayed with a tag
      * "[Unsupported type: class_name]".
      *
-     * @param bean
+     * @param bean  Java bean for which to create dialog.
+     * @param title dialog title.
      * @return <code>true</code> if user closed bean dialog using OK button, <code>false</code> otherwise.
      */
-    static public boolean showGenericDialog(final Object bean, final String title) {
+    public static boolean showGenericDialog(final Object bean, final String title) {
         final BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(bean.getClass());
@@ -60,8 +62,7 @@ public class DialogUtil {
         // Create generic dialog fields for each bean's property
         final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         try {
-            for (int i = 0; i < propertyDescriptors.length; i++) {
-                final PropertyDescriptor pd = propertyDescriptors[i];
+            for (final PropertyDescriptor pd : propertyDescriptors) {
                 final Class type = pd.getPropertyType();
                 if (type.equals(Class.class) && "class".equals(pd.getName())) {
                     continue;
@@ -69,16 +70,16 @@ public class DialogUtil {
 
                 final Object o = PropertyUtils.getSimpleProperty(bean, pd.getName());
                 if (type.equals(Boolean.TYPE)) {
-                    boolean value = ((Boolean) o).booleanValue();
+                    boolean value = (Boolean) o;
                     genericDialog.addCheckbox(pd.getDisplayName(), value);
                 } else if (type.equals(Integer.TYPE)) {
-                    int value = ((Integer) o).intValue();
+                    int value = (Integer) o;
                     genericDialog.addNumericField(pd.getDisplayName(), value, 0);
                 } else if (type.equals(Float.TYPE)) {
                     double value = ((Float) o).doubleValue();
                     genericDialog.addNumericField(pd.getDisplayName(), value, 6, 10, "");
                 } else if (type.equals(Double.TYPE)) {
-                    double value = ((Double) o).doubleValue();
+                    double value = (Double) o;
                     genericDialog.addNumericField(pd.getDisplayName(), value, 6, 10, "");
                 } else {
                     genericDialog.addMessage(pd.getDisplayName() + "[Unsupported type: " + type + "]");
@@ -108,22 +109,18 @@ public class DialogUtil {
 
         // Read fields from generic dialog into bean's properties.
         try {
-            for (int i = 0; i < propertyDescriptors.length; i++) {
-                final PropertyDescriptor pd = propertyDescriptors[i];
+            for (final PropertyDescriptor pd : propertyDescriptors) {
                 final Class type = pd.getPropertyType();
                 final Object propertyValue;
                 if (type.equals(Boolean.TYPE)) {
-                    boolean value = genericDialog.getNextBoolean();
-                    propertyValue = Boolean.valueOf(value);
+                    propertyValue = genericDialog.getNextBoolean();
                 } else if (type.equals(Integer.TYPE)) {
-                    int value = (int) Math.round(genericDialog.getNextNumber());
-                    propertyValue = new Integer(value);
+                    propertyValue = (int) Math.round(genericDialog.getNextNumber());
                 } else if (type.equals(Float.TYPE)) {
-                    double value = genericDialog.getNextNumber();
+                    final double value = genericDialog.getNextNumber();
                     propertyValue = new Float(value);
                 } else if (type.equals(Double.TYPE)) {
-                    double value = genericDialog.getNextNumber();
-                    propertyValue = new Double(value);
+                    propertyValue = genericDialog.getNextNumber();
                 } else {
                     continue;
                 }
