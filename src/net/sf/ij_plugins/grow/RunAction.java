@@ -26,12 +26,12 @@ import net.sf.ij_plugins.ui.AbstractModelAction;
 import java.awt.event.ActionEvent;
 
 /**
- * Date: Feb 18, 2008
- * Time: 10:01:46 PM
- *
  * @author Jarek Sacha
+ * @since Feb 18, 2008
  */
 final class RunAction extends AbstractModelAction<RegionGrowingModel> {
+
+    private static final long serialVersionUID = 2565133222011989518L;
 
     protected RunAction() {
         this(null);
