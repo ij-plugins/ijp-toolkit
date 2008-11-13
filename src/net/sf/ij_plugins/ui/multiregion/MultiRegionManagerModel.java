@@ -30,12 +30,18 @@ import ij.gui.ImageWindow;
 import ij.gui.Roi;
 import ij.gui.StackWindow;
 import net.sf.ij_plugins.beans.AbstractModel;
-import net.sf.ij_plugins.ui.*;
+import net.sf.ij_plugins.ui.AbstractModelAction;
+import net.sf.ij_plugins.ui.OverlayCanvas;
+import net.sf.ij_plugins.ui.ShapeOverlay;
+import net.sf.ij_plugins.ui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
@@ -52,7 +58,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
     };
     private int colorCount;
-    private final int overlayAlpha = 128;
+    private static final int OVERLAY_ALPHA = 128;
 
     private Component parent;
 
@@ -66,8 +72,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
         regions.addListDataListener(new ListListener());
 
-        addRegion(new Region("Background", colorWithAlpha(Color.GREEN, overlayAlpha)));
-        addRegion(new Region("Region-1", colorWithAlpha(Color.RED, overlayAlpha)));
+        addRegion(new Region("Background", colorWithAlpha(Color.GREEN, OVERLAY_ALPHA)));
+        addRegion(new Region("Region-1", colorWithAlpha(Color.RED, OVERLAY_ALPHA)));
 
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
@@ -197,7 +203,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
         final String name = JOptionPane.showInputDialog(parent, "Enter new object name", "Region-X");
         if (name != null && !name.trim().isEmpty()) {
             final Color rc = COLORS[colorCount++ % COLORS.length];
-            final Color color = new Color(rc.getRed(), rc.getGreen(), rc.getBlue(), overlayAlpha);
+            final Color color = new Color(rc.getRed(), rc.getGreen(), rc.getBlue(), OVERLAY_ALPHA);
             addRegion(new Region(name, color));
         }
     }
@@ -334,7 +340,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
     }
 
 
-    private class ListListener implements  ListDataListener {
+    private class ListListener implements ListDataListener {
         public void intervalAdded(ListDataEvent e) {
             System.out.println("MultiRegionManagerModel$ListListener.intervalAdded");
             updateShapes(lastSourceImage);
