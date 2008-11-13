@@ -19,7 +19,6 @@
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
-
 package net.sf.ij_plugins.ui.multiregion;
 
 import com.jgoodies.binding.PresentationModel;
@@ -40,7 +39,7 @@ import java.beans.PropertyChangeListener;
 /**
  * @author Jarek Sacha
  */
-public class MultiRegionManagerView extends javax.swing.JPanel {
+public class MultiRegionManagerView extends JPanel {
 
     private final MultiRegionManagerModel model = new MultiRegionManagerModel();
 
@@ -52,6 +51,7 @@ public class MultiRegionManagerView extends javax.swing.JPanel {
     private final ValueModel subRegionsValueModel = detailsModel.getModel(Region.PROPERTYNAME_SUB_REGIONS);
     private final ValueHolder subRegionSelectedItemHolder = new ValueHolder();
     private final SelectionInList<Region> subRegionSelectionInList = new SelectionInList<Region>(subRegionsValueModel, subRegionSelectedItemHolder);
+    private static final long serialVersionUID = 3522389261778035936L;
 
     /**
      * Creates new form MultiRegionManagerView
@@ -111,26 +111,25 @@ public class MultiRegionManagerView extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
-        javax.swing.JScrollPane regionScrollPane = new javax.swing.JScrollPane();
+        JScrollPane regionScrollPane = new JScrollPane();
         regionList = BasicComponentFactory.createList(regionSelectionInList);
-        javax.swing.JScrollPane subRegionScrollPane = new javax.swing.JScrollPane();
-        subRegionList = BasicComponentFactory.createList(subRegionSelectionInList);
-        javax.swing.JButton addRegionButton = new javax.swing.JButton(model.createNewRegionAction());
-        javax.swing.JButton addROIButton = new javax.swing.JButton(model.createAddCurrentROIAction());
-        javax.swing.JButton removeRegionButton = new javax.swing.JButton(model.createRemoveRegionAction());
-        javax.swing.JButton removeROIButton = new javax.swing.JButton(model.createRemoveSubRegionAction());
-        javax.swing.JLabel regionLabel = new javax.swing.JLabel();
-        javax.swing.JLabel roiLabel = new javax.swing.JLabel();
-        javax.swing.JButton redrawOverlaysButton = new javax.swing.JButton(model.createRedrawOverlaysAction());
-        javax.swing.JButton removeOverlayButton = new javax.swing.JButton(model.createRemoveOverlaysAction());
-        javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
+        JScrollPane subRegionScrollPane = new JScrollPane();
+        final JList subRegionList = BasicComponentFactory.createList(subRegionSelectionInList);
+        JButton addRegionButton = new JButton(model.createNewRegionAction());
+        JButton addROIButton = new JButton(model.createAddCurrentROIAction());
+        JButton removeRegionButton = new JButton(model.createRemoveRegionAction());
+        JButton removeROIButton = new JButton(model.createRemoveSubRegionAction());
+        JLabel regionLabel = new JLabel();
+        JLabel roiLabel = new JLabel();
+        JButton redrawOverlaysButton = new JButton(model.createRedrawOverlaysAction());
+        JButton removeOverlayButton = new JButton(model.createRemoveOverlaysAction());
+        JSeparator jSeparator1 = new JSeparator();
 
-        regionList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        regionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         regionList.setSelectedIndex(0);
         regionScrollPane.setViewportView(regionList);
 
-        subRegionList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        subRegionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         subRegionScrollPane.setViewportView(subRegionList);
 
         addRegionButton.setText("Add Region");
@@ -210,16 +209,16 @@ public class MultiRegionManagerView extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList regionList;
-    private javax.swing.JList subRegionList;
+    private JList regionList;
     // End of variables declaration//GEN-END:variables
 
 
     static class RegionCellRenderer extends JLabel implements ListCellRenderer {
         private static final int ICON_SIZE = 10;
+        private static final long serialVersionUID = 1L;
+
         // This is the only method defined by ListCellRenderer.
         // We just reconfigure the JLabel each time we're called.
-
         public Component getListCellRendererComponent(
                 final JList list,              // the list
                 final Object value,            // value to display
