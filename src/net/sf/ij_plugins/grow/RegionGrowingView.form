@@ -19,11 +19,11 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jSeparator2" alignment="1" pref="531" max="32767" attributes="0"/>
+                  <Component id="bottomSeparator" alignment="1" pref="531" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="regionsLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="seedSelectionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="regionsSeparator" pref="451" max="32767" attributes="0"/>
+                      <Component id="seedSelectionSeparator" pref="451" max="32767" attributes="0"/>
                   </Group>
                   <Component id="multiRegionManagerView" alignment="0" pref="531" max="32767" attributes="0"/>
                   <Component id="runButton" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -37,13 +37,13 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="regionsLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="regionsSeparator" alignment="1" min="-2" pref="10" max="-2" attributes="0"/>
+                  <Component id="seedSelectionLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="seedSelectionSeparator" alignment="1" min="-2" pref="10" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Component id="multiRegionManagerView" pref="286" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jSeparator2" min="-2" max="-2" attributes="0"/>
+              <Component id="bottomSeparator" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="runButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -52,19 +52,31 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JSeparator" name="regionsSeparator">
+    <Component class="javax.swing.JSeparator" name="seedSelectionSeparator">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+      </AuxValues>
     </Component>
-    <Component class="javax.swing.JLabel" name="regionsLabel">
+    <Component class="javax.swing.JLabel" name="seedSelectionLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Seed Selection"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+      </AuxValues>
     </Component>
     <Component class="net.sf.ij_plugins.ui.multiregion.MultiRegionManagerView" name="multiRegionManagerView">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JSeparator" name="jSeparator2">
+    <Component class="javax.swing.JSeparator" name="bottomSeparator">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="runButton">
       <Properties>
@@ -72,6 +84,10 @@
           <Connection code="runAction" type="code"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

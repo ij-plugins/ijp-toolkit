@@ -18,13 +18,6 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
-
-/*
-* RegionGrowingView.java
-*
-* Created on February 18, 2008, 1:44 PM
-*/
-
 package net.sf.ij_plugins.grow;
 
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerView;
@@ -34,18 +27,19 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 /**
- * @author ac4566
+ * @author Jarek Sacha
+ * @since February 18, 2008
  */
-public class RegionGrowingView extends javax.swing.JPanel {
+public class RegionGrowingView extends JPanel {
 
-    private final RegionGrowingModel model;
     private final RunAction runAction;
+    private static final long serialVersionUID = 4217582431710992600L;
 
     /**
      * Creates new form RegionGrowingView
      */
     public RegionGrowingView() {
-        model = new RegionGrowingModel(multiRegionManagerView.getModel());
+        final RegionGrowingModel model = new RegionGrowingModel(multiRegionManagerView.getModel());
         runAction = new RunAction(model);
 
         initComponents();
@@ -60,13 +54,12 @@ public class RegionGrowingView extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        final JSeparator seedSelectionSeparator = new JSeparator();
+        final JLabel seedSelectionLabel = new JLabel();
+        final JSeparator bottomSeparator = new JSeparator();
+        final JButton runButton = new JButton();
 
-        regionsSeparator = new JSeparator();
-        regionsLabel = new JLabel();
-        jSeparator2 = new JSeparator();
-        runButton = new JButton();
-
-        regionsLabel.setText("Seed Selection");
+        seedSelectionLabel.setText("Seed Selection");
 
         runButton.setAction(runAction);
 
@@ -77,41 +70,35 @@ public class RegionGrowingView extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(jSeparator2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                                .addComponent(bottomSeparator, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                                 .addGroup(layout.createSequentialGroup()
-                                        .addComponent(regionsLabel)
+                                        .addComponent(seedSelectionLabel)
                                         .addPreferredGap(ComponentPlacement.UNRELATED)
-                                        .addComponent(regionsSeparator, GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
+                                        .addComponent(seedSelectionSeparator, GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
                                 .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                                 .addComponent(runButton, Alignment.TRAILING))
                         .addContainerGap())
-
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(regionsLabel)
-                                .addComponent(regionsSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(seedSelectionLabel)
+                                .addComponent(seedSelectionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10)
                         .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
                         .addPreferredGap(ComponentPlacement.UNRELATED)
-                        .addComponent(jSeparator2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bottomSeparator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(runButton)
                         .addContainerGap())
-
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JSeparator jSeparator2;
     private final MultiRegionManagerView multiRegionManagerView = new MultiRegionManagerView();
-    private JLabel regionsLabel;
-    private JSeparator regionsSeparator;
-    private JButton runButton;
     // End of variables declaration//GEN-END:variables
 
 }
