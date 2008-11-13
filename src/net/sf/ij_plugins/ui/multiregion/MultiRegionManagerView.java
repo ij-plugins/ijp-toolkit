@@ -216,16 +216,16 @@ public class MultiRegionManagerView extends javax.swing.JPanel {
 
 
     static class RegionCellRenderer extends JLabel implements ListCellRenderer {
-        final int iconSize = 10;
+        private static final int ICON_SIZE = 10;
         // This is the only method defined by ListCellRenderer.
         // We just reconfigure the JLabel each time we're called.
 
         public Component getListCellRendererComponent(
-                JList list,              // the list
-                Object value,            // value to display
-                int index,               // cell index
-                boolean isSelected,      // is the cell selected
-                boolean cellHasFocus)    // does the cell have focus
+                final JList list,              // the list
+                final Object value,            // value to display
+                final int index,               // cell index
+                final boolean isSelected,      // is the cell selected
+                final boolean cellHasFocus)    // does the cell have focus
         {
             final String text;
             final Color color;
@@ -241,7 +241,7 @@ public class MultiRegionManagerView extends javax.swing.JPanel {
             setText(text);
 
             // Create icon
-            setIcon(UIUtils.createColorIcon(iconSize, iconSize, color));
+            setIcon(UIUtils.createColorIcon(ICON_SIZE, ICON_SIZE, color));
 
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
