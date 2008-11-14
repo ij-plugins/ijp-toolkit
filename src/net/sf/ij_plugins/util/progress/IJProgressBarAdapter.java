@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.util.progress;
 
@@ -31,7 +32,7 @@ import java.lang.reflect.InvocationTargetException;
  * Example use:
  * <pre>
  *   final ProgressReporter r = ...;
- *   final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter()
+ *   final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
  *   r.addProgressListener(progressBarAdapter);
  *   ...
  *   r.removeProgressListener(progressBarAdapter);
@@ -39,7 +40,6 @@ import java.lang.reflect.InvocationTargetException;
  * Always remember to remove listeners when processing is done to avoid memory leaks.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
  */
 public class IJProgressBarAdapter implements ProgressListener {
     public void progressNotification(final ProgressEvent e) {
