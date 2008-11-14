@@ -25,6 +25,7 @@ import ij.ImageStack;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ShortProcessor;
+import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.awt.Point;
 import java.util.*;
@@ -64,7 +65,9 @@ import java.util.*;
  *
  * @author Jarek Sacha
  */
-public final class SRG {
+public final class SRG extends DefaultProgressReporter {
+
+    private static final String NAME = "Seeded Region Growing";
 
     private static final int MAX_REGION_NUMBER = 253;
     private static final byte BACKGROUND_MARK = (byte) 0x00;
@@ -171,6 +174,9 @@ public final class SRG {
      * Perform region growing.
      */
     public void run() {
+
+        this.notifyProgressListeners(0, NAME + "initailizing..");
+
         initializeStructures();
 
         // Mark pixels outside of the mask
@@ -217,9 +223,15 @@ public final class SRG {
             addAnimationFrame("Seeds", (ByteProcessor) regionMarkers.duplicate());
         }
 
+        final long pixelsToProcess = (xMax - xMin) * (yMax - yMin);
         final long frameIncrement = this.nbAnimationFrames > 2
-                ? ((xMax - xMin) * (yMax - yMin)) / (nbAnimationFrames - 2)
+                ? pixelsToProcess / (nbAnimationFrames - 2)
                 : Long.MAX_VALUE;
+
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final long progressIncrement = Math.max(pixelsToProcess / 25, 1);
+        this.notifyProgressListeners(processedPixelCount / pixelsToProcess);
+
 
         // Process candidates
         while (!ssl.isEmpty()) {
@@ -235,8 +247,11 @@ public final class SRG {
             regionInfos[c.mostSimilarRegionId - 1].addPoint(c.point);
 
             ++processedPixelCount;
-
             candidatesFromNeighbours(c.point);
+
+            if (processedPixelCount % progressIncrement == 0) {
+                this.notifyProgressListeners(processedPixelCount / (double) pixelsToProcess, NAME + " processing..");
+            }
 
             if (processedPixelCount % frameIncrement == 0) {
                 addAnimationFrame(null, (ByteProcessor) regionMarkers.duplicate());
@@ -254,6 +269,7 @@ public final class SRG {
                 fillOutsideMask((byte[]) animationStack.getPixels(i), (byte) 0);
             }
         }
+        this.notifyProgressListeners(1);
     }
 
     private void fillOutsideMask(final byte[] pixels, final byte value) {
