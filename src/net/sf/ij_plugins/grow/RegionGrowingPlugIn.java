@@ -21,18 +21,26 @@
 package net.sf.ij_plugins.grow;
 
 import ij.IJ;
+import ij.Prefs;
+import ij.gui.GUI;
 import ij.plugin.PlugIn;
 
 import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 /**
- * Date: Feb 8, 2008
- * Time: 8:47:19 PM
- *
  * @author Jarek Sacha
+ * @since Feb 8, 2008
  */
 public final class RegionGrowingPlugIn implements PlugIn {
+
+    public static final String LOC_KEY = "RegionGrowingPlugIn.loc";
+    public static final String WIDTH_KEY = "RegionGrowingPlugIn.width";
+    public static final String HEIGHT_KEY = "RegionGrowingPlugIn.height";
 
     private static final String TITLE = "Seeded Region Growing";
 
@@ -47,6 +55,30 @@ public final class RegionGrowingPlugIn implements PlugIn {
             dialog.pack();
             dialog.setLocationRelativeTo(null);
             dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+            // Add listener to store window location and size
+            dialog.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    super.windowClosing(e);
+                    Prefs.saveLocation(LOC_KEY, dialog.getLocation());
+                    Dimension d = dialog.getSize();
+                    Prefs.set(WIDTH_KEY, d.width);
+                    Prefs.set(HEIGHT_KEY, d.height);
+                }
+            });
+
+            // Restore location and size
+            Point loc = Prefs.getLocation(LOC_KEY);
+            int w = (int) Prefs.get(WIDTH_KEY, 0.0);
+            int h = (int) Prefs.get(HEIGHT_KEY, 0.0);
+            if (loc != null && w > 0 && h > 0) {
+                dialog.setSize(w, h);
+                dialog.setLocation(loc);
+            } else {
+//                setSize(width, height);
+                GUI.center(dialog);
+            }
         }
 
         dialog.setVisible(true);
