@@ -78,21 +78,18 @@ public final class MultiRegionManagerModel extends AbstractModel {
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
             public void imageOpened(ImagePlus imp) {
-                System.out.println("MultiRegionManagerModel.imageOpened");
                 if (lastSourceImage == imp) {
                     updateShapes(lastSourceImage);
                 }
             }
 
             public void imageClosed(ImagePlus imp) {
-                System.out.println("MultiRegionManagerModel.imageClosed");
                 if (lastSourceImage == imp) {
                     lastSourceImage = null;
                 }
             }
 
             public void imageUpdated(ImagePlus imp) {
-                System.out.println("MultiRegionManagerModel.imageUpdated");
                 if (lastSourceImage == imp) {
                     updateShapes(lastSourceImage);
                 }
@@ -114,7 +111,6 @@ public final class MultiRegionManagerModel extends AbstractModel {
     }
 
     public void setSelectedRegion(final Region selectedRegion) {
-        System.out.println("MultiRegionManagerModel.setSelectedRegion: " + selectedRegion);
         firePropertyChange("selectedRegion", this.selectedRegion, this.selectedRegion = selectedRegion);
     }
 
@@ -354,19 +350,16 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     private class ListListener implements ListDataListener {
         public void intervalAdded(ListDataEvent e) {
-            System.out.println("MultiRegionManagerModel$ListListener.intervalAdded");
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
         public void intervalRemoved(ListDataEvent e) {
-            System.out.println("MultiRegionManagerModel$ListListener.intervalRemoved");
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
         public void contentsChanged(ListDataEvent e) {
-            System.out.println("MultiRegionManagerModel$ListListener.contentsChanged");
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }

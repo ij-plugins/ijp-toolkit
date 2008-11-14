@@ -82,7 +82,6 @@ public abstract class AbstractModelAction<M extends Model> extends AbstractActio
 
     private class ModelChangeListener implements PropertyChangeListener {
         public void propertyChange(final PropertyChangeEvent evt) {
-            System.out.println("AbstractModelAction$ModelChangeListener.propertyChange: " + evt.getPropertyName());
             setEnabled(isEnabled());
         }
     }

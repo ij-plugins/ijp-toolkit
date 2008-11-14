@@ -62,7 +62,6 @@ public class MultiRegionManagerView extends JPanel {
 
 
         initComponents();
-        System.out.println("MultiRegionManagerView.MultiRegionManagerView - after initComponents()");
         regionList.setCellRenderer(new RegionCellRenderer());
 
         // Bind selection in regionList to model's selectedRegion
