@@ -132,6 +132,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     Action createNewRegionAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Add Current ROI", this) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 getModel().actionAddRegion();
             }
@@ -140,6 +142,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     Action createRemoveRegionAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove", this) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 getModel().actionRemoveRegion();
             }
@@ -153,6 +157,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     Action createAddCurrentROIAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Add Current ROI", this) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 getModel().actionAddSubRegion();
             }
@@ -166,6 +172,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     Action createRemoveSubRegionAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove ROI", this) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 getModel().actionRemoveSubRegion();
             }
@@ -179,6 +187,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     Action createRedrawOverlaysAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Redraw Overlays", this) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 updateShapes(WindowManager.getCurrentImage());
             }
@@ -192,6 +202,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     Action createRemoveOverlaysAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove Overlays", this) {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 updateShapes(null);
             }

@@ -31,6 +31,7 @@ import java.util.Comparator;
  * @author Jarek Sacha
  */
 public final class PointYXComparator implements Comparator<Point>, Serializable {
+    private static final long serialVersionUID = -2567466662073965563L;
 
     public int compare(final Point p1, final Point p2) {
         if (p1.y < p2.y) {
