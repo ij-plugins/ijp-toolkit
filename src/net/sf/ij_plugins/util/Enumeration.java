@@ -31,7 +31,7 @@ import java.util.List;
  * "Effective Java" 2001.
  *
  * @author Jarek Sacha
- * @created June 18, 2002
+ * @since June 18, 2002
  */
 public abstract class Enumeration {
 
@@ -95,6 +95,7 @@ public abstract class Enumeration {
      *
      * @return Description of the Returned Value
      */
+    @Override
     public final String toString() {
         return name;
     }

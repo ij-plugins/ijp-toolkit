@@ -1,4 +1,4 @@
-/***
+/*
  * Image/J Plugins
  * Copyright (C) 2002-2008 Jarek Sacha
  *
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.vtk;
 
@@ -24,7 +25,7 @@ package net.sf.ij_plugins.io.vtk;
  * Exception specific to VTK image I/O classes.
  *
  * @author Jarek Sacha
- * @created June 18, 2002
+ * @since June 18, 2002
  */
 public class VtkImageException extends Exception {
     private static final long serialVersionUID = 1L;

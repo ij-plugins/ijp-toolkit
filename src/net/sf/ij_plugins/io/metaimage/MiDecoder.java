@@ -1,4 +1,4 @@
-/***
+/*
  * Image/J Plugins
  * Copyright (C) 2002-2008 Jarek Sacha
  *
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.metaimage;
 
@@ -37,13 +38,11 @@ import java.io.*;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
- * @created July 31, 2002
- * @todo Validate MetaImage tag dependency (some tags need always be present, some only if other
- * tags are present, etc.)
+ * @since July 31, 2002
  */
-
 public class MiDecoder implements PlugIn {
+    // TODO Validate MetaImage tag dependency (some tags need always be present, some only if other tags are present, etc.)
+
     private static final String DIALOG_CAPTION = "MetaImage Reader";
 
     /**
@@ -362,6 +361,7 @@ public class MiDecoder implements PlugIn {
      *
      * @param arg Description of the Parameter
      */
+    @Override
     public void run(String arg) {
         try {
             // Get file name

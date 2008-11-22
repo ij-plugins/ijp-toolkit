@@ -1,4 +1,4 @@
-/***
+/*
  * Image/J Plugins
  * Copyright (C) 2002-2008 Jarek Sacha
  *
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.metaimage;
 
@@ -41,30 +42,23 @@ import java.io.IOException;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created June 18, 2002
- * @todo Fix MetaImage format for unambiguous element size, e.g. MET_LONG could be 32 bit on 32 bit
- * processors and 64 bit on 64 bit processors. A fix would be to use MET_INT32.
- * @todo Fix MetaImage tag names to distinguish file side and memory side representation, and real
- * word coordinates. For instance ElementType refers to how a pixel value in represented in file,
- * ElementSize refers to size of the of the volume represented by a single pixel in real word
- * coordinates. Naming convention seams to be confusing.
+ * @since June 18, 2002
  */
-
 public class MiEncoder implements PlugIn {
+    // TODO: Fix MetaImage format for unambiguous element size, e.g. MET_LONG could be 32 bit on 32 bit processors and 64 bit on 64 bit processors. A fix would be to use MET_INT32.
+    // TODO: Fix MetaImage tag names to distinguish file side and memory side representation, and real word coordinates. For instance ElementType refers to how a pixel value in represented in file, ElementSize refers to size of the of the volume represented by a single pixel in real word coordinates. Naming convention seams to be confusing.
+
     private static String DIALOG_CAPTION = "MetaImage Writer";
     private static String[] HEADER_EXTENSIONS = {".mha", ".mhd"};
     private static String RAW_DATA_EXTENSION = ".raw";
     private static String ASSIGNMENT_SEPARATOR = " = ";
     private static String LINE_SEPARATOR = "\n";
 
-
     /**
      * Constructor for the MiEncoder object
      */
     public MiEncoder() {
     }
-
 
     /**
      * Write image in MetaImage format. Info header and raw image data are stored in separate
@@ -89,11 +83,11 @@ public class MiEncoder implements PlugIn {
         String headerName = null;
         String rawDataName = null;
         // Check if header extension is already present.
-        for (int i = 0; i < HEADER_EXTENSIONS.length; ++i) {
-            if (fileRootName.endsWith(HEADER_EXTENSIONS[i])) {
+        for (String HEADER_EXTENSION : HEADER_EXTENSIONS) {
+            if (fileRootName.endsWith(HEADER_EXTENSION)) {
                 headerName = fileRootName;
                 String nameRoot = fileRootName.substring(
-                        0, fileRootName.length() - HEADER_EXTENSIONS[i].length());
+                        0, fileRootName.length() - HEADER_EXTENSION.length());
                 rawDataName = nameRoot + RAW_DATA_EXTENSION;
                 break;
             }
@@ -118,7 +112,6 @@ public class MiEncoder implements PlugIn {
         writeRawImage(imp, rawDataName);
     }
 
-
     /**
      * Write only MetaImage header.
      *
@@ -134,23 +127,18 @@ public class MiEncoder implements PlugIn {
         try {
             fileWriter = new FileWriter(headerFileName);
             fileWriter.write(createHeaderText(imp, rawDataFileName));
-        }
-        catch (IOException ex) {
-            throw new MiException("Error writing to header file '"
-                    + headerFileName + "'.\n" + ex.getMessage());
-        }
-        finally {
+        } catch (IOException ex) {
+            throw new MiException("Error writing to header file '" + headerFileName + "'.\n" + ex.getMessage());
+        } finally {
             if (fileWriter != null) {
                 try {
                     fileWriter.close();
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     //
                 }
             }
         }
     }
-
 
     /**
      * Create content of a MetaImage header as string.
@@ -228,7 +216,6 @@ public class MiEncoder implements PlugIn {
         return header.toString();
     }
 
-
     /**
      * Save only the raw image data.
      *
@@ -248,23 +235,18 @@ public class MiEncoder implements PlugIn {
             fileOutputStream = new FileOutputStream(fileName);
             ImageWriter imageWriter = new ImageWriter(fileInfo);
             imageWriter.write(fileOutputStream);
-        }
-        catch (IOException ex) {
-            throw new MiException("Error writing to raw image file '"
-                    + fileName + "'.\n" + ex.getMessage());
-        }
-        finally {
+        } catch (IOException ex) {
+            throw new MiException("Error writing to raw image file '" + fileName + "'.\n" + ex.getMessage());
+        } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     IJ.log("Failed to close output stream. " + ex.getMessage());
                 }
             }
         }
     }
-
 
     /**
      * Main processing method for the MiEncoder object, required by PlugIn interface.
@@ -289,13 +271,11 @@ public class MiEncoder implements PlugIn {
         File file = new File(saveDialog.getDirectory(), saveDialog.getFileName());
         try {
             write(imp, file.getAbsolutePath());
-        }
-        catch (MiException ex) {
+        } catch (MiException ex) {
             IJ.showMessage(DIALOG_CAPTION, ex.getMessage());
             return;
         }
 
         IJ.showStatus("MetaImage " + saveDialog.getFileName() + " saved.");
     }
-
 }

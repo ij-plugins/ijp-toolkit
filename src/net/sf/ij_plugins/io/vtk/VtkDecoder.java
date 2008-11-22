@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2006 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.vtk;
 
@@ -41,7 +42,7 @@ import java.util.StringTokenizer;
  * <code>float</code> pixels. </ul>
  *
  * @author Jarek
- * @created July 3, 2002
+ * @since July 3, 2002
  */
 public class VtkDecoder implements PlugIn {
     private static final int MAX_LINE_SIZE = 260;
@@ -103,6 +104,7 @@ public class VtkDecoder implements PlugIn {
      *
      * @param arg Used by Image/J scripting.
      */
+    @Override
     public void run(String arg) {
         try {
             OpenDialog openDialog = new OpenDialog("Open as VTK...", arg);
@@ -402,13 +404,12 @@ public class VtkDecoder implements PlugIn {
                     calibration.setUnit("pixel");
                 } else if (line.startsWith(VtkTag.CELL_DATA.toString())) {
                     // CELL_DATA
-                    // ingnore this tag.
+                    // ignore this tag.
                 } else if (line.startsWith(VtkTag.POINT_DATA.toString())) {
                     // POINT_DATA
                     int[] nbPoints = parseValueAsIntArray(line, VtkTag.POINT_DATA, 1);
                     if (nbPoints[0] < 0) {
-                        throw new VtkImageException("Invalid number of image pixels: " +
-                                nbPoints + ".");
+                        throw new VtkImageException("Invalid number of image pixels: " + nbPoints[0] + ".");
                     }
                 } else if (line.startsWith(VtkTag.SCALARS.toString())) {
                     // SCALARS
@@ -613,7 +614,7 @@ public class VtkDecoder implements PlugIn {
      * Extract lines of text from a binary buffer.
      *
      * @author Jarek Sacha
-     * @created June 21, 2002
+     * @since June 21, 2002
      */
     private static final class LineExtractor {
         private static final int NEW_LINE_MODE_NULL = 0;

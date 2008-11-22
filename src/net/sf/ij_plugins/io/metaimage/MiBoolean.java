@@ -1,4 +1,4 @@
-/***
+/*
  * Image/J Plugins
  * Copyright (C) 2002-2008 Jarek Sacha
  *
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.metaimage;
 
@@ -26,7 +27,7 @@ import net.sf.ij_plugins.util.Enumeration;
  * Representation of boolean values in MetaImage header files.
  *
  * @author Jarek Sacha
- * @created June 18, 2002
+ * @since June 18, 2002
  */
 public class MiBoolean extends Enumeration {
     /**

@@ -31,7 +31,7 @@ import java.util.List;
  * Text related utilities.
  *
  * @author Jarek Sacha
- * @created July 16, 2002
+ * @since July 16, 2002
  */
 
 public class TextUtil {

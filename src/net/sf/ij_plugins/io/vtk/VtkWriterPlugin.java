@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.vtk;
 
@@ -27,9 +28,8 @@ import ij.plugin.PlugIn;
  * GRAY8, GRAY16, GRAY32.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created April 28, 2002
  * @see net.sf.ij_plugins.io.vtk.VtkEncoder
+ * @since April 28, 2002
  */
 
 public class VtkWriterPlugin implements PlugIn {
@@ -39,6 +39,7 @@ public class VtkWriterPlugin implements PlugIn {
      * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
      *            (MSB).
      */
+    @Override
     public void run(String arg) {
         new VtkEncoder().run(arg);
     }

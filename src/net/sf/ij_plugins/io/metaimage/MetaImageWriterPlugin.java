@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.io.metaimage;
 
@@ -29,8 +30,7 @@ import ij.plugin.PlugIn;
  * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created June 18, 2002
+ * @since June 18, 2002
  */
 
 public class MetaImageWriterPlugin implements PlugIn {
@@ -39,6 +39,7 @@ public class MetaImageWriterPlugin implements PlugIn {
      *
      * @param parm1 Description of Parameter
      */
+    @Override
     public void run(String parm1) {
         new MiEncoder().run(parm1);
     }

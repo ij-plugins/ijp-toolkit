@@ -24,10 +24,8 @@ package net.sf.ij_plugins.im3d;
  * Represents a 3D point.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created April 29, 2002
+ * @since April 29, 2002
  */
-
 public class Point3DInt {
     /**
      * x coordinate.
@@ -69,6 +67,7 @@ public class Point3DInt {
      *
      * @return String representing Point3D coordinates.
      */
+    @Override
     public String toString() {
         return "(" + x + "," + y + "," + z + ")";
     }

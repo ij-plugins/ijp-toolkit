@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.im3d.filters;
 
@@ -33,8 +34,7 @@ import net.sf.ij_plugins.im3d.Util;
  * images. The 'origin' property of an image is modified to reflect clipping performed.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created May 8, 2002
+ * @since May 8, 2002
  */
 
 public class AutoClipVolumePlugin implements PlugIn {
@@ -43,6 +43,7 @@ public class AutoClipVolumePlugin implements PlugIn {
      *
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
+    @Override
     public void run(final String arg) {
         final ImagePlus imp = WindowManager.getCurrentImage();
         if (imp == null) {

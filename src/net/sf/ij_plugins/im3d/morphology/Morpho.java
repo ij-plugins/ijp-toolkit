@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
+
 package net.sf.ij_plugins.im3d.morphology;
 
 import ij.IJ;
@@ -27,8 +29,7 @@ import ij.ImageStack;
  * Morphological operations in 3D.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created April 30, 2002
+ * @since April 30, 2002
  */
 
 public class Morpho {
@@ -37,20 +38,11 @@ public class Morpho {
 
     private byte[][] srcPixels = null;
     private byte[][] destPixels = null;
-    private int xSize
-    ,
-    ySize
-    ,
-    zSize;
-    private int xMin
-    ,
-    xMax;
-    private int yMin
-    ,
-    yMax;
-    private int zMin
-    ,
-    zMax;
+    private int xSize;
+    private int zSize;
+    private int xMin, xMax;
+    private int yMin, yMax;
+    private int zMin, zMax;
 
 
     /**
@@ -176,7 +168,7 @@ public class Morpho {
         xSize = src.getWidth();
         xMin = 0;
         xMax = xSize;
-        ySize = src.getHeight();
+        int ySize = src.getHeight();
         yMin = 0;
         yMax = ySize;
         zSize = src.getSize();
