@@ -38,6 +38,7 @@ public abstract class AbstractModelAction<M extends Model> extends AbstractActio
 
     private M model;
     private final ModelChangeListener changeListener = new ModelChangeListener();
+    private static final long serialVersionUID = 1L;
 
 
     protected AbstractModelAction(final String name) {
