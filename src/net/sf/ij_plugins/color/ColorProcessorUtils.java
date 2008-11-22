@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.color;
 
@@ -25,21 +26,20 @@ import ij.process.ColorProcessor;
 
 /**
  * <p/>
- * Created Apr 5, 2005 9:20:35 PM.
  *
  * @author Jarek Sacha
  * @version $Revision: 1.1 $
+ * @since Apr 5, 2005 9:20:35 PM
  */
 public class ColorProcessorUtils {
     private ColorProcessorUtils() {
     }
 
     /**
-     * Splits ColorProcessor into ByteProcessors representing each of three bands (red, gree, and
-     * blue).
+     * Splits ColorProcessor into ByteProcessors representing each of three bands (red, gree, and blue).
      *
-     * @param cp
-     * @return
+     * @param cp input color processor
+     * @return ByteProcessor for each band.
      * @see #mergeRGB(ij.process.ByteProcessor[])
      */
     static public ByteProcessor[] splitRGB(final ColorProcessor cp) {
@@ -62,8 +62,8 @@ public class ColorProcessorUtils {
     /**
      * Merges RGB bands into a ColorProcessor.
      *
-     * @param bps
-     * @return
+     * @param bps ByteProcessor for red, green, and blue band.
+     * @return merged bands
      */
     static public ColorProcessor mergeRGB(final ByteProcessor[] bps) {
 
@@ -83,7 +83,7 @@ public class ColorProcessorUtils {
             throw new IllegalArgumentException("All imput processor have to be of the same size.");
         }
 
-        byte [][] pixels = new byte[3][];
+        byte[][] pixels = new byte[3][];
         for (int i = 0; i < bps.length; i++) {
             pixels[i] = (byte[]) bps[i].getPixels();
         }
