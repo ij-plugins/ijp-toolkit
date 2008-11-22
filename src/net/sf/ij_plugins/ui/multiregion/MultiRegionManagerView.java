@@ -70,7 +70,7 @@ public class MultiRegionManagerView extends JPanel {
 
 
         regionSelectedItemHolder.setIdentityCheckEnabled(true);
-        final PropertyAdapter pa = new PropertyAdapter(regionSelectedItemHolder, "subRegions", true);
+        final PropertyAdapter<ValueHolder> pa = new PropertyAdapter<ValueHolder>(regionSelectedItemHolder, "subRegions", true);
         pa.addValueChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {

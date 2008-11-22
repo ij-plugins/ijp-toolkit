@@ -29,9 +29,9 @@ import java.beans.SimpleBeanInfo;
  */
 abstract public class IJPluginsSimpleBeanInfo extends SimpleBeanInfo {
 
-    protected final Class beanClass;
+    protected final Class<?> beanClass;
 
-    protected IJPluginsSimpleBeanInfo(final Class beanClass) {
+    protected IJPluginsSimpleBeanInfo(final Class<?> beanClass) {
         this.beanClass = beanClass;
     }
 

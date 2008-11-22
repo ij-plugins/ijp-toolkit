@@ -63,7 +63,7 @@ public class DialogUtil {
         final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
         try {
             for (final PropertyDescriptor pd : propertyDescriptors) {
-                final Class type = pd.getPropertyType();
+                final Class<?> type = pd.getPropertyType();
                 if (type.equals(Class.class) && "class".equals(pd.getName())) {
                     continue;
                 }
@@ -110,7 +110,7 @@ public class DialogUtil {
         // Read fields from generic dialog into bean's properties.
         try {
             for (final PropertyDescriptor pd : propertyDescriptors) {
-                final Class type = pd.getPropertyType();
+                final Class<?> type = pd.getPropertyType();
                 final Object propertyValue;
                 if (type.equals(Boolean.TYPE)) {
                     propertyValue = genericDialog.getNextBoolean();

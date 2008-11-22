@@ -58,7 +58,7 @@ public class ImageCanvasModel extends PropertyChangeSupport {
     private Color backColor;
     private Image backImage;
     private float zoomFactor;
-    private Class toolClass;
+    private Class<?> toolClass;
     private Color toolColor;
     private Stroke toolStroke;
     //    private LinkedList toolList;
@@ -92,6 +92,9 @@ public class ImageCanvasModel extends PropertyChangeSupport {
      * being stored in this map. java.lang.IllegalArgumentException - if some aspect of this key or
      * value prevents it from being stored in this map. java.lang.NullPointerException - this map
      * does not permit null keys or values, and the specified key or value is null.
+     *
+     * @param key  lookup key
+     * @param item item to be displayed
      */
     public void putItem(final String key, final ImageCanvasItem item) {
         // TODO: Correct javadoc
@@ -137,13 +140,13 @@ public class ImageCanvasModel extends PropertyChangeSupport {
     }
 
 
-    public Class getToolClass() {
+    public Class<?> getToolClass() {
         return toolClass;
     }
 
 
-    public void setToolClass(Class newToolClass) {
-        Class oldToolClass = toolClass;
+    public void setToolClass(Class<?> newToolClass) {
+        Class<?> oldToolClass = toolClass;
         toolClass = newToolClass;
         firePropertyChange(TOOL_CLASS_PROPERTY,
                 oldToolClass, newToolClass);
