@@ -138,9 +138,9 @@ public class ImageQuilter {
 
                 // pick one of the close matches
                 double threshold = bestval * 1.1;
-                LinkedList loclist = SynthAide.lessThanEqual(dists, threshold);
+                LinkedList<TwoDLoc> loclist = SynthAide.lessThanEqual(dists, threshold);
                 int choice = (int) (Math.random() * loclist.size());
-                TwoDLoc loc = (TwoDLoc) loclist.get(choice);
+                TwoDLoc loc = loclist.get(choice);
 
                 // copy in the patch
                 //fillAndBlend(outPatch, loc);
@@ -220,9 +220,9 @@ public class ImageQuilter {
                 if (!outPatch.isAtLeftEdge()) {
 
                     leftoverlap = getLeftOverlapDists(outPatch, inPatch);
-                    for (int r = 0; r < leftoverlap.length; r++) {
-                        for (int c = 0; c < leftoverlap[r].length; c++) {
-                            sum += leftoverlap[r][c];
+                    for (double[] aLeftoverlap : leftoverlap) {
+                        for (double anALeftoverlap : aLeftoverlap) {
+                            sum += anALeftoverlap;
                         }
                     }
                     count += leftoverlap.length * leftoverlap[0].length;
@@ -232,9 +232,9 @@ public class ImageQuilter {
                 if (!outPatch.isAtTopEdge()) {
 
                     topoverlap = getTopOverlapDists(outPatch, inPatch);
-                    for (int r = 0; r < topoverlap.length; r++) {
-                        for (int c = 0; c < topoverlap[r].length; c++) {
-                            sum += topoverlap[r][c];
+                    for (double[] aTopoverlap : topoverlap) {
+                        for (double anATopoverlap : aTopoverlap) {
+                            sum += anATopoverlap;
                         }
                     }
                     count += topoverlap.length * topoverlap[0].length;

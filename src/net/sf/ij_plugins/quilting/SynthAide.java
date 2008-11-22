@@ -93,7 +93,7 @@ public class SynthAide {
      *
      * @return This returns a list of net.sf.ij_plugins.quilting.TwoDLoc objects.
      */
-    public static LinkedList lessThanEqual(double[][] vals, double threshold) {
+    public static LinkedList<TwoDLoc> lessThanEqual(double[][] vals, double threshold) {
 
         final LinkedList<TwoDLoc> list = new LinkedList<TwoDLoc>();
         for (int r = 0; r < vals.length; r++) {
