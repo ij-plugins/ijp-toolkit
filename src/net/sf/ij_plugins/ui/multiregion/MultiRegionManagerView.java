@@ -31,6 +31,8 @@ import com.jgoodies.binding.value.ValueModel;
 import net.sf.ij_plugins.ui.UIUtils;
 
 import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Color;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
@@ -113,7 +115,6 @@ public class MultiRegionManagerView extends JPanel {
         JScrollPane regionScrollPane = new JScrollPane();
         regionList = BasicComponentFactory.createList(regionSelectionInList);
         JScrollPane subRegionScrollPane = new JScrollPane();
-        final JList subRegionList = BasicComponentFactory.createList(subRegionSelectionInList);
         JButton addRegionButton = new JButton(model.createNewRegionAction());
         JButton addROIButton = new JButton(model.createAddCurrentROIAction());
         JButton removeRegionButton = new JButton(model.createRemoveRegionAction());
@@ -153,55 +154,55 @@ public class MultiRegionManagerView extends JPanel {
         removeOverlayButton.setText("Remove Overlays");
         removeOverlayButton.setToolTipText("Remove overlays from the current image, if any.");
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(layout.createSequentialGroup()
+                layout.createParallelGroup(Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(regionLabel)
-                                .add(roiLabel))
-                        .add(12, 12, 12)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(regionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
-                                .add(subRegionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                .add(jSeparator1)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, addRegionButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, removeRegionButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, removeROIButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, addROIButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .add(redrawOverlaysButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(removeOverlayButton, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(regionLabel)
+                                .addComponent(roiLabel))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
+                                .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
+                        .addPreferredGap(ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+                                .addComponent(jSeparator1)
+                                .addComponent(addRegionButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                                .addComponent(removeRegionButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                                .addComponent(removeROIButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                                .addComponent(addROIButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                                .addComponent(redrawOverlaysButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(removeOverlayButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(layout.createSequentialGroup()
+                layout.createParallelGroup(Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                        .add(addRegionButton)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(removeRegionButton))
-                                .add(regionLabel)
-                                .add(regionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(roiLabel)
-                                .add(layout.createSequentialGroup()
-                                        .add(addROIButton)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(removeROIButton)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 13, Short.MAX_VALUE)
-                                        .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(redrawOverlaysButton)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(removeOverlayButton))
-                                .add(subRegionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(addRegionButton)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(removeRegionButton))
+                                .addComponent(regionLabel)
+                                .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(roiLabel)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(addROIButton)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(removeROIButton)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                                        .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(redrawOverlaysButton)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(removeOverlayButton))
+                                .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
                         .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -209,6 +210,7 @@ public class MultiRegionManagerView extends JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JList regionList;
+    final JList subRegionList = BasicComponentFactory.createList(subRegionSelectionInList);
     // End of variables declaration//GEN-END:variables
 
 
