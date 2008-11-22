@@ -60,7 +60,7 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
 
         /* TODO: Update: "Calculate the gradient values for each point" */
         while (iterator.hasNext()) {
-            Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
+            Neighborhood3x3 n = iterator.next();
             float[] neighbors = n.getNeighbors();
 
             // 4-connected neighbors

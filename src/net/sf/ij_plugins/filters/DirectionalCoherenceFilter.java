@@ -55,7 +55,7 @@ public class DirectionalCoherenceFilter {
         PixelIterator iterator = new PixelIterator(src);
 
         while (iterator.hasNext()) {
-            Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
+            Neighborhood3x3 n = iterator.next();
             float gX = 0.5f * (n.neighbor1 - n.neighbor5);
             float gY = 0.5f * (n.neighbor7 - n.neighbor3);
             float gXX = gX * gX;

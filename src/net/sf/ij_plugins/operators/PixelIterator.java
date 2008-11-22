@@ -22,7 +22,7 @@ package net.sf.ij_plugins.operators;
 
 import ij.process.FloatProcessor;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
  * @author Jarek Sacha
  */
 
-public class PixelIterator implements Iterator {
+public class PixelIterator implements Iterator<Neighborhood3x3> {
     private final int width;
     private final float[] pixels;
     private final int xMin;
@@ -58,7 +58,7 @@ public class PixelIterator implements Iterator {
         return x < xMax || y < yMax;
     }
 
-    public Object next() {
+    public Neighborhood3x3 next() {
         // Update center location
         if (x < xMax) {
             ++x;

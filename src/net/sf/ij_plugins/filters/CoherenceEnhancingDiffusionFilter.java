@@ -43,12 +43,12 @@ public class CoherenceEnhancingDiffusionFilter {
     private int numberOfIterations = 1;
     private double timeStep = 1;
     private float[] gradientXKernel = {
-        -3f / 32f, 0f, 3f / 32f, -10f / 32f, 0f, 10f / 32f, -3f / 32f, 0f,
-        3f / 32f
+            -3f / 32f, 0f, 3f / 32f, -10f / 32f, 0f, 10f / 32f, -3f / 32f, 0f,
+            3f / 32f
     };
     private float[] gradientYKernel = {
-        3f / 32f, 10f / 32f, 3f / 32f, 0f, 0f, 0f, -3f / 32f, -10f / 32f,
-        -3f / 32f
+            3f / 32f, 10f / 32f, 3f / 32f, 0f, 0f, 0f, -3f / 32f, -10f / 32f,
+            -3f / 32f
     };
 
 //    private float[] gradientXKernel = {
@@ -169,7 +169,7 @@ public class CoherenceEnhancingDiffusionFilter {
             PixelIterator iterator = new PixelIterator(in);
 
             while (iterator.hasNext()) {
-                Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
+                Neighborhood3x3 n = iterator.next();
                 double j11 = gXX.getPixelValue(n.x, n.y);
                 double j12 = 0.5f * (gXY.getPixelValue(n.x, n.y) +
                         gYX.getPixelValue(n.x, n.y));
@@ -216,7 +216,7 @@ public class CoherenceEnhancingDiffusionFilter {
             FloatProcessor debugIm = new FloatProcessor(width, height);
 
             while (iterator.hasNext()) {
-                Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
+                Neighborhood3x3 n = iterator.next();
                 double du = j1.getPixelValue(n.x, n.y) +
                         j2.getPixelValue(n.x, n.y);
                 destPixels[n.offset] += (timeStep * du);

@@ -86,12 +86,12 @@ public class SRAD extends AbstractAnisotropicDiffusion {
         final float[] cPixels = (float[]) cFP.getPixels();
         final PixelIterator iterator = new PixelIterator(src);
 
-        // Precalculate diffusion coefficient c(q)
+        // Pre-calculate diffusion coefficient c(q)
         final double q0t = q0 * Math.exp(-ro * time());
         final double q0t2 = q0t * q0t;
         IJDebug.log("time=" + time() + ", q0=" + q0 + ", q0t=" + q0t);
         while (iterator.hasNext()) {
-            final Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
+            final Neighborhood3x3 n = iterator.next();
 
             // Pixel numbers:
             //  4 3 2
@@ -122,8 +122,8 @@ public class SRAD extends AbstractAnisotropicDiffusion {
         final PixelIterator cIterator = new PixelIterator(cFP);
         while (iterator.hasNext()) {
             // FIXME: make sure that the two iterators are correctly synchronized
-            final Neighborhood3x3 n = (Neighborhood3x3) iterator.next();
-            final Neighborhood3x3 cn = (Neighborhood3x3) cIterator.next();
+            final Neighborhood3x3 n = iterator.next();
+            final Neighborhood3x3 cn = cIterator.next();
 
             // Pixel numbers:
             //  4 3 2

@@ -29,7 +29,7 @@ import ij.process.FloatProcessor;
 import ij.process.ImageConverter;
 import ij.process.StackConverter;
 
-import java.awt.*;
+import java.awt.Rectangle;
 
 /**
  * Represents vector valued image. Value at each pixel in the image is a vector of floating point
@@ -38,11 +38,11 @@ import java.awt.*;
  * @author Jarek Sacha
  */
 public class VectorProcessor {
-    final int width;
-    final int height;
-    final int numberOfValues;
-    final float[][] pixels;
-    Rectangle roi;
+    private final int width;
+    private final int height;
+    private final int numberOfValues;
+    private final float[][] pixels;
+    private Rectangle roi;
     // TODO: use net.sf.ij_plugins.util.progress instead of ij.gui.ProgressBar for more flexibility.
     private ProgressBar progressBar;
 
@@ -275,9 +275,9 @@ public class VectorProcessor {
 
 
     /**
-     * Represents 3x3 neighbourhood. the center pixel is <code>p5</code>. Pixels <code>p1</code> to
+     * Represents 3x3 neighborhood. the center pixel is <code>p5</code>. Pixels <code>p1</code> to
      * <code>p3</code> are in the top row, <code>p4</code> to <code>p6</code> in the middle, and
-     * <code>p7</code> to <code>p9</code> in the bottom of the neighbourhood.
+     * <code>p7</code> to <code>p9</code> in the bottom of the neighborhood.
      */
     public static class Neighborhood3x3 {
         float[] p1,
@@ -297,7 +297,7 @@ public class VectorProcessor {
     /**
      * Iterator over pixel values.
      */
-    public class PixelIterator implements java.util.Iterator {
+    public class PixelIterator implements java.util.Iterator<float[]> {
         final int xMin = roi.x;
         final int xMax1 = roi.x + roi.width - 1;
         final int rowOffset = width;
@@ -360,7 +360,7 @@ public class VectorProcessor {
 
 
     /**
-     * Iterator over 3x3 neighbourhood of vector valued pixels.
+     * Iterator over 3x3 neighborhood of vector valued pixels.
      */
     public class Iterator implements java.util.Iterator<Neighborhood3x3> {
         final int xMin = Math.max(roi.x, 1);
