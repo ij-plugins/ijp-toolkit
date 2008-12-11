@@ -22,7 +22,10 @@
 package net.sf.ij_plugins.grow;
 
 import net.sf.ij_plugins.ui.AbstractModelAction;
+import net.sf.ij_plugins.ui.GlassPane;
 
+import javax.swing.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 /**
@@ -32,16 +35,38 @@ import java.awt.event.ActionEvent;
 final class RunAction extends AbstractModelAction<RegionGrowingModel> {
 
     private static final long serialVersionUID = 2565133222011989518L;
+    private final Component parent;
 
-    protected RunAction() {
-        this(null);
-    }
-
-    protected RunAction(final RegionGrowingModel model) {
+    protected RunAction(final RegionGrowingModel model, final Component parent) {
         super("Run", model);
+        this.parent = parent;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        getModel().actionRun();
+    public void actionPerformed(final ActionEvent e) {
+
+        // Block SRG dialog
+        final GlassPane glassPane = new GlassPane();
+        SwingUtilities.getRootPane(parent).setGlassPane(glassPane);
+        glassPane.setVisible(true);
+
+        // Setup background execution
+        final SwingWorker<String, Object> worker = new SwingWorker<String, Object>() {
+
+            @Override
+            protected String doInBackground() throws Exception {
+                // Sun region growing
+                getModel().actionRun();
+                return "Done";
+            }
+
+            @Override
+            protected void done() {
+                // Unblock dialog.
+                glassPane.setVisible(false);
+            }
+        };
+
+        // Execute region growing
+        worker.execute();
     }
 }

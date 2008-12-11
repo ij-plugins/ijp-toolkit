@@ -40,7 +40,7 @@ public class RegionGrowingView extends JPanel {
      */
     public RegionGrowingView() {
         final RegionGrowingModel model = new RegionGrowingModel(multiRegionManagerView.getModel());
-        runAction = new RunAction(model);
+        runAction = new RunAction(model, this);
 
         initComponents();
     }
