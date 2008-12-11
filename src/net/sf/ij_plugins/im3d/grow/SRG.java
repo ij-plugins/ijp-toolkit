@@ -230,7 +230,7 @@ public final class SRG extends DefaultProgressReporter {
 
         // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
         final long progressIncrement = Math.max(pixelsToProcess / 25, 1);
-        this.notifyProgressListeners(processedPixelCount / pixelsToProcess);
+        this.notifyProgressListeners(processedPixelCount / (double) pixelsToProcess);
 
 
         // Process candidates
