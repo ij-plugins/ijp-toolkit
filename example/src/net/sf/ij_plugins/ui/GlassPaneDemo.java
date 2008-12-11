@@ -36,13 +36,15 @@ import java.awt.event.KeyEvent;
  * @since Nov 15, 2008 8:09:11 AM
  */
 public final class GlassPaneDemo extends JFrame {
-    //    private JComponent initialGlassPane = new InitialGlassPane();
-    private JComponent betterGlassPane = new GlassPane();
+
+    private final JComponent glassPane = new GlassPane();
+    private static final long serialVersionUID = 1L;
+
 
     public GlassPaneDemo() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JMenuBar bar = new JMenuBar();
-        JMenu menu = new JMenu("Options");
+        final JMenuBar bar = new JMenuBar();
+        final JMenu menu = new JMenu("Options");
         final JCheckBoxMenuItem showItem = new JCheckBoxMenuItem("Show GlassPane");
         showItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK));
         showItem.addItemListener(new ItemListener() {
@@ -54,50 +56,27 @@ public final class GlassPaneDemo extends JFrame {
                 }
 
                 // Request focus to the better GlassPane
-                if (betterGlassPane.isShowing()) {
-                    betterGlassPane.requestFocusInWindow();
+                if (glassPane.isShowing()) {
+                    glassPane.requestFocusInWindow();
                 }
             }
         });
 
         menu.add(showItem);
-        menu.addSeparator();
-
-        ButtonGroup group = new ButtonGroup();
-
-        final JMenuItem item1 = new JRadioButtonMenuItem("Initial GlassPane");
-        item1.setSelected(true);
-        group.add(item1);
-        menu.add(item1);
-
-        final JMenuItem item2 = new JRadioButtonMenuItem("Better GlassPane");
-        group.add(item2);
-        menu.add(item2);
-
-        ItemListener menuListener = new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if (item1.isSelected()) {
-                    setGlassPane(betterGlassPane);
-                } else {
-                    setGlassPane(betterGlassPane);
-                }
-            }
-        };
-        item1.addItemListener(menuListener);
-        item2.addItemListener(menuListener);
-
         bar.add(menu);
         setJMenuBar(bar);
 
-        setGlassPane(betterGlassPane);
+        setGlassPane(glassPane);
 
         add(createPanel());
         setSize(250, 250);
         setLocationRelativeTo(null);
     }
 
+
     private JComponent createPanel() {
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
+        panel.add(new JLabel("<html><em>Press Ctrl-D to togle glass pane</em></html>"));
         panel.add(new JCheckBox("JCheckBox"));
         panel.add(new JRadioButton("JRadioButton"));
         panel.add(new JTextField(15));
@@ -109,10 +88,12 @@ public final class GlassPaneDemo extends JFrame {
         return panel;
     }
 
-    public static void main(String[] args) throws Exception {
+
+    public static void main(final String[] args) throws Exception {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new GlassPaneDemo().setVisible(true);
+                final GlassPaneDemo frame = new GlassPaneDemo();
+                frame.setVisible(true);
             }
         });
     }
