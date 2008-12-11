@@ -55,7 +55,7 @@ public class ColorHistogramTest extends TestCase {
 
         final int[][][] bins = colorHistogram.getBins();
         final Color[][][] binColors = colorHistogram.getBinColors();
-        assertNull(binColors);
+        assertNotNull(binColors);
         for (int r = 0; r < bins.length; r++) {
             final int[][] binGB = bins[r];
             for (int g = 0; g < binGB.length; g++) {
