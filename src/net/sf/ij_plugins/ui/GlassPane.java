@@ -42,6 +42,10 @@ import java.awt.event.MouseAdapter;
  */
 public final class GlassPane extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+    private Color color = new Color(255, 255, 255, 128);
+
+
     public GlassPane() {
         setOpaque(false);
 
@@ -60,9 +64,30 @@ public final class GlassPane extends JPanel {
         });
     }
 
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setColor(new Color(0, 128, 128, 128));
+
+    /**
+     * @return glass pane color.
+     */
+    public Color getColor() {
+        return color;
+    }
+
+
+    /**
+     * Glass pane color including transparency.
+     * It should be semi-transparent to see blocked content.
+     * For instance,  Color(255, 255, 255, 128).
+     *
+     * @param color new color
+     */
+    public void setColor(final Color color) {
+        this.color = color;
+    }
+
+
+    protected void paintComponent(final Graphics g) {
+        final Graphics2D g2 = (Graphics2D) g.create();
+        g2.setColor(color);
         g2.fillRect(0, 0, getWidth(), getHeight());
         g2.dispose();
     }
