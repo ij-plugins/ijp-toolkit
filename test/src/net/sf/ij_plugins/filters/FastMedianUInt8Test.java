@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,8 +27,8 @@ import net.sf.ij_plugins.io.IOUtils;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- */public class FastMedianUInt8Test extends TestCase {
+ */
+public class FastMedianUInt8Test extends TestCase {
     public FastMedianUInt8Test(String test) {
         super(test);
     }
@@ -55,6 +55,7 @@ import net.sf.ij_plugins.io.IOUtils;
         // BUG 1198520 was throwing "java.lang.ArithmeticException: / by zero"
         try {
             final ByteProcessor dest = fastMedianUInt8.run(src, 11, 11);
+            assertNotNull(dest);
         } catch (ArithmeticException ex) {
             fail("BUG 1198520");
         }
