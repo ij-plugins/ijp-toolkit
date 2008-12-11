@@ -23,18 +23,17 @@ package net.sf.ij_plugins.grow;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.ImageWindow;
 import ij.gui.Roi;
+import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.beans.AbstractModel;
 import net.sf.ij_plugins.im3d.grow.SRG;
-import net.sf.ij_plugins.ui.OverlayCanvas;
-import net.sf.ij_plugins.ui.ShapeOverlay;
 import net.sf.ij_plugins.ui.UIUtils;
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerModel;
 import net.sf.ij_plugins.ui.multiregion.Region;
 import net.sf.ij_plugins.ui.multiregion.SubRegion;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -45,22 +44,23 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Date: Feb 18, 2008
- * Time: 10:21:35 AM
- *
  * @author Jarek Sacha
+ * @since Feb 18, 2008
  */
 final class RegionGrowingModel extends AbstractModel {
 
     private final MultiRegionManagerModel multiRegionManagerModel;
 
+
     public RegionGrowingModel(final MultiRegionManagerModel multiRegionManagerModel) {
         this.multiRegionManagerModel = multiRegionManagerModel;
     }
 
+
     public MultiRegionManagerModel getMultiRegionManagerModel() {
         return multiRegionManagerModel;
     }
+
 
     public void actionRun() {
         final String title = "Region Growing";
@@ -76,6 +76,7 @@ final class RegionGrowingModel extends AbstractModel {
             return;
         }
 
+        // Prepare seeds
         final Point[][] seeds = new Point[regions.size()][];
         for (int i = 0; i < regions.size(); ++i) {
             final Point[] points = extractPoints(regions.get(i));
@@ -86,72 +87,61 @@ final class RegionGrowingModel extends AbstractModel {
             seeds[i] = points;
         }
 
-        final SRG srg = new SRG();
-        srg.setImage((ByteProcessor) imp.getProcessor().duplicate().convertToByte(true));
-        srg.setNumberOfAnimationFrames(0);
-        srg.setSeeds(seeds);
-        srg.run();
+        // Run region growing
+        final ByteProcessor segments = runSRG(imp, seeds);
 
-        final ByteProcessor segments = srg.getRegionMarkers();
+        // Display results
+        displayResults(regions, segments);
+    }
+
+
+    private ByteProcessor runSRG(ImagePlus imp, Point[][] seeds) {
+        final SRG srg = new SRG();
+        final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+        srg.addProgressListener(progressBarAdapter);
+        try {
+            srg.setImage((ByteProcessor) imp.getProcessor().duplicate().convertToByte(true));
+            srg.setNumberOfAnimationFrames(0);
+            srg.setSeeds(seeds);
+            srg.run();
+        } finally {
+            srg.removeProgressListener(progressBarAdapter);
+        }
+
+        return srg.getRegionMarkers();
+    }
+
+
+    private void displayResults(List<Region> regions, ByteProcessor segments) {
+        final ImagePlus regionsImp = new ImagePlus("ROIs", segments);
+        regionsImp.show();
+
+        // Add result ROIs to ROI Manager
+        final RoiManager roiManager = new RoiManager();
+        roiManager.runCommand("Reset");
+        final int n = regions.size();
+        for (int i = 0; i < n; i++) {
+            // Convert segment i to current selection (ROI)
+            segments.setThreshold(i + 1, i + 1, ImageProcessor.NO_LUT_UPDATE);
+            IJ.runPlugIn("ij.plugin.filter.ThresholdToSelection", "");
+
+            // Add current selection to ROI Manager
+            roiManager.runCommand("add");
+
+            // Rename to selection match region name
+            final int count = roiManager.getCount();
+            roiManager.select(count - 1);
+            roiManager.runCommand("rename", regions.get(i).getName());
+        }
+
+        // Color code segments to match region names
         final List<Color> colors = new ArrayList<Color>();
         colors.add(Color.BLACK);
         for (final Region region : regions) {
             colors.add(region.getColor());
         }
         segments.setColorModel(UIUtils.createIndexColorModel(colors));
-        new ImagePlus("ROIs", segments).show();
-
-//        IndexColorModel cm = new IndexColorModel(8, 256, fi.reds, fi.greens, fi.blues);
-//        if (imp.isComposite())
-//            ((CompositeImage)imp).setChannelColorModel(cm);
-//        else
-//            ip.setColorModel(cm);
-
-//        // Convert segmented regions to ROIs.
-//        final java.util.List<ShapeOverlay> overlays = new ArrayList<ShapeOverlay>();
-//        for (int i = 0; i < regions.size(); i++) {
-//            final ByteProcessor mask = (ByteProcessor) segments.duplicate();
-//
-//            final int level = i + 1;
-//            mask.setThreshold(level, level, ImageProcessor.NO_LUT_UPDATE);
-//
-//            final ImagePlus maskImp = new ImagePlus("", mask);
-//            final ThresholdToSelection thresholdToSelection = new ThresholdToSelection();
-//            thresholdToSelection.setup(null, maskImp);
-//            thresholdToSelection.run(mask);
-//
-//            final Roi maskRoi = maskImp.getRoi();
-//            if (maskRoi != null) {
-//                final Region region = regions.get(i);
-//                final Shape shape = new Area(ShapeOverlay.toShape(maskRoi));
-//                overlays.add(new ShapeOverlay(region.getName(), shape, region.getColor(), true));
-//            }
-//        }
-
-//        show("Segmented", imp.getProcessor(), overlays);
-
-//        if (roiManager==null) {
-//				Frame frame = WindowManager.getFrame("ROI Manager");
-//				if (frame==null)
-//					IJ.run("ROI Manager...");
-//				frame = WindowManager.getFrame("ROI Manager");
-//				if (frame==null || !(frame instanceof RoiManager))
-//					{addToManager=false; return;}
-//				roiManager = (RoiManager)frame;
-//				if (resetCounter)
-//					roiManager.runCommand("reset");
-//			}
-//			roiManager.add(imp, roi, Analyzer.getCounter());
-    }
-
-
-    private static void show(final String title, final ImageProcessor ip, final Iterable<ShapeOverlay> overlays) {
-        final ImagePlus imp = new ImagePlus(title, ip);
-        final OverlayCanvas overlayCanvas = new OverlayCanvas(imp);
-        new ImageWindow(imp, overlayCanvas);
-        overlayCanvas.setOverlays(overlays);
-        overlayCanvas.invalidate();
-        overlayCanvas.repaint();
+        regionsImp.updateAndRepaintWindow();
     }
 
 
@@ -172,6 +162,4 @@ final class RegionGrowingModel extends AbstractModel {
 
         return points.toArray(new Point[points.size()]);
     }
-
-
 }
