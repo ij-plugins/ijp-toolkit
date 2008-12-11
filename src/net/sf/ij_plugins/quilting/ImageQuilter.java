@@ -2,7 +2,7 @@
  * Copyright (C) 2002 Nick Vavra
  *
  * Image/J Plugins
- * Copyright (C) 2004 Jarek Sacha
+ * Copyright (C) 2004-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -168,26 +168,26 @@ public class ImageQuilter {
     }
 
 
-    /**
-     * This calculates the difference between the path costs of the left overlap region and the top
-     * overlap region.
-     */
-    private double getOverlapDistDifference(Patch outPatch, TwoDLoc loc) {
-
-        Patch inPatch = new Patch(input, loc.getX(), loc.getY(),
-                patchsize, patchsize);
-        double left = 0.0, top = 0.0;
-        double tolap[][] = getTopOverlapDists(outPatch, inPatch);
-        double lolap[][] = getLeftOverlapDists(outPatch, inPatch);
-        for (int r = 0; r < lolap.length; r++) {
-            for (int c = 0; c < lolap[r].length; c++) {
-                top += tolap[r][c];
-                left += lolap[r][c];
-            }
-        }
-
-        return (top > left ? top - left : left - top);
-    }
+//    /**
+//     * This calculates the difference between the path costs of the left overlap region and the top
+//     * overlap region.
+//     */
+//    private double getOverlapDistDifference(Patch outPatch, TwoDLoc loc) {
+//
+//        Patch inPatch = new Patch(input, loc.getX(), loc.getY(),
+//                patchsize, patchsize);
+//        double left = 0.0, top = 0.0;
+//        double tolap[][] = getTopOverlapDists(outPatch, inPatch);
+//        double lolap[][] = getLeftOverlapDists(outPatch, inPatch);
+//        for (int r = 0; r < lolap.length; r++) {
+//            for (int c = 0; c < lolap[r].length; c++) {
+//                top += tolap[r][c];
+//                left += lolap[r][c];
+//            }
+//        }
+//
+//        return (top > left ? top - left : left - top);
+//    }
 
 
     /**
@@ -447,68 +447,68 @@ public class ImageQuilter {
     }
 
 
-    /**
-     * This copies a patch from the input image at location loc into outPatch. The overlap regions
-     * will be blended.
-     */
-    private void fillAndBlend(Patch outPatch, TwoDLoc loc) {
-
-        Patch inPatch = new Patch(input, loc.getX(), loc.getY(),
-                patchsize, patchsize);
-
-        if (outPatch.isAtTopEdge()) {
-
-            // blend the overlap area on the left
-            for (int r = 0; r < patchsize; r++) {
-                for (int c = 0; c < overlapsize; c++) {
-                    double inpart = (double) c / overlapsize;
-                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
-                }
-            }
-            SynthAide.copy(inPatch, outPatch, overlapsize,
-                    0, patchsize - overlapsize, overlapsize);
-        } else if (outPatch.isAtLeftEdge()) {
-
-            // blend the overlap area on top
-            for (int c = 0; c < patchsize; c++) {
-                for (int r = 0; r < overlapsize; r++) {
-                    double inpart = (double) r / overlapsize;
-                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
-                }
-            }
-            SynthAide.copy(inPatch, outPatch, 0, overlapsize,
-                    overlapsize, patchsize - overlapsize);
-        } else {
-
-            // blend the overlap area on top
-            for (int c = overlapsize; c < patchsize; c++) {
-                for (int r = 0; r < overlapsize; r++) {
-                    double inpart = (double) r / overlapsize;
-                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
-                }
-            }
-
-            // blend the overlap area on the left
-            for (int r = overlapsize; r < patchsize; r++) {
-                for (int c = 0; c < overlapsize; c++) {
-                    double inpart = (double) c / overlapsize;
-                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
-                }
-            }
-
-            // blend the combined overlap
-            for (int r = 0; r < overlapsize; r++) {
-                for (int c = 0; c < overlapsize; c++) {
-                    double inpart = (double) c * r / (overlapsize * overlapsize);
-                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
-                }
-            }
-        }
-
-        // copy in the remaining part
-        int size = patchsize - overlapsize;
-        SynthAide.copy(inPatch, outPatch, overlapsize, overlapsize, size, size);
-    }
+//    /**
+//     * This copies a patch from the input image at location loc into outPatch. The overlap regions
+//     * will be blended.
+//     */
+//    private void fillAndBlend(Patch outPatch, TwoDLoc loc) {
+//
+//        Patch inPatch = new Patch(input, loc.getX(), loc.getY(),
+//                patchsize, patchsize);
+//
+//        if (outPatch.isAtTopEdge()) {
+//
+//            // blend the overlap area on the left
+//            for (int r = 0; r < patchsize; r++) {
+//                for (int c = 0; c < overlapsize; c++) {
+//                    double inpart = (double) c / overlapsize;
+//                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
+//                }
+//            }
+//            SynthAide.copy(inPatch, outPatch, overlapsize,
+//                    0, patchsize - overlapsize, overlapsize);
+//        } else if (outPatch.isAtLeftEdge()) {
+//
+//            // blend the overlap area on top
+//            for (int c = 0; c < patchsize; c++) {
+//                for (int r = 0; r < overlapsize; r++) {
+//                    double inpart = (double) r / overlapsize;
+//                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
+//                }
+//            }
+//            SynthAide.copy(inPatch, outPatch, 0, overlapsize,
+//                    overlapsize, patchsize - overlapsize);
+//        } else {
+//
+//            // blend the overlap area on top
+//            for (int c = overlapsize; c < patchsize; c++) {
+//                for (int r = 0; r < overlapsize; r++) {
+//                    double inpart = (double) r / overlapsize;
+//                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
+//                }
+//            }
+//
+//            // blend the overlap area on the left
+//            for (int r = overlapsize; r < patchsize; r++) {
+//                for (int c = 0; c < overlapsize; c++) {
+//                    double inpart = (double) c / overlapsize;
+//                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
+//                }
+//            }
+//
+//            // blend the combined overlap
+//            for (int r = 0; r < overlapsize; r++) {
+//                for (int c = 0; c < overlapsize; c++) {
+//                    double inpart = (double) c * r / (overlapsize * overlapsize);
+//                    SynthAide.blend(inPatch, outPatch, c, r, inpart);
+//                }
+//            }
+//        }
+//
+//        // copy in the remaining part
+//        int size = patchsize - overlapsize;
+//        SynthAide.copy(inPatch, outPatch, overlapsize, overlapsize, size, size);
+//    }
 
 
     /**
