@@ -31,7 +31,6 @@ import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public final class KMeansTest extends junit.framework.TestCase {
     public KMeansTest(final java.lang.String test) {
@@ -69,6 +68,7 @@ public final class KMeansTest extends junit.framework.TestCase {
         config.setRandomizationSeed(31415);
         final KMeans kmeans = new KMeans(config);
         final ImageProcessor ip = kmeans.run(imp.getStack());
+        assertNotNull(ip);
 
         float[][] centers = kmeans.getClusterCenters();
         for (int i = 0; i < centers.length; i++) {
