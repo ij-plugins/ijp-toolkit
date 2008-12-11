@@ -45,10 +45,10 @@ import java.util.StringTokenizer;
  * @since July 3, 2002
  */
 public class VtkDecoder implements PlugIn {
+
     private static final int MAX_LINE_SIZE = 260;
     private static final int MAX_HEADER_SIZE = MAX_LINE_SIZE * (2 + 9);
-
-    private final String DIALOG_CAPTION = "VTK Reader";
+    private static final String DIALOG_CAPTION = "VTK Reader";
 
     private FileInfo fileInfo;
     private Calibration calibration;
