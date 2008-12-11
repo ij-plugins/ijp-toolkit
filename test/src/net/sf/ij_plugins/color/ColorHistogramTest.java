@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2008 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,6 @@ import java.io.File;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class ColorHistogramTest extends TestCase {
     public ColorHistogramTest(String test) {
@@ -56,6 +55,7 @@ public class ColorHistogramTest extends TestCase {
 
         final int[][][] bins = colorHistogram.getBins();
         final Color[][][] binColors = colorHistogram.getBinColors();
+        assertNull(binColors);
         for (int r = 0; r < bins.length; r++) {
             final int[][] binGB = bins[r];
             for (int g = 0; g < binGB.length; g++) {
