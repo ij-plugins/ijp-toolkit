@@ -64,6 +64,7 @@ public class SRGTest extends TestCase {
         srg.run();
 
         final ByteProcessor regionMask = srg.getRegionMarkers();
+        assertNotNull(regionMask);
 //        final ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
 //        new File(OUTPUT_DIR).mkdirs();
 //        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_output.tif"));
