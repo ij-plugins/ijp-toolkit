@@ -82,12 +82,10 @@ public final class UIUtils {
      * Show error message and abort macro execution.
      *
      * @param msg error message.
-     * @return false.
      */
-    public static boolean error(final String msg) {
+    public static void error(final String msg) {
         IJ.error(msg);
         Macro.abort();
-        return false;
     }
 
 
