@@ -106,4 +106,24 @@ public class IOUtils {
     public static void saveAsTiff(final ImageProcessor ip, final File file) throws IOException {
         saveAsTiff(new ImagePlus(file.getName(), ip), file);
     }
+
+
+    /**
+     * Creates directory if it does not exists already. Creates all necessary but not existant parent directories.
+     *
+     * @param directory directory to create.
+     * @throws java.io.IOException if directory cannot be created.
+     */
+    public static void forceMkDirs(final File directory) throws IOException {
+
+        if (directory.exists()) {
+            if (!directory.isDirectory()) {
+                throw new IOException("File already exists and is not a directory: " + directory.getAbsolutePath());
+            }
+        } else {
+            if (!directory.mkdirs()) {
+                throw new IOException("Failed to create directory: " + directory.getAbsolutePath());
+            }
+        }
+    }
 }
