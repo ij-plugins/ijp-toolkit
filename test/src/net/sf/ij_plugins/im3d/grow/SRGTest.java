@@ -115,7 +115,7 @@ public class SRGTest extends TestCase {
 
 
     public void testBlobs() throws Exception {
-// Load test image
+        // Load test image
         final ByteProcessor image = (ByteProcessor) IOUtils.openImage(BLOBS_FILE_NAME).getProcessor();
         final Point[][] seeds = {
                 {new Point(107, 144)}, // Background
@@ -123,19 +123,19 @@ public class SRGTest extends TestCase {
                 {new Point(119, 143)}, // Blob 2
         };
 
-// Setup region growing
+        // Setup region growing
         final SRG srg = new SRG();
         srg.setImage(image);
         srg.setSeeds(seeds);
         srg.setNumberOfAnimationFrames(50);
 
-// Run growing
+        // Run growing
         srg.run();
 
         final ByteProcessor regionMask = srg.getRegionMarkers();
         final ImagePlus imp = new ImagePlus("Region Mask", regionMask);
 
-        new File(OUTPUT_DIR).mkdirs();
+        IOUtils.forceMkDirs(new File(OUTPUT_DIR));
 
         IOUtils.saveAsTiff(imp, new File(OUTPUT_DIR, "srg_test_output.tif"));
         IOUtils.saveAsTiff(imp, new File(OUTPUT_DIR, "srg_test_animation.tif"));
