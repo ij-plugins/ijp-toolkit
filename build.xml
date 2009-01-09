@@ -92,7 +92,6 @@
         <property name="svn.repository" value="https://ij-plugins.svn.sourceforge.net/svnroot/ij-plugins"/>
         <property name="svn.module" value="ij-plugins"/>
         <property name="checkout.dir" location="${build.dir}/checkout"/>
-        <property name="svn.module" value="ij-plugins"/>
         <!-- path to the svnant libraries. Usually they will be located in ANT_HOME/lib -->
         <property name="svnant.lib.dir" location="../vendor/svnant/lib"/>
         <path id="svnant.classpath">
