@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 
 package net.sf.ij_plugins.grow;
@@ -44,6 +45,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
+ * Model for {@link net.sf.ij_plugins.grow.RegionGrowingView}.
+ *
  * @author Jarek Sacha
  * @since Feb 18, 2008
  */
@@ -95,7 +98,7 @@ final class RegionGrowingModel extends AbstractModel {
     }
 
 
-    private ByteProcessor runSRG(ImagePlus imp, Point[][] seeds) {
+    private static ByteProcessor runSRG(final ImagePlus imp, final Point[][] seeds) {
         final SRG srg = new SRG();
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
         srg.addProgressListener(progressBarAdapter);
@@ -112,7 +115,7 @@ final class RegionGrowingModel extends AbstractModel {
     }
 
 
-    private void displayResults(List<Region> regions, ByteProcessor segments) {
+    private static void displayResults(final List<Region> regions, final ByteProcessor segments) {
         final ImagePlus regionsImp = new ImagePlus("ROIs", segments);
         regionsImp.show();
 
@@ -145,7 +148,7 @@ final class RegionGrowingModel extends AbstractModel {
     }
 
 
-    Point[] extractPoints(final Region region) {
+    private static Point[] extractPoints(final Region region) {
 
         final Set<Point> points = new TreeSet<Point>(new PointYXComparator());
         for (final SubRegion subRegion : region.getSubRegions()) {

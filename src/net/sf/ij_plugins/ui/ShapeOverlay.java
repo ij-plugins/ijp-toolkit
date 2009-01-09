@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,11 +40,11 @@ import java.awt.geom.PathIterator;
  * @since Feb 11, 2008
  */
 public class ShapeOverlay {
-    private String name;
-    private Shape shape;
-    private Stroke stroke;
-    private Color color;
-    private boolean fill;
+    private final String name;
+    private final Shape shape;
+    private final Stroke stroke;
+    private final Color color;
+    private final boolean fill;
 
 
     public ShapeOverlay(final String name, final Shape shape, final Color color, final boolean fill) {
