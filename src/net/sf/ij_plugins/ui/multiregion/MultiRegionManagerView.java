@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,13 +17,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 
 package net.sf.ij_plugins.ui.multiregion;
 
 import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.adapter.BasicComponentFactory;
-import com.jgoodies.binding.beans.PropertyAdapter;
 import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueHolder;
@@ -35,8 +35,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Color;
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * @author Jarek Sacha
@@ -53,7 +51,9 @@ public class MultiRegionManagerView extends JPanel {
     private final ValueModel subRegionsValueModel = detailsModel.getModel(Region.PROPERTYNAME_SUB_REGIONS);
     private final ValueHolder subRegionSelectedItemHolder = new ValueHolder();
     private final SelectionInList<Region> subRegionSelectionInList = new SelectionInList<Region>(subRegionsValueModel, subRegionSelectedItemHolder);
+
     private static final long serialVersionUID = 3522389261778035936L;
+
 
     /**
      * Creates new form MultiRegionManagerView
@@ -62,7 +62,6 @@ public class MultiRegionManagerView extends JPanel {
 
         this.model.setParent(this);
 
-
         initComponents();
         regionList.setCellRenderer(new RegionCellRenderer());
 
@@ -70,24 +69,14 @@ public class MultiRegionManagerView extends JPanel {
         PropertyConnector.connectAndUpdate(regionSelectedItemHolder, model, "selectedRegion");
         PropertyConnector.connectAndUpdate(subRegionSelectedItemHolder, model, "selectedSubRegion");
 
-
         regionSelectedItemHolder.setIdentityCheckEnabled(true);
-        final PropertyAdapter<MultiRegionManagerModel> pa = new PropertyAdapter<MultiRegionManagerModel>(regionSelectedItemHolder, "subRegions", true);
-        pa.addValueChangeListener(new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent evt) {
-//                System.out.println("> evt= " + evt);
-//                Object value = pa.getValue();
-//                System.out.println("> value= " + value);
-            }
-        });
     }
 
     public MultiRegionManagerModel getModel() {
         return model;
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
@@ -210,7 +199,7 @@ public class MultiRegionManagerView extends JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JList regionList;
-    final JList subRegionList = BasicComponentFactory.createList(subRegionSelectionInList);
+    private final JList subRegionList = BasicComponentFactory.createList(subRegionSelectionInList);
     // End of variables declaration//GEN-END:variables
 
 
