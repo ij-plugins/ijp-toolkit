@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 
 package net.sf.ij_plugins.ui.multiregion;
@@ -68,12 +69,13 @@ public final class MultiRegionManagerModel extends AbstractModel {
     private SubRegion selectedSubRegion;
     private ImagePlus lastSourceImage;
 
+
     public MultiRegionManagerModel() {
 
         regions.addListDataListener(new ListListener());
 
-        addRegion(new Region("Background", colorWithAlpha(Color.GREEN, OVERLAY_ALPHA)));
-        addRegion(new Region("Region-1", colorWithAlpha(Color.RED, OVERLAY_ALPHA)));
+        addRegion(new Region("Background", colorWithAlpha(Color.GREEN)));
+        addRegion(new Region("Region-1", colorWithAlpha(Color.RED)));
 
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
@@ -83,13 +85,13 @@ public final class MultiRegionManagerModel extends AbstractModel {
                 }
             }
 
-            public void imageClosed(ImagePlus imp) {
+            public void imageClosed(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     lastSourceImage = null;
                 }
             }
 
-            public void imageUpdated(ImagePlus imp) {
+            public void imageUpdated(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     updateShapes(lastSourceImage);
                 }
@@ -97,50 +99,59 @@ public final class MultiRegionManagerModel extends AbstractModel {
         });
     }
 
-    private static Color colorWithAlpha(final Color color, final int alpha) {
-        return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+
+    private static Color colorWithAlpha(final Color color) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), OVERLAY_ALPHA);
 
     }
+
 
     public ArrayListModel<Region> getRegions() {
         return regions;
     }
 
+
     public Region getSelectedRegion() {
         return selectedRegion;
     }
+
 
     public void setSelectedRegion(final Region selectedRegion) {
         firePropertyChange("selectedRegion", this.selectedRegion, this.selectedRegion = selectedRegion);
     }
 
+
     public SubRegion getSelectedSubRegion() {
         return selectedSubRegion;
     }
+
 
     public void setSelectedSubRegion(final SubRegion selectedSubRegion) {
         firePropertyChange("selectedSubRegion", this.selectedSubRegion, this.selectedSubRegion = selectedSubRegion);
     }
 
+
     void setParent(final Component parent) {
         firePropertyChange("parent", this.parent, this.parent = parent);
     }
+
 
     Action createNewRegionAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Add Current ROI", this) {
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 getModel().actionAddRegion();
             }
         };
     }
 
+
     Action createRemoveRegionAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove", this) {
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 getModel().actionRemoveRegion();
             }
 
@@ -151,11 +162,12 @@ public final class MultiRegionManagerModel extends AbstractModel {
         };
     }
 
+
     Action createAddCurrentROIAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Add Current ROI", this) {
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 getModel().actionAddSubRegion();
             }
 
@@ -166,11 +178,12 @@ public final class MultiRegionManagerModel extends AbstractModel {
         };
     }
 
+
     Action createRemoveSubRegionAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove ROI", this) {
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 getModel().actionRemoveSubRegion();
             }
 
@@ -181,11 +194,12 @@ public final class MultiRegionManagerModel extends AbstractModel {
         };
     }
 
+
     Action createRedrawOverlaysAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Redraw Overlays", this) {
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 updateShapes(WindowManager.getCurrentImage());
             }
 
@@ -196,11 +210,12 @@ public final class MultiRegionManagerModel extends AbstractModel {
         };
     }
 
+
     Action createRemoveOverlaysAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove Overlays", this) {
             private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 updateShapes(null);
             }
         };
@@ -216,11 +231,13 @@ public final class MultiRegionManagerModel extends AbstractModel {
         }
     }
 
+
     void addRegion(final Region region) {
         regions.add(region);
         autoSelectedRegion();
         updateShapes(lastSourceImage);
     }
+
 
     void actionRemoveRegion() {
         if (selectedRegion != null && regions.contains(selectedRegion)) {
@@ -234,6 +251,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             updateShapes(lastSourceImage);
         }
     }
+
 
     void actionAddSubRegion() {
         if (selectedRegion == null) {
@@ -257,6 +275,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
         updateShapes(imp);
     }
+
 
     private void updateShapes(final ImagePlus imp) {
 
@@ -341,6 +360,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
         return label;
     }
 
+
     public void autoSelectedRegion() {
         if (selectedRegion == null && regions.size() > 0) {
             setSelectedRegion(regions.get(0));
@@ -349,17 +369,17 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
 
     private class ListListener implements ListDataListener {
-        public void intervalAdded(ListDataEvent e) {
+        public void intervalAdded(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
-        public void intervalRemoved(ListDataEvent e) {
+        public void intervalRemoved(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
-        public void contentsChanged(ListDataEvent e) {
+        public void contentsChanged(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
