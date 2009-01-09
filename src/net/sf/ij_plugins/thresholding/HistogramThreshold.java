@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.thresholding;
 
@@ -29,10 +30,13 @@ import net.sf.ij_plugins.util.progress.ProgressListener;
  * @author Jarek Sacha
  */
 public final class HistogramThreshold {
-    private static final double EPSILON = Double.MIN_VALUE;
+
+    private static final double EPSILON = Double.MIN_NORMAL;
+
 
     private HistogramThreshold() {
     }
+
 
     /**
      * Equivalent to calling  maximumEntropy(hist, null).
@@ -44,6 +48,7 @@ public final class HistogramThreshold {
     public static int maximumEntropy(final int[] hist) {
         return maximumEntropy(hist, null);
     }
+
 
     /**
      * Calculate maximum entropy split of a histogram. For more information see: J.N. Kapur, P.K.
@@ -87,6 +92,7 @@ public final class HistogramThreshold {
         return hist.length;
     }
 
+
     private static int trailingOffset(final int[] hist) {
         for (int i = hist.length - 1; i >= 0; i--) {
             if (hist[i] != 0)
@@ -94,6 +100,7 @@ public final class HistogramThreshold {
         }
         return 0;
     }
+
 
     private static int maximumEntropy_impl(final int[] hist, final ProgressListener progressListener) {
 
@@ -175,11 +182,11 @@ public final class HistogramThreshold {
      * @param hist histogram to be normalized.
      * @return normalized histogram.
      */
-    static double[] normalize(int[] hist) {
+    static double[] normalize(final int[] hist) {
         // Normalize histogram, that is makes the sum of all bins equal to 1.
         double sum = 0;
-        for (int i = 0; i < hist.length; ++i) {
-            sum += hist[i];
+        for (final int v : hist) {
+            sum += v;
         }
 
         final double[] normalizedHist = new double[hist.length];
