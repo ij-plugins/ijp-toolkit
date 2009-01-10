@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
-
 
 package net.sf.ij_plugins.ui.multiregion;
 
@@ -33,10 +33,7 @@ public class SubRegion extends AbstractModel {
     private String name = "?";
     private Roi roi;
 
-//    public SubRegion(final String name) {
-//        setName(name);
-//    }
-
+    
     public SubRegion(final String name, final Roi roi) {
         setName(name);
         setRoi(roi);
@@ -47,17 +44,21 @@ public class SubRegion extends AbstractModel {
         return name;
     }
 
+
     public void setName(final String name) {
         firePropertyChange("name", this.name, this.name = name);
     }
+
 
     public Roi getRoi() {
         return roi;
     }
 
+
     public void setRoi(final Roi roi) {
         firePropertyChange("roi", this.roi, this.roi = roi);
     }
+
 
     public String toString() {
         return name;
