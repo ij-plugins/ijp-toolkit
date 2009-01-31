@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 
 package net.sf.ij_plugins.im3d.grow;
@@ -31,10 +32,12 @@ import java.awt.Point;
 import java.util.*;
 
 /**
+ * <p>
  * Seeded region growing algorithm based on article by Rolf Adams and Leanne Bischof, "Seeded Region
  * Growing", <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i>, vol. 16, no. 6,
  * June 1994.
- * <p/>
+ * </p>
+ * <p>
  * The algorithms assumes that seeds for objects and the background be provided.
  * Seeds are used to compute compute initial mean gray level for each region.
  * The condition of growth is difference of a gray level of a candidate pixel and mean grey level
@@ -42,8 +45,17 @@ import java.util.*;
  * At each step of the algorithm a candidate with a smallest difference to some neighboring
  * region is added to that region and all neighboring points of that that are not yet assigned to
  * any region are added to candidate list.
- * <p/>
- * An example of segmenting an image. Seeds are set for three regions: background, blob 1, and blob 2.
+ * </p>
+ * <p>
+ * Part of the image that will be segmented can be restricted by setting a mask.
+ * </p>
+ * <p>
+ * Progress of segmentation can be recorded on a animation stack.
+ * To enable recording set {@code numberOfAnimationFrames} to a value larger than 0.
+ * </p>
+ * <p>
+ * An example of segmenting an image is below. Seeds are set for three regions: background, blob 1, and blob 2.
+ * </p>
  * <pre>
  * // Setup growing
  * final ByteProcessor image = ...;
@@ -80,7 +92,7 @@ public final class SRG extends DefaultProgressReporter {
     private ByteProcessor regionMarkers;
     private ByteProcessor mask;
     private ImageStack animationStack;
-    private int nbAnimationFrames;
+    private int numberOfAnimationFrames;
 
     // Internal variables
     private int xMin;
@@ -154,21 +166,41 @@ public final class SRG extends DefaultProgressReporter {
         this.seeds = seeds;
     }
 
+
+    /**
+     * Set ROI mask, if not set full image is processed.
+     *
+     * @param mask Mask of the region of interest used for processing.
+     */
     public void setMask(final ByteProcessor mask) {
         this.mask = mask;
     }
 
-    public void setNumberOfAnimationFrames(final int nbAnimationFrames) {
-        this.nbAnimationFrames = nbAnimationFrames;
+
+    /**
+     * Sets how many animation frames should be recorded. If less then 1 animation will not be recorded.
+     *
+     * @param numberOfAnimationFrames number of animation frames.
+     */
+    public void setNumberOfAnimationFrames(final int numberOfAnimationFrames) {
+        this.numberOfAnimationFrames = numberOfAnimationFrames;
     }
+
 
     public ByteProcessor getRegionMarkers() {
         return regionMarkers;
     }
 
+
+    /**
+     * Return progress of growing.
+     *
+     * @return annimation stack with region markers.
+     */
     public ImageStack getAnimationStack() {
         return animationStack;
     }
+
 
     /**
      * Perform region growing.
@@ -187,6 +219,8 @@ public final class SRG extends DefaultProgressReporter {
             final Point[] regionSeeds = seeds[i];
             final RegionInfo thisRegionInfo = regionInfos[i];
             final int regionId = i + 1;
+
+            // Mark seeds
             for (final Point seed : regionSeeds) {
                 final int offset = seed.x + seed.y * xSize;
 
@@ -197,10 +231,11 @@ public final class SRG extends DefaultProgressReporter {
                 // Verify seeding consistency
                 final int oldRegionIdByte = regionMarkerPixels[offset];
                 final int oldRegionId = oldRegionIdByte & 0xff;
-                if (oldRegionIdByte == CANDIDATE_MARK) {
-                    // Remove candidate, it will be changed to a regionMarker
-                    ssl.remove(new Candidate(seed, 0, 0));
-                } else if (oldRegionId != 0 && oldRegionId != regionId) {
+//                if (oldRegionIdByte == CANDIDATE_MARK) {
+//                    // Remove candidate, it will be changed to a regionMarker
+//                    ssl.remove(new Candidate(seed, 0, 0));
+//                } else
+                if (oldRegionId != 0 && oldRegionId != regionId) {
                     throw new IllegalArgumentException("Single point have two regions assignments. "
                             + "Point (" + seed.x + "," + seed.y + ") is assigned both to region " + oldRegionId
                             + " and region " + regionId + ".");
@@ -211,6 +246,18 @@ public final class SRG extends DefaultProgressReporter {
 
                 // Add seed to region info
                 thisRegionInfo.addPoint(seed);
+            }
+        }
+
+        // Initialize candidates
+        assert ssl.size() == 0 : "ssl sould be empty, got " + ssl.size();
+        for (final Point[] regionSeeds : seeds) {
+            for (final Point seed : regionSeeds) {
+                final int offset = seed.x + seed.y * xSize;
+
+                if (regionMarkerPixels[offset] == OUTSIDE_MARK) {
+                    continue;
+                }
 
                 // Initialize SSL - ordered list of bordering at least one of the regions
                 candidatesFromNeighbours(seed);
@@ -219,13 +266,13 @@ public final class SRG extends DefaultProgressReporter {
             }
         }
 
-        if (nbAnimationFrames > 1) {
+        if (numberOfAnimationFrames > 1) {
             addAnimationFrame("Seeds", (ByteProcessor) regionMarkers.duplicate());
         }
 
         final long pixelsToProcess = (xMax - xMin) * (yMax - yMin);
-        final long frameIncrement = this.nbAnimationFrames > 2
-                ? pixelsToProcess / (nbAnimationFrames - 2)
+        final long frameIncrement = this.numberOfAnimationFrames > 2
+                ? pixelsToProcess / (numberOfAnimationFrames - 2)
                 : Long.MAX_VALUE;
 
         // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
@@ -240,8 +287,12 @@ public final class SRG extends DefaultProgressReporter {
             // Remove it from the candidate set
             ssl.remove(c);
 
+            final int offset = c.point.x + c.point.y * xSize;
+            final byte marker = regionMarkerPixels[offset];
+            assert marker == CANDIDATE_MARK : "Expecting point (" + c.point.x + "," + c.point.y + ") to be candidate got " + (int) marker;
+
             // Add this point to its most similar region
-            regionMarkerPixels[c.point.x + c.point.y * xSize] = (byte) (c.mostSimilarRegionId & 0xff);
+            regionMarkerPixels[offset] = (byte) (c.mostSimilarRegionId & 0xff);
 
             // Update region info to include this point
             regionInfos[c.mostSimilarRegionId - 1].addPoint(c.point);
@@ -250,6 +301,7 @@ public final class SRG extends DefaultProgressReporter {
             candidatesFromNeighbours(c.point);
 
             if (processedPixelCount % progressIncrement == 0) {
+                assert processedPixelCount <= pixelsToProcess;
                 this.notifyProgressListeners(processedPixelCount / (double) pixelsToProcess, NAME + " processing..");
             }
 
@@ -258,7 +310,8 @@ public final class SRG extends DefaultProgressReporter {
             }
         }
 
-        if (nbAnimationFrames > 0) {
+
+        if (numberOfAnimationFrames > 0) {
             addAnimationFrame("Final regions", (ByteProcessor) regionMarkers.duplicate());
         }
 
@@ -272,6 +325,7 @@ public final class SRG extends DefaultProgressReporter {
         this.notifyProgressListeners(1);
     }
 
+
     private void fillOutsideMask(final byte[] pixels, final byte value) {
         if (mask != null) {
             final byte[] maskPixels = (byte[]) mask.getPixels();
@@ -284,6 +338,7 @@ public final class SRG extends DefaultProgressReporter {
 
     }
 
+
     private void addAnimationFrame(final String title, final ByteProcessor bp) {
         final byte[] pixels = (byte[]) bp.getPixels();
         for (int i = 0; i < pixels.length; i++) {
@@ -293,6 +348,7 @@ public final class SRG extends DefaultProgressReporter {
         }
         animationStack.addSlice(title, bp);
     }
+
 
     /**
      * Create growth candidates from background neighbours of <code>point</code>.
@@ -308,6 +364,7 @@ public final class SRG extends DefaultProgressReporter {
             ssl.add(createCandidate(p));
         }
     }
+
 
     private Candidate createCandidate(final Point point) {
         final int offset = point.x + point.y * xSize;
@@ -338,6 +395,7 @@ public final class SRG extends DefaultProgressReporter {
         return new Candidate(point, mostSimilarRegionId, minSigma);
     }
 
+
     private boolean[] neighbourRegionFlags(final Point point) {
         final boolean[] r = new boolean[regionInfos.length];
         // 4-connected
@@ -352,6 +410,7 @@ public final class SRG extends DefaultProgressReporter {
         assignRegionFlag(point.x + 1, point.y + 1, r);
         return r;
     }
+
 
     private void assignRegionFlag(final int x, final int y, final boolean[] r) {
         if (x < xMin || x >= xMax || y < yMin || y >= yMax) {
@@ -419,6 +478,7 @@ public final class SRG extends DefaultProgressReporter {
         });
     }
 
+
     private List<Point> backgroundNeighbours(final Point point) {
         final List<Point> backgroundPoints = new ArrayList<Point>(7);
         // 4-connected
@@ -435,6 +495,7 @@ public final class SRG extends DefaultProgressReporter {
         return backgroundPoints;
     }
 
+
     private void addIfBackground(final int x, final int y, final List<Point> backgroundPoints) {
         if (x < xMin || x >= xMax ||
                 y < yMin || y >= yMax) {
@@ -448,6 +509,7 @@ public final class SRG extends DefaultProgressReporter {
         }
     }
 
+
     private static void validateNotNull(final Object object, final String name) throws IllegalArgumentException {
         if (object == null) {
             throw new IllegalArgumentException(
@@ -456,6 +518,7 @@ public final class SRG extends DefaultProgressReporter {
                             : "Argument cannot be null.");
         }
     }
+
 
     private static class RegionInfo {
         private long pointCount;
@@ -479,6 +542,7 @@ public final class SRG extends DefaultProgressReporter {
             }
         }
     }
+
 
     private static class Candidate {
         public final Point point;
