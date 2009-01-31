@@ -1,6 +1,6 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *
  */
 package net.sf.ij_plugins.grow;
 
@@ -43,6 +44,7 @@ public class RegionGrowingView extends JPanel {
         runAction = new RunAction(model, this);
 
         initComponents();
+        numberOfAnimationFramesSpinner.setModel(model.getNumberOfAnimationFramesSM());
     }
 
     /**
@@ -58,10 +60,18 @@ public class RegionGrowingView extends JPanel {
         final JLabel seedSelectionLabel = new JLabel();
         final JSeparator bottomSeparator = new JSeparator();
         final JButton runButton = new JButton();
+        final JLabel optionsLabel = new JLabel();
+        final JSeparator optionsSeparator = new JSeparator();
+        final JLabel numberOfAnimationFramesLabel = new JLabel();
+        numberOfAnimationFramesSpinner = new JSpinner();
 
         seedSelectionLabel.setText("Seed Selection");
 
         runButton.setAction(runAction);
+
+        optionsLabel.setText("Options");
+
+        numberOfAnimationFramesLabel.setText("Number of animation frames");
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -70,12 +80,21 @@ public class RegionGrowingView extends JPanel {
                         .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(bottomSeparator, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                                .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(numberOfAnimationFramesLabel)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(numberOfAnimationFramesSpinner, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(seedSelectionLabel)
-                                        .addPreferredGap(ComponentPlacement.UNRELATED)
-                                        .addComponent(seedSelectionSeparator, GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
-                                .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(seedSelectionSeparator, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(optionsLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(optionsSeparator, GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE))
+                                .addComponent(bottomSeparator, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                                 .addComponent(runButton, Alignment.TRAILING))
                         .addContainerGap())
         );
@@ -87,10 +106,18 @@ public class RegionGrowingView extends JPanel {
                                 .addComponent(seedSelectionLabel)
                                 .addComponent(seedSelectionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10)
-                        .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
-                        .addPreferredGap(ComponentPlacement.UNRELATED)
-                        .addComponent(bottomSeparator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(optionsLabel)
+                                .addComponent(optionsSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(numberOfAnimationFramesLabel)
+                                .addComponent(numberOfAnimationFramesSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(bottomSeparator, GroupLayout.PREFERRED_SIZE, 9, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(runButton)
                         .addContainerGap())
         );
@@ -99,6 +126,7 @@ public class RegionGrowingView extends JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private final MultiRegionManagerView multiRegionManagerView = new MultiRegionManagerView();
+    private JSpinner numberOfAnimationFramesSpinner;
     // End of variables declaration//GEN-END:variables
 
 }

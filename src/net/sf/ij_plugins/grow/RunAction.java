@@ -51,17 +51,27 @@ final class RunAction extends AbstractModelAction<RegionGrowingModel> {
         glassPane.setVisible(true);
 
         // Setup background execution
-        final SwingWorker<String, Object> worker = new SwingWorker<String, Object>() {
+        final SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
+
+            Throwable error;
 
             @Override
-            protected String doInBackground() throws Exception {
-                // Sun region growing
-                getModel().actionRun();
-                return "Done";
+            protected Boolean doInBackground() throws Exception {
+                // Run region growing
+                try {
+                    getModel().actionRun();
+                } catch (final Throwable t) {
+                    error = t;
+                    return false;
+                }
+                return true;
             }
 
             @Override
             protected void done() {
+                if (error != null) {
+                    getModel().showError("Error running region growing.", error);
+                }
                 // Unblock dialog.
                 glassPane.setVisible(false);
             }

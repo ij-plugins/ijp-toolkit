@@ -24,6 +24,7 @@ package net.sf.ij_plugins.grow;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
@@ -36,9 +37,12 @@ import net.sf.ij_plugins.ui.multiregion.Region;
 import net.sf.ij_plugins.ui.multiregion.SubRegion;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
+import javax.swing.*;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +57,8 @@ import java.util.TreeSet;
 final class RegionGrowingModel extends AbstractModel {
 
     private final MultiRegionManagerModel multiRegionManagerModel;
-
+    final SpinnerNumberModel numberOfAnimationFramesSM = new SpinnerNumberModel(0, 0, 1000, 1);
+    private static final String CAPTION = "Region Growing";
 
     public RegionGrowingModel(final MultiRegionManagerModel multiRegionManagerModel) {
         this.multiRegionManagerModel = multiRegionManagerModel;
@@ -65,8 +70,11 @@ final class RegionGrowingModel extends AbstractModel {
     }
 
 
+    public SpinnerNumberModel getNumberOfAnimationFramesSM() {
+        return numberOfAnimationFramesSM;
+    }
+
     public void actionRun() {
-        final String title = "Region Growing";
 
         final ImagePlus imp = UIUtils.getImage();
         if (imp == null) {
@@ -75,7 +83,7 @@ final class RegionGrowingModel extends AbstractModel {
 
         final List<Region> regions = multiRegionManagerModel.getRegions();
         if (regions.size() < 2) {
-            IJ.error(title, "Cannot perform growing, at least two regions required, got " + regions.size() + ".");
+            IJ.error(CAPTION, "Cannot perform growing, at least two regions required, got " + regions.size() + ".");
             return;
         }
 
@@ -84,39 +92,40 @@ final class RegionGrowingModel extends AbstractModel {
         for (int i = 0; i < regions.size(); ++i) {
             final Point[] points = extractPoints(regions.get(i));
             if (points.length < 1) {
-                IJ.error(title, "Cannot perform growing, region '" + regions.get(i).getName() + "' is empty (no seeds).");
+                IJ.error(CAPTION, "Cannot perform growing, region '" + regions.get(i).getName() + "' is empty (no seeds).");
                 return;
             }
             seeds[i] = points;
         }
 
         // Run region growing
-        final ByteProcessor segments = runSRG(imp, seeds);
+        final Result result = runSRG(imp, seeds, numberOfAnimationFramesSM.getNumber().intValue());
 
         // Display results
-        displayResults(regions, segments);
+        displayResults(regions, result);
     }
 
 
-    private static ByteProcessor runSRG(final ImagePlus imp, final Point[][] seeds) {
+    private static Result runSRG(final ImagePlus imp, final Point[][] seeds, final int numberOfAnimationFrames) {
         final SRG srg = new SRG();
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
         srg.addProgressListener(progressBarAdapter);
         try {
             srg.setImage((ByteProcessor) imp.getProcessor().duplicate().convertToByte(true));
-            srg.setNumberOfAnimationFrames(0);
+            srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
             srg.setSeeds(seeds);
+            srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
             srg.run();
         } finally {
             srg.removeProgressListener(progressBarAdapter);
         }
 
-        return srg.getRegionMarkers();
+        return new Result(srg.getRegionMarkers(), srg.getAnimationStack());
     }
 
 
-    private static void displayResults(final List<Region> regions, final ByteProcessor segments) {
-        final ImagePlus regionsImp = new ImagePlus("ROIs", segments);
+    private static void displayResults(final List<Region> regions, final Result result) {
+        final ImagePlus regionsImp = new ImagePlus("ROIs", result.segments);
         regionsImp.show();
 
         // Add result ROIs to ROI Manager
@@ -125,7 +134,7 @@ final class RegionGrowingModel extends AbstractModel {
         final int n = regions.size();
         for (int i = 0; i < n; i++) {
             // Convert segment i to current selection (ROI)
-            segments.setThreshold(i + 1, i + 1, ImageProcessor.NO_LUT_UPDATE);
+            result.segments.setThreshold(i + 1, i + 1, ImageProcessor.NO_LUT_UPDATE);
             IJ.runPlugIn("ij.plugin.filter.ThresholdToSelection", "");
 
             // Add current selection to ROI Manager
@@ -143,8 +152,15 @@ final class RegionGrowingModel extends AbstractModel {
         for (final Region region : regions) {
             colors.add(region.getColor());
         }
-        segments.setColorModel(UIUtils.createIndexColorModel(colors));
+        result.segments.setColorModel(UIUtils.createIndexColorModel(colors));
         regionsImp.updateAndRepaintWindow();
+
+        // Show animation frames
+        if (result.animationFrames != null && result.animationFrames.getSize() > 0) {
+            result.animationFrames.setColorModel(UIUtils.createIndexColorModel(colors));
+            new ImagePlus("Grow animation", result.animationFrames).show();
+        }
+
     }
 
 
@@ -164,5 +180,26 @@ final class RegionGrowingModel extends AbstractModel {
         }
 
         return points.toArray(new Point[points.size()]);
+    }
+
+
+    public void showError(final String message, final Throwable error) {
+        error.printStackTrace();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final PrintWriter writer = new PrintWriter(out);
+        error.printStackTrace(writer);
+
+        IJ.error(CAPTION, message + " " + error.getMessage() + "\n" + out.toString());
+    }
+
+
+    private static final class Result {
+        final ByteProcessor segments;
+        final ImageStack animationFrames;
+
+        private Result(final ByteProcessor segments, final ImageStack animationFrames) {
+            this.segments = segments;
+            this.animationFrames = animationFrames;
+        }
     }
 }
