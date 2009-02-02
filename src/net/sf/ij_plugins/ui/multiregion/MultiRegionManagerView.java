@@ -221,7 +221,8 @@ public class MultiRegionManagerView extends JPanel {
             if (value instanceof Region) {
                 final Region r = (Region) value;
                 text = r.getName();
-                color = r.getColor();
+                // Get color without alpha
+                color = new Color(r.getColor().getRGB());
             } else {
                 text = value.toString();
                 color = new Color(0, 0, 0, 255);
