@@ -235,7 +235,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     void addRegion(final Region region) {
         regions.add(region);
-        autoSelectedRegion();
+        setSelectedRegion(region);
         updateShapes(lastSourceImage);
     }
 
@@ -359,13 +359,6 @@ public final class MultiRegionManagerModel extends AbstractModel {
             label = zs.substring(zs.length() - digits) + "-" + label;
         }
         return label;
-    }
-
-
-    public void autoSelectedRegion() {
-        if (selectedRegion == null && regions.size() > 0) {
-            setSelectedRegion(regions.get(0));
-        }
     }
 
 
