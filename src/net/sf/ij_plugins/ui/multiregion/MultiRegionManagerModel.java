@@ -56,7 +56,7 @@ import java.util.List;
 public final class MultiRegionManagerModel extends AbstractModel {
 
     private static final Color[] COLORS = {
-            Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.GREEN, Color.RED, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.PINK,
     };
     private int colorCount;
     private static final int OVERLAY_ALPHA = 128;
@@ -75,8 +75,8 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
         regions.addListDataListener(new ListListener());
 
-        addRegion(new Region("Background", colorWithAlpha(Color.GREEN)));
-        addRegion(new Region("Region-" + regionCount++, colorWithAlpha(Color.RED)));
+        addRegion(new Region("Background", nextColor()));
+        addRegion(new Region("Region-" + regionCount++, nextColor()));
 
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
@@ -98,12 +98,6 @@ public final class MultiRegionManagerModel extends AbstractModel {
                 }
             }
         });
-    }
-
-
-    private static Color colorWithAlpha(final Color color) {
-        return new Color(color.getRed(), color.getGreen(), color.getBlue(), OVERLAY_ALPHA);
-
     }
 
 
@@ -226,12 +220,16 @@ public final class MultiRegionManagerModel extends AbstractModel {
     void actionAddRegion() {
         final String name = JOptionPane.showInputDialog(parent, "Enter new object name", "Region-" + regionCount++);
         if (name != null && !name.trim().isEmpty()) {
-            final Color rc = COLORS[colorCount++ % COLORS.length];
+            final Color rc = nextColor();
             final Color color = new Color(rc.getRed(), rc.getGreen(), rc.getBlue(), OVERLAY_ALPHA);
             addRegion(new Region(name, color));
         }
     }
 
+    private Color nextColor() {
+        final Color rc = COLORS[colorCount++ % COLORS.length];
+        return new Color(rc.getRed(), rc.getGreen(), rc.getBlue(), OVERLAY_ALPHA);
+    }
 
     void addRegion(final Region region) {
         regions.add(region);
