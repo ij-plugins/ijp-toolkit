@@ -68,6 +68,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
     private Region selectedRegion;
     private SubRegion selectedSubRegion;
     private ImagePlus lastSourceImage;
+    private int regionCount = 1;
 
 
     public MultiRegionManagerModel() {
@@ -75,7 +76,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
         regions.addListDataListener(new ListListener());
 
         addRegion(new Region("Background", colorWithAlpha(Color.GREEN)));
-        addRegion(new Region("Region-1", colorWithAlpha(Color.RED)));
+        addRegion(new Region("Region-" + regionCount++, colorWithAlpha(Color.RED)));
 
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
@@ -223,7 +224,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
 
     void actionAddRegion() {
-        final String name = JOptionPane.showInputDialog(parent, "Enter new object name", "Region-X");
+        final String name = JOptionPane.showInputDialog(parent, "Enter new object name", "Region-" + regionCount++);
         if (name != null && !name.trim().isEmpty()) {
             final Color rc = COLORS[colorCount++ % COLORS.length];
             final Color color = new Color(rc.getRed(), rc.getGreen(), rc.getBlue(), OVERLAY_ALPHA);
