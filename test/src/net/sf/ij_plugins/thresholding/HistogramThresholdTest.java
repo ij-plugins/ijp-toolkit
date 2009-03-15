@@ -1,6 +1,6 @@
 /***
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@
 package net.sf.ij_plugins.thresholding;
 
 import junit.framework.TestCase;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
  * @author Jarek Sacha
@@ -51,6 +52,16 @@ public class HistogramThresholdTest extends TestCase {
         System.arraycopy(histIn, 0, hist, offset, histIn.length);
         final int t = HistogramThreshold.maximumEntropy(hist);
         assertEquals(offset + 8, t);
+    }
+
+    public void testEntropySingleThreshold_Bug2687379() {
+        // Bug 2687379: Division by zero in entropy threshold
+        final int hist[] = {
+                3, 1, 6817, 2327, 2809, 2974, 3719, 2112, 2038, 1920, 1106, 1219, 1091, 1068, 910, 792, 898, 673,
+                606, 664, 748, 983, 767, 745, 646, 547, 278, 149, 9, 0, 0, 4389};
+        final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+        final int threshold = HistogramThreshold.maximumEntropy(hist, progressBarAdapter);
+        assertEquals(12, threshold);
     }
 
 
