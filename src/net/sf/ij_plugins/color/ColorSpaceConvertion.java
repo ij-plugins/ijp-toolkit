@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2007 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -373,7 +373,8 @@ public final class ColorSpaceConvertion {
         final byte[] cbPixels = new byte[nbPixels];
         final byte[] crPixels = new byte[nbPixels];
 
-        final int progressStep = nbPixels / 10;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(1, nbPixels / 10);
         final byte[] rgb = new byte[3];
         final byte[] ybr = new byte[3];
         for (int i = 0; i < nbPixels; i++) {
@@ -493,7 +494,8 @@ public final class ColorSpaceConvertion {
         final byte[] cbPixels = (byte[]) ybr[1].getPixels();
         final byte[] crPixels = (byte[]) ybr[2].getPixels();
 
-        final int progressStep = nbPixels / 10;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(1, nbPixels / 10);
         for (int i = 0; i < nbPixels; i++) {
 
             final int y = (0xff & yPixels[i]) - 16;
