@@ -38,8 +38,8 @@ import java.util.*;
  * June 1994.
  * </p>
  * <p>
- * The algorithms assumes that seeds for objects and the background be provided.
- * Seeds are used to compute compute initial mean gray level for each region.
+ * The algorithm assumes that seeds for objects and the background be provided.
+ * Seeds are used to compute initial mean gray level for each region.
  * The condition of growth is difference of a gray level of a candidate pixel and mean grey level
  * intensity of a neighboring region.
  * At each step of the algorithm a candidate with a smallest difference to some neighboring
