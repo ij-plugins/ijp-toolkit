@@ -123,7 +123,8 @@ public final class HistogramThreshold {
         // Entropy for black and white parts of the histogram
         final double[] hB = new double[hist.length];
         final double[] hW = new double[hist.length];
-        final int progressStep = hist.length / 50;
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(1, hist.length / 50);
         for (int t = 0; t < hist.length; t++) {
             // Black entropy
             if (pT[t] > EPSILON) {
