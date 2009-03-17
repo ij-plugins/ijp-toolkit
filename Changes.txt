@@ -3,6 +3,25 @@
 ******************************
 
 --------------------------------------------------------------------------
+Version 1.3.0
+--------------------------------------------------------------------------
+New & Improved:
+ * RFE-1910300: User interface for Seeder Region Growing (SRG).
+ * RFE-2190813: Preview for Fast Median plugin.
+ 
+Bug fixes:
+ * BUG-2687379: Division by zero in entropy threshold progress reporting.
+   Pointed by Gabriel Landini.
+ * Correct potential numeric computation problem in Maximum Entropy Threshold
+   pointed by Wilhelm Burger. EPSILON is made larger to avoid infinite result
+   when dividing by values close to EPSILON.
+
+Other:
+ * Project code moved to Java 1.6.
+ * API for display of multi color overlays (OverlayCanvas)
+ * I/O Utilities API (IOUtils)
+
+--------------------------------------------------------------------------
 Version 1.2.1
 --------------------------------------------------------------------------
 Improvements:
