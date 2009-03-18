@@ -5,9 +5,11 @@
 --------------------------------------------------------------------------
 Version 1.3.0
 --------------------------------------------------------------------------
-New & Improved:
- * RFE-1910300: User interface for Seeder Region Growing (SRG).
- * RFE-2190813: Preview for Fast Median plugin.
+New:
+ * Seeder Region Growing (SRG) plugin.
+ 
+Improved:
+ * Fast Median Filter plugin – added preview to options dialog.
  
 Bug fixes:
  * BUG-2687379: Division by zero in entropy threshold progress reporting.
@@ -15,6 +17,8 @@ Bug fixes:
  * Correct potential numeric computation problem in Maximum Entropy Threshold
    pointed by Wilhelm Burger. EPSILON is made larger to avoid infinite result
    when dividing by values close to EPSILON.
+ * BUG-2690849: Multiband Difference Edge and Multiband Gradient Edge plugins 
+   were missing.
 
 Other:
  * Project code moved to Java 1.6.
