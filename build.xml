@@ -83,6 +83,7 @@
 
         <fileset id="library.files"
                  dir="lib">
+            <include name="**/binding-*.jar"/>
             <include name="**/commons-beanutils-core-*.jar"/>
             <include name="**/commons-logging-*.jar"/>
         </fileset>
