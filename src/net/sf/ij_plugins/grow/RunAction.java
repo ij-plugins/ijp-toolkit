@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
  * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 
 package net.sf.ij_plugins.grow;
@@ -27,6 +27,7 @@ import net.sf.ij_plugins.ui.GlassPane;
 
 import javax.swing.*;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 
 /**
@@ -48,6 +49,7 @@ final class RunAction extends AbstractModelAction<RegionGrowingModel> {
         // Block SRG dialog
         final GlassPane glassPane = new GlassPane();
         SwingUtilities.getRootPane(parent).setGlassPane(glassPane);
+        glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         glassPane.setVisible(true);
 
         // Setup background execution
@@ -73,6 +75,7 @@ final class RunAction extends AbstractModelAction<RegionGrowingModel> {
                     getModel().showError("Error running region growing.", error);
                 }
                 // Unblock dialog.
+                glassPane.setCursor(Cursor.getDefaultCursor());
                 glassPane.setVisible(false);
             }
         };
