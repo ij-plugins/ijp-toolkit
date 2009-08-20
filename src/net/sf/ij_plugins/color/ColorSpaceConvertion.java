@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
  * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -245,9 +246,37 @@ public final class ColorSpaceConvertion {
             ColorSpaceConvertion.rgbToXYZ(pixel, tmp);
             ColorSpaceConvertion.xyzToLab(tmp, pixel);
         }
+        IJ.showProgress(pixels.length, pixels.length);
 
         return vp;
     }
+
+    /**
+     * Convert between sRGB and XYZ color image representation.
+     *
+     * @param cp RGB image to be converted
+     * @return XYZ image represented by {@link VectorProcessor}.
+     */
+    public static VectorProcessor rgbToXYZVectorProcessor(final ColorProcessor cp) {
+
+        final VectorProcessor vp = new VectorProcessor(cp);
+        final float[][] pixels = vp.getPixels();
+
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(pixels.length / 10, 1);
+        for (int i = 0; i < pixels.length; i++) {
+            if (i % progressStep == 0) {
+                IJ.showProgress(i, pixels.length);
+            }
+            final float[] pixel = pixels[i];
+            // Replace sRGB content with XYZ
+            ColorSpaceConvertion.rgbToXYZ(pixel, pixel);
+        }
+        IJ.showProgress(pixels.length, pixels.length);
+
+        return vp;
+    }
+
 
     /**
      * Convert between CIE L*a*b* and RGB color image representation.
@@ -283,12 +312,55 @@ public final class ColorSpaceConvertion {
             green[i] = (byte) (g & 0xff);
             blue[i] = (byte) (b & 0xff);
         }
+        IJ.showProgress(pixels.length, pixels.length);
 
         final ColorProcessor cp = new ColorProcessor(width, height);
         cp.setRGB(red, green, blue);
 
         return cp;
     }
+
+    /**
+     * Convert between XYZ and RGB color image representation.
+     *
+     * @param vp XYZ image represented by {@link VectorProcessor}.
+     * @return RGB image represented by a {@link ColorProcessor}.
+     */
+    public static ColorProcessor xyzToColorProcessor(final VectorProcessor vp) {
+        final float[][] pixels = vp.getPixels();
+        final float[] rgb = new float[3];
+
+        final int width = vp.getWidth();
+        final int height = vp.getHeight();
+        final int sliceSize = width * height;
+        final byte[] red = new byte[sliceSize];
+        final byte[] green = new byte[sliceSize];
+        final byte[] blue = new byte[sliceSize];
+
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(pixels.length / 10, 1);
+        for (int i = 0; i < pixels.length; i++) {
+            if (i % progressStep == 0) {
+                IJ.showProgress(i, pixels.length);
+            }
+            final float[] pixel = pixels[i];
+            ColorSpaceConvertion.xyzToRGB(pixel, rgb);
+            int r = Math.min(Math.max(Math.round(rgb[0]), 0), 255);
+            int g = Math.min(Math.max(Math.round(rgb[1]), 0), 255);
+            int b = Math.min(Math.max(Math.round(rgb[2]), 0), 255);
+            red[i] = (byte) (r & 0xff);
+            green[i] = (byte) (g & 0xff);
+            blue[i] = (byte) (b & 0xff);
+        }
+        IJ.showProgress(pixels.length, pixels.length);
+
+
+        final ColorProcessor cp = new ColorProcessor(width, height);
+        cp.setRGB(red, green, blue);
+
+        return cp;
+    }
+
 
     /**
      * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
