@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,14 +22,12 @@
 
 package net.sf.ij_plugins.ui;
 
-import ij.IJ;
-import ij.ImagePlus;
-import ij.Macro;
-import ij.WindowManager;
+import ij.*;
 
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 
@@ -75,6 +74,18 @@ public final class UIUtils {
             return null;
         } else
             return imp;
+    }
+
+
+    /**
+     * Returns icon used by ImageJ main frame. Returns {@code null} if main frame is not instantiated or has no icon.
+     *
+     * @return ImageJ icon or {@code null}.
+     */
+    public static Image getImageJIconImage() {
+        // Set ImageJ icon
+        final ImageJ imageJ = IJ.getInstance();
+        return imageJ != null ? imageJ.getIconImage() : null;
     }
 
 
