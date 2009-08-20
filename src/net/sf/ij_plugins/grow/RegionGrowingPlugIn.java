@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
  * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,17 +18,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.grow;
 
-import ij.IJ;
 import ij.Prefs;
 import ij.gui.GUI;
 import ij.plugin.PlugIn;
+import net.sf.ij_plugins.ui.UIUtils;
 
 import javax.swing.*;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -54,7 +55,8 @@ public final class RegionGrowingPlugIn implements PlugIn {
     public void run(final String arg) {
         if (view == null) {
             view = new RegionGrowingView();
-            dialog = new JDialog(IJ.getInstance(), TITLE, false);
+            dialog = new JDialog((Frame) null, TITLE, false);
+            dialog.setIconImage(UIUtils.getImageJIconImage());
             dialog.getContentPane().add(view);
             dialog.pack();
             dialog.setLocationRelativeTo(null);
