@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,7 +27,7 @@ package net.sf.ij_plugins.im3d;
  * @author Jarek Sacha
  * @since April 29, 2002
  */
-public class Point3DInt {
+final public class Point3DInt implements Comparable<Point3DInt> {
     /**
      * x coordinate.
      */
@@ -55,7 +56,7 @@ public class Point3DInt {
      * @param y y coordinate.
      * @param z z coordinate.
      */
-    public Point3DInt(int x, int y, int z) {
+    public Point3DInt(final int x, final int y, final int z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -70,5 +71,33 @@ public class Point3DInt {
     @Override
     public String toString() {
         return "(" + x + "," + y + "," + z + ")";
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return obj instanceof Point3DInt && compareTo((Point3DInt) obj) == 0;
+    }
+
+
+    public int compareTo(final Point3DInt p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Argument 'p' cannot be null.");
+        }
+
+        if (x < p.x) {
+            return -1;
+        } else if (x > p.x) {
+            return 1;
+        } else if (y < p.y) {
+            return -1;
+        } else if (y > p.y) {
+            return 1;
+        } else if (z < p.z) {
+            return -1;
+        } else if (z > p.z) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
