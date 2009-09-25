@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,11 +18,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.io;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.io.FileSaver;
 import ij.io.Opener;
 import ij.process.ImageProcessor;
@@ -109,6 +110,17 @@ public class IOUtils {
 
 
     /**
+     * Save image to a file using image TIFF encoder.
+     *
+     * @param stack image.
+     * @param file  destination file.
+     * @throws IOException when image cannot be saved.
+     */
+    public static void saveAsTiff(ImageStack stack, final File file) throws IOException {
+        saveAsTiff(new ImagePlus(file.getName(), stack), file);
+    }
+
+    /**
      * Creates directory if it does not exists already. Creates all necessary but not existant parent directories.
      *
      * @param directory directory to create.
@@ -126,4 +138,5 @@ public class IOUtils {
             }
         }
     }
+
 }
