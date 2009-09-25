@@ -1,0 +1,142 @@
+/*
+ * Image/J Plugins
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ */
+
+package net.sf.ij_plugins.im3d.grow;
+
+import ij.ImageStack;
+import ij.process.ByteProcessor;
+import net.sf.ij_plugins.im3d.Point3DInt;
+import net.sf.ij_plugins.io.IOUtils;
+import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.File;
+
+/**
+ * @author Jarek Sacha
+ * @since Sep 17, 2009 7:50:32 PM
+ */
+public final class SRG3DTest {
+
+
+    @Ignore("Testing result expected pixel by pixel will fail since original SGR algotithm is abigius on borders.")
+    @Test
+    public void test1() throws Exception {
+
+        final int xMax = 64;
+        final int yMax = 64;
+        final int zMax = 64;
+
+        final ImageStack imageStack = createStack(xMax, yMax, zMax);
+        fill(new Point3DInt(0, 0, 0), new Point3DInt(64, 64, 64), imageStack, 10);
+        fill(new Point3DInt(20, 22, 24), new Point3DInt(40, 41, 45), imageStack, 20);
+        fill(new Point3DInt(30, 35, 30), new Point3DInt(51, 53, 55), imageStack, 30);
+
+        final Point3DInt[][] seeds = {
+                {new Point3DInt(1, 1, 1)},
+                {new Point3DInt(25, 25, 28)},
+                {new Point3DInt(31, 36, 31)}};
+
+        final SRG3D srg = new SRG3D();
+        srg.setImage(imageStack);
+        srg.setSeeds(seeds);
+        srg.run();
+        final ImageStack markers = srg.getRegionMarkers();
+
+        IOUtils.saveAsTiff(imageStack, new File("tmp", "SRG_source.tif"));
+        IOUtils.saveAsTiff(markers, new File("tmp", "SRG_markers.tif"));
+
+        // Validate
+        assertEquals(imageStack, markers, 10);
+    }
+
+    @Test
+    public void test2() throws Exception {
+
+        final int xMax = 64;
+        final int yMax = 64;
+        final int zMax = 64;
+
+        final ImageStack imageStack = createStack(xMax, yMax, zMax);
+        fill(new Point3DInt(0, 0, 0), new Point3DInt(64, 64, 64), imageStack, 10);
+        fill(new Point3DInt(20, 22, 24), new Point3DInt(40, 41, 45), imageStack, 20);
+        fill(new Point3DInt(30, 35, 30), new Point3DInt(51, 53, 55), imageStack, 30);
+
+        final Point3DInt[][] seeds = {
+                {new Point3DInt(1, 1, 1)},
+                {new Point3DInt(25, 25, 28)},
+                {new Point3DInt(31, 36, 31)}};
+
+        final SRG3D srg = new SRG3D();
+        srg.setImage(imageStack);
+        srg.setSeeds(seeds);
+        srg.run();
+        final ImageStack markers = srg.getRegionMarkers();
+
+        // Validate
+        Assert.assertEquals(1, markers.getProcessor(10).get(10, 10));
+        Assert.assertEquals(2, markers.getProcessor(27).get(25, 30));
+        Assert.assertEquals(3, markers.getProcessor(40).get(40, 40));
+    }
+
+
+    void assertEquals(final ImageStack expected, final ImageStack actual, final int multiplier) {
+        assertNotNull(expected);
+        assertNotNull(actual);
+        Assert.assertEquals(expected.getSize(), actual.getSize());
+        Assert.assertEquals(expected.getWidth(), actual.getWidth());
+        Assert.assertEquals(expected.getHeight(), actual.getHeight());
+        for (int z = 0; z < expected.getSize(); z++) {
+            for (int y = 0; y < expected.getHeight(); y++) {
+                for (int x = 0; x < expected.getWidth(); x++) {
+                    Assert.assertEquals("(" + x + "," + y + "," + z + ")",
+                            expected.getProcessor(z + 1).get(x, y),
+                            actual.getProcessor(z + 1).get(x, y) * multiplier);
+                }
+            }
+        }
+
+    }
+
+
+    void fill(final Point3DInt min, final Point3DInt max, final ImageStack imageStack, final int value) {
+        for (int z = min.z; z < max.z; z++) {
+            for (int y = min.y; y < max.y; y++) {
+                for (int x = min.x; x < max.x; x++) {
+                    imageStack.getProcessor(z + 1).set(x, y, value);
+                }
+            }
+        }
+    }
+
+
+    ImageStack createStack(int xMax, int yMax, int zMax) {
+        ImageStack r = new ImageStack(xMax, yMax);
+        for (int z = 0; z < zMax; z++) {
+            r.addSlice("" + z, new ByteProcessor(xMax, yMax));
+        }
+
+        return r;
+    }
+}
