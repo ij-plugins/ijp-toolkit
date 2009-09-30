@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
  * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 
 package net.sf.ij_plugins.grow;
@@ -38,15 +38,11 @@ import net.sf.ij_plugins.ui.multiregion.SubRegion;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Model for {@link net.sf.ij_plugins.grow.RegionGrowingView}.
@@ -88,14 +84,13 @@ final class RegionGrowingModel extends AbstractModel {
         }
 
         // Prepare seeds
-        final Point[][] seeds = new Point[regions.size()][];
+        final ByteProcessor seeds = new ByteProcessor(imp.getWidth(), imp.getHeight());
         for (int i = 0; i < regions.size(); ++i) {
-            final Point[] points = extractPoints(regions.get(i));
-            if (points.length < 1) {
-                IJ.error(CAPTION, "Cannot perform growing, region '" + regions.get(i).getName() + "' is empty (no seeds).");
+            int nbPoints = markSeedPoints(regions.get(i), seeds, i + 1);
+            if (nbPoints < 1) {
+                IJ.error(CAPTION, "Cannot perform growing, region '" + regions.get(i).getName() + "' is empty (no unique seeds).");
                 return;
             }
-            seeds[i] = points;
         }
 
         // Run region growing
@@ -106,7 +101,7 @@ final class RegionGrowingModel extends AbstractModel {
     }
 
 
-    private static Result runSRG(final ImagePlus imp, final Point[][] seeds, final int numberOfAnimationFrames) {
+    private static Result runSRG(final ImagePlus imp, final ByteProcessor seeds, final int numberOfAnimationFrames) {
         final SRG srg = new SRG();
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
         srg.addProgressListener(progressBarAdapter);
@@ -164,22 +159,23 @@ final class RegionGrowingModel extends AbstractModel {
     }
 
 
-    private static Point[] extractPoints(final Region region) {
+    private static int markSeedPoints(final Region region, final ByteProcessor seedImage, final int regionId) {
 
-        final Set<Point> points = new TreeSet<Point>(new PointYXComparator());
+        int seedCount = 0;
         for (final SubRegion subRegion : region.getSubRegions()) {
             final Roi roi = subRegion.getRoi();
             final Rectangle bounds = roi.getBounds();
             for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
                 for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
-                    if (roi.contains(x, y)) {
-                        points.add(new Point(x, y));
+                    if (roi.contains(x, y) && seedImage.get(x, y) == 0) {
+                        seedImage.set(x, y, regionId);
+                        seedCount++;
                     }
                 }
             }
         }
 
-        return points.toArray(new Point[points.size()]);
+        return seedCount;
     }
 
 

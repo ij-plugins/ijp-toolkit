@@ -19,19 +19,20 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.grow;
 
-import ij.Prefs;
-import ij.gui.GUI;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
-import net.sf.ij_plugins.ui.UIUtils;
+import ij.process.ByteProcessor;
+import net.sf.ij_plugins.im3d.grow.SRG;
 
-import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Point;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -42,51 +43,79 @@ import java.awt.event.WindowEvent;
  */
 public final class RegionGrowingPlugIn implements PlugIn {
 
-    private static final String LOC_KEY = "RegionGrowingPlugIn.loc";
-    private static final String WIDTH_KEY = "RegionGrowingPlugIn.width";
-    private static final String HEIGHT_KEY = "RegionGrowingPlugIn.height";
-
     private static final String TITLE = "Seeded Region Growing";
-
-    private static RegionGrowingView view;
-    private static JDialog dialog;
-
+    private static final String[] STACK_TREATMENT = {"Independent slices", "3D Volume", "Multi-band"};
 
     public void run(final String arg) {
-        if (view == null) {
-            view = new RegionGrowingView();
-            dialog = new JDialog((Frame) null, TITLE, false);
-            dialog.setIconImage(UIUtils.getImageJIconImage());
-            dialog.getContentPane().add(view);
-            dialog.pack();
-            dialog.setLocationRelativeTo(null);
-            dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        final int[] wList = WindowManager.getIDList();
+        if (wList == null) {
+            IJ.noImage();
+            return;
+        }
 
-            // Add listener to store window location and size on close
-            dialog.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    super.windowClosing(e);
-                    Prefs.saveLocation(LOC_KEY, dialog.getLocation());
-                    final Dimension d = dialog.getSize();
-                    Prefs.set(WIDTH_KEY, d.width);
-                    Prefs.set(HEIGHT_KEY, d.height);
-                }
-            });
 
-            // Restore location and size
-            final Point loc = Prefs.getLocation(LOC_KEY);
-            final int w = (int) Prefs.get(WIDTH_KEY, 0.0);
-            final int h = (int) Prefs.get(HEIGHT_KEY, 0.0);
-            if (loc != null && w > 0 && h > 0) {
-                dialog.setSize(w, h);
-                dialog.setLocation(loc);
-            } else {
-//                setSize(width, height);
-                GUI.center(dialog);
+        final List<String> titleList = new ArrayList<String>();
+        for (final int id : wList) {
+            final ImagePlus imp = WindowManager.getImage(id);
+            if (imp != null && !imp.getTitle().trim().isEmpty()) {
+                titleList.add(imp.getTitle());
             }
         }
 
-        dialog.setVisible(true);
+        final String[] titles = titleList.toArray(new String[titleList.size()]);
+        final GenericDialog gd = new GenericDialog(TITLE, IJ.getInstance());
+        gd.addChoice("Image:", titles, titles[0]);
+        gd.addChoice("Seeds:", titles, titles[1]);
+//        gd.addChoice("Stack treatment:", STACK_TREATMENT, STACK_TREATMENT[0]);
+        gd.addMessage("Seeds image should be of the same size as the image for segmentation.");
+        gd.showDialog();
+        if (gd.wasCanceled()) {
+            return;
+        }
+
+        final ImagePlus image = WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
+        final ImagePlus seeds = WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
+//        final String stackTreatment = gd.getNextString();
+
+//        run(image, seeds, stackTreatment.trim());
+        run(image, seeds, STACK_TREATMENT[0]);
     }
+
+
+    void run(final ImagePlus image, final ImagePlus seeds, final String stackTreatment) {
+
+        if (!STACK_TREATMENT[0].equalsIgnoreCase(stackTreatment)) {
+            for (int i = 1; i < STACK_TREATMENT.length; ++i) {
+                if (STACK_TREATMENT[i].equalsIgnoreCase(stackTreatment)) {
+                    IJ.error(TITLE, "Not yet implemented");
+                    return;
+                }
+            }
+            IJ.error(TITLE, "Not supported.");
+            return;
+        }
+
+
+        // FIXME: validate size and type
+
+        // Process
+        final ImageStack stack = new ImageStack(image.getWidth(), image.getHeight());
+        for (int i = 1; i <= image.getNSlices(); ++i) {
+            final ByteProcessor bp = (ByteProcessor) image.getStack().getProcessor(i);
+            final ByteProcessor s = (ByteProcessor) seeds.getStack().getProcessor(i);
+            final ByteProcessor destBP = run(bp, s);
+            stack.addSlice(image.getStack().getSliceLabel(i), destBP);
+        }
+
+        new ImagePlus(image.getTitle() + "-SRG", stack).show();
+    }
+
+    final ByteProcessor run(final ByteProcessor image, final ByteProcessor seeds) {
+        final SRG srg = new SRG();
+        srg.setImage(image);
+        srg.setSeeds(seeds);
+        srg.run();
+        return srg.getRegionMarkers();
+    }
+
 }

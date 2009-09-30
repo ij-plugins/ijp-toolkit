@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,7 +27,7 @@ import ij.process.ByteProcessor;
 import junit.framework.TestCase;
 import net.sf.ij_plugins.io.IOUtils;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -51,13 +52,13 @@ public class SRGTest extends TestCase {
         final ByteProcessor image = (ByteProcessor) IOUtils.openImage(RAMP_FILE_NAME).getProcessor();
         final Point[][] seeds = {
                 {new Point(1, 198), new Point(2, 198)}, // dark
-                {new Point(198, 1), new Point(198, 1)} // bright
+                {new Point(198, 1), new Point(198, 2)}  // bright
         };
 
         // Setup region growing
         final SRG srg = new SRG();
         srg.setImage(image);
-        srg.setSeeds(seeds);
+        srg.setSeeds(SRG.toSeedImage(seeds, image.getWidth(), image.getHeight()));
         srg.setNumberOfAnimationFrames(50);
 
         // Run growing
@@ -88,7 +89,7 @@ public class SRGTest extends TestCase {
         // Setup region growing
         final SRG srg = new SRG();
         srg.setImage(image);
-        srg.setSeeds(seeds);
+        srg.setSeeds(SRG.toSeedImage(seeds, image.getWidth(), image.getHeight()));
         srg.setMask(mask);
         srg.setNumberOfAnimationFrames(50);
 
@@ -126,7 +127,7 @@ public class SRGTest extends TestCase {
         // Setup region growing
         final SRG srg = new SRG();
         srg.setImage(image);
-        srg.setSeeds(seeds);
+        srg.setSeeds(SRG.toSeedImage(seeds, image.getWidth(), image.getHeight()));
         srg.setNumberOfAnimationFrames(50);
 
         // Run growing
@@ -140,4 +141,6 @@ public class SRGTest extends TestCase {
         IOUtils.saveAsTiff(imp, new File(OUTPUT_DIR, "srg_test_output.tif"));
         IOUtils.saveAsTiff(imp, new File(OUTPUT_DIR, "srg_test_animation.tif"));
     }
+
+
 }

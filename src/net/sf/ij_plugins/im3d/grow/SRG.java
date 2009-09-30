@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
  * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,19 +18,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 
 package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImageStack;
 import ij.process.ByteProcessor;
+import ij.process.ByteStatistics;
 import ij.process.FloatProcessor;
 import ij.process.ShortProcessor;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * <p>
@@ -88,7 +90,7 @@ public final class SRG extends DefaultProgressReporter {
 
     // External properties
     private FloatProcessor image;
-    private Point[][] seeds;
+    private ByteProcessor seeds;
     private ByteProcessor regionMarkers;
     private ByteProcessor mask;
     private ImageStack animationStack;
@@ -106,6 +108,7 @@ public final class SRG extends DefaultProgressReporter {
     private SortedSet<Candidate> ssl;
     private RegionInfo[] regionInfos;
     private long processedPixelCount;
+    private int ySize;
 
 
     /**
@@ -146,24 +149,32 @@ public final class SRG extends DefaultProgressReporter {
      * Second index is a seeds with a region.
      *
      * @param seeds region seeds.
+     * @see #toSeedImage(java.awt.Point[][], int, int)
      */
-    public void setSeeds(final Point[][] seeds) {
-        validateNotNull(seeds, "Argument 'seeds' cannot be null");
-        if (seeds.length < 2) {
-            throw new IllegalArgumentException("Seeds for at least two regions required, got " + seeds.length + ".");
+    public void setSeeds(final ByteProcessor seeds) {
+        if (seeds == null) {
+            throw new IllegalArgumentException("Argument 'seeds' cannot be null.");
         }
-        if (seeds.length > MAX_REGION_NUMBER) {
+
+        if (seeds.getWidth() < 1 || seeds.getHeight() < 1) {
+            throw new IllegalArgumentException("Seed image cannot be empty.");
+        }
+
+        // Verify that there is enough seeds and that they have consecutive numbers
+        final ByteStatistics statistics = new ByteStatistics(seeds, ByteStatistics.MIN_MAX, null);
+        final int nbRegions = (int) Math.round(statistics.max);
+        if (nbRegions > MAX_REGION_NUMBER) {
             throw new IllegalArgumentException(
-                    "Maximum number of regions is " + MAX_REGION_NUMBER + ", got " + seeds.length + ".");
+                    "Number of regions cannot be larger than " + MAX_REGION_NUMBER + ", got " + nbRegions + ".");
         }
-        for (int i = 0; i < seeds.length; i++) {
-            if (seeds[i] == null || seeds[i].length < 1) {
-                throw new IllegalArgumentException(
-                        "Regions have to have at least one seeds point. Region " + i + ", got " + seeds[i].length + ".");
+
+        for (int i = 1; i <= nbRegions; ++i) {
+            if (statistics.histogram[i] == 0) {
+                throw new IllegalArgumentException("Region " + i + " has no seeds points.");
             }
         }
 
-        this.seeds = seeds;
+        this.seeds = (ByteProcessor) seeds.duplicate();
     }
 
 
@@ -215,52 +226,41 @@ public final class SRG extends DefaultProgressReporter {
         fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
 
         // Mask seeds and create initial region info
-        for (int i = 0; i < seeds.length; i++) {
-            final Point[] regionSeeds = seeds[i];
-            final RegionInfo thisRegionInfo = regionInfos[i];
-            final int regionId = i + 1;
-
-            // Mark seeds
-            for (final Point seed : regionSeeds) {
-                final int offset = seed.x + seed.y * xSize;
-
+        for (int y = 0; y < ySize; ++y) {
+            for (int x = 0; x < xSize; ++x) {
+                final int offset = x + y * xSize;
                 if (regionMarkerPixels[offset] == OUTSIDE_MARK) {
                     continue;
                 }
 
-                // Verify seeding consistency
-                final int oldRegionIdByte = regionMarkerPixels[offset];
-                final int oldRegionId = oldRegionIdByte & 0xff;
-//                if (oldRegionIdByte == CANDIDATE_MARK) {
-//                    // Remove candidate, it will be changed to a regionMarker
-//                    ssl.remove(new Candidate(seed, 0, 0));
-//                } else
-                if (oldRegionId != 0 && oldRegionId != regionId) {
-                    throw new IllegalArgumentException("Single point have two regions assignments. "
-                            + "Point (" + seed.x + "," + seed.y + ") is assigned both to region " + oldRegionId
-                            + " and region " + regionId + ".");
+                final int regionId = seeds.get(x, y);
+                if (regionId < 1) {
+                    continue;
                 }
 
                 // Add seed to regionMarkers
                 regionMarkerPixels[offset] = (byte) (regionId & 0xff);
 
                 // Add seed to region info
-                thisRegionInfo.addPoint(seed);
+                regionInfos[regionId - 1].addPoint(new Point(x, y));
             }
         }
 
         // Initialize candidates
-        assert ssl.size() == 0 : "ssl sould be empty, got " + ssl.size();
-        for (final Point[] regionSeeds : seeds) {
-            for (final Point seed : regionSeeds) {
-                final int offset = seed.x + seed.y * xSize;
-
+        for (int y = 0; y < ySize; ++y) {
+            for (int x = 0; x < xSize; ++x) {
+                final int offset = x + y * xSize;
                 if (regionMarkerPixels[offset] == OUTSIDE_MARK) {
                     continue;
                 }
 
+                final int regionId = seeds.get(x, y);
+                if (regionId < 1) {
+                    continue;
+                }
+
                 // Initialize SSL - ordered list of bordering at least one of the regions
-                candidatesFromNeighbours(seed);
+                candidatesFromNeighbours(new Point(x, y));
 
                 ++processedPixelCount;
             }
@@ -323,6 +323,69 @@ public final class SRG extends DefaultProgressReporter {
             }
         }
         this.notifyProgressListeners(1);
+    }
+
+
+    /**
+     * <p>
+     * Convert array of point seeds to a seed image.
+     * The first index in the {@code seeds} array refers to the region.
+     * Region number if the first index + 1.
+     * Second index is a seeds with a region.
+     * </p>
+     * Conditions:                                              .
+     * <ol>
+     * <li>Argument {@code seeds} cannot be {@code link} null.</li>
+     * <li>There must be at least 2 regions.</li>
+     * <li>There must be at most {@value #MAX_REGION_NUMBER} regions.</li>
+     * <li>Each region has to have at least one seed point.</li>
+     * <li>All seed points have to be unique.</li>
+     * </ol>
+     *
+     * @param seeds  region seeds.
+     * @param width  width of the seed image
+     * @param height height of the seed image
+     * @return seed image.
+     */
+    public static ByteProcessor toSeedImage(final Point[][] seeds, final int width, final int height) {
+        validateNotNull(seeds, "Argument 'seeds' cannot be null");
+
+        if (seeds.length < 2) {
+            throw new IllegalArgumentException("Seeds for at least two regions required, got " + seeds.length + ".");
+        }
+
+        if (seeds.length > MAX_REGION_NUMBER) {
+            throw new IllegalArgumentException(
+                    "Maximum number of regions is " + MAX_REGION_NUMBER + ", got " + seeds.length + ".");
+        }
+
+        for (int i = 0; i < seeds.length; i++) {
+            if (seeds[i] == null || seeds[i].length < 1) {
+                throw new IllegalArgumentException(
+                        "Regions have to have at least one seeds point. Region " + i + ", got " + seeds[i].length + ".");
+            }
+        }
+
+        final ByteProcessor seedBP = new ByteProcessor(width, height);
+        for (int i = 0; i < seeds.length; i++) {
+            final int region = i + 1;
+            for (final Point seed : seeds[i]) {
+                if (seed.x >= 0 && seed.x < width && seed.y >= 0 && seed.y < height) {
+                    if (seedBP.get(seed.x, seed.y) == 0) {
+                        seedBP.set(seed.x, seed.y, region);
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Duplicate seed at (" + seed.x + "," + seed.y + ") in region " + region + ".");
+                    }
+                } else {
+                    throw new IllegalArgumentException("In region " + region +
+                            " seed at (" + seed.x + "," + seed.y + ") is outside image " + width + "x" + height + ".");
+                }
+
+            }
+        }
+
+        return seedBP;
     }
 
 
@@ -427,17 +490,22 @@ public final class SRG extends DefaultProgressReporter {
 
     private void initializeStructures() {
         xSize = image.getWidth();
-        final int ySize = image.getHeight();
+        ySize = image.getHeight();
+
+        if (seeds == null) {
+            throw new IllegalStateException("Seeds image is 'null'.");
+        }
+
+        if (seeds.getWidth() != xSize || seeds.getHeight() != ySize) {
+            throw new IllegalArgumentException("Seeds image has to have the same dimension as input image.");
+        }
 
         if (mask != null && (mask.getWidth() != xSize || mask.getHeight() != ySize)) {
             throw new IllegalArgumentException("Mask has to have the same dimension as input image.");
         }
 
-        final int nbRegions = seeds.length;
-        // Verify that we can feet all region ID in the regionMarkers.
-        if (nbRegions > MAX_REGION_NUMBER) {
-            throw new IllegalArgumentException("Number of regions cannot be larger than " + MAX_REGION_NUMBER + ".");
-        }
+        final ByteStatistics statistics = new ByteStatistics(seeds, ByteStatistics.MIN_MAX, null);
+        final int nbRegions = (int) Math.round(statistics.max);
         regionInfos = new RegionInfo[nbRegions];
 
         xMin = 0;
@@ -450,7 +518,7 @@ public final class SRG extends DefaultProgressReporter {
         animationStack = new ImageStack(xSize, ySize);
 
         // Initialize region info structures
-        for (int i = 0; i < seeds.length; i++) {
+        for (int i = 0; i < regionInfos.length; i++) {
             regionInfos[i] = new RegionInfo(image);
         }
 
