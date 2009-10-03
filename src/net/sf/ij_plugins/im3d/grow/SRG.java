@@ -30,8 +30,10 @@ import ij.process.ShortProcessor;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * <p>
@@ -222,8 +224,6 @@ public final class SRG extends DefaultProgressReporter {
 
         initializeStructures();
 
-        // Mark pixels outside of the mask
-        fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
 
         // Mask seeds and create initial region info
         for (int y = 0; y < ySize; ++y) {
@@ -493,7 +493,7 @@ public final class SRG extends DefaultProgressReporter {
         ySize = image.getHeight();
 
         if (seeds == null) {
-            throw new IllegalStateException("Seeds image is 'null'.");
+            throw new IllegalStateException("Seeds image is not set ['null'].");
         }
 
         if (seeds.getWidth() != xSize || seeds.getHeight() != ySize) {
@@ -523,27 +523,10 @@ public final class SRG extends DefaultProgressReporter {
         }
 
         // Create candidate list and define rules for ordering of its elements
-        ssl = new TreeSet<Candidate>(new Comparator<Candidate>() {
-            public int compare(final Candidate c1, final Candidate c2) {
-                if (c1.point.equals(c2.point)) {
-                    return 0;
-                } else if (c1.similarityDifference < c2.similarityDifference) {
-                    return -1;
-                } else if (c1.similarityDifference > c2.similarityDifference) {
-                    return 1;
-                } else if (c1.point.x < c2.point.x) {
-                    return -1;
-                } else if (c1.point.x > c2.point.x) {
-                    return 1;
-                } else if (c1.point.y < c2.point.y) {
-                    return -1;
-                } else if (c1.point.y > c2.point.y) {
-                    return 1;
-                } else {
-                    throw new IllegalStateException("This condition should never happen.");
-                }
-            }
-        });
+        ssl = new TreeSet<Candidate>();
+
+        // Mark pixels outside of the mask
+        fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
     }
 
 
@@ -612,7 +595,7 @@ public final class SRG extends DefaultProgressReporter {
     }
 
 
-    private static class Candidate {
+    private static class Candidate implements Comparable<Candidate> {
         public final Point point;
         public final int mostSimilarRegionId;
         public final double similarityDifference;
@@ -621,6 +604,29 @@ public final class SRG extends DefaultProgressReporter {
             this.point = point;
             this.mostSimilarRegionId = mostSimilarRegionId;
             this.similarityDifference = similarityDifference;
+        }
+
+        public int compareTo(final Candidate c) {
+            if (c == null) {
+                throw new IllegalArgumentException("Argument 'c' cannot be null.");
+            }
+            if (this.point.equals(c.point)) {
+                return 0;
+            } else if (this.similarityDifference < c.similarityDifference) {
+                return -1;
+            } else if (this.similarityDifference > c.similarityDifference) {
+                return 1;
+            } else if (this.point.x < c.point.x) {
+                return -1;
+            } else if (this.point.x > c.point.x) {
+                return 1;
+            } else if (this.point.y < c.point.y) {
+                return -1;
+            } else if (this.point.y > c.point.y) {
+                return 1;
+            } else {
+                throw new IllegalStateException("This condition should never happen.");
+            }
         }
     }
 
