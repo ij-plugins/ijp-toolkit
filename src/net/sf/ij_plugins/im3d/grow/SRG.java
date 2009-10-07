@@ -108,6 +108,7 @@ public final class SRG extends DefaultProgressReporter {
     private float[] imagePixels;
 
     private SortedSet<Candidate> ssl;
+    private int[] seedToRegonLookup;
     private RegionInfo[] regionInfos;
     private long processedPixelCount;
     private int ySize;
@@ -162,20 +163,6 @@ public final class SRG extends DefaultProgressReporter {
             throw new IllegalArgumentException("Seed image cannot be empty.");
         }
 
-        // Verify that there is enough seeds and that they have consecutive numbers
-        final ByteStatistics statistics = new ByteStatistics(seeds, ByteStatistics.MIN_MAX, null);
-        final int nbRegions = (int) Math.round(statistics.max);
-        if (nbRegions > MAX_REGION_NUMBER) {
-            throw new IllegalArgumentException(
-                    "Number of regions cannot be larger than " + MAX_REGION_NUMBER + ", got " + nbRegions + ".");
-        }
-
-        for (int i = 1; i <= nbRegions; ++i) {
-            if (statistics.histogram[i] == 0) {
-                throw new IllegalArgumentException("Region " + i + " has no seeds points.");
-            }
-        }
-
         this.seeds = (ByteProcessor) seeds.duplicate();
     }
 
@@ -225,7 +212,7 @@ public final class SRG extends DefaultProgressReporter {
         initializeStructures();
 
 
-        // Mask seeds and create initial region info
+        // Initialize markers and create initial region info
         for (int y = 0; y < ySize; ++y) {
             for (int x = 0; x < xSize; ++x) {
                 final int offset = x + y * xSize;
@@ -233,16 +220,17 @@ public final class SRG extends DefaultProgressReporter {
                     continue;
                 }
 
-                final int regionId = seeds.get(x, y);
-                if (regionId < 1) {
+                final int regonID = seedToRegonLookup[seeds.get(x, y)];
+                if (regonID < 1) {
                     continue;
                 }
 
+
                 // Add seed to regionMarkers
-                regionMarkerPixels[offset] = (byte) (regionId & 0xff);
+                regionMarkerPixels[offset] = (byte) (regonID & 0xff);
 
                 // Add seed to region info
-                regionInfos[regionId - 1].addPoint(new Point(x, y));
+                regionInfos[regonID].addPoint(new Point(x, y));
             }
         }
 
@@ -250,12 +238,8 @@ public final class SRG extends DefaultProgressReporter {
         for (int y = 0; y < ySize; ++y) {
             for (int x = 0; x < xSize; ++x) {
                 final int offset = x + y * xSize;
-                if (regionMarkerPixels[offset] == OUTSIDE_MARK) {
-                    continue;
-                }
-
-                final int regionId = seeds.get(x, y);
-                if (regionId < 1) {
+                final int regionId = regionMarkerPixels[offset];
+                if (regionId == BACKGROUND_MARK || regionId == OUTSIDE_MARK || regionId == CANDIDATE_MARK) {
                     continue;
                 }
 
@@ -295,7 +279,7 @@ public final class SRG extends DefaultProgressReporter {
             regionMarkerPixels[offset] = (byte) (c.mostSimilarRegionId & 0xff);
 
             // Update region info to include this point
-            regionInfos[c.mostSimilarRegionId - 1].addPoint(c.point);
+            regionInfos[c.mostSimilarRegionId].addPoint(c.point);
 
             ++processedPixelCount;
             candidatesFromNeighbours(c.point);
@@ -317,9 +301,12 @@ public final class SRG extends DefaultProgressReporter {
 
         // Mark pixels outside of the mask as 0
         fillOutsideMask(regionMarkerPixels, (byte) 0);
+        restoreOriginalSeedIDs(regionMarkerPixels);
         if (animationStack != null) {
             for (int i = 1; i <= animationStack.getSize(); i++) {
-                fillOutsideMask((byte[]) animationStack.getPixels(i), (byte) 0);
+                final byte[] animationPixels = (byte[]) animationStack.getPixels(i);
+                fillOutsideMask(animationPixels, (byte) 0);
+                restoreOriginalSeedIDs(animationPixels);
             }
         }
         this.notifyProgressListeners(1);
@@ -389,6 +376,16 @@ public final class SRG extends DefaultProgressReporter {
     }
 
 
+    private void restoreOriginalSeedIDs(final byte[] pixels) {
+        for (int i = 1; i < pixels.length; i++) {
+            final int regionID = pixels[i];
+            if (regionID != BACKGROUND_MARK) {
+                pixels[i] = (byte) (regionInfos[regionID].originalSeedID & 0xFF);
+            }
+        }
+    }
+
+
     private void fillOutsideMask(final byte[] pixels, final byte value) {
         if (mask != null) {
             final byte[] maskPixels = (byte[]) mask.getPixels();
@@ -442,16 +439,16 @@ public final class SRG extends DefaultProgressReporter {
         // Compute distance to most similar region
         double minSigma = Double.MAX_VALUE;
         int mostSimilarRegionId = -1;
-        for (int i = 0; i < regionInfos.length; i++) {
+        for (int regionID = 1; regionID < regionInfos.length; regionID++) {
             // Skip region if it is not a neighbour
-            if (!flags[i])
+            if (!flags[regionID])
                 continue;
 
-            final RegionInfo regionInfo = regionInfos[i];
+            final RegionInfo regionInfo = regionInfos[regionID];
             double sigma = Math.abs(value - regionInfo.mean());
             if (sigma < minSigma) {
                 minSigma = sigma;
-                mostSimilarRegionId = i + 1;
+                mostSimilarRegionId = regionID;
             }
         }
 
@@ -482,8 +479,8 @@ public final class SRG extends DefaultProgressReporter {
 
         final byte v = regionMarkerPixels[x + y * xSize];
         if (v != BACKGROUND_MARK && v != CANDIDATE_MARK && v != OUTSIDE_MARK) {
-            int regionId = v & 0xff;
-            r[regionId - 1] = true;
+            final int regionId = v & 0xff;
+            r[regionId] = true;
         }
     }
 
@@ -504,9 +501,6 @@ public final class SRG extends DefaultProgressReporter {
             throw new IllegalArgumentException("Mask has to have the same dimension as input image.");
         }
 
-        final ByteStatistics statistics = new ByteStatistics(seeds, ByteStatistics.MIN_MAX, null);
-        final int nbRegions = (int) Math.round(statistics.max);
-        regionInfos = new RegionInfo[nbRegions];
 
         xMin = 0;
         xMax = xSize;
@@ -517,9 +511,29 @@ public final class SRG extends DefaultProgressReporter {
         imagePixels = (float[]) image.getPixels();
         animationStack = new ImageStack(xSize, ySize);
 
+        seeds.setMask(mask);
+        final ByteStatistics statistics = new ByteStatistics(seeds);
+        int regionCount = 0;
+        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
+        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
+        for (int seed = 1; seed < statistics.histogram.length; seed++) {
+            if (statistics.histogram[seed] > 0) {
+                if (seed > MAX_REGION_NUMBER) {
+                    throw new IllegalArgumentException("Seed ID cannot be larger than " + MAX_REGION_NUMBER
+                            + ", got " + seed + ".");
+                }
+
+                regionCount++;
+                seedToRegonLookup[seed] = regionCount;
+                regionToSeedLooup[regionCount] = seed;
+            }
+
+        }
+
         // Initialize region info structures
-        for (int i = 0; i < regionInfos.length; i++) {
-            regionInfos[i] = new RegionInfo(image);
+        regionInfos = new RegionInfo[regionCount + 1];
+        for (int i = 1; i < regionInfos.length; i++) {
+            regionInfos[i] = new RegionInfo(image, regionToSeedLooup[i]);
         }
 
         // Create candidate list and define rules for ordering of its elements
@@ -575,9 +589,11 @@ public final class SRG extends DefaultProgressReporter {
         private long pointCount;
         private double sumIntensity;
         private final FloatProcessor image;
+        private final int originalSeedID;
 
-        public RegionInfo(FloatProcessor image) {
+        public RegionInfo(final FloatProcessor image, final int originalSeedID) {
             this.image = image;
+            this.originalSeedID = originalSeedID;
         }
 
         public void addPoint(final Point point) {
@@ -595,7 +611,7 @@ public final class SRG extends DefaultProgressReporter {
     }
 
 
-    private static class Candidate implements Comparable<Candidate> {
+    final private static class Candidate implements Comparable<Candidate> {
         public final Point point;
         public final int mostSimilarRegionId;
         public final double similarityDifference;
@@ -627,6 +643,16 @@ public final class SRG extends DefaultProgressReporter {
             } else {
                 throw new IllegalStateException("This condition should never happen.");
             }
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            return obj instanceof Candidate && compareTo((Candidate) obj) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return new Double(similarityDifference).hashCode() + point.hashCode();
         }
     }
 
