@@ -53,8 +53,9 @@ import java.util.List;
 final class RegionGrowingModel extends AbstractModel {
 
     private final MultiRegionManagerModel multiRegionManagerModel;
-    final SpinnerNumberModel numberOfAnimationFramesSM = new SpinnerNumberModel(0, 0, 1000, 1);
+    private final SpinnerNumberModel numberOfAnimationFramesSM = new SpinnerNumberModel(0, 0, 1000, 1);
     private static final String CAPTION = "Region Growing";
+
 
     public RegionGrowingModel(final MultiRegionManagerModel multiRegionManagerModel) {
         this.multiRegionManagerModel = multiRegionManagerModel;
@@ -69,6 +70,7 @@ final class RegionGrowingModel extends AbstractModel {
     public SpinnerNumberModel getNumberOfAnimationFramesSM() {
         return numberOfAnimationFramesSM;
     }
+
 
     public void actionRun() {
 
