@@ -23,10 +23,7 @@
 package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImageStack;
-import ij.process.ByteProcessor;
-import ij.process.ByteStatistics;
-import ij.process.FloatProcessor;
-import ij.process.ShortProcessor;
+import ij.process.*;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.awt.*;
@@ -115,6 +112,25 @@ public final class SRG extends DefaultProgressReporter {
 
 
     /**
+     * Set image to be segmented. Supported types are: {@link ByteProcessor}, {@link ShortProcessor}, and {@link FloatProcessor}.
+     *
+     * @param image image.
+     */
+    public void setImage(final ImageProcessor image) {
+        validateNotNull(image, "image");
+        if (image instanceof ByteProcessor) {
+            setImage((ByteProcessor) image);
+        } else if (image instanceof ShortProcessor) {
+            setImage((ShortProcessor) image);
+        } else if (image instanceof FloatProcessor) {
+            setImage((FloatProcessor) image);
+        } else {
+            throw new IllegalArgumentException("Unsuported image type: " + image.getClass().getName());
+        }
+    }
+
+
+    /**
      * Set image to be segmented.
      *
      * @param image image.
@@ -195,7 +211,7 @@ public final class SRG extends DefaultProgressReporter {
     /**
      * Return progress of growing.
      *
-     * @return annimation stack with region markers.
+     * @return animation stack with region markers.
      */
     public ImageStack getAnimationStack() {
         return animationStack;
@@ -433,14 +449,14 @@ public final class SRG extends DefaultProgressReporter {
         // Mark as candidate
         regionMarkerPixels[offset] = CANDIDATE_MARK;
 
-        // Get flags of neighbouring regions
+        // Get flags of neighboring regions
         final boolean[] flags = neighbourRegionFlags(point);
 
         // Compute distance to most similar region
         double minSigma = Double.MAX_VALUE;
         int mostSimilarRegionId = -1;
         for (int regionID = 1; regionID < regionInfos.length; regionID++) {
-            // Skip region if it is not a neighbour
+            // Skip region if it is not a neighbor
             if (!flags[regionID])
                 continue;
 
