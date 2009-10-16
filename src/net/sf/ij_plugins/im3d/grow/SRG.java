@@ -394,7 +394,7 @@ public final class SRG extends DefaultProgressReporter {
 
     private void restoreOriginalSeedIDs(final byte[] pixels) {
         for (int i = 1; i < pixels.length; i++) {
-            final int regionID = pixels[i];
+            final int regionID = pixels[i] & 0xFF;
             if (regionID != BACKGROUND_MARK) {
                 pixels[i] = (byte) (regionInfos[regionID].originalSeedID & 0xFF);
             }
