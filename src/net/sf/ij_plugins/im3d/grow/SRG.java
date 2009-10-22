@@ -24,6 +24,7 @@ package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImageStack;
 import ij.process.*;
+import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.awt.*;
@@ -101,6 +102,8 @@ public final class SRG extends DefaultProgressReporter {
     private int yMin;
     private int yMax;
     private int xSize;
+    private int ySize;
+
     private byte[] regionMarkerPixels;
     private float[] imagePixels;
 
@@ -108,7 +111,6 @@ public final class SRG extends DefaultProgressReporter {
     private int[] seedToRegonLookup;
     private RegionInfo[] regionInfos;
     private long processedPixelCount;
-    private int ySize;
 
 
     /**
@@ -467,6 +469,7 @@ public final class SRG extends DefaultProgressReporter {
                 mostSimilarRegionId = regionID;
             }
         }
+        assert mostSimilarRegionId > 0;
 
         return new Candidate(point, mostSimilarRegionId, minSigma);
     }
@@ -517,21 +520,58 @@ public final class SRG extends DefaultProgressReporter {
             throw new IllegalArgumentException("Mask has to have the same dimension as input image.");
         }
 
-
         xMin = 0;
         xMax = xSize;
         yMin = 0;
         yMax = ySize;
+
         regionMarkers = new ByteProcessor(xSize, ySize);
         regionMarkerPixels = (byte[]) regionMarkers.getPixels();
         imagePixels = (float[]) image.getPixels();
         animationStack = new ImageStack(xSize, ySize);
 
         seeds.setMask(mask);
-        final ByteStatistics statistics = new ByteStatistics(seeds);
-        int regionCount = 0;
-        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
+//        final ByteStatistics statistics = new ByteStatistics(seeds);
+//        int regionCount = 0;
+//        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
+//        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
+//        for (int seed = 1; seed < statistics.histogram.length; seed++) {
+//            if (statistics.histogram[seed] > 0) {
+//                if (seed > MAX_REGION_NUMBER) {
+//                    throw new IllegalArgumentException("Seed ID cannot be larger than " + MAX_REGION_NUMBER
+//                            + ", got " + seed + ".");
+//                }
+//
+//                regionCount++;
+//                seedToRegonLookup[seed] = regionCount;
+//                regionToSeedLooup[regionCount] = seed;
+//            }
+//
+//        }
+
+        final Pair<int[], Integer> p = createSeedToRegonLookup(new ByteStatistics(seeds));
+        final int[] regionToSeedLooup = p.getFirst();
+        final int regionCount = p.getSecond();
+
+        // Initialize region info structures
+        regionInfos = new RegionInfo[regionCount + 1];
+        for (int i = 1; i < regionInfos.length; i++) {
+            regionInfos[i] = new RegionInfo(image, regionToSeedLooup[i]);
+        }
+
+        // Create candidate list and define rules for ordering of its elements
+        ssl = new TreeSet<Candidate>();
+
+        // Mark pixels outside of the mask
+        fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
+    }
+
+
+    private Pair<int[], Integer> createSeedToRegonLookup(final ImageStatistics statistics) {
+
         final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
+        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
+        int regionCount = 0;
         for (int seed = 1; seed < statistics.histogram.length; seed++) {
             if (statistics.histogram[seed] > 0) {
                 if (seed > MAX_REGION_NUMBER) {
@@ -546,17 +586,7 @@ public final class SRG extends DefaultProgressReporter {
 
         }
 
-        // Initialize region info structures
-        regionInfos = new RegionInfo[regionCount + 1];
-        for (int i = 1; i < regionInfos.length; i++) {
-            regionInfos[i] = new RegionInfo(image, regionToSeedLooup[i]);
-        }
-
-        // Create candidate list and define rules for ordering of its elements
-        ssl = new TreeSet<Candidate>();
-
-        // Mark pixels outside of the mask
-        fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
+        return new Pair<int[], Integer>(regionToSeedLooup, regionCount);
     }
 
 

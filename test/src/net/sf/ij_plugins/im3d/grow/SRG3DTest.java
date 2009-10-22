@@ -24,6 +24,7 @@ package net.sf.ij_plugins.im3d.grow;
 
 import ij.ImageStack;
 import ij.process.ByteProcessor;
+import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.Point3DInt;
 import net.sf.ij_plugins.io.IOUtils;
 import org.junit.Assert;
@@ -60,7 +61,7 @@ public final class SRG3DTest {
 
         final SRG3D srg = new SRG3D();
         srg.setImage(imageStack);
-        srg.setSeeds(seeds);
+        srg.setSeeds(SRG3D.toSeedImage(seeds, xMax, yMax, zMax));
         srg.run();
         final ImageStack markers = srg.getRegionMarkers();
 
@@ -70,6 +71,7 @@ public final class SRG3DTest {
         // Validate
         assertEquals(imageStack, markers, 10);
     }
+
 
     @Test
     public void test2() throws Exception {
@@ -90,7 +92,7 @@ public final class SRG3DTest {
 
         final SRG3D srg = new SRG3D();
         srg.setImage(imageStack);
-        srg.setSeeds(seeds);
+        srg.setSeeds(SRG3D.toSeedImage(seeds, xMax, yMax, zMax));
         srg.run();
         final ImageStack markers = srg.getRegionMarkers();
 
@@ -101,7 +103,7 @@ public final class SRG3DTest {
     }
 
 
-    void assertEquals(final ImageStack expected, final ImageStack actual, final int multiplier) {
+    private void assertEquals(final ImageStack expected, final ImageStack actual, final int multiplier) {
         assertNotNull(expected);
         assertNotNull(actual);
         Assert.assertEquals(expected.getSize(), actual.getSize());
@@ -120,19 +122,20 @@ public final class SRG3DTest {
     }
 
 
-    void fill(final Point3DInt min, final Point3DInt max, final ImageStack imageStack, final int value) {
+    private void fill(final Point3DInt min, final Point3DInt max, final ImageStack imageStack, final int value) {
         for (int z = min.z; z < max.z; z++) {
+            final ImageProcessor p = imageStack.getProcessor(z + 1);
             for (int y = min.y; y < max.y; y++) {
                 for (int x = min.x; x < max.x; x++) {
-                    imageStack.getProcessor(z + 1).set(x, y, value);
+                    p.set(x, y, value);
                 }
             }
         }
     }
 
 
-    ImageStack createStack(int xMax, int yMax, int zMax) {
-        ImageStack r = new ImageStack(xMax, yMax);
+    private ImageStack createStack(final int xMax, final int yMax, final int zMax) {
+        final ImageStack r = new ImageStack(xMax, yMax);
         for (int z = 0; z < zMax; z++) {
             r.addSlice("" + z, new ByteProcessor(xMax, yMax));
         }

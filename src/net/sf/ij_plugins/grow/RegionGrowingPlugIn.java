@@ -28,6 +28,7 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.grow.SRG;
+import net.sf.ij_plugins.im3d.grow.SRG3D;
 import net.sf.ij_plugins.util.progress.*;
 
 import java.util.ArrayList;
@@ -130,7 +131,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         } else if (RUN_INDEPENDENT_SLICES.equalsIgnoreCase(stackTreatment)) {
             runEachSliceIndependently(image, seeds);
         } else if (RUN_3D.equalsIgnoreCase(stackTreatment)) {
-            IJ.error(TITLE, "Not yet implemented stack option: " + stackTreatment);
+            run(image.getStack(), seeds.getStack(), image.getTitle() + Integer.toString(image.getCurrentSlice()));
         } else {
             IJ.error(TITLE, "Not supported stack option: " + stackTreatment);
         }
@@ -149,6 +150,22 @@ public final class RegionGrowingPlugIn implements PlugIn {
         srg.run();
 
         final ByteProcessor r = srg.getRegionMarkers();
+        r.setColorModel(seeds.getColorModel());
+        new ImagePlus(prefix + "-SRG", r).show();
+    }
+
+    private void run(final ImageStack image, final ImageStack seeds, final String prefix) {
+        final SRG3D srg = new SRG3D();
+        srg.setImage(image);
+        srg.setSeeds(seeds);
+
+        // Forward progress notification
+        srg.addProgressListener(new IJProgressBarAdapter());
+
+        // Run segmentation
+        srg.run();
+
+        final ImageStack r = srg.getRegionMarkers();
         r.setColorModel(seeds.getColorModel());
         new ImagePlus(prefix + "-SRG", r).show();
     }
