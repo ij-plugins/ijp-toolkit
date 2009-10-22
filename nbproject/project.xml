@@ -20,7 +20,6 @@
   ~
   ~ Latest release available at http://sourceforge.net/projects/ij-plugins/
   -->
-
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
