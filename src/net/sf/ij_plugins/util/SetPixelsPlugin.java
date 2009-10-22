@@ -41,7 +41,7 @@ public final class SetPixelsPlugin implements PlugInFilter {
     final private static AtomicInteger value = new AtomicInteger(1);
 
     public int setup(final String arg, final ImagePlus imp) {
-        return DOES_8G + DOES_STACKS + ROI_REQUIRED + SNAPSHOT + PARALLELIZE_STACKS;
+        return DOES_8G + ROI_REQUIRED + SNAPSHOT + PARALLELIZE_STACKS;
     }
 
     public void run(final ImageProcessor ip) {
