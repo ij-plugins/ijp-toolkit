@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,13 +33,13 @@ final public class ProgressExample3 {
         CounterWithProgress counter1 = new CounterWithProgress('+');
         CounterWithProgress counter2 = new CounterWithProgress('*');
 
-        // Create acumulator that will observer progress of both counters
+        // Create accumulator that will observer progress of both counters
         ProgressAccumulator accumulator = new ProgressAccumulator();
-        // Register counters as progress reporters, use dirfferent weight for each
+        // Register counters as progress reporters, use different weight for each
         accumulator.addProgressReporter(counter1, 3, " + ");
         accumulator.addProgressReporter(counter2, 1, " * ");
 
-        // Request that only progress changes above minumum be reported
+        // Request that only progress changes above minimum be reported
         accumulator.setMinimumChange(0.1);
 
         // Add progress listener
