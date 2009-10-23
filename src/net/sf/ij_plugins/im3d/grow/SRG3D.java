@@ -28,6 +28,7 @@ import ij.process.ByteStatistics;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.Point3DInt;
 import net.sf.ij_plugins.util.Pair;
+import net.sf.ij_plugins.util.Validate;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.util.ArrayList;
@@ -83,10 +84,6 @@ public final class SRG3D extends DefaultProgressReporter {
 
     private static final String NAME = "Seeded Region Growing";
 
-    private static final int MAX_REGION_NUMBER = 253;
-    private static final byte BACKGROUND_MARK = (byte) 0x00;
-    private static final byte CANDIDATE_MARK = (byte) 0xff;
-    private static final byte OUTSIDE_MARK = (byte) 0xfe;
     private static final Point3DInt NEIGHBOUR_OFFSET[] = {
             // 6-connected
             new Point3DInt(+0, +0, -1),
@@ -139,9 +136,10 @@ public final class SRG3D extends DefaultProgressReporter {
     private float[][] imagePixels;
 
     private SortedSet<Candidate3D> ssl;
-    private int[] seedToRegonLookup;
     private RegionInfo3D[] regionInfos;
     private long processedPixelCount;
+
+    final SRGSupport srgSupport = new SRGSupport();
 
 
     /**
@@ -150,13 +148,13 @@ public final class SRG3D extends DefaultProgressReporter {
      * @param image image.
      */
     public void setImage(final ImageStack image) {
-        validateNotNull(image, "image");
+        Validate.argumentNotNull(image, "image");
         this.image = image;
     }
 
 
     public void setSeeds(final ImageStack seeds) {
-        validateNotNull(seeds, "Argument 'seeds' cannot be null");
+        Validate.argumentNotNull(seeds, "seeds");
 
         this.seeds = seeds;
     }
@@ -193,11 +191,11 @@ public final class SRG3D extends DefaultProgressReporter {
             for (int y = 0; y < ySize; ++y) {
                 for (int x = 0; x < xSize; ++x) {
                     final int offset = x + y * xSize;
-                    if (regionMarkerPixels[z][offset] == OUTSIDE_MARK) {
+                    if (regionMarkerPixels[z][offset] == SRGSupport.OUTSIDE_MARK) {
                         continue;
                     }
 
-                    final int regonID = seedToRegonLookup[seedPixels[z][offset]];
+                    final int regonID = srgSupport.seedToRegonLookup[seedPixels[z][offset]];
                     if (regonID < 1) {
                         continue;
                     }
@@ -217,7 +215,9 @@ public final class SRG3D extends DefaultProgressReporter {
                 for (int x = 0; x < xSize; ++x) {
                     final int offset = x + y * xSize;
                     final int regionId = regionMarkerPixels[z][offset];
-                    if (regionId == BACKGROUND_MARK || regionId == OUTSIDE_MARK || regionId == CANDIDATE_MARK) {
+                    if (regionId == SRGSupport.BACKGROUND_MARK
+                            || regionId == SRGSupport.OUTSIDE_MARK
+                            || regionId == SRGSupport.CANDIDATE_MARK) {
                         continue;
                     }
 
@@ -246,7 +246,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
             final int offset = c.point.x + c.point.y * xSize;
             final byte marker = regionMarkerPixels[c.point.z][offset];
-            assert marker == CANDIDATE_MARK : "Expecting point (" + c.point.x + "," + c.point.y + ", " + c.point.z + ") to be candidate got " + (int) marker;
+            assert marker == SRGSupport.CANDIDATE_MARK : "Expecting point (" + c.point.x + "," + c.point.y + ", " + c.point.z + ") to be candidate got " + (int) marker;
 
             // Add this point to its most similar region
             regionMarkerPixels[c.point.z][offset] = (byte) (c.mostSimilarRegionId & 0xff);
@@ -279,7 +279,7 @@ public final class SRG3D extends DefaultProgressReporter {
      * <ol>
      * <li>Argument {@code seeds} cannot be {@code link} null.</li>
      * <li>There must be at least 2 regions.</li>
-     * <li>There must be at most {@value #MAX_REGION_NUMBER} regions.</li>
+     * <li>There must be at most {@value SRGSupport#MAX_REGION_NUMBER} regions.</li>
      * <li>Each region has to have at least one seed point.</li>
      * <li>All seed points have to be unique.</li>
      * </ol>
@@ -291,15 +291,15 @@ public final class SRG3D extends DefaultProgressReporter {
      * @return seed image.
      */
     public static ImageStack toSeedImage(final Point3DInt[][] seeds, final int xSize, final int ySize, final int zSize) {
-        validateNotNull(seeds, "Argument 'seeds' cannot be null");
+        Validate.argumentNotNull(seeds, "seeds");
 
         if (seeds.length < 2) {
             throw new IllegalArgumentException("Seeds for at least two regions required, got " + seeds.length + ".");
         }
 
-        if (seeds.length > MAX_REGION_NUMBER) {
+        if (seeds.length > SRGSupport.MAX_REGION_NUMBER) {
             throw new IllegalArgumentException(
-                    "Maximum number of regions is " + MAX_REGION_NUMBER + ", got " + seeds.length + ".");
+                    "Maximum number of regions is " + SRGSupport.MAX_REGION_NUMBER + ", got " + seeds.length + ".");
         }
 
         for (int i = 0; i < seeds.length; i++) {
@@ -338,16 +338,9 @@ public final class SRG3D extends DefaultProgressReporter {
     private void fillOutsideMask(final byte[][] pixels, final byte value) {
         if (mask != null) {
             for (int z = 0; z < zMax; ++z) {
-                final byte[] maskPixels = (byte[]) mask.getPixels(z + 1);
-                final byte[] pixelsZ = pixels[z];
-                for (int i = 0; i < pixels.length; i++) {
-                    if (maskPixels[i] == 0) {
-                        pixelsZ[i] = value;
-                    }
-                }
+                SRGSupport.fillOutsideMask(pixels[z], value, (ByteProcessor) mask.getPixels(z + 1));
             }
         }
-
     }
 
 
@@ -372,7 +365,7 @@ public final class SRG3D extends DefaultProgressReporter {
         final float value = imagePixels[point.z][offset];
 
         // Mark as candidate
-        regionMarkerPixels[point.z][offset] = CANDIDATE_MARK;
+        regionMarkerPixels[point.z][offset] = SRGSupport.CANDIDATE_MARK;
 
         // Get flags of neighbouring regions
         final boolean[] flags = neighbourRegionFlags(point);
@@ -413,7 +406,7 @@ public final class SRG3D extends DefaultProgressReporter {
         }
 
         final byte v = regionMarkerPixels[z][x + y * xSize];
-        if (v != BACKGROUND_MARK && v != CANDIDATE_MARK && v != OUTSIDE_MARK) {
+        if (v != SRGSupport.BACKGROUND_MARK && v != SRGSupport.CANDIDATE_MARK && v != SRGSupport.OUTSIDE_MARK) {
             final int regionId = v & 0xff;
             r[regionId] = true;
         }
@@ -457,7 +450,7 @@ public final class SRG3D extends DefaultProgressReporter {
             seedPixels[z] = (byte[]) seeds.getPixels(z + 1);
         }
 
-        final Pair<int[], Integer> p = createSeedToRegonLookup(histogram(seeds));
+        final Pair<int[], Integer> p = srgSupport.createSeedToRegonLookup(histogram(seeds));
         final int[] regionToSeedLooup = p.getFirst();
         final int regionCount = p.getSecond();
 
@@ -471,34 +464,34 @@ public final class SRG3D extends DefaultProgressReporter {
         ssl = new TreeSet<Candidate3D>();
 
         // Mark pixels outside of the mask
-        fillOutsideMask(regionMarkerPixels, OUTSIDE_MARK);
+        fillOutsideMask(regionMarkerPixels, SRGSupport.OUTSIDE_MARK);
     }
 
 
-    private Pair<int[], Integer> createSeedToRegonLookup(final int[] histogram) {
+//    private Pair<int[], Integer> createSeedToRegonLookup(final int[] histogram) {
+//
+//        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
+//        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
+//        int regionCount = 0;
+//        for (int seed = 1; seed < histogram.length; seed++) {
+//            if (histogram[seed] > 0) {
+//                if (seed > MAX_REGION_NUMBER) {
+//                    throw new IllegalArgumentException("Seed ID cannot be larger than " + MAX_REGION_NUMBER
+//                            + ", got " + seed + ".");
+//                }
+//
+//                regionCount++;
+//                seedToRegonLookup[seed] = regionCount;
+//                regionToSeedLooup[regionCount] = seed;
+//            }
+//
+//        }
+//
+//        return new Pair<int[], Integer>(regionToSeedLooup, regionCount);
+//    }
 
-        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
-        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
-        int regionCount = 0;
-        for (int seed = 1; seed < histogram.length; seed++) {
-            if (histogram[seed] > 0) {
-                if (seed > MAX_REGION_NUMBER) {
-                    throw new IllegalArgumentException("Seed ID cannot be larger than " + MAX_REGION_NUMBER
-                            + ", got " + seed + ".");
-                }
 
-                regionCount++;
-                seedToRegonLookup[seed] = regionCount;
-                regionToSeedLooup[regionCount] = seed;
-            }
-
-        }
-
-        return new Pair<int[], Integer>(regionToSeedLooup, regionCount);
-    }
-
-
-    private int[] histogram(ImageStack stack) {
+    private int[] histogram(final ImageStack stack) {
         final int[] hist = new ByteStatistics(stack.getProcessor(1)).histogram;
         for (int i = 2; i <= stack.getSize(); i++) {
             final int[] hist1 = new ByteStatistics(stack.getProcessor(i)).histogram;
@@ -527,19 +520,9 @@ public final class SRG3D extends DefaultProgressReporter {
         }
 
         final int offset = x + y * xSize;
-        if (regionMarkerPixels[z][offset] == BACKGROUND_MARK) {
+        if (regionMarkerPixels[z][offset] == SRGSupport.BACKGROUND_MARK) {
             // Add to unassigned pixels
             backgroundPoints.add(new Point3DInt(x, y, z));
-        }
-    }
-
-
-    private static void validateNotNull(final Object object, final String name) throws IllegalArgumentException {
-        if (object == null) {
-            throw new IllegalArgumentException(
-                    name != null
-                            ? "Argument '" + name + "' cannot be null."
-                            : "Argument cannot be null.");
         }
     }
 
@@ -586,9 +569,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
         @Override
         public int compareTo(final Candidate3D c) {
-            if (c == null) {
-                throw new IllegalArgumentException("Argument 'c' cannot be null.");
-            }
+            Validate.argumentNotNull(c, "c");
 
             if (point.compareTo(c.point) == 0) {
                 return 0;
