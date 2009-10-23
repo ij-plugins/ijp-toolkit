@@ -19,7 +19,10 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.im3d;
+
+import net.sf.ij_plugins.util.Validate;
 
 /**
  * Represents a 3D point.
@@ -80,9 +83,7 @@ final public class Point3DInt implements Comparable<Point3DInt> {
 
 
     public int compareTo(final Point3DInt p) {
-        if (p == null) {
-            throw new IllegalArgumentException("Argument 'p' cannot be null.");
-        }
+        Validate.argumentNotNull(p, "p");
 
         if (x < p.x) {
             return -1;
