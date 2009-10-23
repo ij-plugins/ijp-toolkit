@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -80,6 +81,7 @@ public class SRAD extends AbstractAnisotropicDiffusion {
     /**
      * Perform single diffusion operation
      */
+    @Override
     protected void diffuse(final FloatProcessor src, final FloatProcessor dest) {
         final float[] destPixels = (float[]) dest.getPixels();
         final FloatProcessor cFP = new FloatProcessor(src.getWidth(), src.getHeight());

@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002,2003 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,6 +49,7 @@ public class ConnectedThresholdFilterUInt8 extends ConnectedThresholdFilterBase 
      *
      * @param src Description of the Parameter
      */
+    @Override
     final protected void createHandleToSrcPixels(ImageStack src) {
         Object[] imageArray = src.getImageArray();
 
@@ -72,6 +74,7 @@ public class ConnectedThresholdFilterUInt8 extends ConnectedThresholdFilterBase 
      * @param y
      * @param z
      */
+    @Override
     final protected void checkForGrow(int x, int y, int z) {
         if (x < xMin || x >= xMax ||
                 y < yMin || y >= yMax ||

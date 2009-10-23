@@ -1,8 +1,7 @@
-/***
- * Copyright (C) 2002 Nick Vavra
- *
+/*
  * Image/J Plugins
- * Copyright (C) 2004-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -151,7 +150,7 @@ public class ImageQuilter {
                 }
 
                 ++currcolumn;
-                progress = (currow + (double) currcolumn / (double) patchcols) / (double) patchrows;
+                progress = (currow + (double) currcolumn / (double) patchcols) / patchrows;
                 IJ.showProgress(progress);
 
             } while (outPatch.nextColumn(overlapsize));

@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.im3d.grow;
 
@@ -42,6 +42,7 @@ public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase
     /*
     *
     */
+    @Override
     protected final void createHandleToSrcPixels(final ImageStack src) {
         final Object[] imageArray = src.getImageArray();
 
@@ -59,6 +60,7 @@ public class ConnectedThresholdFilterUInt16 extends ConnectedThresholdFilterBase
     /*
     *
     */
+    @Override
     protected final void checkForGrow(final int x, final int y, final int z) {
         if (x < xMin || x >= xMax ||
                 y < yMin || y >= yMax ||

@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +39,7 @@ public class SRADBeanInfo extends IJPluginsSimpleBeanInfo {
     }
 
 
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
         try {
             return new PropertyDescriptor[]{
@@ -54,6 +56,7 @@ public class SRADBeanInfo extends IJPluginsSimpleBeanInfo {
         }
     }
 
+    @Override
     public BeanInfo[] getAdditionalBeanInfo() {
         try {
             return new BeanInfo[]{Introspector.getBeanInfo(beanClass.getSuperclass())};

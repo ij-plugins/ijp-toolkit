@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,14 +18,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.ui;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 
 /**
@@ -58,6 +56,7 @@ public final class GlassPane extends JPanel {
 
         // This component keeps the focus until is made hidden
         setInputVerifier(new InputVerifier() {
+            @Override
             public boolean verify(JComponent input) {
                 return !isVisible();
             }
@@ -85,6 +84,7 @@ public final class GlassPane extends JPanel {
     }
 
 
+    @Override
     protected void paintComponent(final Graphics g) {
         final Graphics2D g2 = (Graphics2D) g.create();
         g2.setColor(color);

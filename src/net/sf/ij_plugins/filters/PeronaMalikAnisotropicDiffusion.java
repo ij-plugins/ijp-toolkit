@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,6 +55,7 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
     /**
      * Perform single diffusion operation
      */
+    @Override
     protected void diffuse(FloatProcessor src, FloatProcessor dest) {
         float[] destPixels = (float[]) dest.getPixels();
         PixelIterator iterator = new PixelIterator(src);

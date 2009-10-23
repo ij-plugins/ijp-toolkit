@@ -1,8 +1,7 @@
-/***
- * Copyright (C) 2002 Nick Vavra
- *
+/*
  * Image/J Plugins
- * Copyright (C) 2004 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,6 +44,7 @@ public class Patch extends View {
     /**
      * This moves the patch to have the upper left corner at (x,y) in image coordinates.
      */
+    @Override
     public void setCorner(int x, int y) {
         if (x + width > image.getWidth() || y + height > image.getHeight()
                 || x < 0 || y < 0) {
@@ -65,6 +65,7 @@ public class Patch extends View {
      * Bounds checks the input to make sure it is part of the patch and then gets the sample from
      * the view.
      */
+    @Override
     public int[] getSample(int x, int y, int[] out) {
         // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -78,6 +79,7 @@ public class Patch extends View {
      * Bounds checks the input to make sure it is part of the patch and then puts the sample into
      * the view.
      */
+    @Override
     public void putSample(int x, int y, int values[]) {
         // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
@@ -90,6 +92,7 @@ public class Patch extends View {
     /**
      * returns a string with the corner, width, and height listed
      */
+    @Override
     public String toString() {
         return "patch with corner (" + xoffset + "," + yoffset + ") width "
                 + width + " height " + height;

@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,6 +32,7 @@ public class SRADPlugin extends AbstractAnisotropicDiffusionPlugin {
         super("Speckle Reducing Anisotropic Diffusion");
     }
 
+    @Override
     protected AbstractAnisotropicDiffusion createFilter() {
         return new SRAD();
     }

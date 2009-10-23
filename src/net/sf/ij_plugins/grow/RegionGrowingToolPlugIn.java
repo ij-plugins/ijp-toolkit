@@ -59,7 +59,7 @@ public final class RegionGrowingToolPlugIn implements PlugIn {
             dialog.getContentPane().add(view);
             dialog.pack();
             dialog.setLocationRelativeTo(null);
-            dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
             // Add listener to store window location and size on close
             dialog.addWindowListener(new WindowAdapter() {
