@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,8 +29,9 @@ import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageConverter;
 import ij.process.StackConverter;
+import net.sf.ij_plugins.util.Validate;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 /**
  * Represents vector valued image. Value at each pixel in the image is a vector of floating point
@@ -247,9 +249,7 @@ public class VectorProcessor {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new IllegalArgumentException("Value of coordinates (x,y) is out of range.");
         }
-        if (v == null) {
-            throw new IllegalArgumentException("Argument 'v' cannot be null.");
-        }
+        Validate.argumentNotNull(v, "v");
         if (v.length != numberOfValues) {
             throw new IllegalArgumentException("Invalid size of argument 'v' expecting " + numberOfValues
                     + ", got " + v.length + ".");

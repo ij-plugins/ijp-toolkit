@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +23,7 @@ package net.sf.ij_plugins.filters;
 
 import ij.gui.ProgressBar;
 import ij.process.ByteProcessor;
+import net.sf.ij_plugins.util.Validate;
 
 import java.awt.*;
 
@@ -42,15 +44,12 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
      * @param operator operator over which this filter iterates.
      */
     public RunningUInt8Filter(IRunningUInt8Operator operator) {
-        if (operator == null) {
-            throw new IllegalArgumentException("Argument operator cannot be null.");
-        }
+        Validate.argumentNotNull(operator, "operator");
 
         this.operator = operator;
     }
 
-    public ByteProcessor run(final ByteProcessor src, final int filterWidth, final int filterHeight)
-    {
+    public ByteProcessor run(final ByteProcessor src, final int filterWidth, final int filterHeight) {
 
         final int width = src.getWidth();
         final int height = src.getHeight();

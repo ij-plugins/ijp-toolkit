@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.color;
 
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
+import net.sf.ij_plugins.util.Validate;
 
 /**
  * <p/>
@@ -67,9 +68,7 @@ public class ColorProcessorUtils {
      */
     static public ColorProcessor mergeRGB(final ByteProcessor[] bps) {
 
-        if (bps == null) {
-            throw new IllegalArgumentException("Argument 'bps' cannot be null.");
-        }
+        Validate.argumentNotNull(bps, "bps");
         if (bps.length != 3) {
             throw new IllegalArgumentException("Size of array 'bps' has to equal 3, got "
                     + bps.length + ".");

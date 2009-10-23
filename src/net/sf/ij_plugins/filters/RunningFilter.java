@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import ij.ImagePlus;
 import ij.gui.ProgressBar;
 import ij.process.FloatProcessor;
 import net.sf.ij_plugins.io.IOUtils;
+import net.sf.ij_plugins.util.Validate;
 
 import java.awt.*;
 import java.io.IOException;
@@ -50,9 +52,7 @@ public class RunningFilter {
      */
     public RunningFilter(final IRunningMedianFloatOperator operator,
                          final int filterWidth, final int filterHeight) {
-        if (operator == null) {
-            throw new IllegalArgumentException("Argument operator cannot be null.");
-        }
+        Validate.argumentNotNull(operator, "operator");
 
         this.operator = operator;
         this.operator.reset(filterWidth, filterHeight);

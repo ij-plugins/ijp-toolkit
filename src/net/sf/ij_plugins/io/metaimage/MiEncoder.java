@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.io.metaimage;
 
@@ -29,6 +29,7 @@ import ij.io.ImageWriter;
 import ij.io.SaveDialog;
 import ij.measure.Calibration;
 import ij.plugin.PlugIn;
+import net.sf.ij_plugins.util.Validate;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,12 +71,8 @@ public class MiEncoder implements PlugIn {
      * @throws MiException In case of error when saving the image.
      */
     public static void write(ImagePlus imp, String fileRootName) throws MiException {
-        if (imp == null) {
-            throw new IllegalArgumentException("Argument 'imp' cannot be null.");
-        }
-        if (fileRootName == null) {
-            throw new IllegalArgumentException("Argument 'fileRootName' cannot be null.");
-        }
+        Validate.argumentNotNull(imp, "imp");
+        Validate.argumentNotNull(fileRootName, "fileRootName");
 
         //
         // Figure out file names.

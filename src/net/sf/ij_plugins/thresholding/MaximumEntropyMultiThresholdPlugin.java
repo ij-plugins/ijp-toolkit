@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -83,8 +84,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         maximumEntropyMultiThreshold.addProgressListener(new IJProgressBarAdapter());
         final int[] thresholds = maximumEntropyMultiThreshold.maximumEntropy(hist, nbThresholds);
         String logMsg = "Maximum Entropy Thresholds: ";
-        for (int i = 0; i < thresholds.length; i++) {
-            final int threshold = thresholds[i];
+        for (final int threshold : thresholds) {
             logMsg += " " + threshold;
         }
         IJ.log(logMsg);
@@ -98,8 +98,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
             values[i] = (int) Math.round(i * inc);
         }
         String logMsg = "Levels in thresholoded image: ";
-        for (int i = 0; i < values.length; i++) {
-            int v = values[i];
+        for (final int v : values) {
             logMsg += " " + v;
         }
         IJ.log(logMsg);

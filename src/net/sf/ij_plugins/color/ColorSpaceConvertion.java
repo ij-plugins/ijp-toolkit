@@ -19,12 +19,14 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.color;
 
 import ij.IJ;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.Validate;
 import net.sf.ij_plugins.util.progress.ProgressEvent;
 import net.sf.ij_plugins.util.progress.ProgressListener;
 
@@ -541,9 +543,7 @@ public final class ColorSpaceConvertion {
      */
     public static ColorProcessor ycbcrToRGB(final ByteProcessor[] ybr, final ProgressListener progressListener) {
 
-        if (ybr == null) {
-            throw new IllegalArgumentException("Argument 'ybr' cannot be null.");
-        }
+        Validate.argumentNotNull(ybr, "ybr");
 
         if (ybr.length != 3) {
             throw new IllegalArgumentException("Argument's 'ybr' length must be 3, got " + ybr.length + ".");

@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.io.metaimage;
 
@@ -28,6 +28,7 @@ import ij.io.FileOpener;
 import ij.io.OpenDialog;
 import ij.plugin.PlugIn;
 import net.sf.ij_plugins.util.TextUtil;
+import net.sf.ij_plugins.util.Validate;
 
 import java.io.*;
 
@@ -91,9 +92,7 @@ public class MiDecoder implements PlugIn {
     */
     private MiTagValuePair extractTagAndValue(String line) throws MiException {
 
-        if (line == null) {
-            throw new IllegalArgumentException("Argument 'line' cannot be null.");
-        }
+        Validate.argumentNotNull(line, "line");
 
         int position = line.indexOf(ASSIGNMENT_SYMBOL);
         if (position < 0) {
@@ -342,7 +341,7 @@ public class MiDecoder implements PlugIn {
      * Helper class to represent a MetaImage tag and its value.
      *
      * @author Jarek Sacha
-     * @created August 3, 2002
+     * @since August 3, 2002
      */
     private static class MiTagValuePair {
         /**
