@@ -114,7 +114,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         run(image, seeds, stackTreatment);
 
         final long endTime = System.currentTimeMillis();
-        IJ.showStatus(String.format("%1$s: %2$5.3f seconds.", TITLE, (endTime - startTime) * 0.0001));
+        IJ.showStatus(String.format("%1$s: %2$5.3f seconds.", TITLE, (endTime - startTime) * 0.001));
     }
 
 
