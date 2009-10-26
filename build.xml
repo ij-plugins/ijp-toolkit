@@ -183,10 +183,10 @@
         </antcall>
 
         <!-- Get revision number for checked out source -->
-        <!--<echo message="svn.dir = ${svn.dir}"/>-->
-        <!--<svn>-->
-        <!--<status path="${svn.dir}" revisionProperty="svn.revision"/>-->
-        <!--</svn>-->
+        <echo message="svn.dir = ${svn.dir}"/>
+        <svn>
+            <status path="${svn.dir}" revisionProperty="svn.revision"/>
+        </svn>
 
         <!--Copy dependencies-->
         <!--<mkdir dir="${svn.dir}/lib"/>-->
