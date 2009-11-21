@@ -180,9 +180,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         // Run segmentation
         srg.run();
 
-        final ImageStack r = srg.getRegionMarkers();
-        r.setColorModel(seeds.getColorModel());
-        new ImagePlus(prefix + "-SRG", r).show();
+        new ImagePlus(prefix + "-SRG", srg.getRegionMarkers()).show();
     }
 
 

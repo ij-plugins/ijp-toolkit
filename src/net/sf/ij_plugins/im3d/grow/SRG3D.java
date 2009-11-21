@@ -570,6 +570,7 @@ public final class SRG3D extends DefaultProgressReporter {
             imagePixels[z] = (float[]) image.getProcessor(z + 1).convertToFloat().getPixels();
             seedPixels[z] = (byte[]) seeds.getPixels(z + 1);
         }
+        regionMarkers.setColorModel(seeds.getColorModel());
 
         final Pair<int[], Integer> p = srgSupport.createSeedToRegonLookup(histogram(seeds));
         final int[] regionToSeedLooup = p.getFirst();
