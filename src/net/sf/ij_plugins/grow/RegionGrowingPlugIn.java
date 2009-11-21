@@ -31,9 +31,12 @@ import net.sf.ij_plugins.im3d.grow.SRG;
 import net.sf.ij_plugins.im3d.grow.SRG3D;
 import net.sf.ij_plugins.util.progress.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -49,6 +52,9 @@ public final class RegionGrowingPlugIn implements PlugIn {
     private static final String RUN_INDEPENDENT_SLICES = "All slices independent";
     private static final String RUN_3D = "3D volume";
     private static final String[] STACK_TREATMENT = {RUN_CURRENT_SLICE, RUN_INDEPENDENT_SLICES, RUN_3D};
+
+    final AtomicReference<String> stackTreatment = new AtomicReference<String>(STACK_TREATMENT[0]);
+    final AtomicBoolean growHistoryEnabled = new AtomicBoolean(false);
 
 
     public void run(final String arg) {
@@ -87,7 +93,8 @@ public final class RegionGrowingPlugIn implements PlugIn {
         final GenericDialog gd = new GenericDialog(TITLE, IJ.getInstance());
         gd.addChoice("Image:", imageTitles, imageTitles[0]);
         gd.addChoice("Seeds:", seedTitles, seedTitles[0]);
-        gd.addChoice("Stack treatment:", STACK_TREATMENT, STACK_TREATMENT[0]);
+        gd.addChoice("Stack treatment:", STACK_TREATMENT, stackTreatment.get());
+        gd.addCheckbox("Save_grow_history (for " + RUN_3D + " only)", growHistoryEnabled.get());
         gd.addMessage("Seeds image should be of the same size as the image for segmentation.");
         gd.showDialog();
         if (gd.wasCanceled()) {
@@ -96,7 +103,8 @@ public final class RegionGrowingPlugIn implements PlugIn {
 
         final ImagePlus image = WindowManager.getImage(imageTitles[gd.getNextChoiceIndex()]);
         final ImagePlus seeds = WindowManager.getImage(seedTitles[gd.getNextChoiceIndex()]);
-        final String stackTreatment = gd.getNextChoice();
+        stackTreatment.set(gd.getNextChoice());
+        growHistoryEnabled.set(gd.getNextBoolean());
 
         // Validate image types
         if (!isSupportedImage(image)) {
@@ -111,7 +119,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         // Run SRG
         final long startTime = System.currentTimeMillis();
 
-        run(image, seeds, stackTreatment);
+        run(image, seeds, stackTreatment.get(), growHistoryEnabled.get());
 
         final long endTime = System.currentTimeMillis();
         IJ.showStatus(String.format("%1$s: %2$5.3f seconds.", TITLE, (endTime - startTime) * 0.001));
@@ -130,20 +138,20 @@ public final class RegionGrowingPlugIn implements PlugIn {
     }
 
 
-    private void run(final ImagePlus image, final ImagePlus seeds, final String stackTreatment) {
+    private static void run(final ImagePlus image, final ImagePlus seeds, final String stackTreatment, final boolean growHistoryEnabled) {
         if (RUN_CURRENT_SLICE.equalsIgnoreCase(stackTreatment)) {
             run(image.getProcessor(), (ByteProcessor) seeds.getProcessor(), image.getTitle() + Integer.toString(image.getCurrentSlice()));
         } else if (RUN_INDEPENDENT_SLICES.equalsIgnoreCase(stackTreatment)) {
             runEachSliceIndependently(image, seeds);
         } else if (RUN_3D.equalsIgnoreCase(stackTreatment)) {
-            run(image.getStack(), seeds.getStack(), image.getTitle() + Integer.toString(image.getCurrentSlice()));
+            run(image.getStack(), seeds.getStack(), image.getTitle() + Integer.toString(image.getCurrentSlice()), growHistoryEnabled);
         } else {
             IJ.error(TITLE, "Not supported stack option: " + stackTreatment);
         }
     }
 
 
-    private void run(final ImageProcessor image, final ByteProcessor seeds, final String prefix) {
+    private static void run(final ImageProcessor image, final ByteProcessor seeds, final String prefix) {
         final SRG srg = new SRG();
         srg.setImage(image);
         srg.setSeeds(seeds);
@@ -159,10 +167,12 @@ public final class RegionGrowingPlugIn implements PlugIn {
         new ImagePlus(prefix + "-SRG", r).show();
     }
 
-    private void run(final ImageStack image, final ImageStack seeds, final String prefix) {
+    private static void run(final ImageStack image, final ImageStack seeds, final String prefix, final boolean growHistoryEnabled) {
         final SRG3D srg = new SRG3D();
         srg.setImage(image);
         srg.setSeeds(seeds);
+        srg.setGrowHistoryEnabled(growHistoryEnabled);
+        srg.setGrowHistoryDirectory(new File(System.getProperty("java.io.tmpdir", "./tmp")));
 
         // Forward progress notification
         srg.addProgressListener(new IJProgressBarAdapter());
@@ -176,7 +186,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
     }
 
 
-    private void runEachSliceIndependently(final ImagePlus image, final ImagePlus seeds) {
+    private static void runEachSliceIndependently(final ImagePlus image, final ImagePlus seeds) {
 
         // Validate size
         if (image.getWidth() != seeds.getWidth() || image.getHeight() != seeds.getHeight() || image.getStackSize() != seeds.getStackSize()) {

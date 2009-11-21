@@ -22,15 +22,20 @@
 
 package net.sf.ij_plugins.im3d.grow;
 
+import ij.IJ;
 import ij.ImageStack;
 import ij.process.ByteProcessor;
 import ij.process.ByteStatistics;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.Point3DInt;
+import net.sf.ij_plugins.io.IOUtils;
+import net.sf.ij_plugins.util.IJDebug;
 import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.Validate;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -77,6 +82,16 @@ import java.util.TreeSet;
  * // Extract results
  * final ImageStack regionMask = srg.getRegionMarkers();
  * </pre>
+ * <p>
+ * If ImageJ is set to debug mode ({@code IJ.debugMode} property is {@code true}) additional information will be printed to
+ * output window (using {@code IJ.log()}).
+ * </p>
+ * <p>
+ * History of growing can be saved using {@link #setGrowHistoryEnabled(boolean)} and
+ * {@link #setGrowHistoryDirectory(java.io.File)}.
+ * Saved images represent internal representation of growing regions including {@code 0xff} marking of candidate voxels
+ * (that were not yet assigned to a region).
+ * </p>
  *
  * @author Jarek Sacha
  */
@@ -120,6 +135,8 @@ public final class SRG3D extends DefaultProgressReporter {
     private ImageStack seeds;
     private ImageStack regionMarkers;
     private ImageStack mask;
+    private boolean growHistoryEnabled;
+    private File growHistoryDirectory;
 
     // Internal variables
     private int xMin;
@@ -140,6 +157,8 @@ public final class SRG3D extends DefaultProgressReporter {
     private long processedPixelCount;
 
     final SRGSupport srgSupport = new SRGSupport();
+
+    private static final String GROW_HISTORY_FILE_FORMAT = "SRG_markers_%03d.tif";
 
 
     /**
@@ -177,65 +196,63 @@ public final class SRG3D extends DefaultProgressReporter {
     }
 
 
+    public boolean isGrowHistoryEnabled() {
+        return growHistoryEnabled;
+    }
+
+
+    /**
+     * Enable saving of images containing grow markers.
+     * Output directory has to be selecified using {@link #setGrowHistoryDirectory(java.io.File)} .
+     *
+     * @param growHistoryEnabled if {@code true} saving is enabled.
+     */
+    public void setGrowHistoryEnabled(final boolean growHistoryEnabled) {
+        this.growHistoryEnabled = growHistoryEnabled;
+    }
+
+
+    public File getGrowHistoryDirectory() {
+        return growHistoryDirectory;
+    }
+
+
+    /**
+     * Directory where to save marker history growth. Format of each file name is: {@value #GROW_HISTORY_FILE_FORMAT}.
+     *
+     * @param growHistoryDirectory grow whistory directory.
+     * @see #setGrowHistoryEnabled(boolean)
+     */
+    public void setGrowHistoryDirectory(final File growHistoryDirectory) {
+        this.growHistoryDirectory = growHistoryDirectory;
+    }
+
+
     /**
      * Perform region growing.
      */
     public void run() {
 
-        this.notifyProgressListeners(0, NAME + "initailizing..");
+        this.notifyProgressListeners(0, NAME + " initailizing...");
+
+        IJDebug.log("SRG3D.run - initializing structures");
 
         initializeStructures();
 
         // Initialize markers and create initial region info
-        for (int z = 0; z < zSize; ++z) {
-            for (int y = 0; y < ySize; ++y) {
-                for (int x = 0; x < xSize; ++x) {
-                    final int offset = x + y * xSize;
-                    if (regionMarkerPixels[z][offset] == SRGSupport.OUTSIDE_MARK) {
-                        continue;
-                    }
-
-                    final int regonID = srgSupport.seedToRegonLookup[seedPixels[z][offset]];
-                    if (regonID < 1) {
-                        continue;
-                    }
-
-                    // Add seed to regionMarkers
-                    regionMarkerPixels[z][offset] = (byte) (regonID & 0xff);
-
-                    // Add seed to region info
-                    regionInfos[regonID].addPoint(new Point3DInt(x, y, z));
-                }
-            }
-        }
+        initializeMargersAndRegionInfo();
 
         // Initialize candidates
-        for (int z = 0; z < zSize; ++z) {
-            for (int y = 0; y < ySize; ++y) {
-                for (int x = 0; x < xSize; ++x) {
-                    final int offset = x + y * xSize;
-                    final int regionId = regionMarkerPixels[z][offset];
-                    if (regionId == SRGSupport.BACKGROUND_MARK
-                            || regionId == SRGSupport.OUTSIDE_MARK
-                            || regionId == SRGSupport.CANDIDATE_MARK) {
-                        continue;
-                    }
-
-                    // Initialize SSL - ordered list of bordering at least one of the regions
-                    candidatesFromNeighbours(new Point3DInt(x, y, z));
-
-                    ++processedPixelCount;
-                }
-            }
-        }
-
+        initializeCandidates();
 
         final long pixelsToProcess = (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
 
         // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
         final long progressIncrement = Math.max(pixelsToProcess / 100, 1);
         this.notifyProgressListeners(processedPixelCount / (double) pixelsToProcess);
+        saveGrowHistory(processedPixelCount / (double) pixelsToProcess);
 
+        IJDebug.log("SRG3D.run - process candidates");
 
         // Process candidates
         while (!ssl.isEmpty()) {
@@ -259,14 +276,22 @@ public final class SRG3D extends DefaultProgressReporter {
 
             if (processedPixelCount % progressIncrement == 0) {
                 assert processedPixelCount <= pixelsToProcess;
-                this.notifyProgressListeners(processedPixelCount / (double) pixelsToProcess, NAME + " processing..");
+                final double progress = processedPixelCount / (double) pixelsToProcess;
+                this.notifyProgressListeners(progress, NAME + " processing...");
+
+                logProgressDebugInfo(pixelsToProcess, progress);
+
+                saveGrowHistory(progress);
             }
         }
+
+        IJDebug.log("SRG3D.run - encoding results");
 
         // Mark pixels outside of the mask as 0
         fillOutsideMask(regionMarkerPixels, (byte) 0);
         this.notifyProgressListeners(1);
     }
+
 
     /**
      * <p>
@@ -335,6 +360,102 @@ public final class SRG3D extends DefaultProgressReporter {
     }
 
 
+    private void initializeMargersAndRegionInfo() {
+        for (int z = 0; z < zSize; ++z) {
+            for (int y = 0; y < ySize; ++y) {
+                for (int x = 0; x < xSize; ++x) {
+                    final int offset = x + y * xSize;
+                    if (regionMarkerPixels[z][offset] == SRGSupport.OUTSIDE_MARK) {
+                        continue;
+                    }
+
+                    final int regonID = srgSupport.seedToRegonLookup[seedPixels[z][offset]];
+                    if (regonID < 1) {
+                        continue;
+                    }
+
+                    // Add seed to regionMarkers
+                    regionMarkerPixels[z][offset] = (byte) (regonID & 0xff);
+
+                    // Add seed to region info
+                    regionInfos[regonID].addPoint(new Point3DInt(x, y, z));
+                }
+            }
+        }
+    }
+
+
+    private void initializeCandidates() {
+        final long pixelsToProcess = (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
+
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final long progressIncrement = Math.max(pixelsToProcess / 100, 1);
+
+        for (int z = 0; z < zSize; ++z) {
+            for (int y = 0; y < ySize; ++y) {
+                for (int x = 0; x < xSize; ++x) {
+                    final int offset = x + y * xSize;
+                    final int regionId = regionMarkerPixels[z][offset];
+                    if (regionId == SRGSupport.BACKGROUND_MARK
+                            || regionId == SRGSupport.OUTSIDE_MARK
+                            || regionId == SRGSupport.CANDIDATE_MARK) {
+                        continue;
+                    }
+
+                    // Initialize SSL - ordered list of bordering at least one of the regions
+                    candidatesFromNeighbours(new Point3DInt(x, y, z));
+
+                    ++processedPixelCount;
+                    if (processedPixelCount % progressIncrement == 0) {
+                        assert processedPixelCount <= pixelsToProcess;
+                        final double progress = processedPixelCount / (double) pixelsToProcess;
+                        this.notifyProgressListeners(progress, NAME + " initializing...");
+
+                        logProgressDebugInfo(pixelsToProcess, progress);
+                    }
+                }
+            }
+        }
+    }
+
+
+    private void saveGrowHistory(final double progress) {
+        if (growHistoryEnabled && growHistoryDirectory != null) {
+            final long progressPerc = Math.round(progress * 100);
+            final File f = new File(growHistoryDirectory, String.format(GROW_HISTORY_FILE_FORMAT, progressPerc));
+            IJ.write(String.format("Saving growth history at %d%% to %s", progressPerc, f.getAbsolutePath()));
+            try {
+                final File parent = f.getParentFile();
+                if (parent.exists() || f.getParentFile().mkdirs()) {
+                    IOUtils.saveAsTiff(regionMarkers, f);
+                } else {
+                    throw new IOException("Cannot create grow history directory: " + f.getParentFile().getAbsolutePath());
+                }
+            } catch (final IOException e) {
+                IJ.write("Error saving grow history: " + e.getMessage());
+            }
+        }
+    }
+
+
+    private void logProgressDebugInfo(final long pixelsToProcess, final double progress) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(
+                String.format(
+                        "SRG3D.run - candidates: %,10d, processed: %,10d, remaining %,10d, [%3d%%] ",
+                        ssl.size(),
+                        processedPixelCount,
+                        (pixelsToProcess - processedPixelCount - ssl.size()),
+                        Math.round(progress * 100)));
+        for (final RegionInfo3D regionInfo : regionInfos) {
+            if (regionInfo != null) {
+                builder.append(String.format("(%,10.4f, %,8d)", regionInfo.mean(), regionInfo.pointCount()));
+            }
+        }
+        IJDebug.log(builder.toString());
+    }
+
+
     private void fillOutsideMask(final byte[][] pixels, final byte value) {
         if (mask != null) {
             for (int z = 0; z < zMax; ++z) {
@@ -379,7 +500,7 @@ public final class SRG3D extends DefaultProgressReporter {
                 continue;
 
             final RegionInfo3D regionInfo = regionInfos[regionID];
-            double sigma = Math.abs(value - regionInfo.mean());
+            final double sigma = Math.abs(value - regionInfo.mean());
             if (sigma < minSigma) {
                 minSigma = sigma;
                 mostSimilarRegionId = regionID;
@@ -468,29 +589,6 @@ public final class SRG3D extends DefaultProgressReporter {
     }
 
 
-//    private Pair<int[], Integer> createSeedToRegonLookup(final int[] histogram) {
-//
-//        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
-//        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
-//        int regionCount = 0;
-//        for (int seed = 1; seed < histogram.length; seed++) {
-//            if (histogram[seed] > 0) {
-//                if (seed > MAX_REGION_NUMBER) {
-//                    throw new IllegalArgumentException("Seed ID cannot be larger than " + MAX_REGION_NUMBER
-//                            + ", got " + seed + ".");
-//                }
-//
-//                regionCount++;
-//                seedToRegonLookup[seed] = regionCount;
-//                regionToSeedLooup[regionCount] = seed;
-//            }
-//
-//        }
-//
-//        return new Pair<int[], Integer>(regionToSeedLooup, regionCount);
-//    }
-
-
     private int[] histogram(final ImageStack stack) {
         final int[] hist = new ByteStatistics(stack.getProcessor(1)).histogram;
         for (int i = 2; i <= stack.getSize(); i++) {
@@ -552,6 +650,10 @@ public final class SRG3D extends DefaultProgressReporter {
             } else {
                 return sumIntensity / pointCount;
             }
+        }
+
+        public long pointCount() {
+            return pointCount;
         }
     }
 
