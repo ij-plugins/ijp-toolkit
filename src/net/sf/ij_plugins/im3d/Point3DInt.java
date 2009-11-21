@@ -34,22 +34,15 @@ final public class Point3DInt implements Comparable<Point3DInt> {
     /**
      * x coordinate.
      */
-    public int x;
+    public final int x;
     /**
      * y coordinate.
      */
-    public int y;
+    public final int y;
     /**
      * z coordinate.
      */
-    public int z;
-
-
-    /**
-     * Constructor for the Point3D object
-     */
-    public Point3DInt() {
-    }
+    public final int z;
 
 
     /**

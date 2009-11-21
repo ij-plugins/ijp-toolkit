@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,12 +35,11 @@ import net.sf.ij_plugins.im3d.Point3DInt;
  * images (stacks).
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @since July 14, 2002
  */
 
 public class ConnectedThresholdGrowerPlugin implements PlugIn {
-    private static Point3DInt seedPoint = new Point3DInt();
+    private static Point3DInt seedPoint = new Point3DInt(0, 0, 0);
     private static int valueMin;
     private static int valueMax;
 
@@ -99,9 +99,10 @@ public class ConnectedThresholdGrowerPlugin implements PlugIn {
             return false;
         }
 
-        seedPoint.x = (int) gd.getNextNumber();
-        seedPoint.y = (int) gd.getNextNumber();
-        seedPoint.z = (int) gd.getNextNumber();
+        final int x = (int) gd.getNextNumber();
+        final int y = (int) gd.getNextNumber();
+        final int z = (int) gd.getNextNumber();
+        seedPoint = new Point3DInt(x, y, z);
         valueMin = (int) gd.getNextNumber();
         valueMax = (int) gd.getNextNumber();
 
