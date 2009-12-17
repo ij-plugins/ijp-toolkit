@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.filters;
 
@@ -31,7 +31,7 @@ import ij.plugin.filter.PlugInFilterRunner;
 import ij.process.Blitter;
 import ij.process.ImageProcessor;
 
-import java.awt.AWTEvent;
+import java.awt.*;
 
 /**
  * @author Jarek Sacha
@@ -58,7 +58,7 @@ public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
         final long end = System.currentTimeMillis();
 
         if (IJ.debugMode) {
-            IJ.write("Median filtering completed in " + (end - start) + "ms.");
+            IJ.log("Median filtering completed in " + (end - start) + "ms.");
         }
     }
 

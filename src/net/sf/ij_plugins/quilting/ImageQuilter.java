@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.quilting;
 
 
@@ -92,10 +93,10 @@ public class ImageQuilter {
         patchcols++;
         patchrows++;
         if (okwidth != outwidth || okheight != outheight) {
-            IJ.write("Your output size requires partial patches that are currently not supported.");
+            IJ.log("Your output size requires partial patches that are currently not supported.");
             outwidth = okwidth;
             outheight = okheight;
-            IJ.write("Using width = " + outwidth + " and height = " + outheight + " instead.");
+            IJ.log("Using width = " + outwidth + " and height = " + outheight + " instead.");
         }
 
         // create the output image
@@ -157,7 +158,7 @@ public class ImageQuilter {
 
             currow++;
             if (IJ.debugMode) {
-                IJ.write("done with row " + currow + " / " + patchrows);
+                IJ.log("done with row " + currow + " / " + patchrows);
             }
 
         } while (outPatch.nextRow(overlapsize));

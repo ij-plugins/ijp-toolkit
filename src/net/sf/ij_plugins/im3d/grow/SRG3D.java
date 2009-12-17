@@ -423,7 +423,7 @@ public final class SRG3D extends DefaultProgressReporter {
         if (growHistoryEnabled && growHistoryDirectory != null) {
             final long progressPerc = Math.round(progress * 100);
             final File f = new File(growHistoryDirectory, String.format(GROW_HISTORY_FILE_FORMAT, progressPerc));
-            IJ.write(String.format("Saving growth history at %d%% to %s", progressPerc, f.getAbsolutePath()));
+            IJ.log(String.format("Saving growth history at %d%% to %s", progressPerc, f.getAbsolutePath()));
             try {
                 final File parent = f.getParentFile();
                 if (parent.exists() || f.getParentFile().mkdirs()) {
@@ -432,7 +432,7 @@ public final class SRG3D extends DefaultProgressReporter {
                     throw new IOException("Cannot create grow history directory: " + f.getParentFile().getAbsolutePath());
                 }
             } catch (final IOException e) {
-                IJ.write("Error saving grow history: " + e.getMessage());
+                IJ.log("Error saving grow history: " + e.getMessage());
             }
         }
     }

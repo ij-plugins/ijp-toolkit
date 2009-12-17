@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,7 +27,7 @@ import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.Random;
 
 /**
@@ -159,14 +160,14 @@ public final class KMeans {
 
 
     private void printClusters(final String message) {
-        IJ.write(message);
+        IJ.log(message);
         for (final float[] clusterCenter : clusterCenters) {
             final StringBuffer buffer = new StringBuffer("  (");
             for (final float vv : clusterCenter) {
                 buffer.append(" ").append(vv).append(" ");
             }
             buffer.append(")");
-            IJ.write(buffer.toString());
+            IJ.log(buffer.toString());
         }
     }
 

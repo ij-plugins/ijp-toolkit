@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2004-2008 Jarek Sacha
+ * Copyright (C) 2002-2009 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -147,11 +148,11 @@ public class ImageQuilterPlugin implements PlugInFilter {
 
         synther.setPreviewImage(previewImp);
 
-        IJ.write("Quilting started at " + new java.util.Date());
+        IJ.log("Quilting started at " + new java.util.Date());
 
         ImageProcessor output = synther.synthesize(config.width, config.height);
 
-        IJ.write("Quilting ended at " + new java.util.Date());
+        IJ.log("Quilting ended at " + new java.util.Date());
 
         return output;
     }
