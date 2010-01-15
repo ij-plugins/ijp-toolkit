@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
+
 package net.sf.ij_plugins.ui;
 
 import javax.swing.*;
@@ -30,14 +31,13 @@ import java.awt.event.KeyEvent;
 /**
  * Demo of using {@link GlassPane}.
  * Based on example by Alexander Potochkin
- * http://weblogs.java.net/blog/alexfromsun/archive/2007/06/_enablingdisabl_1.html
+ * http://weblogs.java.net/blog/alexfromsun/archive/2006/09/a_wellbehaved_g.html
  *
  * @author Jarek Sacha
  * @since Nov 15, 2008 8:09:11 AM
  */
 public final class GlassPaneDemo extends JFrame {
 
-    private final JComponent glassPane = new GlassPane();
     private static final long serialVersionUID = 1L;
 
 
@@ -54,11 +54,6 @@ public final class GlassPaneDemo extends JFrame {
                 } else {
                     getGlassPane().setVisible(false);
                 }
-
-                // Request focus to the better GlassPane
-                if (glassPane.isShowing()) {
-                    glassPane.requestFocusInWindow();
-                }
             }
         });
 
@@ -66,7 +61,7 @@ public final class GlassPaneDemo extends JFrame {
         bar.add(menu);
         setJMenuBar(bar);
 
-        setGlassPane(glassPane);
+        setGlassPane(new GlassPane());
 
         add(createPanel());
         setSize(250, 250);
@@ -76,7 +71,7 @@ public final class GlassPaneDemo extends JFrame {
 
     private JComponent createPanel() {
         final JPanel panel = new JPanel();
-        panel.add(new JLabel("<html><em>Press Ctrl-D to togle glass pane</em></html>"));
+        panel.add(new JLabel("<html><em>Press Ctrl-D to toggle glass pane</em></html>"));
         panel.add(new JCheckBox("JCheckBox"));
         panel.add(new JRadioButton("JRadioButton"));
         panel.add(new JTextField(15));
