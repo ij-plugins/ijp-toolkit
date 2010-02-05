@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,11 +28,13 @@ import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.Point3DInt;
 import net.sf.ij_plugins.io.IOUtils;
 import org.junit.Assert;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+
+import static org.junit.Assert.assertNotNull;
+
 
 /**
  * @author Jarek Sacha
@@ -41,7 +43,7 @@ import java.io.File;
 public final class SRG3DTest {
 
 
-    @Ignore("Testing result expected pixel by pixel will fail since original SGR algotithm is abigius on borders.")
+    @Ignore("Testing result expected pixel by pixel will fail since original SGR algorithm is ambiguous on borders.")
     @Test
     public void test1() throws Exception {
 
@@ -62,8 +64,12 @@ public final class SRG3DTest {
         final SRG3D srg = new SRG3D();
         srg.setImage(imageStack);
         srg.setSeeds(SRG3D.toSeedImage(seeds, xMax, yMax, zMax));
+        final long startTime = System.currentTimeMillis();
         srg.run();
+        final long endTime = System.currentTimeMillis();
         final ImageStack markers = srg.getRegionMarkers();
+
+        System.out.println("Run time: " + (endTime - startTime) + "ms.");
 
         IOUtils.saveAsTiff(imageStack, new File("tmp", "SRG_source.tif"));
         IOUtils.saveAsTiff(markers, new File("tmp", "SRG_markers.tif"));
