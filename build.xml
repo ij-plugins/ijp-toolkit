@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Image/J Plugins
-  ~ Copyright (C) 2002-2009 Jarek Sacha
+  ~ Copyright (C) 2002-2010 Jarek Sacha
   ~ Author's email: jsacha at users dot sourceforge dot net
   ~
   ~ This library is free software; you can redistribute it and/or
@@ -110,7 +110,6 @@
             <include name="**/commons-logging-*.jar"/>
         </fileset>
 
-
         <!-- SVN setup -->
         <property name="svn.repository" value="https://ij-plugins.svn.sourceforge.net/svnroot/ij-plugins"/>
         <property name="svn.module" value="ij-plugins"/>
@@ -150,6 +149,7 @@
         </copy>
     </target>
 
+
     <target name="jar-all" depends="jar"
             description="Create plugins' JAR with all dependencies">
 
@@ -164,6 +164,7 @@
             </manifest>
         </jar>
     </target>
+
 
     <!-- Build distribution from current content of SVN -->
     <target name="dist-from-svn" depends="init" description="Distribution from SVN">
@@ -205,7 +206,6 @@
             <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
         </ant>
 
-
         <!-- ................................................... -->
         <!-- Binary distribution from actual distribution source -->
         <!-- ................................................... -->
@@ -219,7 +219,6 @@
         <!--<property name="svnant.lib.dir" location="${svnant.lib.dir}"/>-->
         <!--</ant>-->
 
-
         <!-- ZIP binaries -->
         <zip basedir="${dist.dir}"
              includes="${package.name}.jar"
@@ -228,6 +227,20 @@
         <!--<zip basedir="${base.dir}/dist"-->
         <!--includes="${package.name}-nodep.jar"-->
         <!--destfile="${dist.dir}/${package.name}-nodep_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>-->
+
+        <!-- ................................................... -->
+        <!-- Binary distribution from actual distribution source -->
+        <!-- ................................................... -->
+        <ant antfile="${svn.dir}/build.xml" target="javadoc" inheritall="false">
+            <property name="dist.javadoc.dir" location="${dist.dir}/javadoc"/>
+            <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
+        </ant>
+
+        <!-- ZIP javadoc -->
+        <zip basedir="${dist.dir}/javadoc"
+             includes="*"
+             destfile="${dist.dir}/${package.name}_javadoc_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
+
     </target>
 
     <!-- Checkout sources from SVN repository -->
@@ -249,6 +262,5 @@
             <arg value="${svn.dir}"/>
         </exec>
     </target>
-
 
 </project>
