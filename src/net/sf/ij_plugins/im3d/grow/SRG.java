@@ -338,7 +338,7 @@ public final class SRG extends DefaultProgressReporter {
      * <ol>
      * <li>Argument {@code seeds} cannot be {@code link} null.</li>
      * <li>There must be at least 2 regions.</li>
-     * <li>There must be at most {@value SRGSupport#MAX_REGION_NUMBER} regions.</li>
+     * <li>There must be at most 253 regions.</li>
      * <li>Each region has to have at least one seed point.</li>
      * <li>All seed points have to be unique.</li>
      * </ol>
