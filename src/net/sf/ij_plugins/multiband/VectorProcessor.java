@@ -33,6 +33,7 @@ import net.sf.ij_plugins.util.Validate;
 
 import java.awt.*;
 
+
 /**
  * Represents vector valued image. Value at each pixel in the image is a vector of floating point
  * numbers.
@@ -40,6 +41,7 @@ import java.awt.*;
  * @author Jarek Sacha
  */
 public class VectorProcessor {
+
     private final int width;
     private final int height;
     private final int numberOfValues;
@@ -57,13 +59,16 @@ public class VectorProcessor {
         roi = new Rectangle(0, 0, width, height);
     }
 
+
     public VectorProcessor(final ColorProcessor cp) {
         this(new ImagePlus("", cp));
     }
 
+
     public VectorProcessor(final ImagePlus imp) {
         this(convertToFloatStack(imp));
     }
+
 
     /**
      * @param stack a stack of {@link FloatProcessor}s.
@@ -89,6 +94,7 @@ public class VectorProcessor {
         return width;
     }
 
+
     /**
      * @return height of the image.
      */
@@ -96,12 +102,14 @@ public class VectorProcessor {
         return height;
     }
 
+
     /**
      * @return number of values at each pixel in the image.
      */
     public int getNumberOfValues() {
         return numberOfValues;
     }
+
 
     /**
      * Gives direct access to pixel values in the image first index is the pixel number (between 0
@@ -113,12 +121,14 @@ public class VectorProcessor {
         return pixels;
     }
 
+
     /**
      * @return region of interest within the image.
      */
     public Rectangle getRoi() {
         return roi;
     }
+
 
     /**
      * @param roi new ROI.
@@ -128,13 +138,16 @@ public class VectorProcessor {
         this.roi = roi;
     }
 
+
     public ProgressBar getProgressBar() {
         return progressBar;
     }
 
+
     public void setProgressBar(final ProgressBar progressBar) {
         this.progressBar = progressBar;
     }
+
 
     /**
      * @return pixel value iterator.
@@ -143,6 +156,7 @@ public class VectorProcessor {
         return new VectorProcessor.PixelIterator();
     }
 
+
     /**
      * @return pixel value iterator.
      */
@@ -150,23 +164,43 @@ public class VectorProcessor {
         return new VectorProcessor.Iterator();
     }
 
+
     /**
-     * Convert VectorProcessor to FloatProcessor stack
+     * Convert VectorProcessor to an array of {@link FloatProcessor}'s.
      *
-     * @return ImagePlus representation of this object.
+     * @return this VectorProcessor represented as an array of {@link FloatProcessor}'s
+     * @see #toFloatStack()
      */
-    public ImagePlus toFloatStack() {
-        final ImageStack stack = new ImageStack(width, height);
+    public FloatProcessor[] toFloatProcessors() {
+        final FloatProcessor[] r = new FloatProcessor[numberOfValues];
         for (int i = 0; i < numberOfValues; ++i) {
-            FloatProcessor fp = new FloatProcessor(width, height);
+            final FloatProcessor fp = new FloatProcessor(width, height);
             final float[] values = (float[]) fp.getPixels();
             for (int j = 0; j < values.length; j++) {
                 values[j] = pixels[j][i];
             }
-            stack.addSlice("band " + 0, fp);
+            r[i] = fp;
+        }
+
+        return r;
+    }
+
+
+    /**
+     * Convert VectorProcessor to ImagePlus with FloatProcessor stack.
+     *
+     * @return ImagePlus representation of this object.
+     * @see #toFloatProcessors()
+     */
+    public ImagePlus toFloatStack() {
+        final ImageStack stack = new ImageStack(width, height);
+        final FloatProcessor[] fps = toFloatProcessors();
+        for (int i = 0; i < fps.length; i++) {
+            stack.addSlice("band " + i, fps[i]);
         }
         return new ImagePlus("From VectorProcessor", stack);
     }
+
 
     private static ImageStack convertToFloatStack(final ImagePlus src) {
         // TODO: remove duplicate method in KMeansClusteringPlugin
@@ -205,12 +239,14 @@ public class VectorProcessor {
         }
     }
 
+
     private static ImagePlus duplicate(final ImagePlus imp) {
         // TODO: remove duplicate method in KMeansClusteringPlugin
         final Duplicater duplicater = new Duplicater();
         duplicater.setup(null, imp);
         return duplicater.duplicateStack(imp, imp.getTitle() + "-duplicate");
     }
+
 
     /**
      * Return pixel value at coordinates (<code>x</code>, <code>y</code>).
@@ -238,6 +274,7 @@ public class VectorProcessor {
         return dest;
     }
 
+
     /**
      * Set value of pixel value at coordinates (<code>x</code>, <code>y</code>).
      *
@@ -258,6 +295,7 @@ public class VectorProcessor {
         final float[] s = pixels[offset];
         System.arraycopy(v, 0, s, 0, v.length);
     }
+
 
     public VectorProcessor duplicate() {
         final VectorProcessor r = new VectorProcessor(this.width, this.height, this.numberOfValues);
@@ -280,6 +318,7 @@ public class VectorProcessor {
      * <code>p7</code> to <code>p9</code> in the bottom of the neighborhood.
      */
     public static class Neighborhood3x3 {
+
         float[] p1,
                 p2,
                 p3,
@@ -294,10 +333,12 @@ public class VectorProcessor {
                 offset;
     }
 
+
     /**
      * Iterator over pixel values.
      */
     public class PixelIterator implements java.util.Iterator<float[]> {
+
         final int xMin = roi.x;
         final int xMax1 = roi.x + roi.width - 1;
         final int rowOffset = width;
@@ -306,8 +347,10 @@ public class VectorProcessor {
         int x = roi.x - 1;
         int y = roi.y;
 
+
         private PixelIterator() {
         }
+
 
         public int getX() {
             if (x < xMin || x > xMax1) {
@@ -316,6 +359,7 @@ public class VectorProcessor {
             return x;
         }
 
+
         public int getY() {
             if (y < yMin || y > yMax1) {
                 throw new IllegalStateException("Illegal value of y, " + y + ".");
@@ -323,9 +367,11 @@ public class VectorProcessor {
             return y;
         }
 
+
         public boolean hasNext() {
             return x < xMax1 || y < yMax1;
         }
+
 
         public float[] next() {
             // Update center location
@@ -346,12 +392,14 @@ public class VectorProcessor {
             return pixels[offset];
         }
 
+
         /**
          * Not supported.
          */
         public void remove() {
             throw new UnsupportedOperationException("Method remove() not supported.");
         }
+
 
         public int getOffset() {
             return x + y * width;
@@ -363,6 +411,7 @@ public class VectorProcessor {
      * Iterator over 3x3 neighborhood of vector valued pixels.
      */
     public class Iterator implements java.util.Iterator<Neighborhood3x3> {
+
         final int xMin = Math.max(roi.x, 1);
         final int xMax = Math.min(roi.x + roi.width, width - 1) - 1;
         final int rowOffset = width;
@@ -372,12 +421,15 @@ public class VectorProcessor {
         int y = yMin;
         final Neighborhood3x3 neighborhood3x3 = new Neighborhood3x3();
 
+
         private Iterator() {
         }
+
 
         public boolean hasNext() {
             return x < xMax || y < yMax;
         }
+
 
         public Neighborhood3x3 next() {
             // Update center location
@@ -413,6 +465,7 @@ public class VectorProcessor {
 
             return neighborhood3x3;
         }
+
 
         /**
          * Not supported.
