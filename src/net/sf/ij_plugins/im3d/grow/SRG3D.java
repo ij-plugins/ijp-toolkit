@@ -158,7 +158,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
     final SRGSupport srgSupport = new SRGSupport();
 
-    private static final String GROW_HISTORY_FILE_FORMAT = "SRG_markers_%03d.tif";
+    public static final String GROW_HISTORY_FILE_FORMAT = "SRG_markers_%03d.tif";
 
 
     /**
@@ -304,7 +304,7 @@ public final class SRG3D extends DefaultProgressReporter {
      * <ol>
      * <li>Argument {@code seeds} cannot be {@code link} null.</li>
      * <li>There must be at least 2 regions.</li>
-     * <li>There must be at most {@value SRGSupport#MAX_REGION_NUMBER} regions.</li>
+     * <li>There must be at most 253 regions.</li>
      * <li>Each region has to have at least one seed point.</li>
      * <li>All seed points have to be unique.</li>
      * </ol>
@@ -583,7 +583,7 @@ public final class SRG3D extends DefaultProgressReporter {
         }
 
         // Create candidate list and define rules for ordering of its elements
-        ssl = new TreeSet<Candidate3D>();
+            ssl = new TreeSet<Candidate3D>();
 
         // Mark pixels outside of the mask
         fillOutsideMask(regionMarkerPixels, SRGSupport.OUTSIDE_MARK);
