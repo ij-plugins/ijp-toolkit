@@ -156,7 +156,7 @@ public final class SRG3D extends DefaultProgressReporter {
     private RegionInfo3D[] regionInfos;
     private long processedPixelCount;
 
-    final SRGSupport srgSupport = new SRGSupport();
+    private final SRGSupport srgSupport = new SRGSupport();
 
     public static final String GROW_HISTORY_FILE_FORMAT = "SRG_markers_%03d.tif";
 
@@ -203,7 +203,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
     /**
      * Enable saving of images containing grow markers.
-     * Output directory has to be selecified using {@link #setGrowHistoryDirectory(java.io.File)} .
+     * Output directory has to be selected using {@link #setGrowHistoryDirectory(java.io.File)} .
      *
      * @param growHistoryEnabled if {@code true} saving is enabled.
      */
@@ -220,7 +220,7 @@ public final class SRG3D extends DefaultProgressReporter {
     /**
      * Directory where to save marker history growth. Format of each file name is: {@value #GROW_HISTORY_FILE_FORMAT}.
      *
-     * @param growHistoryDirectory grow whistory directory.
+     * @param growHistoryDirectory grow history directory.
      * @see #setGrowHistoryEnabled(boolean)
      */
     public void setGrowHistoryDirectory(final File growHistoryDirectory) {
@@ -240,7 +240,7 @@ public final class SRG3D extends DefaultProgressReporter {
         initializeStructures();
 
         // Initialize markers and create initial region info
-        initializeMargersAndRegionInfo();
+        initializeMarkersAndRegionInfo();
 
         // Initialize candidates
         initializeCandidates();
@@ -360,7 +360,7 @@ public final class SRG3D extends DefaultProgressReporter {
     }
 
 
-    private void initializeMargersAndRegionInfo() {
+    private void initializeMarkersAndRegionInfo() {
         for (int z = 0; z < zSize; ++z) {
             for (int y = 0; y < ySize; ++y) {
                 for (int x = 0; x < xSize; ++x) {
@@ -369,16 +369,16 @@ public final class SRG3D extends DefaultProgressReporter {
                         continue;
                     }
 
-                    final int regonID = srgSupport.seedToRegonLookup[seedPixels[z][offset]];
-                    if (regonID < 1) {
+                    final int regionID = srgSupport.seedToRegonLookup[seedPixels[z][offset]];
+                    if (regionID < 1) {
                         continue;
                     }
 
                     // Add seed to regionMarkers
-                    regionMarkerPixels[z][offset] = (byte) (regonID & 0xff);
+                    regionMarkerPixels[z][offset] = (byte) (regionID & 0xff);
 
                     // Add seed to region info
-                    regionInfos[regonID].addPoint(new Point3DInt(x, y, z));
+                    regionInfos[regionID].addPoint(new Point3DInt(x, y, z));
                 }
             }
         }
@@ -573,13 +573,13 @@ public final class SRG3D extends DefaultProgressReporter {
         regionMarkers.setColorModel(seeds.getColorModel());
 
         final Pair<int[], Integer> p = srgSupport.createSeedToRegonLookup(histogram(seeds));
-        final int[] regionToSeedLooup = p.getFirst();
+        final int[] regionToSeedLookup = p.getFirst();
         final int regionCount = p.getSecond();
 
         // Initialize region info structures
         regionInfos = new RegionInfo3D[regionCount + 1];
         for (int i = 1; i < regionInfos.length; i++) {
-            regionInfos[i] = new RegionInfo3D(image, regionToSeedLooup[i]);
+            regionInfos[i] = new RegionInfo3D(image, regionToSeedLookup[i]);
         }
 
         // Create candidate list and define rules for ordering of its elements
