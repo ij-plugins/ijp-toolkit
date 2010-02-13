@@ -18,59 +18,70 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="regionLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="roiLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="roiLabel" max="32767" attributes="1"/>
+                  <Component id="regionLabel" alignment="0" max="32767" attributes="1"/>
               </Group>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="regionScrollPane" pref="270" max="32767" attributes="2"/>
-                  <Component id="subRegionScrollPane" alignment="1" pref="270" max="32767" attributes="2"/>
+                  <Component id="regionScrollPane" pref="192" max="32767" attributes="2"/>
+                  <Component id="subRegionScrollPane" alignment="1" pref="192" max="32767" attributes="2"/>
               </Group>
-              <EmptySpace pref="10" max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="jSeparator1" max="32767" attributes="1"/>
-                  <Component id="addRegionButton" alignment="0" pref="127" max="32767" attributes="1"/>
-                  <Component id="removeRegionButton" alignment="0" pref="127" max="32767" attributes="1"/>
-                  <Component id="removeROIButton" alignment="0" pref="127" max="32767" attributes="1"/>
-                  <Component id="addROIButton" alignment="0" pref="127" max="32767" attributes="1"/>
-                  <Component id="redrawOverlaysButton" alignment="1" max="32767" attributes="1"/>
-                  <Component id="removeOverlayButton" alignment="1" max="32767" attributes="1"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                          <Component id="addRegionButton" linkSize="1" alignment="1" min="-2" pref="133" max="-2" attributes="1"/>
+                          <Component id="removeRegionButton" linkSize="1" alignment="1" min="-2" pref="133" max="-2" attributes="1"/>
+                          <Component id="redrawOverlaysButton" linkSize="1" alignment="1" min="-2" max="-2" attributes="1"/>
+                          <Component id="removeOverlayButton" linkSize="1" alignment="1" min="-2" max="-2" attributes="1"/>
+                      </Group>
+                      <Component id="jSeparator1" linkSize="1" alignment="1" min="-2" pref="133" max="-2" attributes="1"/>
+                  </Group>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="addROIButton" linkSize="1" alignment="1" min="-2" max="-2" attributes="1"/>
+                      <Component id="removeROIButton" linkSize="1" alignment="1" min="-2" pref="133" max="-2" attributes="1"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="regionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="regionScrollPane" pref="123" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="addRegionButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="removeRegionButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="regionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="regionScrollPane" pref="127" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="roiLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="addROIButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="removeROIButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <Component id="removeROIButton" min="-2" pref="25" max="-2" attributes="0"/>
+                      <EmptySpace pref="9" max="32767" attributes="0"/>
                       <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="redrawOverlaysButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="removeOverlayButton" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="subRegionScrollPane" pref="133" max="32767" attributes="0"/>
+                  <Component id="subRegionScrollPane" alignment="0" pref="137" max="32767" attributes="0"/>
+                  <Component id="roiLabel" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -123,8 +134,12 @@
     </Container>
     <Component class="javax.swing.JButton" name="addRegionButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/net/sf/ij_plugins/ui/multiregion/edit_add.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Add Region"/>
         <Property name="toolTipText" type="java.lang.String" value="Add new region (a collection of ROIs)."/>
+        <Property name="horizontalAlignment" type="int" value="10"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(model.createNewRegionAction())"/>
@@ -132,8 +147,12 @@
     </Component>
     <Component class="javax.swing.JButton" name="addROIButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/net/sf/ij_plugins/ui/multiregion/edit_add.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Add Current ROI"/>
         <Property name="toolTipText" type="java.lang.String" value="Add ROI from current image to selected region."/>
+        <Property name="horizontalAlignment" type="int" value="10"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(model.createAddCurrentROIAction())"/>
@@ -141,8 +160,12 @@
     </Component>
     <Component class="javax.swing.JButton" name="removeRegionButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/net/sf/ij_plugins/ui/multiregion/edit_remove.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Remove Region"/>
         <Property name="toolTipText" type="java.lang.String" value="Remove region selected in the list."/>
+        <Property name="horizontalAlignment" type="int" value="10"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(model.createRemoveRegionAction())"/>
@@ -150,8 +173,12 @@
     </Component>
     <Component class="javax.swing.JButton" name="removeROIButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/net/sf/ij_plugins/ui/multiregion/edit_remove.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Remove ROI"/>
         <Property name="toolTipText" type="java.lang.String" value="Remove ROI selected in the list."/>
+        <Property name="horizontalAlignment" type="int" value="10"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(model.createRemoveSubRegionAction())"/>
@@ -164,13 +191,19 @@
     </Component>
     <Component class="javax.swing.JLabel" name="roiLabel">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
         <Property name="text" type="java.lang.String" value="ROIs"/>
+        <Property name="horizontalTextPosition" type="int" value="4"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="redrawOverlaysButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/net/sf/ij_plugins/ui/multiregion/reload.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Redraw Overlays"/>
         <Property name="toolTipText" type="java.lang.String" value="Draw ROIs overlay on current image"/>
+        <Property name="horizontalAlignment" type="int" value="10"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(model.createRedrawOverlaysAction())"/>
@@ -178,8 +211,12 @@
     </Component>
     <Component class="javax.swing.JButton" name="removeOverlayButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/net/sf/ij_plugins/ui/multiregion/delete.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Remove Overlays"/>
         <Property name="toolTipText" type="java.lang.String" value="Remove overlays from the current image, if any."/>
+        <Property name="horizontalAlignment" type="int" value="10"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JButton(model.createRemoveOverlaysAction())"/>

@@ -121,78 +121,101 @@ public class MultiRegionManagerView extends JPanel {
         subRegionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         subRegionScrollPane.setViewportView(subRegionList);
 
+        addRegionButton.setIcon(new ImageIcon(getClass().getResource("/net/sf/ij_plugins/ui/multiregion/edit_add.png"))); // NOI18N
         addRegionButton.setText("Add Region");
         addRegionButton.setToolTipText("Add new region (a collection of ROIs).");
+        addRegionButton.setHorizontalAlignment(SwingConstants.LEADING);
 
+        addROIButton.setIcon(new ImageIcon(getClass().getResource("/net/sf/ij_plugins/ui/multiregion/edit_add.png"))); // NOI18N
         addROIButton.setText("Add Current ROI");
         addROIButton.setToolTipText("Add ROI from current image to selected region.");
+        addROIButton.setHorizontalAlignment(SwingConstants.LEADING);
 
+        removeRegionButton.setIcon(new ImageIcon(getClass().getResource("/net/sf/ij_plugins/ui/multiregion/edit_remove.png"))); // NOI18N
         removeRegionButton.setText("Remove Region");
         removeRegionButton.setToolTipText("Remove region selected in the list.");
+        removeRegionButton.setHorizontalAlignment(SwingConstants.LEADING);
 
+        removeROIButton.setIcon(new ImageIcon(getClass().getResource("/net/sf/ij_plugins/ui/multiregion/edit_remove.png"))); // NOI18N
         removeROIButton.setText("Remove ROI");
         removeROIButton.setToolTipText("Remove ROI selected in the list.");
+        removeROIButton.setHorizontalAlignment(SwingConstants.LEADING);
 
         regionLabel.setText("Regions");
 
+        roiLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         roiLabel.setText("ROIs");
+        roiLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
 
+        redrawOverlaysButton.setIcon(new ImageIcon(getClass().getResource("/net/sf/ij_plugins/ui/multiregion/reload.png"))); // NOI18N
         redrawOverlaysButton.setText("Redraw Overlays");
         redrawOverlaysButton.setToolTipText("Draw ROIs overlay on current image");
+        redrawOverlaysButton.setHorizontalAlignment(SwingConstants.LEADING);
 
+        removeOverlayButton.setIcon(new ImageIcon(getClass().getResource("/net/sf/ij_plugins/ui/multiregion/delete.png"))); // NOI18N
         removeOverlayButton.setText("Remove Overlays");
         removeOverlayButton.setToolTipText("Remove overlays from the current image, if any.");
+        removeOverlayButton.setHorizontalAlignment(SwingConstants.LEADING);
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+            layout.createParallelGroup(Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+                    .addComponent(roiLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(regionLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(Alignment.TRAILING)
+                    .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                    .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(regionLabel)
-                                .addComponent(roiLabel))
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
-                                .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
-                        .addPreferredGap(ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-                                .addComponent(jSeparator1)
-                                .addComponent(addRegionButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .addComponent(removeRegionButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .addComponent(removeROIButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .addComponent(addROIButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
-                                .addComponent(redrawOverlaysButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(removeOverlayButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
+                            .addComponent(addRegionButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(removeRegionButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(redrawOverlaysButton, Alignment.TRAILING)
+                            .addComponent(removeOverlayButton, Alignment.TRAILING))
+                        .addComponent(jSeparator1, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                        .addComponent(addROIButton, Alignment.TRAILING)
+                        .addComponent(removeROIButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
+
+        layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {addROIButton, addRegionButton, jSeparator1, redrawOverlaysButton, removeOverlayButton, removeROIButton, removeRegionButton});
+
         layout.setVerticalGroup(
-                layout.createParallelGroup(Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+            layout.createParallelGroup(Alignment.LEADING)
+            .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(addRegionButton)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(removeRegionButton))
-                                .addComponent(regionLabel)
-                                .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                            .addComponent(regionLabel)
+                            .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
+                        .addPreferredGap(ComponentPlacement.RELATED))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addRegionButton)
                         .addPreferredGap(ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(roiLabel)
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(addROIButton)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(removeROIButton)
-                                        .addPreferredGap(ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                                        .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(redrawOverlaysButton)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(removeOverlayButton))
-                                .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
-                        .addContainerGap())
+                        .addComponent(removeRegionButton)
+                        .addGap(73, 73, 73)))
+                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                    .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(addROIButton)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(removeROIButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(redrawOverlaysButton)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(removeOverlayButton))
+                    .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                    .addComponent(roiLabel))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
