@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -30,30 +30,39 @@ import net.sf.ij_plugins.util.Validate;
 import net.sf.ij_plugins.util.progress.ProgressEvent;
 import net.sf.ij_plugins.util.progress.ProgressListener;
 
+
 /**
  * Basic color space conversion utilities, assuming two degree observer and illuminant D65.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.7 $
  */
 public final class ColorSpaceConvertion {
-    private static final double X_D65 = 0.950467;
+
+    // D65 white point values from Chromatic Adaptation table at http://www.brucelindbloom.com/Eqn_ChromAdapt.html
+    private static final double X_D65 = 0.95047;
     private static final double Y_D65 = 1.0000;
-    private static final double Z_D65 = 1.088969;
+    private static final double Z_D65 = 1.08883;
+
+
+    // Coefficients from http://www.brucelindbloom.com/Eqn_XYZ_to_Lab.html
     private static final double CIE_EPSILON = 0.008856;
     private static final double CIE_KAPPA = 903.3;
     private static final double CIE_KAPPA_EPSILON = CIE_EPSILON * CIE_KAPPA;
 
+
     private ColorSpaceConvertion() {
     }
 
+
     /**
+     * XYZ to sRGB conversion based on conversion coefficients at: http://www.brucelindbloom.com/Eqn_XYZ_to_RGB.html
+     * <p/>
      * Conversion from CIE XYZ to sRGB as defined in the IEC 619602-1 standard
      * (http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf)
      * <pre>
-     * r_linear = +3.2406 * X - 1.5372 * Y - 0.4986 * Z;
-     * g_linear = -0.9689 * X + 1.8758 * Y + 0.0415 * Z;
-     * b_linear = +0.0557 * X - 0.2040 * Y + 1.0570 * Z;
+     * r_linear = +3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z;
+     * g_linear = -0.9692660 * X + 1.8760108 * Y + 0.0415560 * Z;
+     * b_linear = +0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z;
      * r = r_linear > 0.0031308
      *       ? 1.055 * Math.pow(r_linear, (1 / 2.4)) - 0.055
      *       : 12.92 * r_linear;
@@ -76,10 +85,9 @@ public final class ColorSpaceConvertion {
         final double y = xyz[1];
         final double z = xyz[2];
 
-        //  http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf
-        final double r_linear = +3.2406 * x - 1.5372 * y - 0.4986 * z;
-        final double g_linear = -0.9689 * x + 1.8758 * y + 0.0415 * z;
-        final double b_linear = +0.0557 * x - 0.2040 * y + 1.0570 * z;
+        final double r_linear = +3.2404542 * x - 1.5371385 * y - 0.4985314 * z;
+        final double g_linear = -0.9692660 * x + 1.8760108 * y + 0.0415560 * z;
+        final double b_linear = +0.0556434 * x - 0.2040259 * y + 1.0572252 * z;
 
         final double r = r_linear > 0.0031308
                 ? 1.055 * Math.pow(r_linear, (1 / 2.4)) - 0.055
@@ -97,6 +105,7 @@ public final class ColorSpaceConvertion {
         rgb[1] = (float) (g * 255);
         rgb[2] = (float) (b * 255);
     }
+
 
     /**
      * Conversion from  CIE L*a*b* to CIE XYZ assuming Observer. = 2°, Illuminant = D65.
@@ -140,8 +149,10 @@ public final class ColorSpaceConvertion {
 
 
     /**
-     * Conversion from sRGB to CIE XYZ  as defined in the IEC 619602-1 standard
-     * (http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf)
+     * sRGB to XYZ conversion based on conversion coefficients at:  http://www.brucelindbloom.com/Eqn_RGB_to_XYZ.html
+     * <br>
+     * See also conversion from sRGB to CIE XYZ  as defined in the IEC 619602-1 standard
+     * (http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf), though it uses approximated coefficients.
      * <pre>
      * r = R / 255;
      * g = G / 255;
@@ -155,9 +166,9 @@ public final class ColorSpaceConvertion {
      * b_linear = b > 0.04045
      *          ? Math.pow((b + 0.055) / 1.055, 2.4)
      *          : b / 12.92;
-     * X = 0.4124 * r_linear + 0.3576 * g_linear + 0.1805 * b_linear;
-     * Y = 0.2126 * r_linear + 0.7152 * g_linear + 0.0722 * b_linear;
-     * Z = 0.0193 * r_linear + 0.1192 * g_linear + 0.9505 * b_linear;
+     * X = 0.4124564 * r_linear + 0.3575761 * g_linear + 0.1804375 * b_linear;
+     * Y = 0.2126729 * r_linear + 0.7151522 * g_linear + 0.0721750 * b_linear;
+     * Z = 0.0193339 * r_linear + 0.1191920 * g_linear + 0.9503041 * b_linear;
      * </pre>
      *
      * @param rgb source sRGB values. Size of array <code>rgb</code> must be at least 3. If size of
@@ -183,23 +194,23 @@ public final class ColorSpaceConvertion {
                 ? Math.pow((b + 0.055) / 1.055, 2.4)
                 : b / 12.92;
 
-        final double x = 0.4124 * r_linear + 0.3576 * g_linear + 0.1805 * b_linear;
-        final double y = 0.2126 * r_linear + 0.7152 * g_linear + 0.0722 * b_linear;
-        final double z = 0.0193 * r_linear + 0.1192 * g_linear + 0.9505 * b_linear;
+        final double x = 0.4124564 * r_linear + 0.3575761 * g_linear + 0.1804375 * b_linear;
+        final double y = 0.2126729 * r_linear + 0.7151522 * g_linear + 0.0721750 * b_linear;
+        final double z = 0.0193339 * r_linear + 0.1191920 * g_linear + 0.9503041 * b_linear;
 
         xyz[0] = (float) x;
         xyz[1] = (float) y;
         xyz[2] = (float) z;
     }
 
+
     /**
-     * /**
      * Conversion from  CIE XYZ to CIE L*a*b* assuming Observer. = 2°, Illuminant = D65.
      * Conversion based on formulas provided at http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
      *
      * @param xyz source CIE XYZ values. Size of array <code>xyz</code> must be at least 3. If size of
      *            array <code>xyz</code> larger than three then only first 3 values are used.
-     * @param lab destinaltion CIE L*a*b* values. Size of array <code>lab</code> must be at least 3.
+     * @param lab destination CIE L*a*b* values. Size of array <code>lab</code> must be at least 3.
      *            If size of array <code>lab</code> larger than three then only first 3 values are
      *            used.
      */
@@ -225,15 +236,15 @@ public final class ColorSpaceConvertion {
         lab[2] = (float) (200 * (fy - fz));
     }
 
+
     /**
      * Convert between RGB and CIE L*a*b* color image representation.
      *
      * @param cp RGB image to be converted
      * @return CIE L*a*b* image represented by {@link VectorProcessor}.
      */
-    public static VectorProcessor rgbToLabVectorProcessor
-            (
-                    final ColorProcessor cp) {
+    public static VectorProcessor rgbToLabVectorProcessor(final ColorProcessor cp) {
+
         final VectorProcessor vp = new VectorProcessor(cp);
         final float[][] pixels = vp.getPixels();
         final float[] tmp = new float[3];
@@ -252,6 +263,7 @@ public final class ColorSpaceConvertion {
 
         return vp;
     }
+
 
     /**
      * Convert between sRGB and XYZ color image representation.
@@ -321,6 +333,7 @@ public final class ColorSpaceConvertion {
 
         return cp;
     }
+
 
     /**
      * Convert between XYZ and RGB color image representation.
@@ -401,6 +414,7 @@ public final class ColorSpaceConvertion {
         ybr[1] = (byte) (0xff & Math.min(Math.max(Math.round(cb), 0), 255));
         ybr[2] = (byte) (0xff & Math.min(Math.max(Math.round(cr), 0), 255));
     }
+
 
     /**
      * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
@@ -492,6 +506,7 @@ public final class ColorSpaceConvertion {
         return rgbToYCbCr(rgb, null);
     }
 
+
     /**
      * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
@@ -522,6 +537,7 @@ public final class ColorSpaceConvertion {
         rgb[1] = (byte) (0xff & Math.min(Math.max(Math.round(g), 0), 255));
         rgb[2] = (byte) (0xff & Math.min(Math.max(Math.round(b), 0), 255));
     }
+
 
     /**
      * Converts image pixels from RGB color space to YCbCr color space. Uses formulas provided at:
@@ -603,7 +619,7 @@ public final class ColorSpaceConvertion {
      * Equivalent to calling <code>ycbcrToRGB(ybr, null)</code>.
      *
      * @param ybr array of ByteProcessor representing color planes: Y, Cb, and Cr.
-     * @return ColorProcessor representin image in sRGB color space.
+     * @return ColorProcessor representing image in sRGB color space.
      * @see #ycbcrToRGB(ij.process.ByteProcessor[],net.sf.ij_plugins.util.progress.ProgressListener)
      */
     public static ColorProcessor ycbcrToRGB(final ByteProcessor[] ybr) {

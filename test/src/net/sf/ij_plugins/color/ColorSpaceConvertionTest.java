@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2007 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,17 +23,18 @@ package net.sf.ij_plugins.color;
 
 import junit.framework.TestCase;
 
+
 /**
- * Unit test for {@linkColorSpaceConvertion}.
+ * Unit test for {@link ColorSpaceConvertion}.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.3 $
  */
 public class ColorSpaceConvertionTest extends TestCase {
 
     public ColorSpaceConvertionTest(String test) {
         super(test);
     }
+
 
     public void testXyzToRGB() {
         final float[][] xyzs = {
@@ -50,16 +52,17 @@ public class ColorSpaceConvertionTest extends TestCase {
         };
 
         final float[] rgb = new float[3];
-        final float tolerance = 0.05f;
+        final float tolerance = 0.00001f;
         for (int i = 0; i < xyzs.length; i++) {
             final float[] xyz = xyzs[i];
-            final float[] expextedRGB = expectedRGBs[i];
+            final float[] expectedRGB = expectedRGBs[i];
             ColorSpaceConvertion.xyzToRGB(xyz, rgb);
-            assertEquals("R " + i + " ", expextedRGB[0], rgb[0], tolerance);
-            assertEquals("G " + i + " ", expextedRGB[1], rgb[1], tolerance);
-            assertEquals("B " + i + " ", expextedRGB[2], rgb[2], tolerance);
+            assertEquals("R " + i + " ", expectedRGB[0], rgb[0], tolerance);
+            assertEquals("G " + i + " ", expectedRGB[1], rgb[1], tolerance);
+            assertEquals("B " + i + " ", expectedRGB[2], rgb[2], tolerance);
         }
     }
+
 
     public void testRGBToXYZ() {
         final float[][] rgbs = {
@@ -78,14 +81,14 @@ public class ColorSpaceConvertionTest extends TestCase {
 
 
         final float[] xyz = new float[3];
-        final float tolerance = 0.0005f;
+        final float tolerance = 0.00001f;
         for (int i = 0; i < rgbs.length; i++) {
             final float[] rgb = rgbs[i];
-            final float[] expextedXYZ = expectedXYZs[i];
+            final float[] expectedXYZ = expectedXYZs[i];
             ColorSpaceConvertion.rgbToXYZ(rgb, xyz);
-            assertEquals("X " + i + " ", expextedXYZ[0], xyz[0], tolerance);
-            assertEquals("Y " + i + " ", expextedXYZ[1], xyz[1], tolerance);
-            assertEquals("Z " + i + " ", expextedXYZ[2], xyz[2], tolerance);
+            assertEquals("X " + i + " ", expectedXYZ[0], xyz[0], tolerance);
+            assertEquals("Y " + i + " ", expectedXYZ[1], xyz[1], tolerance);
+            assertEquals("Z " + i + " ", expectedXYZ[2], xyz[2], tolerance);
         }
 
 
@@ -110,37 +113,43 @@ public class ColorSpaceConvertionTest extends TestCase {
 
 
         final float[] xyz = new float[3];
-        final float tolerance = 0.0005f;
+        final float tolerance = 0.00001f;
         for (int i = 0; i < labs.length; i++) {
             final float[] lab = labs[i];
-            final float[] expextedXYZ = expectedXYZs[i];
+            final float[] expectedXYZ = expectedXYZs[i];
             ColorSpaceConvertion.labToXYZ(lab, xyz);
-            assertEquals("X " + i + " ", expextedXYZ[0], xyz[0], tolerance);
-            assertEquals("Y " + i + " ", expextedXYZ[1], xyz[1], tolerance);
-            assertEquals("Z " + i + " ", expextedXYZ[2], xyz[2], tolerance);
+            assertEquals("X " + i + " ", expectedXYZ[0], xyz[0], tolerance);
+            assertEquals("Y " + i + " ", expectedXYZ[1], xyz[1], tolerance);
+            assertEquals("Z " + i + " ", expectedXYZ[2], xyz[2], tolerance);
         }
 
     }
 
+
     public void testXyzToLab() {
         // Test values generated using  http://www.brucelindbloom.com/index.html?ColorCalculator.html
+        // Ref. White: D65
+        // RGB Model : sRGB
+        // Adaptation: None
         final float[][] xyzs = {
                 {0f, 0f, 0f},
                 {0.686331f, 0.651398f, 0.786343f},
                 {0.051720f, 0.038003f, 0.046779f},
                 {0.982560f, 0.744397f, 0.699335f},
+                {0.686282f, 0.651420f, 0.654469f},
         };
 
         final float[][] expectedLabs = {
                 {0f, 0f, 0f},
-                {84.55571f, 15.145741f, -6.0582967f},
-                {23.00000f, 21.368510f, -2.8035000f},
-                {89.12989f, 52.419366f, +8.7064660f}
+                {84.555724f, 15.145162f, -6.065880f},
+                {22.999941f, 21.368079f, -2.806380f},
+                {89.129886f, 52.418814f, +8.699116f},
+                {84.556856f, 15.129607f, +4.586629f},
         };
 
 
         final float[] lab = new float[3];
-        final float tolerance = 0.05f;
+        final float tolerance = 0.00001f;
         for (int i = 0; i < xyzs.length; i++) {
             final float[] xyz = xyzs[i];
             final float[] expectedLab = expectedLabs[i];
@@ -154,20 +163,23 @@ public class ColorSpaceConvertionTest extends TestCase {
 
     public void testRGBToXYZToLabToXYZtoRGB() {
         // Test values generated using  http://www.brucelindbloom.com/index.html?ColorCalculator.html
-        final float tolerance = 0.0005f;
+        // Ref. White: D65
+        // RGB Model : sRGB
+        // Adaptation: None
+        final float tolerance = 0.0001f;
         final float[] rgb = {243, 201, 203};
 
         final float[] xyz = new float[3];
         ColorSpaceConvertion.rgbToXYZ(rgb, xyz);
-        assertEquals(0.686271, xyz[0], tolerance);
-        assertEquals(0.651414, xyz[1], tolerance);
-        assertEquals(0.654552, xyz[2], tolerance);
+        assertEquals(0.686282, xyz[0], tolerance);
+        assertEquals(0.651420, xyz[1], tolerance);
+        assertEquals(0.654469, xyz[2], tolerance);
 
         final float[] lab = new float[3];
         ColorSpaceConvertion.xyzToLab(xyz, lab);
-        assertEquals(84.555724f, lab[0], tolerance);
-        assertEquals(15.135177f, lab[1], tolerance);
-        assertEquals(4.584037f, lab[2], tolerance);
+        assertEquals(84.556863, lab[0], tolerance);
+        assertEquals(15.129605, lab[1], tolerance);
+        assertEquals(4.586627, lab[2], tolerance);
 
         final float[] xyz1 = new float[3];
         ColorSpaceConvertion.labToXYZ(lab, xyz1);
@@ -177,9 +189,9 @@ public class ColorSpaceConvertionTest extends TestCase {
 
         final float[] rgb1 = new float[3];
         ColorSpaceConvertion.xyzToRGB(xyz1, rgb1);
-        assertEquals(rgb[0], rgb1[0], 0.001);
-        assertEquals(rgb[1], rgb1[1], 0.006);
-        assertEquals(rgb[2], rgb1[2], 0.002);
+        assertEquals(rgb[0], rgb1[0], tolerance);
+        assertEquals(rgb[1], rgb1[1], tolerance);
+        assertEquals(rgb[2], rgb1[2], tolerance);
     }
 
 
@@ -195,6 +207,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         assertEquals("Cr", ybrExpected[2], ybr[2]);
     }
 
+
     public void testRgbToYCbCr_2() {
         final byte[] rgb = new byte[]{(byte) (0xff & 71), (byte) (0xff & 139), (byte) (0xff & 244)};
         final byte[] ybr = new byte[3];
@@ -206,6 +219,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         assertEquals("Cb", ybrExpected[1], ybr[1]);
         assertEquals("Cr", ybrExpected[2], ybr[2]);
     }
+
 
     public void testRgbToYCbCr_3() {
         final byte[] rgb = new byte[]{(byte) (0xff & 246), (byte) (0xff & 40), (byte) (0xff & 248)};
@@ -219,6 +233,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         assertEquals("Cr", ybrExpected[2], ybr[2]);
     }
 
+
     public void testYCbCrToRGB_1() {
         final byte[] ybr = new byte[]{(byte) (0xff & 159), (byte) (0xff & 58), (byte) (0xff & 169)};
         final byte[] rgb = new byte[3];
@@ -231,6 +246,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         assertEquals("B", rgbExpected[2], rgb[2]);
     }
 
+
     public void testYCbCrToRGB_2() {
         final byte[] ybr = new byte[]{(byte) (0xff & 128), (byte) (0xff & 184), (byte) (0xff & 91)};
         final byte[] rgb = new byte[3];
@@ -242,6 +258,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         assertEquals("G", rgbExpected[1], rgb[1]);
         assertEquals("B", rgbExpected[2], rgb[2]);
     }
+
 
     public void testYCbCrToRGB_3() {
         final byte[] ybr = new byte[]{(byte) (0xff & 124), (byte) (0xff & 189), (byte) (0xff & 204)};
