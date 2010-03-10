@@ -36,7 +36,7 @@ import net.sf.ij_plugins.util.progress.ProgressListener;
  *
  * @author Jarek Sacha
  */
-public final class ColorSpaceConvertion {
+public final class ColorSpaceConversion {
 
     // D65 white point values from Chromatic Adaptation table at http://www.brucelindbloom.com/Eqn_ChromAdapt.html
     private static final double X_D65 = 0.95047;
@@ -50,7 +50,7 @@ public final class ColorSpaceConvertion {
     private static final double CIE_KAPPA_EPSILON = CIE_EPSILON * CIE_KAPPA;
 
 
-    private ColorSpaceConvertion() {
+    private ColorSpaceConversion() {
     }
 
 
@@ -256,8 +256,8 @@ public final class ColorSpaceConvertion {
                 IJ.showProgress(i, pixels.length);
             }
             final float[] pixel = pixels[i];
-            ColorSpaceConvertion.rgbToXYZ(pixel, tmp);
-            ColorSpaceConvertion.xyzToLab(tmp, pixel);
+            ColorSpaceConversion.rgbToXYZ(pixel, tmp);
+            ColorSpaceConversion.xyzToLab(tmp, pixel);
         }
         IJ.showProgress(pixels.length, pixels.length);
 
@@ -284,7 +284,7 @@ public final class ColorSpaceConvertion {
             }
             final float[] pixel = pixels[i];
             // Replace sRGB content with XYZ
-            ColorSpaceConvertion.rgbToXYZ(pixel, pixel);
+            ColorSpaceConversion.rgbToXYZ(pixel, pixel);
         }
         IJ.showProgress(pixels.length, pixels.length);
 
@@ -317,8 +317,8 @@ public final class ColorSpaceConvertion {
                 IJ.showProgress(i, pixels.length);
             }
             final float[] pixel = pixels[i];
-            ColorSpaceConvertion.labToXYZ(pixel, tmpXYZ);
-            ColorSpaceConvertion.xyzToRGB(tmpXYZ, tmpRGB);
+            ColorSpaceConversion.labToXYZ(pixel, tmpXYZ);
+            ColorSpaceConversion.xyzToRGB(tmpXYZ, tmpRGB);
             int r = Math.min(Math.max(Math.round(tmpRGB[0]), 0), 255);
             int g = Math.min(Math.max(Math.round(tmpRGB[1]), 0), 255);
             int b = Math.min(Math.max(Math.round(tmpRGB[2]), 0), 255);
@@ -359,7 +359,7 @@ public final class ColorSpaceConvertion {
                 IJ.showProgress(i, pixels.length);
             }
             final float[] pixel = pixels[i];
-            ColorSpaceConvertion.xyzToRGB(pixel, rgb);
+            ColorSpaceConversion.xyzToRGB(pixel, rgb);
             int r = Math.min(Math.max(Math.round(rgb[0]), 0), 255);
             int g = Math.min(Math.max(Math.round(rgb[1]), 0), 255);
             int b = Math.min(Math.max(Math.round(rgb[2]), 0), 255);

@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2006 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,13 +31,14 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
+
 /**
  * Converts image pixels from RGB color space to YCbCr color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
  */
 public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
+
     final private static String PLUGIN_NAME = "Convert RGB to YCbCr";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
@@ -47,6 +49,7 @@ public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
                     "http://en.wikipedia.org/wiki/YCbCr";
 
     private String imageTitle = "";
+
 
     public int setup(String arg, ImagePlus imp) {
         if (ConvertRGBToYCbCrPlugin.ABOUT_COMMAND.equalsIgnoreCase(arg)) {
@@ -60,12 +63,13 @@ public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
         return DOES_RGB | DOES_STACKS | NO_CHANGES;
     }
 
+
     public void run(final ImageProcessor ip) {
         IJ.showStatus(ConvertRGBToYCbCrPlugin.PLUGIN_NAME);
 
         final ColorProcessor cp = (ColorProcessor) ip;
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
-        final ByteProcessor[] bps = ColorSpaceConvertion.rgbToYCbCr(cp, progressBarAdapter);
+        final ByteProcessor[] bps = ColorSpaceConversion.rgbToYCbCr(cp, progressBarAdapter);
         final ImageStack stack = new ImageStack(ip.getWidth(), ip.getHeight());
         stack.addSlice("Y", bps[0]);
         stack.addSlice("Cb", bps[1]);

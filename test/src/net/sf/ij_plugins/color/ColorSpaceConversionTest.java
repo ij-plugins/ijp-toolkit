@@ -19,19 +19,20 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.color;
 
 import junit.framework.TestCase;
 
 
 /**
- * Unit test for {@link ColorSpaceConvertion}.
+ * Unit test for {@link ColorSpaceConversion}.
  *
  * @author Jarek Sacha
  */
-public class ColorSpaceConvertionTest extends TestCase {
+public class ColorSpaceConversionTest extends TestCase {
 
-    public ColorSpaceConvertionTest(String test) {
+    public ColorSpaceConversionTest(String test) {
         super(test);
     }
 
@@ -56,7 +57,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         for (int i = 0; i < xyzs.length; i++) {
             final float[] xyz = xyzs[i];
             final float[] expectedRGB = expectedRGBs[i];
-            ColorSpaceConvertion.xyzToRGB(xyz, rgb);
+            ColorSpaceConversion.xyzToRGB(xyz, rgb);
             assertEquals("R " + i + " ", expectedRGB[0], rgb[0], tolerance);
             assertEquals("G " + i + " ", expectedRGB[1], rgb[1], tolerance);
             assertEquals("B " + i + " ", expectedRGB[2], rgb[2], tolerance);
@@ -85,7 +86,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         for (int i = 0; i < rgbs.length; i++) {
             final float[] rgb = rgbs[i];
             final float[] expectedXYZ = expectedXYZs[i];
-            ColorSpaceConvertion.rgbToXYZ(rgb, xyz);
+            ColorSpaceConversion.rgbToXYZ(rgb, xyz);
             assertEquals("X " + i + " ", expectedXYZ[0], xyz[0], tolerance);
             assertEquals("Y " + i + " ", expectedXYZ[1], xyz[1], tolerance);
             assertEquals("Z " + i + " ", expectedXYZ[2], xyz[2], tolerance);
@@ -117,7 +118,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         for (int i = 0; i < labs.length; i++) {
             final float[] lab = labs[i];
             final float[] expectedXYZ = expectedXYZs[i];
-            ColorSpaceConvertion.labToXYZ(lab, xyz);
+            ColorSpaceConversion.labToXYZ(lab, xyz);
             assertEquals("X " + i + " ", expectedXYZ[0], xyz[0], tolerance);
             assertEquals("Y " + i + " ", expectedXYZ[1], xyz[1], tolerance);
             assertEquals("Z " + i + " ", expectedXYZ[2], xyz[2], tolerance);
@@ -153,7 +154,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         for (int i = 0; i < xyzs.length; i++) {
             final float[] xyz = xyzs[i];
             final float[] expectedLab = expectedLabs[i];
-            ColorSpaceConvertion.xyzToLab(xyz, lab);
+            ColorSpaceConversion.xyzToLab(xyz, lab);
             assertEquals("L* " + i + " ", expectedLab[0], lab[0], tolerance);
             assertEquals("a* " + i + " ", expectedLab[1], lab[1], tolerance);
             assertEquals("b* " + i + " ", expectedLab[2], lab[2], tolerance);
@@ -170,25 +171,25 @@ public class ColorSpaceConvertionTest extends TestCase {
         final float[] rgb = {243, 201, 203};
 
         final float[] xyz = new float[3];
-        ColorSpaceConvertion.rgbToXYZ(rgb, xyz);
+        ColorSpaceConversion.rgbToXYZ(rgb, xyz);
         assertEquals(0.686282, xyz[0], tolerance);
         assertEquals(0.651420, xyz[1], tolerance);
         assertEquals(0.654469, xyz[2], tolerance);
 
         final float[] lab = new float[3];
-        ColorSpaceConvertion.xyzToLab(xyz, lab);
+        ColorSpaceConversion.xyzToLab(xyz, lab);
         assertEquals(84.556863, lab[0], tolerance);
         assertEquals(15.129605, lab[1], tolerance);
         assertEquals(4.586627, lab[2], tolerance);
 
         final float[] xyz1 = new float[3];
-        ColorSpaceConvertion.labToXYZ(lab, xyz1);
+        ColorSpaceConversion.labToXYZ(lab, xyz1);
         assertEquals(xyz[0], xyz1[0], tolerance);
         assertEquals(xyz[1], xyz1[1], tolerance);
         assertEquals(xyz[2], xyz1[2], tolerance);
 
         final float[] rgb1 = new float[3];
-        ColorSpaceConvertion.xyzToRGB(xyz1, rgb1);
+        ColorSpaceConversion.xyzToRGB(xyz1, rgb1);
         assertEquals(rgb[0], rgb1[0], tolerance);
         assertEquals(rgb[1], rgb1[1], tolerance);
         assertEquals(rgb[2], rgb1[2], tolerance);
@@ -199,7 +200,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         final byte[] rgb = new byte[]{(byte) (0xff & 233), (byte) (0xff & 161), (byte) (0xff & 25)};
         final byte[] ybr = new byte[3];
 
-        ColorSpaceConvertion.rgbToYCbCr(rgb, ybr);
+        ColorSpaceConversion.rgbToYCbCr(rgb, ybr);
 
         final byte[] ybrExpected = new byte[]{(byte) (0xff & 159), (byte) (0xff & 58), (byte) (0xff & 169)};
         assertEquals("Y", ybrExpected[0], ybr[0]);
@@ -212,7 +213,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         final byte[] rgb = new byte[]{(byte) (0xff & 71), (byte) (0xff & 139), (byte) (0xff & 244)};
         final byte[] ybr = new byte[3];
 
-        ColorSpaceConvertion.rgbToYCbCr(rgb, ybr);
+        ColorSpaceConversion.rgbToYCbCr(rgb, ybr);
 
         final byte[] ybrExpected = new byte[]{(byte) (0xff & 128), (byte) (0xff & 184), (byte) (0xff & 91)};
         assertEquals("Y", ybrExpected[0], ybr[0]);
@@ -225,7 +226,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         final byte[] rgb = new byte[]{(byte) (0xff & 246), (byte) (0xff & 40), (byte) (0xff & 248)};
         final byte[] ybr = new byte[3];
 
-        ColorSpaceConvertion.rgbToYCbCr(rgb, ybr);
+        ColorSpaceConversion.rgbToYCbCr(rgb, ybr);
 
         final byte[] ybrExpected = new byte[]{(byte) (0xff & 124), (byte) (0xff & 189), (byte) (0xff & 204)};
         assertEquals("Y", ybrExpected[0], ybr[0]);
@@ -238,7 +239,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         final byte[] ybr = new byte[]{(byte) (0xff & 159), (byte) (0xff & 58), (byte) (0xff & 169)};
         final byte[] rgb = new byte[3];
 
-        ColorSpaceConvertion.ycbcrToRGB(ybr, rgb);
+        ColorSpaceConversion.ycbcrToRGB(ybr, rgb);
 
         final byte[] rgbExpected = new byte[]{(byte) (0xff & 232), (byte) (0xff & 161), (byte) (0xff & 25)};
         assertEquals("R", rgbExpected[0], rgb[0]);
@@ -251,7 +252,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         final byte[] ybr = new byte[]{(byte) (0xff & 128), (byte) (0xff & 184), (byte) (0xff & 91)};
         final byte[] rgb = new byte[3];
 
-        ColorSpaceConvertion.ycbcrToRGB(ybr, rgb);
+        ColorSpaceConversion.ycbcrToRGB(ybr, rgb);
 
         final byte[] rgbExpected = new byte[]{(byte) (0xff & 71), (byte) (0xff & 139), (byte) (0xff & 243)};
         assertEquals("R", rgbExpected[0], rgb[0]);
@@ -264,7 +265,7 @@ public class ColorSpaceConvertionTest extends TestCase {
         final byte[] ybr = new byte[]{(byte) (0xff & 124), (byte) (0xff & 189), (byte) (0xff & 204)};
         final byte[] rgb = new byte[3];
 
-        ColorSpaceConvertion.ycbcrToRGB(ybr, rgb);
+        ColorSpaceConversion.ycbcrToRGB(ybr, rgb);
 
         final byte[] rgbExpected = new byte[]{(byte) (0xff & 247), (byte) (0xff & 40), (byte) (0xff & 249)};
         assertEquals("R", rgbExpected[0], rgb[0]);

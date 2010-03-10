@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2006 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,13 +29,14 @@ import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
+
 /**
  * Converts image pixels from CIE L*a*b* color space to RGB color space.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.2 $
  */
 public class ConvertYCbCrToRGBPlugin implements PlugIn {
+
     final private static String PLUGIN_NAME = "Convert YCbCr to RGB";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
@@ -43,6 +45,7 @@ public class ConvertYCbCrToRGBPlugin implements PlugIn {
                     "http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30\n" +
                     "See also:\n" +
                     "http://en.wikipedia.org/wiki/YCbCr";
+
 
     public void run(String arg) {
         if (ConvertYCbCrToRGBPlugin.ABOUT_COMMAND.equalsIgnoreCase(arg)) {
@@ -72,7 +75,7 @@ public class ConvertYCbCrToRGBPlugin implements PlugIn {
 
         IJ.showStatus(PLUGIN_NAME);
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
-        final ColorProcessor dest = ColorSpaceConvertion.ycbcrToRGB(src, progressBarAdapter);
+        final ColorProcessor dest = ColorSpaceConversion.ycbcrToRGB(src, progressBarAdapter);
         new ImagePlus(imp.getTitle() + " - RGB", dest).show();
     }
 }

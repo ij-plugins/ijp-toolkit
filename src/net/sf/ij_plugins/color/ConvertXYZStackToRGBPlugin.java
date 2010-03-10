@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -29,18 +29,21 @@ import ij.plugin.PlugIn;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
 
+
 /**
  * Converts image pixels from XYZ color space to RGB color space.
  *
  * @author Jarek Sacha
  */
 public class ConvertXYZStackToRGBPlugin implements PlugIn {
+
     private static final String PLUGIN_NAME = "Convert XYZ to sRGB";
     private static final String ABOUT_COMMAND = "about";
     private static final String ABOUT_MESSAGE =
             "Converts image pixels from XYZ color space to RGB color space.\n" +
                     "The XYZ image is asumed to a stack of floating point images (32 bit).\n" +
                     "Uses formulas provided at: http://www.brucelindbloom.com";
+
 
     public void run(String arg) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
@@ -64,7 +67,7 @@ public class ConvertXYZStackToRGBPlugin implements PlugIn {
 
 //        IJ.showStatus(PLUGIN_NAME);
         final VectorProcessor vp = new VectorProcessor(imp.getStack());
-        final ColorProcessor cp = ColorSpaceConvertion.xyzToColorProcessor(vp);
+        final ColorProcessor cp = ColorSpaceConversion.xyzToColorProcessor(vp);
         final ImagePlus dest = new ImagePlus(imp.getTitle() + " - RGB", cp);
         dest.show();
     }
