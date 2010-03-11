@@ -38,6 +38,7 @@ public class ColorSpaceConversionTest extends TestCase {
 
 
     public void testXyzToRGB() {
+        // Test values generated using  http://www.brucelindbloom.com/index.html?ColorCalculator.html
         final float[][] xyzs = {
                 {0f, 0f, 0f},
                 {0.686331f, 0.651398f, 0.786343f},
@@ -47,13 +48,13 @@ public class ColorSpaceConversionTest extends TestCase {
 
         final float[][] expectedRGBs = {
                 {0f, 0f, 0f},
-                {235.002002f, 201.823319f, 222.814012f},
-                {82.703072f, 41.953316f, 59.580238f},
-                {320.842703f, 182.940311f, 209.648766f},
+                {234.993465f, 201.824850f, 222.828435f},
+                {82.699842f, 41.953780f, 59.584729f},
+                {320.831534f, 182.941893f, 209.662412f},
         };
 
         final float[] rgb = new float[3];
-        final float tolerance = 0.00001f;
+        final float tolerance = 0.0002f;
         for (int i = 0; i < xyzs.length; i++) {
             final float[] xyz = xyzs[i];
             final float[] expectedRGB = expectedRGBs[i];
@@ -66,6 +67,7 @@ public class ColorSpaceConversionTest extends TestCase {
 
 
     public void testRGBToXYZ() {
+        // Test values generated using  http://www.brucelindbloom.com/index.html?ColorCalculator.html
         final float[][] rgbs = {
                 {0f, 0f, 0f},
                 {235.002002f, 201.823319f, 222.814012f},
@@ -75,9 +77,9 @@ public class ColorSpaceConversionTest extends TestCase {
 
         final float[][] expectedXYZs = {
                 {0f, 0f, 0f},
-                {0.686331f, 0.651398f, 0.786343f},
-                {0.051720f, 0.038003f, 0.046779f},
-                {0.982560f, 0.744397f, 0.699335f},
+                {0.686336f, 0.651398f, 0.786241f},
+                {0.051721f, 0.038004f, 0.046773f},
+                {0.982596f, 0.744412f, 0.699247f},
         };
 
 
@@ -107,9 +109,9 @@ public class ColorSpaceConversionTest extends TestCase {
 
         final float[][] expectedXYZs = {
                 {0f, 0f, 0f},
-                {0.686331f, 0.651398f, 0.786343f},
-                {0.051720f, 0.038003f, 0.046779f},
-                {0.982560f, 0.744397f, 0.699335f},
+                {0.686333f, 0.651398f, 0.786243f},
+                {0.051721f, 0.038003f, 0.046773f},
+                {0.982563f, 0.744397f, 0.699246f},
         };
 
 
