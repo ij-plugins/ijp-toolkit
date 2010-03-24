@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 
 /**
  * <p>
@@ -177,6 +178,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
         this.seeds = seeds;
     }
+
 
     /**
      * Set ROI mask, if not set full image is processed.
@@ -368,8 +370,8 @@ public final class SRG3D extends DefaultProgressReporter {
                     if (regionMarkerPixels[z][offset] == SRGSupport.OUTSIDE_MARK) {
                         continue;
                     }
-
-                    final int regionID = srgSupport.seedToRegonLookup[seedPixels[z][offset]];
+                    final int lookupIndex = seedPixels[z][offset] & 0xff;
+                    final int regionID = srgSupport.seedToRegionLookup[lookupIndex];
                     if (regionID < 1) {
                         continue;
                     }
@@ -421,9 +423,9 @@ public final class SRG3D extends DefaultProgressReporter {
 
     private void saveGrowHistory(final double progress) {
         if (growHistoryEnabled && growHistoryDirectory != null) {
-            final long progressPerc = Math.round(progress * 100);
-            final File f = new File(growHistoryDirectory, String.format(GROW_HISTORY_FILE_FORMAT, progressPerc));
-            IJ.log(String.format("Saving growth history at %d%% to %s", progressPerc, f.getAbsolutePath()));
+            final long progressPercent = Math.round(progress * 100);
+            final File f = new File(growHistoryDirectory, String.format(GROW_HISTORY_FILE_FORMAT, progressPercent));
+            IJ.log(String.format("Saving growth history at %d%% to %s", progressPercent, f.getAbsolutePath()));
             try {
                 final File parent = f.getParentFile();
                 if (parent.exists() || f.getParentFile().mkdirs()) {
@@ -572,7 +574,7 @@ public final class SRG3D extends DefaultProgressReporter {
         }
         regionMarkers.setColorModel(seeds.getColorModel());
 
-        final Pair<int[], Integer> p = srgSupport.createSeedToRegonLookup(histogram(seeds));
+        final Pair<int[], Integer> p = srgSupport.createSeedToRegionLookup(histogram(seeds));
         final int[] regionToSeedLookup = p.getFirst();
         final int regionCount = p.getSecond();
 
@@ -583,7 +585,7 @@ public final class SRG3D extends DefaultProgressReporter {
         }
 
         // Create candidate list and define rules for ordering of its elements
-            ssl = new TreeSet<Candidate3D>();
+        ssl = new TreeSet<Candidate3D>();
 
         // Mark pixels outside of the mask
         fillOutsideMask(regionMarkerPixels, SRGSupport.OUTSIDE_MARK);
@@ -627,10 +629,12 @@ public final class SRG3D extends DefaultProgressReporter {
 
 
     private static class RegionInfo3D {
+
         private long pointCount;
         private double sumIntensity;
         final int originalSeedID;
         final ImageProcessor[] imageProcessors;
+
 
         public RegionInfo3D(final ImageStack image, final int originalSeedID) {
             this.originalSeedID = originalSeedID;
@@ -640,10 +644,12 @@ public final class SRG3D extends DefaultProgressReporter {
             }
         }
 
+
         public void addPoint(final Point3DInt point) {
             ++pointCount;
             sumIntensity += imageProcessors[point.z].getf(point.x, point.y);
         }
+
 
         public double mean() {
             if (pointCount == 0) {
@@ -653,6 +659,7 @@ public final class SRG3D extends DefaultProgressReporter {
             }
         }
 
+
         public long pointCount() {
             return pointCount;
         }
@@ -660,15 +667,18 @@ public final class SRG3D extends DefaultProgressReporter {
 
 
     private static class Candidate3D implements Comparable<Candidate3D> {
+
         public final Point3DInt point;
         public final int mostSimilarRegionId;
         public final double similarityDifference;
+
 
         public Candidate3D(final Point3DInt point, final int mostSimilarRegionId, final double similarityDifference) {
             this.point = point;
             this.mostSimilarRegionId = mostSimilarRegionId;
             this.similarityDifference = similarityDifference;
         }
+
 
         @Override
         public int compareTo(final Candidate3D c) {

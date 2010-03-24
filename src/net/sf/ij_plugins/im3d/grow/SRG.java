@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 
 /**
  * <p>
@@ -109,6 +110,7 @@ public final class SRG extends DefaultProgressReporter {
 
     final SRGSupport srgSupport = new SRGSupport();
 
+
     /**
      * Set image to be segmented. Supported types are: {@link ByteProcessor}, {@link ShortProcessor}, and {@link FloatProcessor}.
      *
@@ -123,7 +125,7 @@ public final class SRG extends DefaultProgressReporter {
         } else if (image instanceof FloatProcessor) {
             setImage((FloatProcessor) image);
         } else {
-            throw new IllegalArgumentException("Unsuported image type: " + image.getClass().getName());
+            throw new IllegalArgumentException("Unsupported image type: " + image.getClass().getName());
         }
     }
 
@@ -232,17 +234,17 @@ public final class SRG extends DefaultProgressReporter {
                     continue;
                 }
 
-                final int regonID = srgSupport.seedToRegonLookup[seeds.get(x, y)];
-                if (regonID < 1) {
+                final int regionID = srgSupport.seedToRegionLookup[seeds.get(x, y)];
+                if (regionID < 1) {
                     continue;
                 }
 
 
                 // Add seed to regionMarkers
-                regionMarkerPixels[offset] = (byte) (regonID & 0xff);
+                regionMarkerPixels[offset] = (byte) (regionID & 0xff);
 
                 // Add seed to region info
-                regionInfos[regonID].addPoint(new Point(x, y));
+                regionInfos[regionID].addPoint(new Point(x, y));
             }
         }
 
@@ -516,8 +518,8 @@ public final class SRG extends DefaultProgressReporter {
         seeds.setMask(mask);
 //        final ByteStatistics statistics = new ByteStatistics(seeds);
 //        int regionCount = 0;
-//        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
-//        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
+//        seedToRegionLookup = new int[MAX_REGION_NUMBER + 1];
+//        final int[] regionToSeedLookup = new int[MAX_REGION_NUMBER + 1];
 //        for (int seed = 1; seed < statistics.histogram.length; seed++) {
 //            if (statistics.histogram[seed] > 0) {
 //                if (seed > MAX_REGION_NUMBER) {
@@ -526,20 +528,20 @@ public final class SRG extends DefaultProgressReporter {
 //                }
 //
 //                regionCount++;
-//                seedToRegonLookup[seed] = regionCount;
-//                regionToSeedLooup[regionCount] = seed;
+//                seedToRegionLookup[seed] = regionCount;
+//                regionToSeedLookup[regionCount] = seed;
 //            }
 //
 //        }
 
-        final Pair<int[], Integer> p = srgSupport.createSeedToRegonLookup(new ByteStatistics(seeds).histogram);
-        final int[] regionToSeedLooup = p.getFirst();
+        final Pair<int[], Integer> p = srgSupport.createSeedToRegionLookup(new ByteStatistics(seeds).histogram);
+        final int[] regionToSeedLookup = p.getFirst();
         final int regionCount = p.getSecond();
 
         // Initialize region info structures
         regionInfos = new RegionInfo[regionCount + 1];
         for (int i = 1; i < regionInfos.length; i++) {
-            regionInfos[i] = new RegionInfo(image, regionToSeedLooup[i]);
+            regionInfos[i] = new RegionInfo(image, regionToSeedLookup[i]);
         }
 
         // Create candidate list and define rules for ordering of its elements
@@ -582,20 +584,24 @@ public final class SRG extends DefaultProgressReporter {
 
 
     private static class RegionInfo {
+
         private long pointCount;
         private double sumIntensity;
         private final FloatProcessor image;
         private final int originalSeedID;
+
 
         public RegionInfo(final FloatProcessor image, final int originalSeedID) {
             this.image = image;
             this.originalSeedID = originalSeedID;
         }
 
+
         public void addPoint(final Point point) {
             ++pointCount;
             sumIntensity += image.getf(point.x, point.y);
         }
+
 
         public double mean() {
             if (pointCount == 0) {
@@ -608,15 +614,18 @@ public final class SRG extends DefaultProgressReporter {
 
 
     final private static class Candidate implements Comparable<Candidate> {
+
         public final Point point;
         public final int mostSimilarRegionId;
         public final double similarityDifference;
+
 
         public Candidate(final Point point, final int mostSimilarRegionId, final double similarityDifference) {
             this.point = point;
             this.mostSimilarRegionId = mostSimilarRegionId;
             this.similarityDifference = similarityDifference;
         }
+
 
         public int compareTo(final Candidate c) {
             Validate.argumentNotNull(c, "c");
@@ -640,10 +649,12 @@ public final class SRG extends DefaultProgressReporter {
             }
         }
 
+
         @Override
         public boolean equals(final Object obj) {
             return obj instanceof Candidate && compareTo((Candidate) obj) == 0;
         }
+
 
         @Override
         public int hashCode() {

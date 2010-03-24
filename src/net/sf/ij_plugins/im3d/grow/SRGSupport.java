@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ package net.sf.ij_plugins.im3d.grow;
 import ij.process.ByteProcessor;
 import net.sf.ij_plugins.util.Pair;
 
+
 /**
  * @author Jarek Sacha
  * @since Oct 22, 2009
@@ -37,13 +38,13 @@ final class SRGSupport {
     static final byte OUTSIDE_MARK = (byte) 0xfe;
 
 
-    int[] seedToRegonLookup;
+    int[] seedToRegionLookup;
 
 
-    Pair<int[], Integer> createSeedToRegonLookup(final int[] histogram) {
+    Pair<int[], Integer> createSeedToRegionLookup(final int[] histogram) {
 
-        final int[] regionToSeedLooup = new int[MAX_REGION_NUMBER + 1];
-        seedToRegonLookup = new int[MAX_REGION_NUMBER + 1];
+        final int[] regionToSeedLookup = new int[MAX_REGION_NUMBER + 1];
+        seedToRegionLookup = new int[MAX_REGION_NUMBER + 1];
         int regionCount = 0;
         for (int seed = 1; seed < histogram.length; seed++) {
             if (histogram[seed] > 0) {
@@ -53,13 +54,13 @@ final class SRGSupport {
                 }
 
                 regionCount++;
-                seedToRegonLookup[seed] = regionCount;
-                regionToSeedLooup[regionCount] = seed;
+                seedToRegionLookup[seed] = regionCount;
+                regionToSeedLookup[regionCount] = seed;
             }
 
         }
 
-        return new Pair<int[], Integer>(regionToSeedLooup, regionCount);
+        return new Pair<int[], Integer>(regionToSeedLookup, regionCount);
     }
 
 
