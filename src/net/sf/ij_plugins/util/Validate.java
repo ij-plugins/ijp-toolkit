@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@ public final class Validate {
     private Validate() {
     }
 
+
     /**
      * Checks if the object is not {@code null}. If it is {@code null} throws {@link IllegalArgumentException}.
      *
@@ -46,4 +47,27 @@ public final class Validate {
                             : "Argument cannot be null.");
         }
     }
+
+
+    /**
+     * <p>Validate that the argument condition is <code>true</code>; otherwise
+     * throwing an exception with the specified message. This method is useful when
+     * validating according to an arbitrary boolean expression, such as validating a
+     * primitive number or using your own custom validation expression.</p>
+     * <p/>
+     * <pre>
+     * Validate.isTrue( (i > 0), "The value must be greater than zero");
+     * Validate.isTrue( myObject.isOk(), "The object is not OK");
+     * </pre>
+     *
+     * @param expression the boolean expression to check
+     * @param message    the exception message if invalid
+     * @throws IllegalArgumentException if expression is <code>false</code>
+     */
+    public static void isTrue(final boolean expression, final String message) throws IllegalArgumentException {
+        if (!expression) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
 }
