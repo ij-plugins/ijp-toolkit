@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.clustering;
 
 import ij.IJ;
@@ -26,9 +27,10 @@ import ij.ImageStack;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.Validate;
 
-import java.awt.*;
 import java.util.Random;
+
 
 /**
  * Pixel-based multi-band image segmentation using k-means clustering algorithm.
@@ -36,30 +38,26 @@ import java.util.Random;
  * @author Jarek Sacha
  */
 public final class KMeans {
+
     private Config config;
 
-    private Rectangle roi;
-    private ByteProcessor mask;
+//    private Rectangle roi;
+//    private ByteProcessor mask;
 
     private VectorProcessor vp;
     private float[][] clusterCenters;
     private ImageStack clusterAnimation;
 
+
     public KMeans() {
         this.config = new Config();
     }
+
 
     public KMeans(final Config config) {
         this.config = config.duplicate();
     }
 
-    public void setRoi(final Rectangle roi) {
-        this.roi = roi;
-    }
-
-    public void setMask(ByteProcessor mask) {
-        this.mask = mask;
-    }
 
     /**
      * Perform k-means clustering of the input <code>stack</code>. Elements of the
@@ -88,6 +86,7 @@ public final class KMeans {
         return encodeSegmentedImage();
     }
 
+
     /**
      * Return location of cluster centers.
      *
@@ -96,6 +95,7 @@ public final class KMeans {
     public float[][] getClusterCenters() {
         return clusterCenters;
     }
+
 
     /**
      * Return stack representing clustering optimization. This will return not <code>null</code>
@@ -107,6 +107,7 @@ public final class KMeans {
     public ImageStack getClusterAnimation() {
         return clusterAnimation;
     }
+
 
     /**
      * Returns stack where discovered clusters can be represented by replacing pixel values in a
@@ -123,6 +124,26 @@ public final class KMeans {
     }
 
 
+    /**
+     * Find index of the cluster closest to the sample {@code x}.
+     * {@link #run(ij.ImageStack)} must be run before calling this method.
+     *
+     * @param x test point, number of values must be the same is input stack size.
+     * @return index of the closest cluster.
+     * @see #run(ij.ImageStack)
+     */
+    public int closestCluster(final float[] x) {
+        if (clusterCenters == null) {
+            throw new IllegalStateException("Cluster centers not computed, call run(ImageStack) first.");
+        }
+        Validate.argumentNotNull(x, "x");
+        Validate.isTrue(x.length == vp.getNumberOfValues(),
+                "Expecting argument 'x' of length " + vp.getNumberOfValues() + ", got " + x.length + ".");
+
+        return closestCluster(x, clusterCenters);
+    }
+
+
     private ByteProcessor encodeSegmentedImage() {
         // Encode output image
         final ByteProcessor dest = new ByteProcessor(vp.getWidth(), vp.getHeight());
@@ -134,6 +155,7 @@ public final class KMeans {
         }
         return dest;
     }
+
 
     private ImageStack encodeCentroidValueImage() {
         final int width = vp.getWidth();
@@ -170,6 +192,7 @@ public final class KMeans {
             IJ.log(buffer.toString());
         }
     }
+
 
     /**
      *
@@ -268,6 +291,7 @@ public final class KMeans {
         }
     }
 
+
     /**
      * Return index of the closest cluster to point <code>x</code>.
      *
@@ -306,6 +330,7 @@ public final class KMeans {
         }
         return java.lang.Math.sqrt(sum);
     }
+
 
     /**
      * @return cluster centers.
@@ -355,12 +380,15 @@ public final class KMeans {
      *
      */
     private static final class MeanElement {
+
         final float[] sum;
         int count;
+
 
         public MeanElement(final int elementSize) {
             sum = new float[elementSize];
         }
+
 
         public void add(final float[] x) {
             if (x.length != sum.length) {
@@ -373,6 +401,7 @@ public final class KMeans {
             ++count;
         }
 
+
         public float[] mean() {
             final float[] r = new float[sum.length];
             for (int i = 0; i < r.length; i++) {
@@ -383,10 +412,12 @@ public final class KMeans {
         }
     }
 
+
     /**
      * Configurable parameters of the k-means algorithm.
      */
     public static final class Config implements java.lang.Cloneable {
+
         /**
          * Seed used to initialize random number generator.
          */
@@ -397,13 +428,16 @@ public final class KMeans {
         private boolean clusterAnimationEnabled;
         private boolean printTraceEnabled;
 
+
         public int getRandomizationSeed() {
             return randomizationSeed;
         }
 
+
         public void setRandomizationSeed(final int randomizationSeed) {
             this.randomizationSeed = randomizationSeed;
         }
+
 
         /**
          * If <code>true</code>, random number generator will be initialized with a
@@ -417,17 +451,21 @@ public final class KMeans {
             return randomizationSeedEnabled;
         }
 
+
         public void setRandomizationSeedEnabled(final boolean randomizationSeedEnabled) {
             this.randomizationSeedEnabled = randomizationSeedEnabled;
         }
+
 
         public int getNumberOfClusters() {
             return numberOfClusters;
         }
 
+
         public void setNumberOfClusters(final int numberOfClusters) {
             this.numberOfClusters = numberOfClusters;
         }
+
 
         /**
          * Return tolerance used to determine cluster centroid distance. This tolerance is used to
@@ -439,9 +477,11 @@ public final class KMeans {
             return tolerance;
         }
 
+
         public void setTolerance(final float tolerance) {
             this.tolerance = tolerance;
         }
+
 
         /**
          * Return <code>true</code> if when an animation illustrating cluster optimization is
@@ -453,9 +493,11 @@ public final class KMeans {
             return clusterAnimationEnabled;
         }
 
+
         public void setClusterAnimationEnabled(final boolean clusterAnimationEnabled) {
             this.clusterAnimationEnabled = clusterAnimationEnabled;
         }
+
 
         /**
          * Return <code>true</code> if a trace is printed to the ImageJ's Result window.
@@ -466,9 +508,11 @@ public final class KMeans {
             return printTraceEnabled;
         }
 
+
         public void setPrintTraceEnabled(final boolean printTraceEnabled) {
             this.printTraceEnabled = printTraceEnabled;
         }
+
 
         /**
          * Make duplicate of this object. This a convenience wrapper for {@link #clone()} method.
