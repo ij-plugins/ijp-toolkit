@@ -3,6 +3,20 @@
 ******************************
 
 --------------------------------------------------------------------------
+Version 1.4.2
+--------------------------------------------------------------------------
+New:
+ * SRG: Add action icons.
+ * SRG: Send/load regions from ROI Manager.
+
+Improved:
+ * Better Glass Pane implementation.
+ * Update RGB <-> Lab conversions to better match http://www.brucelindbloom.com
+
+Developer visible:
+ * Add KMeans.closestCluster(final float[] x) to enabble using result to cluster new image.
+
+--------------------------------------------------------------------------
 Version 1.4.1
 --------------------------------------------------------------------------
 New:
