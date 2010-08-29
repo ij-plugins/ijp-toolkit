@@ -28,9 +28,7 @@ import com.jgoodies.binding.beans.PropertyConnector;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
-import ij.gui.Roi;
 import net.sf.ij_plugins.ui.UIUtils;
-import net.sf.ij_plugins.util.IJUtils;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -40,8 +38,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -112,7 +108,8 @@ public class MultiRegionManagerView extends JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        final JMenuItem regionSendToROIManager = new JMenuItem();
+        final JMenuItem toROIManagerMenuItem = new JMenuItem();
+        JMenuItem fromROIManagerMenuItem = new JMenuItem();
         final JScrollPane regionScrollPane = new JScrollPane();
         final JScrollPane subRegionScrollPane = new JScrollPane();
         final JButton addRegionButton = new JButton(model.createNewRegionAction());
@@ -125,14 +122,23 @@ public class MultiRegionManagerView extends JPanel {
         final JButton removeOverlayButton = new JButton(model.createRemoveOverlaysAction());
         final JSeparator jSeparator1 = new JSeparator();
 
-        regionSendToROIManager.setText("Send to ROI Manager");
-        regionSendToROIManager.setToolTipText("Send all ROIs in this region to ROI Manager");
-        regionSendToROIManager.addActionListener(new ActionListener() {
+        toROIManagerMenuItem.setText("Send to ROI Manager");
+        toROIManagerMenuItem.setToolTipText("Send all ROIs in this region to ROI Manager");
+        toROIManagerMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                regionSendToROIManagerActionPerformed(evt);
+                toROIManagerMenuItemActionPerformed(evt);
             }
         });
-        regionPopupMenu.add(regionSendToROIManager);
+        regionPopupMenu.add(toROIManagerMenuItem);
+
+        fromROIManagerMenuItem.setText("Load selected in ROI Manager");
+        fromROIManagerMenuItem.setToolTipText("Load ROIs in this region from ROI Manager. At least one must be selected in ROI Manager.");
+        fromROIManagerMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                fromROIManagerMenuItemActionPerformed(evt);
+            }
+        });
+        regionPopupMenu.add(fromROIManagerMenuItem);
 
         regionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         regionList.setSelectedIndex(0);
@@ -257,17 +263,14 @@ public class MultiRegionManagerView extends JPanel {
     }//GEN-LAST:event_regionListMouseClicked
 
 
-    private void regionSendToROIManagerActionPerformed(ActionEvent evt) {//GEN-FIRST:event_regionSendToROIManagerActionPerformed
-        final Region region = model.getSelectedRegion();
-        if (region != null) {
-            final List<Roi> rois = new ArrayList<Roi>();
-            for (SubRegion subRegion : region.getSubRegions()) {
-                rois.add(subRegion.getRoi());
-            }
-            IJUtils.addToROIManager(rois);
-        }
+    private void toROIManagerMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_toROIManagerMenuItemActionPerformed
+        model.sentCurrentRegionToROIManager();
+    }//GEN-LAST:event_toROIManagerMenuItemActionPerformed
 
-    }//GEN-LAST:event_regionSendToROIManagerActionPerformed
+
+    private void fromROIManagerMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fromROIManagerMenuItemActionPerformed
+        model.loadCurrentRegionFromROIManager();
+    }//GEN-LAST:event_fromROIManagerMenuItemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

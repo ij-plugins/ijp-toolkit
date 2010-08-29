@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,11 +26,11 @@ package net.sf.ij_plugins.ui.multiregion;
 import com.jgoodies.binding.list.ArrayListModel;
 import com.jgoodies.binding.list.ObservableList;
 import net.sf.ij_plugins.beans.AbstractModel;
-import net.sf.ij_plugins.ui.multiregion.SubRegion;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
+
 
 /**
  * @author Jarek Sacha
@@ -44,6 +45,7 @@ public class Region extends AbstractModel {
     private Color color = Color.RED;
     private final ObservableList<SubRegion> subRegions = new ArrayListModel<SubRegion>();
 
+
     public Region(final String name, final Color color) {
         setName(name);
         setColor(color);
@@ -52,9 +54,11 @@ public class Region extends AbstractModel {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
 
+
             public void intervalRemoved(ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
+
 
             public void contentsChanged(ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
@@ -62,26 +66,32 @@ public class Region extends AbstractModel {
         });
     }
 
+
     public Color getColor() {
         return color;
     }
+
 
     public void setColor(Color color) {
         firePropertyChange(PROPERTYNAME_COLOR, this.color, this.color = color);
     }
 
+
     public String getName() {
         return name;
     }
+
 
     public void setName(final String name) {
         firePropertyChange(PROPERTYNAME_NAME, this.name, this.name = name);
     }
 
+
     public void add(final SubRegion e) {
         subRegions.add(e);
         firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
     }
+
 
     public ObservableList<SubRegion> getSubRegions() {
         return subRegions;

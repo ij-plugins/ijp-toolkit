@@ -34,7 +34,7 @@
                 <Property name="useNullLayout" type="boolean" value="true"/>
             </Layout>
             <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="regionSendToROIManager">
+                <MenuItem class="javax.swing.JMenuItem" name="toROIManagerMenuItem">
                     <Properties>
                         <Property name="text" type="java.lang.String" value="Send to ROI Manager"/>
                         <Property name="toolTipText" type="java.lang.String"
@@ -43,11 +43,23 @@
                     <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener"
                                       parameters="java.awt.event.ActionEvent"
-                                      handler="regionSendToROIManagerActionPerformed"/>
+                                      handler="toROIManagerMenuItemActionPerformed"/>
                     </Events>
                     <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
                     </AuxValues>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="fromROIManagerMenuItem">
+                    <Properties>
+                        <Property name="text" type="java.lang.String" value="Load from ROI Manager"/>
+                        <Property name="toolTipText" type="java.lang.String"
+                                  value="Load ROIs in this region from ROI Manager"/>
+                    </Properties>
+                    <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener"
+                                      parameters="java.awt.event.ActionEvent"
+                                      handler="fromROIManagerMenuItemActionPerformed"/>
+                    </Events>
                 </MenuItem>
             </SubComponents>
         </Container>

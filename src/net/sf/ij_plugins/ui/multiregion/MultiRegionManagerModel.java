@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 
 package net.sf.ij_plugins.ui.multiregion;
@@ -30,23 +30,23 @@ import ij.gui.ImageCanvas;
 import ij.gui.ImageWindow;
 import ij.gui.Roi;
 import ij.gui.StackWindow;
+import ij.plugin.frame.RoiManager;
 import net.sf.ij_plugins.beans.AbstractModel;
 import net.sf.ij_plugins.ui.AbstractModelAction;
 import net.sf.ij_plugins.ui.OverlayCanvas;
 import net.sf.ij_plugins.ui.ShapeOverlay;
 import net.sf.ij_plugins.ui.UIUtils;
+import net.sf.ij_plugins.util.IJUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Presentation model for a MultiRegionManager view.
@@ -54,6 +54,8 @@ import java.util.List;
  * @author Jarek Sacha
  */
 public final class MultiRegionManagerModel extends AbstractModel {
+
+    // FIXME: A specific ImagePlus should be selected and remembered, rather than accessed by UIUtils.getImage().
 
     private static final Color[] COLORS = {
             Color.GREEN, Color.RED, Color.BLUE, Color.YELLOW, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.PINK,
@@ -80,17 +82,19 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
-            public void imageOpened(ImagePlus imp) {
+            public void imageOpened(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     updateShapes(lastSourceImage);
                 }
             }
+
 
             public void imageClosed(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     lastSourceImage = null;
                 }
             }
+
 
             public void imageUpdated(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
@@ -135,6 +139,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
         return new AbstractModelAction<MultiRegionManagerModel>("Add Current ROI", this) {
             private static final long serialVersionUID = 1L;
 
+
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionAddRegion();
             }
@@ -146,9 +151,11 @@ public final class MultiRegionManagerModel extends AbstractModel {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove", this) {
             private static final long serialVersionUID = 1L;
 
+
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionRemoveRegion();
             }
+
 
             @Override
             public boolean isEnabled() {
@@ -162,9 +169,11 @@ public final class MultiRegionManagerModel extends AbstractModel {
         return new AbstractModelAction<MultiRegionManagerModel>("Add Current ROI", this) {
             private static final long serialVersionUID = 1L;
 
+
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionAddSubRegion();
             }
+
 
             @Override
             public boolean isEnabled() {
@@ -178,9 +187,11 @@ public final class MultiRegionManagerModel extends AbstractModel {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove ROI", this) {
             private static final long serialVersionUID = 1L;
 
+
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionRemoveSubRegion();
             }
+
 
             @Override
             public boolean isEnabled() {
@@ -194,9 +205,11 @@ public final class MultiRegionManagerModel extends AbstractModel {
         return new AbstractModelAction<MultiRegionManagerModel>("Redraw Overlays", this) {
             private static final long serialVersionUID = 1L;
 
+
             public void actionPerformed(final ActionEvent e) {
                 updateShapes(WindowManager.getCurrentImage());
             }
+
 
             @Override
             public boolean isEnabled() {
@@ -209,6 +222,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
     Action createRemoveOverlaysAction() {
         return new AbstractModelAction<MultiRegionManagerModel>("Remove Overlays", this) {
             private static final long serialVersionUID = 1L;
+
 
             public void actionPerformed(final ActionEvent e) {
                 updateShapes(null);
@@ -226,10 +240,12 @@ public final class MultiRegionManagerModel extends AbstractModel {
         }
     }
 
+
     private Color nextColor() {
         final Color rc = COLORS[colorCount++ % COLORS.length];
         return new Color(rc.getRed(), rc.getGreen(), rc.getBlue(), OVERLAY_ALPHA);
     }
+
 
     void addRegion(final Region region) {
         regions.add(region);
@@ -360,16 +376,65 @@ public final class MultiRegionManagerModel extends AbstractModel {
     }
 
 
+    public void sentCurrentRegionToROIManager() {
+        final Region region = getSelectedRegion();
+        if (region != null) {
+            final List<Roi> rois = new ArrayList<Roi>();
+            for (SubRegion subRegion : region.getSubRegions()) {
+                rois.add(subRegion.getRoi());
+            }
+            IJUtils.addToROIManager(rois);
+        }
+    }
+
+
+    public void loadCurrentRegionFromROIManager() {
+        if (selectedRegion == null) {
+            return;
+        }
+
+        final Roi[] rois = getRoiManager().getSelectedRoisAsArray();
+        if (rois == null || rois.length < 1) {
+            return;
+        }
+
+        for (final Roi roi : rois) {
+            selectedRegion.add(new SubRegion(roi.getName(), roi));
+        }
+
+        final ImagePlus imp = UIUtils.getImage();
+        if (imp != null) {
+            updateShapes(imp);
+        }
+    }
+
+
+    private RoiManager getRoiManager() {
+        // Workaround for ImageJ bug.
+        // RoiManger is a singleton in function, but it has constructors.
+        // If a second instance of RoiManager is created it should not be used.
+
+        // Make sure that RoiManager is created.
+        new RoiManager();
+
+        // Get reference of primary instance, which may or may not be one created above.
+        return RoiManager.getInstance();
+    }
+
+
     private class ListListener implements ListDataListener {
+
         public void intervalAdded(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
+
         public void intervalRemoved(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
+
 
         public void contentsChanged(final ListDataEvent e) {
             updateShapes(lastSourceImage);

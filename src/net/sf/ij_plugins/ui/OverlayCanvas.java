@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,11 +24,12 @@ package net.sf.ij_plugins.ui;
 
 import ij.ImagePlus;
 import ij.gui.ImageCanvas;
+import net.sf.ij_plugins.util.Validate;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+
 
 /**
  * Custom ImageJ's image canvas for display of overlays.
@@ -37,7 +39,8 @@ import java.awt.geom.AffineTransform;
  */
 public final class OverlayCanvas extends ImageCanvas {
 
-    private Iterable<ShapeOverlay> overlays;
+    private Iterable<ShapeOverlay> overlays = new ArrayList<ShapeOverlay>();
+
     private static final long serialVersionUID = 4763707694765672142L;
 
 
@@ -78,6 +81,7 @@ public final class OverlayCanvas extends ImageCanvas {
 
 
     public void setOverlays(final Iterable<ShapeOverlay> overlays) {
+        Validate.argumentNotNull(overlays, "overlays");
         this.overlays = overlays;
     }
 }
