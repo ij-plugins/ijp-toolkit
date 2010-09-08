@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ import net.sf.ij_plugins.io.IOUtils;
 import java.awt.*;
 import java.io.File;
 
+
 /**
  * Unit test for SRG.
  *
@@ -38,14 +39,16 @@ import java.io.File;
 public class SRGTest extends TestCase {
     //TODO: Verify that segmentation is correct.
 
-    private static final String OUTPUT_DIR = "tmp";
+    private static final String OUTPUT_DIR = "test/data/tmp";
 
     private static final String BLOBS_FILE_NAME = "test/data/blobs.png";
     private static final String RAMP_FILE_NAME = "test/data/ramp.png";
 
+
     public SRGTest(final String test) {
         super(test);
     }
+
 
     public void testRamp() throws Exception {
         // Load test image
@@ -66,11 +69,21 @@ public class SRGTest extends TestCase {
 
         final ByteProcessor regionMask = srg.getRegionMarkers();
         assertNotNull(regionMask);
-//        final ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
-//        new File(OUTPUT_DIR).mkdirs();
-//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_output.tif"));
-//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_animation.tif"));
+        final ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
+        new File(OUTPUT_DIR).mkdirs();
+        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_output.tif"));
+        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_animation.tif"));
+
+        final ByteProcessor regionMarkers = srg.getRegionMarkers();
+
+        // Region 1
+        assertEquals(1, regionMarkers.get(60, 60));
+
+        // Region 2
+        assertEquals(2, regionMarkers.get(120, 60));
+
     }
+
 
     public void testRampWithMask() throws Exception {
         // Load test image
@@ -97,10 +110,10 @@ public class SRGTest extends TestCase {
         srg.run();
 
         final ByteProcessor regionMarkers = srg.getRegionMarkers();
-//        ImagePlus imp1 = new ImagePlus("Region Markers", regionMarkers);
-//        new File(OUTPUT_DIR).mkdirs();
-//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_output.tif"));
-//        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_animation.tif"));
+        ImagePlus imp1 = new ImagePlus("Region Markers", regionMarkers);
+        new File(OUTPUT_DIR).mkdirs();
+        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_output.tif"));
+        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_animation.tif"));
 
         // Mask
         assertEquals(0, regionMarkers.get(10, 10));

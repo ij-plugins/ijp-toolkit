@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,9 +28,11 @@ import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
+import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.beans.AbstractModel;
 import net.sf.ij_plugins.im3d.grow.SRG;
+import net.sf.ij_plugins.im3d.grow.SRG2DVector;
 import net.sf.ij_plugins.ui.UIUtils;
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerModel;
 import net.sf.ij_plugins.ui.multiregion.Region;
@@ -43,6 +45,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Model for {@link net.sf.ij_plugins.grow.RegionGrowingView}.
@@ -104,20 +107,40 @@ final class RegionGrowingModel extends AbstractModel {
 
 
     private static Result runSRG(final ImagePlus imp, final ByteProcessor seeds, final int numberOfAnimationFrames) {
-        final SRG srg = new SRG();
-        final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
-        srg.addProgressListener(progressBarAdapter);
-        try {
-            srg.setImage((ByteProcessor) imp.getProcessor().duplicate().convertToByte(true));
-            srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
-            srg.setSeeds(seeds);
-            srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
-            srg.run();
-        } finally {
-            srg.removeProgressListener(progressBarAdapter);
-        }
+        final ImageProcessor ip = imp.getProcessor().duplicate();
+        if (ip instanceof ColorProcessor) {
+            final ColorProcessor cp = (ColorProcessor) ip;
+            final SRG2DVector srg = new SRG2DVector();
+            final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+            srg.addProgressListener(progressBarAdapter);
+            try {
+                srg.setImage(cp);
+                srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
+                srg.setSeeds(seeds);
+                srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
+                srg.run();
+            } finally {
+                srg.removeProgressListener(progressBarAdapter);
+            }
 
-        return new Result(srg.getRegionMarkers(), srg.getAnimationStack());
+            return new Result(srg.getRegionMarkers(), srg.getAnimationStack());
+
+        } else {
+            final SRG srg = new SRG();
+            final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+            srg.addProgressListener(progressBarAdapter);
+            try {
+                srg.setImage(ip.convertToFloat());
+                srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
+                srg.setSeeds(seeds);
+                srg.setNumberOfAnimationFrames(numberOfAnimationFrames);
+                srg.run();
+            } finally {
+                srg.removeProgressListener(progressBarAdapter);
+            }
+
+            return new Result(srg.getRegionMarkers(), srg.getAnimationStack());
+        }
     }
 
 
@@ -192,8 +215,10 @@ final class RegionGrowingModel extends AbstractModel {
 
 
     private static final class Result {
+
         final ByteProcessor segments;
         final ImageStack animationFrames;
+
 
         private Result(final ByteProcessor segments, final ImageStack animationFrames) {
             this.segments = segments;

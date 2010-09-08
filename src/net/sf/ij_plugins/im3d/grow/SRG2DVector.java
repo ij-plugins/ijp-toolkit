@@ -22,10 +22,9 @@
 
 package net.sf.ij_plugins.im3d.grow;
 
-import ij.process.ByteProcessor;
-import ij.process.FloatProcessor;
-import ij.process.ImageProcessor;
-import ij.process.ShortProcessor;
+import ij.process.ColorProcessor;
+import net.sf.ij_plugins.multiband.VectorMath;
+import net.sf.ij_plugins.multiband.VectorProcessor;
 import net.sf.ij_plugins.util.Validate;
 
 import java.awt.*;
@@ -77,29 +76,20 @@ import java.awt.*;
  *
  * @author Jarek Sacha
  */
-public final class SRG extends SRG2DBase {
+public final class SRG2DVector extends SRG2DBase {
 
-    // External properties
-    private FloatProcessor image;
-    private float[] imagePixels;
+    private VectorProcessor image;
+    private float[][] imagePixels;
 
 
     /**
-     * Set image to be segmented. Supported types are: {@link ByteProcessor}, {@link ShortProcessor}, and {@link FloatProcessor}.
+     * Set image to be segmented.
      *
      * @param image image.
      */
-    public void setImage(final ImageProcessor image) {
+    public void setImage(final VectorProcessor image) {
         Validate.argumentNotNull(image, "image");
-        if (image instanceof ByteProcessor) {
-            setImage((ByteProcessor) image);
-        } else if (image instanceof ShortProcessor) {
-            setImage((ShortProcessor) image);
-        } else if (image instanceof FloatProcessor) {
-            setImage((FloatProcessor) image);
-        } else {
-            throw new IllegalArgumentException("Unsupported image type: " + image.getClass().getName());
-        }
+        this.image = image.duplicate();
     }
 
 
@@ -108,79 +98,77 @@ public final class SRG extends SRG2DBase {
      *
      * @param image image.
      */
-    public void setImage(final ByteProcessor image) {
+    public void setImage(final ColorProcessor image) {
         Validate.argumentNotNull(image, "image");
-        this.image = (FloatProcessor) image.convertToFloat();
+        this.image = new VectorProcessor(image);
     }
 
 
-    /**
-     * Set image to be segmented.
-     *
-     * @param image image.
-     */
-    public void setImage(final ShortProcessor image) {
-        Validate.argumentNotNull(image, "image");
-        this.image = (FloatProcessor) image.convertToFloat();
-    }
-
-
-    /**
-     * Set image to be segmented.
-     *
-     * @param image image.
-     */
-    public void setImage(final FloatProcessor image) {
-        Validate.argumentNotNull(image, "image");
-        this.image = (FloatProcessor) image.duplicate();
-    }
-
-
-    @Override
-    protected double distanceFromMean(int offset, RegionInfo regionInfo) {
-        return imagePixels[offset] - ((RegionInfoScalar) regionInfo).mean();
-    }
-
-
-    @Override
     protected void initializeImageStructures() {
         xSize = image.getWidth();
         ySize = image.getHeight();
-        imagePixels = (float[]) image.getPixels();
+        imagePixels = image.getPixels();
     }
 
 
-    @Override
-    protected RegionInfo newRegionInfo(int originalSeedID) {
-        return new RegionInfoScalar(image, originalSeedID);
+    protected double distanceFromMean(final int offset, final RegionInfo regionInfo) {
+        final float[] value = imagePixels[offset];
+        return VectorMath.distanceSqr(value, ((RegionInfoVector) regionInfo).mean());
     }
 
 
-    private static class RegionInfoScalar extends RegionInfo {
+    protected RegionInfo newRegionInfo(final int originalSeedID) {
+        return new RegionInfoVector(image, originalSeedID);
+    }
+
+
+    private static class RegionInfoVector extends RegionInfo {
 
         private long pointCount;
-        private double sumIntensity;
-        private final FloatProcessor image;
+        private final double[] sumIntensity;
+        private final VectorProcessor image;
 
 
-        public RegionInfoScalar(final FloatProcessor image, final int originalSeedID) {
+        public RegionInfoVector(final VectorProcessor image, final int originalSeedID) {
             super(originalSeedID);
             this.image = image;
+            sumIntensity = new double[image.getNumberOfValues()];
         }
 
 
         public void addPoint(final Point point) {
             ++pointCount;
-            sumIntensity += image.getf(point.x, point.y);
+            final float[] b = new float[sumIntensity.length];
+            add(sumIntensity, image.get(point.x, point.y, b));
         }
 
 
-        public double mean() {
+        public double[] mean() {
             if (pointCount == 0) {
-                return 0;
+                return new double[sumIntensity.length];
             } else {
-                return sumIntensity / pointCount;
+                return divide(sumIntensity, pointCount);
             }
         }
+
+
+        private static void add(final double[] a, final float[] b) {
+            for (int i = 0; i < a.length; i++) {
+                a[i] += b[i];
+            }
+        }
+
+
+        private static double[] divide(final double[] a, final double b) {
+            final double[] r = new double[a.length];
+            for (int i = 0; i < a.length; i++) {
+                r[i] = a[i] / b;
+            }
+
+            return r;
+        }
+
     }
+
+
 }

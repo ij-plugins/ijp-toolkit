@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,22 +22,29 @@
 package net.sf.ij_plugins.multiband;
 
 /**
- * In-plece vertor operations
+ * In-place vector operations
  */
-final class VectorMath {
-    final static public void add(float[] a, float[] b) {
+public final class VectorMath {
+
+    private VectorMath() {
+    }
+
+
+    public static void add(final float[] a, final float[] b) {
         for (int i = 0; i < a.length; i++) {
             a[i] += b[i];
         }
     }
 
-    final static public void subtract(float[] a, float[] b) {
+
+    public static void subtract(final float[] a, final float[] b) {
         for (int i = 0; i < a.length; i++) {
             a[i] -= b[i];
         }
     }
 
-    final static public double distance(float[] a, float[] b) {
+
+    public static double distance(final float[] a, final float[] b) {
         double s = 0;
         for (int i = 0; i < a.length; i++) {
             double d = a[i] - b[i];
@@ -45,4 +53,27 @@ final class VectorMath {
 
         return Math.sqrt(s);
     }
+
+
+    public static double distance(final double[] a, final double[] b) {
+        double s = 0;
+        for (int i = 0; i < a.length; i++) {
+            double d = a[i] - b[i];
+            s += d * d;
+        }
+
+        return Math.sqrt(s);
+    }
+
+
+    public static double distanceSqr(final float[] a, final double[] b) {
+        double s = 0;
+        for (int i = 0; i < a.length; i++) {
+            double d = a[i] - b[i];
+            s += d * d;
+        }
+
+        return s;
+    }
+
 }
