@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,13 +18,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 
 package net.sf.ij_plugins.im3d.morphology;
 
 import ij.IJ;
 import ij.ImageStack;
+import ij.plugin.filter.RankFilters;
+
 
 /**
  * Morphological operations in 3D.
@@ -33,6 +35,7 @@ import ij.ImageStack;
  */
 
 public class Morpho {
+
     private final static int MIN_VALUE = 0;
     private final static int MAX_VALUE = 255;
 
@@ -53,7 +56,7 @@ public class Morpho {
      * @param src  Source image.
      * @param dest Destination image.
      */
-    public void dilate(ImageStack src, ImageStack dest) {
+    public void dilate(final ImageStack src, final ImageStack dest) {
 
         initialize(src, dest);
 
@@ -61,33 +64,33 @@ public class Morpho {
         IJ.showProgress(0);
         for (int z = zMin; z < zMax; ++z) {
 
-            byte[] thisDestSlice = destPixels[z];
+            final byte[] thisDestSlice = destPixels[z];
             for (int y = yMin; y < yMax; ++y) {
 
-                int destOffset = y * xSize;
+                final int destOffset = y * xSize;
                 for (int x = xMin; x < xMax; ++x) {
 
                     // Iterate through neighborhood and find minimum value
                     int maxValue = MIN_VALUE;
                     for (int dz = -1; dz <= 1; ++dz) {
-                        int zz = z + dz;
+                        final int zz = z + dz;
                         if (zz < zMin || zz >= zMax) {
                             continue;
                         }
-                        byte[] thisNhbSlice = srcPixels[zz];
+                        final byte[] thisNhbSlice = srcPixels[zz];
                         for (int dy = -1; dy <= 1; ++dy) {
-                            int yy = y + dy;
+                            final int yy = y + dy;
                             if (yy < yMin || yy >= yMax) {
                                 continue;
                             }
-                            int nhbOffset = yy * xSize;
+                            final int nhbOffset = yy * xSize;
                             for (int dx = -1; dx <= 1; ++dx) {
                                 int xx = x + dx;
                                 if (xx < xMin || xx >= xMax) {
                                     continue;
                                 }
 
-                                int value = thisNhbSlice[nhbOffset + xx] & 0xff;
+                                final int value = thisNhbSlice[nhbOffset + xx] & 0xff;
                                 if (value > maxValue) {
                                     maxValue = value;
                                 }
@@ -111,7 +114,7 @@ public class Morpho {
      * @param src  Source image.
      * @param dest Destination image.
      */
-    public void erode(ImageStack src, ImageStack dest) {
+    public void erode(final ImageStack src, final ImageStack dest) {
 
         initialize(src, dest);
 
@@ -119,10 +122,10 @@ public class Morpho {
         IJ.showProgress(0);
         for (int z = zMin; z < zMax; ++z) {
 
-            byte[] thisDestSlice = destPixels[z];
+            final byte[] thisDestSlice = destPixels[z];
             for (int y = yMin; y < yMax; ++y) {
 
-                int destOffset = y * xSize;
+                final int destOffset = y * xSize;
                 for (int x = xMin; x < xMax; ++x) {
 
                     // Iterate through neighborhood and find minimum value
@@ -132,20 +135,20 @@ public class Morpho {
                         if (zz < zMin || zz >= zMax) {
                             continue;
                         }
-                        byte[] thisNhbSlice = srcPixels[zz];
+                        final byte[] thisNhbSlice = srcPixels[zz];
                         for (int dy = -1; dy <= 1; ++dy) {
-                            int yy = y + dy;
+                            final int yy = y + dy;
                             if (yy < yMin || yy >= yMax) {
                                 continue;
                             }
-                            int nhbOffset = yy * xSize;
+                            final int nhbOffset = yy * xSize;
                             for (int dx = -1; dx <= 1; ++dx) {
-                                int xx = x + dx;
+                                final int xx = x + dx;
                                 if (xx < xMin || xx >= xMax) {
                                     continue;
                                 }
 
-                                int value = thisNhbSlice[nhbOffset + xx] & 0xff;
+                                final int value = thisNhbSlice[nhbOffset + xx] & 0xff;
                                 if (value < minValue) {
                                     minValue = value;
                                 }
@@ -161,9 +164,89 @@ public class Morpho {
     }
 
 
+    /**
+     * Perform morphological erosion (min) of <code>src</code> image, write results to
+     * <code>dest</code> image. <code>src</code> and <code>dest</code> must be of the same type and
+     * size.
+     *
+     * @param src  Source image.
+     * @param dest Destination image.
+     */
+    public void median(final ImageStack src, final ImageStack dest) {
+
+        initialize(src, dest);
+
+        // Iterate through ROI pixels
+        IJ.showProgress(0);
+        for (int z = zMin; z < zMax; ++z) {
+
+            final byte[] thisDestSlice = destPixels[z];
+            for (int y = yMin; y < yMax; ++y) {
+
+                final int destOffset = y * xSize;
+                for (int x = xMin; x < xMax; ++x) {
+
+                    // Iterate through neighborhood and accumulate values for median computation
+                    final float[] values = new float[3 * 3 * 3];
+                    int nbValues = 0;
+                    for (int dz = -1; dz <= 1; ++dz) {
+                        final int zz = z + dz;
+                        if (zz < zMin || zz >= zMax) {
+                            continue;
+                        }
+                        final byte[] thisNhbSlice = srcPixels[zz];
+                        for (int dy = -1; dy <= 1; ++dy) {
+                            final int yy = y + dy;
+                            if (yy < yMin || yy >= yMax) {
+                                continue;
+                            }
+                            final int nhbOffset = yy * xSize;
+                            for (int dx = -1; dx <= 1; ++dx) {
+                                final int xx = x + dx;
+                                if (xx < xMin || xx >= xMax) {
+                                    continue;
+                                }
+
+                                final int value = thisNhbSlice[nhbOffset + xx] & 0xff;
+                                values[nbValues] = value;
+                                nbValues++;
+                            }
+                        }
+                    }
+
+                    // Find median value
+                    final int medianValue = median(values, nbValues);
+                    thisDestSlice[destOffset + x] = (byte) (medianValue & 0xff);
+                }
+            }
+            IJ.showProgress((z + 1.0) / zSize);
+        }
+    }
+
+
+    static int median(final float[] values, final int nbValues) {
+        final int m;
+        if (nbValues < 1) {
+            throw new IllegalArgumentException("Argument 'nbValues' cannot be less than 1.");
+        }
+
+        final int n = nbValues / 2;
+        if (nbValues % 2 == 1) {
+            m = Math.round(RankFilters.findNthLowestNumber(values, nbValues, n));
+        } else {
+            final float m1 = RankFilters.findNthLowestNumber(values, nbValues, n - 1);
+            final float m2 = RankFilters.findNthLowestNumber(values, nbValues, n);
+            m = Math.round((m1 + m2) / 2f);
+        }
+
+        return m;
+    }
+
     /*
     *
     */
+
+
     private void initialize(ImageStack src, ImageStack dest) {
         xSize = src.getWidth();
         xMin = 0;
@@ -175,8 +258,8 @@ public class Morpho {
         zMin = 0;
         zMax = zSize;
 
-        Object[] srcImageArray = src.getImageArray();
-        Object[] destImageArray = dest.getImageArray();
+        final Object[] srcImageArray = src.getImageArray();
+        final Object[] destImageArray = dest.getImageArray();
 
         // Create pixel handles
         srcPixels = new byte[zSize][];
