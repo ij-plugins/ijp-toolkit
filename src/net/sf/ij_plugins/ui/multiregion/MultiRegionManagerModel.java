@@ -30,7 +30,6 @@ import ij.gui.ImageCanvas;
 import ij.gui.ImageWindow;
 import ij.gui.Roi;
 import ij.gui.StackWindow;
-import ij.plugin.frame.RoiManager;
 import net.sf.ij_plugins.beans.AbstractModel;
 import net.sf.ij_plugins.ui.AbstractModelAction;
 import net.sf.ij_plugins.ui.OverlayCanvas;
@@ -393,7 +392,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             return;
         }
 
-        final Roi[] rois = getRoiManager().getSelectedRoisAsArray();
+        final Roi[] rois = IJUtils.getRoiManager().getSelectedRoisAsArray();
         if (rois == null || rois.length < 1) {
             return;
         }
@@ -406,19 +405,6 @@ public final class MultiRegionManagerModel extends AbstractModel {
         if (imp != null) {
             updateShapes(imp);
         }
-    }
-
-
-    private RoiManager getRoiManager() {
-        // Workaround for ImageJ bug.
-        // RoiManger is a singleton in function, but it has constructors.
-        // If a second instance of RoiManager is created it should not be used.
-
-        // Make sure that RoiManager is created.
-        new RoiManager();
-
-        // Get reference of primary instance, which may or may not be one created above.
-        return RoiManager.getInstance();
     }
 
 

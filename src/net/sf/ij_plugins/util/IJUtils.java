@@ -46,7 +46,7 @@ public final class IJUtils {
      */
     public static void addToROIManager(final Collection<Roi> rois) {
 
-        final RoiManager roiManager = new RoiManager();
+        final RoiManager roiManager = getRoiManager();
 
         // Clear current content
         roiManager.runCommand("Reset");
@@ -57,4 +57,15 @@ public final class IJUtils {
     }
 
 
+    public static RoiManager getRoiManager() {
+        // Workaround for ImageJ bug.
+        // RoiManger is a singleton in function, but it has constructors.
+        // If a second instance of RoiManager is created it should not be used.
+
+        // Make sure that RoiManager is created.
+        new RoiManager();
+
+        // Get reference of primary instance, which may or may not be one created above.
+        return RoiManager.getInstance();
+    }
 }

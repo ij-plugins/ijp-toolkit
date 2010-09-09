@@ -37,6 +37,7 @@ import net.sf.ij_plugins.ui.UIUtils;
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerModel;
 import net.sf.ij_plugins.ui.multiregion.Region;
 import net.sf.ij_plugins.ui.multiregion.SubRegion;
+import net.sf.ij_plugins.util.IJUtils;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import javax.swing.*;
@@ -149,7 +150,7 @@ final class RegionGrowingModel extends AbstractModel {
         regionsImp.show();
 
         // Add result ROIs to ROI Manager
-        final RoiManager roiManager = new RoiManager();
+        final RoiManager roiManager = IJUtils.getRoiManager();
         roiManager.runCommand("Reset");
         final int n = regions.size();
         for (int i = 0; i < n; i++) {
