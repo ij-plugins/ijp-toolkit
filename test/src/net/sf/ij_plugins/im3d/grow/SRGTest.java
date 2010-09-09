@@ -72,7 +72,7 @@ public class SRGTest extends TestCase {
         final ImagePlus imp1 = new ImagePlus("Region Mask", regionMask);
         new File(OUTPUT_DIR).mkdirs();
         IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_output.tif"));
-        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_test_animation.tif"));
+        IOUtils.saveAsTiff(srg.getAnimationStack(), new File(OUTPUT_DIR, "srg_ramp_test_animation.tif"));
 
         final ByteProcessor regionMarkers = srg.getRegionMarkers();
 
@@ -113,7 +113,7 @@ public class SRGTest extends TestCase {
         ImagePlus imp1 = new ImagePlus("Region Markers", regionMarkers);
         new File(OUTPUT_DIR).mkdirs();
         IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_output.tif"));
-        IOUtils.saveAsTiff(imp1, new File(OUTPUT_DIR, "srg_ramp_with_mask_test_animation.tif"));
+        IOUtils.saveAsTiff(srg.getAnimationStack(), new File(OUTPUT_DIR, "srg_ramp_with_mask_test_animation.tif"));
 
         // Mask
         assertEquals(0, regionMarkers.get(10, 10));

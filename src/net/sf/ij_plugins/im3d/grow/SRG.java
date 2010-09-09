@@ -138,7 +138,7 @@ public final class SRG extends SRG2DBase {
 
     @Override
     protected double distanceFromMean(int offset, RegionInfo regionInfo) {
-        return imagePixels[offset] - ((RegionInfoScalar) regionInfo).mean();
+        return Math.abs(imagePixels[offset] - ((RegionInfoScalar) regionInfo).mean());
     }
 
 
