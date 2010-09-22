@@ -29,6 +29,9 @@ import ij.process.FloatProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
 import net.sf.ij_plugins.util.Validate;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -200,7 +203,7 @@ public final class KMeans {
     private void cluster() {
 
         // Select initial partitioning - initialize cluster centers
-        clusterCenters = generateRandomClusterCenters();
+        clusterCenters = initializeClusterCenters();
         if (config.isPrintTraceEnabled()) {
             printClusters("Initial clusters");
         }
@@ -210,39 +213,6 @@ public final class KMeans {
             clusterAnimation.addSlice("Initial", encodeSegmentedImage());
         }
 
-//        public int[] getHistogram() {
-//            if (mask!=null)
-//                return getHistogram(mask);
-//            int[] histogram = new int[256];
-//            for (int y=roiY; y<(roiY+roiHeight); y++) {
-//                int i = y * width + roiX;
-//                for (int x=roiX; x<(roiX+roiWidth); x++) {
-//                    int v = pixels[i++] & 0xff;
-//                    histogram[v]++;
-//                }
-//            }
-//            return histogram;
-//        }
-//
-//        public int[] getHistogram(ImageProcessor mask) {
-//            if (mask.getWidth()!=roiWidth||mask.getHeight()!=roiHeight)
-//                throw new IllegalArgumentException(maskSizeError(mask));
-//            int v;
-//            int[] histogram = new int[256];
-//            byte[] mpixels = (byte[])mask.getPixels();
-//            for (int y=roiY, my=0; y<(roiY+roiHeight); y++, my++) {
-//                int i = y * width + roiX;
-//                int mi = my * roiWidth;
-//                for (int x=roiX; x<(roiX+roiWidth); x++) {
-//                    if (mpixels[mi++]!=0) {
-//                        v = pixels[i] & 0xff;
-//                        histogram[v]++;
-//                    }
-//                    i++;
-//                }
-//            }
-//            return histogram;
-//        }
 
         // Optimize cluster centers
         boolean converged = false;
@@ -293,6 +263,94 @@ public final class KMeans {
 
 
     /**
+     * Initialize clusters using k-means++ approach, see http://en.wikipedia.org/wiki/K-means++
+     *
+     * @return initial cluster centers.
+     */
+    private float[][] initializeClusterCenters() {
+        final Random random = createRandom();
+
+        final int nbClusters = config.getNumberOfClusters();
+        final int width = vp.getWidth();
+        final int height = vp.getHeight();
+        final int nbPixels = width * height;
+
+        // Cluster centers
+        final List<float[]> centers = new ArrayList<float[]>();
+        // Location of pixels used as cluster centers
+        final List<Point> centerLocation = new ArrayList<Point>();
+
+        // Choose one center uniformly at random from among pixels
+        {
+            final Point p = toPoint(random.nextInt(nbPixels), width);
+            centerLocation.add(p);
+            centers.add(vp.get(p.x, p.y));
+        }
+
+        final double[] dp2 = new double[nbPixels];
+        while (centers.size() < nbClusters) {
+            assert centers.size() == centerLocation.size();
+
+            // For each data point p compute D(p), the distance between p and the nearest center that
+            // has already been chosen.
+            double sum = 0;
+            final float[][] centersArray = centers.toArray(new float[centers.size()][]);
+            for (int offset = 0; offset < nbPixels; offset++) {
+                final Point p = toPoint(offset, width);
+
+                // Test that this is not a repeat of already selected center
+                if (centerLocation.contains(p)) {
+                    continue;
+                }
+
+                // Distance to closest cluster
+                final float[] v = vp.get(p.x, p.y);
+                final int cci = closestCluster(v, centersArray);
+                final double d = distance(v, centersArray[cci]);
+                sum += d * d;
+                dp2[offset] = sum;
+            }
+
+
+            // Add one new data point at random as a new center, using a weighted probability distribution where
+            // a point p is chosen with probability proportional to D(p)^2
+            final double r = random.nextDouble() * sum;
+            for (int offset = 0; offset < nbPixels; offset++) {
+                final Point p = toPoint(offset, width);
+
+                // Test that this is not a repeat of already selected center
+                if (centerLocation.contains(p)) {
+                    continue;
+                }
+
+                if (dp2[offset] >= r) {
+                    centerLocation.add(p);
+                    final float[] v = vp.get(p.x, p.y);
+                    centers.add(v);
+                    break;
+                }
+            }
+        }
+
+        return centers.toArray(new float[centers.size()][]);
+    }
+
+
+    private Random createRandom() {
+        return config.isRandomizationSeedEnabled()
+                ? new Random(config.getRandomizationSeed())
+                : new Random();
+    }
+
+
+    private static Point toPoint(final int offset, final int width) {
+        final int y = offset / width;
+        final int x = offset - y * width;
+        return new Point(x, y);
+    }
+
+
+    /**
      * Return index of the closest cluster to point <code>x</code>.
      *
      * @param x              point coordinates.
@@ -323,56 +381,12 @@ public final class KMeans {
      * @return distance.
      */
     private static double distance(final float[] a, final float[] b) {
-        float sum = 0;
+        double sum = 0;
         for (int i = 0; i < a.length; i++) {
-            final float d = a[i] - b[i];
+            final double d = a[i] - b[i];
             sum += d * d;
         }
-        return java.lang.Math.sqrt(sum);
-    }
-
-
-    /**
-     * @return cluster centers.
-     */
-    private float[][] generateRandomClusterCenters() {
-
-        final Random random = config.isRandomizationSeedEnabled()
-                ? new Random(config.getRandomizationSeed())
-                : new Random();
-
-        final float[][] centers = new float[config.getNumberOfClusters()][];
-        for (int i = 0; i < centers.length; i++) {
-            centers[i] = new float[vp.getNumberOfValues()];
-            // Make sure that each center is unique
-            boolean unique = false;
-            int count = 0;
-            while (!unique) {
-                // Initialize center
-                final int sampleX = random.nextInt(vp.getWidth());
-                final int sampleY = random.nextInt(vp.getHeight());
-                vp.get(sampleX, sampleY, centers[i]);
-
-                // Test if it is not a repeat of already selected center.
-                unique = true;
-                for (int j = 0; j < i; ++j) {
-                    final double d = distance(centers[j], centers[i]);
-                    if (d < config.getTolerance()) {
-                        unique = false;
-                        break;
-                    }
-                }
-
-                ++count;
-                if (count > vp.getWidth() * vp.getHeight()) {
-                    throw new RuntimeException("Unable to initialize " + centers.length +
-                            " unique cluster centroids.\n" +
-                            "Input image may not have enough unique pixel values.");
-                }
-            }
-        }
-
-        return centers;
+        return Math.sqrt(sum);
     }
 
 
@@ -381,12 +395,12 @@ public final class KMeans {
      */
     private static final class MeanElement {
 
-        final float[] sum;
-        int count;
+        private final double[] sum;
+        private int count;
 
 
         public MeanElement(final int elementSize) {
-            sum = new float[elementSize];
+            sum = new double[elementSize];
         }
 
 
@@ -405,7 +419,7 @@ public final class KMeans {
         public float[] mean() {
             final float[] r = new float[sum.length];
             for (int i = 0; i < r.length; i++) {
-                r[i] = sum[i] / count;
+                r[i] = (float) (sum[i] / count);
             }
 
             return r;

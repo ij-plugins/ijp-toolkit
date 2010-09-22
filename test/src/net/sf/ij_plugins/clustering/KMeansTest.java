@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.clustering;
 
@@ -29,13 +29,16 @@ import net.sf.ij_plugins.io.IOUtils;
 
 import java.io.File;
 
+
 /**
  * @author Jarek Sacha
  */
 public final class KMeansTest extends junit.framework.TestCase {
+
     public KMeansTest(final java.lang.String test) {
         super(test);
     }
+
 
     public void test01() throws java.lang.Exception {
         final File imageFile = new File("test/data/clown24.png");
@@ -43,8 +46,8 @@ public final class KMeansTest extends junit.framework.TestCase {
         final double[][] expectedCenters = {
                 {182.389, 108.690, 45.733},
                 {224.589, 187.087, 151.137},
-                {30.557, 10.600, 5.617},
                 {115.623, 51.116, 20.329},
+                {30.557, 10.600, 5.617},
         };
 
         assertTrue("File exists", imageFile.exists());
@@ -82,6 +85,7 @@ public final class KMeansTest extends junit.framework.TestCase {
 //        final FileSaver saver = new FileSaver(imp1);
 //        saver.saveAsTiff("kmeans-output.tif");
     }
+
 
     public void testColor() {
 //    ColorProcessor r = new ColorProcessor(stack.getWidth(), stack.getHeight());
