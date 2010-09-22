@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -24,7 +24,7 @@ package net.sf.ij_plugins.multiband;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.ProgressBar;
-import ij.plugin.filter.Duplicater;
+import ij.plugin.Duplicator;
 import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageConverter;
@@ -241,20 +241,30 @@ public class VectorProcessor {
 
 
     private static ImagePlus duplicate(final ImagePlus imp) {
-        // TODO: remove duplicate method in KMeansClusteringPlugin
-        final Duplicater duplicater = new Duplicater();
-        duplicater.setup(null, imp);
-        return duplicater.duplicateStack(imp, imp.getTitle() + "-duplicate");
+        final Duplicator duplicator = new Duplicator();
+        return duplicator.run(imp);
     }
 
 
     /**
      * Return pixel value at coordinates (<code>x</code>, <code>y</code>).
      *
+     * @param x x
+     * @param y y
+     * @return pixel value.
+     */
+    public float[] get(final int x, final int y) {
+        return get(x, y, null);
+    }
+
+
+    /**
+     * Return pixel value at coordinates (<code>x</code>, <code>y</code>).  Use {@code dest} to store the value.
+     *
      * @param x    x
      * @param y    y
      * @param dest array to store pixel value, can be {@code null}.
-     * @return pixel value
+     * @return pixel value. If {@code dest} is not {@code null} it will be returned.
      */
     public float[] get(final int x, final int y, float[] dest) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
