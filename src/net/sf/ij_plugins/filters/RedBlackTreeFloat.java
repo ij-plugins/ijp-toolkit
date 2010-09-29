@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -24,12 +24,14 @@ package net.sf.ij_plugins.filters;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Implements a red-black tree.
  *
  * @author Jarek Sacha
  */
 public final class RedBlackTreeFloat {
+
     private Node root;
 
     private static final int RED = 0;
@@ -97,7 +99,7 @@ public final class RedBlackTreeFloat {
     }
 
 
-    private int countBlackToParent(Node leaf, Node node) {
+    private int countBlackToParent(final Node leaf, final Node node) {
 
         if (leaf == Node.NULL) {
             throw new IllegalArgumentException("Leaf node cannot be NULL");
@@ -239,7 +241,8 @@ public final class RedBlackTreeFloat {
         if (i < 1) {
             throw new IllegalArgumentException("Rank argument i must be larger than zero.");
         }
-        Node n = select(root, i);
+
+        final Node n = select(root, i);
         if (n == Node.NULL) {
             throw new IllegalArgumentException("Input argument rank is too large.");
         }
@@ -249,7 +252,7 @@ public final class RedBlackTreeFloat {
 
 
     private Node select(final Node x, final int i) {
-        int r = x.left.size + 1;
+        final int r = x.left.size + 1;
         if (i == r) {
             return x;
         } else {
@@ -349,6 +352,7 @@ public final class RedBlackTreeFloat {
         y.size = x.size;
         x.size = x.left.size + x.right.size + 1;
     }
+
 
     private void leftRotate(final Node x) {
         final Node y = x.right;
@@ -493,23 +497,24 @@ public final class RedBlackTreeFloat {
      * Tree node.
      */
     private static final class Node {
+
         public static final Node NULL;
 
         /**
          * Data stored by the node
          */
-        float key;
+        private float key;
         /**
          * Left child
          */
-        Node left;
+        private Node left;
         /**
          * Right child
          */
-        Node right;
-        Node parent;
-        int color;
-        int size;
+        private Node right;
+        private Node parent;
+        private int color;
+        private int size;
 
 
         static {
@@ -523,7 +528,7 @@ public final class RedBlackTreeFloat {
         }
 
 
-        Node(float element) {
+        Node(final float element) {
             this.key = element;
             this.left = NULL;
             this.right = NULL;

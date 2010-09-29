@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,14 +23,16 @@ package net.sf.ij_plugins.filters;
 
 import junit.framework.TestCase;
 
+
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class RedBlackTreeFloatTest extends TestCase {
+
     public RedBlackTreeFloatTest(String test) {
         super(test);
     }
+
 
     /**
      * The fixture set up called before every test method.
@@ -37,11 +40,13 @@ public class RedBlackTreeFloatTest extends TestCase {
     protected void setUp() throws Exception {
     }
 
+
     /**
      * The fixture clean up called after every test method.
      */
     protected void tearDown() throws Exception {
     }
+
 
     public void testInsert1() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
@@ -59,6 +64,7 @@ public class RedBlackTreeFloatTest extends TestCase {
 
     }
 
+
     public void testInsert2() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
 
@@ -71,6 +77,7 @@ public class RedBlackTreeFloatTest extends TestCase {
             assertTrue("" + i, tree.contains(keys[i]));
         }
     }
+
 
     public void testRemove1() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
@@ -94,28 +101,30 @@ public class RedBlackTreeFloatTest extends TestCase {
         tree.verify();
     }
 
+
     public void testRemove2() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
 
 
         final float[] keys = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        for (int i = 0; i < keys.length; i++) {
-            tree.insert(keys[i]);
+        for (float key : keys) {
+            tree.insert(key);
             tree.verify();
         }
 
-        for (int i = 0; i < keys.length; i++) {
-            assertTrue(tree.contains(keys[i]));
+        for (float key : keys) {
+            assertTrue(tree.contains(key));
         }
 
 
-        for (int i = 0; i < keys.length; i++) {
-            assertTrue(tree.remove(keys[i]));
+        for (float key : keys) {
+            assertTrue(tree.remove(key));
             tree.verify();
-            assertFalse(tree.contains(keys[i]));
+            assertFalse(tree.contains(key));
         }
     }
+
 
     public void testSelect1() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
@@ -123,13 +132,13 @@ public class RedBlackTreeFloatTest extends TestCase {
 
         final float[] keys = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        for (int i = 0; i < keys.length; i++) {
-            tree.insert(keys[i]);
+        for (float key : keys) {
+            tree.insert(key);
             tree.verify();
         }
 
-        for (int i = 0; i < keys.length; i++) {
-            assertTrue(tree.contains(keys[i]));
+        for (float key : keys) {
+            assertTrue(tree.contains(key));
         }
 
 
@@ -138,28 +147,30 @@ public class RedBlackTreeFloatTest extends TestCase {
         }
     }
 
+
     public void testSelect2() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
 
 
         final float[] keys = {206, 202, 201, 220, 191, 199, 187, 217, 17};
 
-        for (int i = 0; i < keys.length; i++) {
-            tree.insert(keys[i]);
+        for (float key : keys) {
+            tree.insert(key);
         }
 
         assertEquals(201, tree.select(5), 0.001);
     }
+
 
     public void testSelect3() throws Exception {
         final RedBlackTreeFloat tree = new RedBlackTreeFloat();
 
 
         final float[][] keys = {
-        {206, 202, 201},
-        {220, 191, 199},
-        {187, 217, 17},
-        {252, 240, 221}};
+                {206, 202, 201},
+                {220, 191, 199},
+                {187, 217, 17},
+                {252, 240, 221}};
 
         for (int i = 0; i < keys[0].length; i++) {
             tree.insert(keys[0][i]);
