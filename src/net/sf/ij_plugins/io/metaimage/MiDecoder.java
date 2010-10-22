@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
 import ij.IJ;
@@ -26,11 +27,13 @@ import ij.ImagePlus;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.OpenDialog;
+import ij.io.RandomAccessStream;
 import ij.plugin.PlugIn;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.Validate;
 
 import java.io.*;
+
 
 /**
  * Decodes an image file in MetaImage format. MetaImage is one of the formats supported by ITK
@@ -41,7 +44,7 @@ import java.io.*;
  * @author Jarek Sacha
  * @since July 31, 2002
  */
-public class MiDecoder implements PlugIn {
+public final class MiDecoder implements PlugIn {
     // TODO Validate MetaImage tag dependency (some tags need always be present, some only if other tags are present, etc.)
 
     private static final String DIALOG_CAPTION = "MetaImage Reader";
@@ -49,7 +52,7 @@ public class MiDecoder implements PlugIn {
     /**
      * Symbol separating a tag from its value in the MetaImage header.
      */
-    public static final String ASSIGNMENT_SYMBOL = "=";
+    private static final String ASSIGNMENT_SYMBOL = "=";
 
 
     /**
@@ -66,21 +69,20 @@ public class MiDecoder implements PlugIn {
      * @return Decoded image.
      * @throws MiException In case of IO errors.
      */
-    public static ImagePlus open(File file) throws MiException {
-        MiDecoder miDecoder = new MiDecoder();
+    public static ImagePlus open(final File file) throws MiException {
+        final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header
-        FileInfo fileInfo = miDecoder.decodeHeader(file);
+        final FileInfo fileInfo = miDecoder.decodeHeader(file);
         if (IJ.debugMode) {
-            System.out.println("FileInfo: " + fileInfo.toString());
+            IJ.log("FileInfo: " + fileInfo.toString());
         }
 
         // Read binary image data
-        FileOpener fileOpener = new FileOpener(fileInfo);
-        ImagePlus imp = fileOpener.open(false);
+        final FileOpener fileOpener = new FileOpener(fileInfo);
+        final ImagePlus imp = fileOpener.open(false);
         if (imp == null) {
-            throw new MiException("Unable to read image data from '"
-                    + fileInfo.fileName + "'.");
+            throw new MiException("Unable to read image data from '" + fileInfo.fileName + "'.");
         }
 
         return imp;
@@ -90,23 +92,25 @@ public class MiDecoder implements PlugIn {
     /*
     *
     */
-    private MiTagValuePair extractTagAndValue(String line) throws MiException {
+
+
+    private MiTagValuePair extractTagAndValue(final String line) throws MiException {
 
         Validate.argumentNotNull(line, "line");
 
-        int position = line.indexOf(ASSIGNMENT_SYMBOL);
+        final int position = line.indexOf(ASSIGNMENT_SYMBOL);
         if (position < 0) {
             throw new MiException(
                     "Missing tag or value: unable to locate the assignment symbol '"
                             + ASSIGNMENT_SYMBOL + "'.");
         }
-        String tagName = line.substring(0, position).trim();
-        MiTagValuePair tag = new MiTagValuePair();
+        final String tagName = line.substring(0, position).trim();
+        final MiTagValuePair tag = new MiTagValuePair();
         try {
             tag.id = (MiTag) MiTag.DIM_SIZE.byName(tagName);
         }
-        catch (IllegalArgumentException ex) {
-            throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.");
+        catch (final IllegalArgumentException ex) {
+            throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.", ex);
         }
 
         tag.value = line.substring(position + 1, line.length()).trim();
@@ -123,17 +127,18 @@ public class MiDecoder implements PlugIn {
      * @return MetaImage header information converted to FileInfo format.
      * @throws MiException In case of I/O errors or incorrect header format.
      */
-    private FileInfo decodeHeader(File file) throws MiException {
+    private FileInfo decodeHeader(final File file) throws MiException {
         final FileInfo fileInfo = new FileInfo();
         final BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file));
-        } catch (FileNotFoundException ex) {
-            throw new MiException("Error opening file " + ex.getMessage());
+        } catch (final FileNotFoundException ex) {
+            throw new MiException("Error opening file " + ex.getMessage(), ex);
         }
 
         int lineNb = 0;
         boolean elementSpacingDefined = false;
+        boolean localElementalData = false;
         try {
             String line = reader.readLine();
             // Keep track of line number for error reporting.
@@ -143,7 +148,7 @@ public class MiDecoder implements PlugIn {
                 ++lineNb;
 
                 // Parse line, throw exception if tag's name is invalid.
-                MiTagValuePair tag = extractTagAndValue(line);
+                final MiTagValuePair tag = extractTagAndValue(line);
 
                 // TAG: NDim
                 if (tag.id == MiTag.N_DIMS) {
@@ -162,7 +167,7 @@ public class MiDecoder implements PlugIn {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    int[] dimSize = TextUtil.parseIntArray(tag.value);
+                    final int[] dimSize = TextUtil.parseIntArray(tag.value);
                     if (dimSize.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -219,7 +224,7 @@ public class MiDecoder implements PlugIn {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    float[] elementSpacing = TextUtil.parseFloatArray(tag.value);
+                    final float[] elementSpacing = TextUtil.parseFloatArray(tag.value);
                     if (elementSpacing.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -243,7 +248,7 @@ public class MiDecoder implements PlugIn {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    float[] elementSize = TextUtil.parseFloatArray(tag.value);
+                    final float[] elementSize = TextUtil.parseFloatArray(tag.value);
                     if (elementSize.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -263,8 +268,8 @@ public class MiDecoder implements PlugIn {
                     try {
                         elementType = (MiElementType) MiElementType.MET_CHAR.byName(tag.value);
                     }
-                    catch (IllegalArgumentException ex) {
-                        throw new MiException("Invalid element type '" + line + "'.");
+                    catch (final IllegalArgumentException ex) {
+                        throw new MiException("Invalid element type '" + line + "'.", ex);
                     }
                     if (elementType == MiElementType.MET_UCHAR) {
                         fileInfo.fileType = FileInfo.GRAY8;
@@ -283,24 +288,22 @@ public class MiDecoder implements PlugIn {
                 // TAG: HeaderSize
                 else if (tag.id == MiTag.HEADER_SIZE) {
                     try {
-                        int headerSize = Integer.parseInt(tag.value);
+                        final int headerSize = Integer.parseInt(tag.value);
                         if (headerSize < 0) {
-                            throw new MiException("Header size cannot be negative '"
-                                    + line + "'.");
+                            throw new MiException("Header size cannot be negative '" + line + "'.");
                         }
                         fileInfo.offset = headerSize;
                     }
-                    catch (NumberFormatException ex) {
-                        throw new MiException("Unable to parse value of tag '" + line
-                                + "' as integer.");
+                    catch (final NumberFormatException ex) {
+                        throw new MiException("Unable to parse value of tag '" + line + "' as integer.", ex);
                     }
                 }
                 // TAG: ElementDataFile
                 else if (tag.id == MiTag.ELEMENT_DATA_FILE) {
                     if ("LOCAL".compareTo(tag.value) == 0) {
-                        throw new MiException(
-                                "Unsupported format MetaImage format variant. Tag '"
-                                        + line + "' is not supported.");
+                        localElementalData = true;
+                        fileInfo.directory = file.getAbsoluteFile().getParent() + File.separator;
+                        fileInfo.fileName = file.getName();
                     } else {
                         // Try to determine absolute path to image data
                         // Try relative path
@@ -318,19 +321,55 @@ public class MiDecoder implements PlugIn {
             }
 
         }
-        catch (Exception ex) {
-            throw new MiException("Error parsing line "
-                    + lineNb + " of the MetaImage header. " + ex.getMessage());
+        catch (final Exception ex) {
+            throw new MiException("Error parsing line " + lineNb + " of the MetaImage header. " + ex.getMessage(), ex);
         }
         finally {
             if (reader != null) {
                 try {
                     reader.close();
                 }
-                catch (IOException ex) {
+                catch (final IOException ex) {
                     ex.printStackTrace();
                 }
             }
+        }
+
+        // If data is local, determine the offset
+        if (localElementalData) {
+            // Determine offset to image data, skip 'lineNb' line feeds
+
+            final RandomAccessStream in;
+            try {
+                //noinspection IOResourceOpenedButNotSafelyClosed
+                in = new RandomAccessStream(new BufferedInputStream(new FileInputStream(file)));
+            } catch (final FileNotFoundException ex) {
+                throw new MiException("Error reading file: '" + file.getAbsolutePath() + "'. " + ex.getMessage(), ex);
+            }
+
+            try {
+                int lineFeedCount = 0;
+                do {
+                    final int v = in.read();
+                    if (v == '\n') {
+                        lineFeedCount++;
+                    } else if (v == -1) {
+                        throw new MiException("Unexpected end of file while searching for image data offset.");
+                    }
+                } while (lineFeedCount < lineNb);
+                fileInfo.longOffset = in.getLongFilePointer();
+            } catch (final IOException ex) {
+                throw new MiException("Exception while locating offset to image data. " + ex.getMessage(), ex);
+            } finally {
+                try {
+                    in.close();
+                }
+                catch (final IOException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+
         }
 
         return fileInfo;
@@ -344,6 +383,7 @@ public class MiDecoder implements PlugIn {
      * @since August 3, 2002
      */
     private static class MiTagValuePair {
+
         /**
          * Tag id
          */
@@ -361,37 +401,25 @@ public class MiDecoder implements PlugIn {
      * @param arg Description of the Parameter
      */
     @Override
-    public void run(String arg) {
-        try {
-            // Get file name
-            OpenDialog openDialog = new OpenDialog("Open as MetaImage...", arg);
-            if (openDialog.getFileName() == null) {
-                return;
-            }
-
-            File file = new File(openDialog.getDirectory(), openDialog.getFileName());
-            try {
-                IJ.showStatus("Opening MetaImage: " + file.getName());
-                long tStart = System.currentTimeMillis();
-                ImagePlus imp = MiDecoder.open(file);
-                long tStop = System.currentTimeMillis();
-                imp.show();
-                IJ.showStatus("MetaImage loaded in " + (tStop - tStart) + " ms.");
-            }
-            catch (MiException ex) {
-                ex.printStackTrace();
-                IJ.showMessage(DIALOG_CAPTION, "Error opening image: '"
-                        + file.getAbsolutePath() + "'\n" + ex.getMessage());
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-                IJ.showMessage(DIALOG_CAPTION, "Error opening image: '"
-                        + file.getAbsolutePath() + "'\n" + ex);
-            }
-
+    public void run(final String arg) {
+        // Get file name
+        final OpenDialog openDialog = new OpenDialog("Open as MetaImage...", arg);
+        if (openDialog.getFileName() == null) {
+            return;
         }
-        catch (Throwable t) {
-            t.printStackTrace();
+
+        final File file = new File(openDialog.getDirectory(), openDialog.getFileName());
+        try {
+            IJ.showStatus("Opening MetaImage: " + file.getName());
+            final long tStart = System.currentTimeMillis();
+            final ImagePlus imp = MiDecoder.open(file);
+            final long tStop = System.currentTimeMillis();
+            imp.show();
+            IJ.showStatus("MetaImage loaded in " + (tStop - tStart) + " ms.");
+        } catch (final MiException ex) {
+            ex.printStackTrace();
+            IJ.showMessage(DIALOG_CAPTION, "Error opening image: '"
+                    + file.getAbsolutePath() + "'\n" + ex.getMessage());
         }
     }
 }
