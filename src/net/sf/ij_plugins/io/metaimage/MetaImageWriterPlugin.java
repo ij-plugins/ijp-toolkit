@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,11 +18,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.io.metaimage;
 
 import ij.plugin.PlugIn;
+
 
 /**
  * Write image (including stacks) in MetaImage format. MetaImage is one of the formats supported by
@@ -34,13 +35,9 @@ import ij.plugin.PlugIn;
  */
 
 public class MetaImageWriterPlugin implements PlugIn {
-    /**
-     * Main processing method for the net.sf.ij_plugins.io.metaimage.MetaImageWriterPlugin object
-     *
-     * @param parm1 Description of Parameter
-     */
+
     @Override
-    public void run(String parm1) {
-        new MiEncoder().run(parm1);
+    public void run(final String arg) {
+        new MiEncoder().run(arg);
     }
 }

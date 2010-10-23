@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,30 +18,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.io.metaimage;
 
 import ij.plugin.PlugIn;
 
+
 /**
  * Read image (including stacks) in MetaImage format. MetaImage is one of the formats supported by
  * ITK (http://www.itk.org). More information about MetaImage, including C++ code, can be found
  * http://caddlab.rad.unc.edu/technologies/MetaImage/ . This implementation is intended to be
- * compatibile with ITK version of MetaImage.
+ * compatible with ITK version of MetaImage.
  *
  * @author Jarek Sacha
  * @since June 18, 2002
  */
 
 public class MetaImageReaderPlugin implements PlugIn {
-    /**
-     * Main processing method for the net.sf.ij_plugins.io.metaimage.MetaImageReaderPlugin object
-     *
-     * @param parm1 Description of Parameter
-     */
+
     @Override
-    public void run(String parm1) {
-        new MiDecoder().run(parm1);
+    public void run(final String arg) {
+        new MiDecoder().run(arg);
     }
 }

@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
 /**
@@ -32,11 +33,6 @@ public class MiException extends Exception {
     private static final long serialVersionUID = 1L;
 
 
-    /**
-     * Constructor for the MetaImageException object
-     *
-     * @param message Message.
-     */
     public MiException(final String message) {
         super(message);
     }
