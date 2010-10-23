@@ -479,7 +479,7 @@ public final class RedBlackTree<K extends Comparable<K>> {
         //        return (key < x.key) ? find(x.left, key) : find(x.right, key);
 
         while (x != Node.NULL && !key.equals(x.key)) {
-            x = key.compareTo(x.key) < 0 ? x.left : x.right;
+            x = key.compareTo(x.key) <= 0 ? x.left : x.right;
         }
 
         return x;
