@@ -26,9 +26,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
-import ij.io.OpenDialog;
 import ij.io.RandomAccessStream;
-import ij.plugin.PlugIn;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.Validate;
 
@@ -44,10 +42,9 @@ import java.io.*;
  * @author Jarek Sacha
  * @since July 31, 2002
  */
-public final class MiDecoder implements PlugIn {
+public final class MiDecoder {
     // TODO Validate MetaImage tag dependency (some tags need always be present, some only if other tags are present, etc.)
 
-    private static final String DIALOG_CAPTION = "MetaImage Reader";
 
     /**
      * Symbol separating a tag from its value in the MetaImage header.
@@ -55,10 +52,7 @@ public final class MiDecoder implements PlugIn {
     private static final String ASSIGNMENT_SYMBOL = "=";
 
 
-    /**
-     * Constructor for the MiDecoder object
-     */
-    public MiDecoder() {
+    private MiDecoder() {
     }
 
 
@@ -87,11 +81,6 @@ public final class MiDecoder implements PlugIn {
 
         return imp;
     }
-
-
-    /*
-    *
-    */
 
 
     private MiTagValuePair extractTagAndValue(final String line) throws MiException {
@@ -320,8 +309,7 @@ public final class MiDecoder implements PlugIn {
                 }
             }
 
-        }
-        catch (final Exception ex) {
+        } catch (final IOException ex) {
             throw new MiException("Error parsing line " + lineNb + " of the MetaImage header. " + ex.getMessage(), ex);
         }
         finally {
@@ -387,39 +375,10 @@ public final class MiDecoder implements PlugIn {
         /**
          * Tag id
          */
-        public MiTag id;
+        private MiTag id;
         /**
          * Tag value
          */
-        public String value;
-    }
-
-
-    /**
-     * Main processing method for the MiDecoder object
-     *
-     * @param arg Description of the Parameter
-     */
-    @Override
-    public void run(final String arg) {
-        // Get file name
-        final OpenDialog openDialog = new OpenDialog("Open as MetaImage...", arg);
-        if (openDialog.getFileName() == null) {
-            return;
-        }
-
-        final File file = new File(openDialog.getDirectory(), openDialog.getFileName());
-        try {
-            IJ.showStatus("Opening MetaImage: " + file.getName());
-            final long tStart = System.currentTimeMillis();
-            final ImagePlus imp = MiDecoder.open(file);
-            final long tStop = System.currentTimeMillis();
-            imp.show();
-            IJ.showStatus("MetaImage loaded in " + (tStop - tStart) + " ms.");
-        } catch (final MiException ex) {
-            ex.printStackTrace();
-            IJ.showMessage(DIALOG_CAPTION, "Error opening image: '"
-                    + file.getAbsolutePath() + "'\n" + ex.getMessage());
-        }
+        private String value;
     }
 }

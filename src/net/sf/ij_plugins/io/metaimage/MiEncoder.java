@@ -19,16 +19,14 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.WindowManager;
 import ij.io.FileInfo;
 import ij.io.ImageWriter;
-import ij.io.SaveDialog;
 import ij.measure.Calibration;
-import ij.plugin.PlugIn;
 import net.sf.ij_plugins.util.Validate;
 
 import java.io.File;
@@ -46,21 +44,17 @@ import java.io.IOException;
  * @author Jarek Sacha
  * @since June 18, 2002
  */
-public class MiEncoder implements PlugIn {
+public final class MiEncoder {
     // TODO: Fix MetaImage format for unambiguous element size, e.g. MET_LONG could be 32 bit on 32 bit processors and 64 bit on 64 bit processors. A fix would be to use MET_INT32.
     // TODO: Fix MetaImage tag names to distinguish file side and memory side representation, and real word coordinates. For instance ElementType refers to how a pixel value in represented in file, ElementSize refers to size of the of the volume represented by a single pixel in real word coordinates. Naming convention seams to be confusing.
 
-    private static final String DIALOG_CAPTION = "MetaImage Writer";
     private static final String[] HEADER_EXTENSIONS = {".mha", ".mhd"};
     private static final String RAW_DATA_EXTENSION = ".raw";
     private static final String ASSIGNMENT_SEPARATOR = " = ";
     private static final String LINE_SEPARATOR = "\n";
 
 
-    /**
-     * Constructor for the MiEncoder object
-     */
-    public MiEncoder() {
+    private MiEncoder() {
     }
 
 
@@ -83,11 +77,11 @@ public class MiEncoder implements PlugIn {
         String headerName = null;
         String rawDataName = null;
         // Check if header extension is already present.
-        for (final String HEADER_EXTENSION : HEADER_EXTENSIONS) {
-            if (fileRootName.endsWith(HEADER_EXTENSION)) {
+        for (final String headerExtension : HEADER_EXTENSIONS) {
+            if (fileRootName.endsWith(headerExtension)) {
                 headerName = fileRootName;
                 final String nameRoot = fileRootName.substring(
-                        0, fileRootName.length() - HEADER_EXTENSION.length());
+                        0, fileRootName.length() - headerExtension.length());
                 rawDataName = nameRoot + RAW_DATA_EXTENSION;
                 break;
             }
@@ -129,7 +123,7 @@ public class MiEncoder implements PlugIn {
             fileWriter = new FileWriter(headerFileName);
             fileWriter.write(createHeaderText(imp, rawDataFileName));
         } catch (final IOException ex) {
-            throw new MiException("Error writing to header file '" + headerFileName + "'.\n" + ex.getMessage());
+            throw new MiException("Error writing to header file '" + headerFileName + "'.\n" + ex.getMessage(), ex);
         } finally {
             if (fileWriter != null) {
                 try {
@@ -239,7 +233,7 @@ public class MiEncoder implements PlugIn {
             final ImageWriter imageWriter = new ImageWriter(fileInfo);
             imageWriter.write(fileOutputStream);
         } catch (final IOException ex) {
-            throw new MiException("Error writing to raw image file '" + fileName + "'.\n" + ex.getMessage());
+            throw new MiException("Error writing to raw image file '" + fileName + "'.\n" + ex.getMessage(), ex);
         } finally {
             if (fileOutputStream != null) {
                 try {
@@ -252,35 +246,4 @@ public class MiEncoder implements PlugIn {
     }
 
 
-    /**
-     * Main processing method for the MiEncoder object, required by PlugIn interface.
-     *
-     * @param parm1 Not used.
-     */
-    @Override
-    public void run(final String parm1) {
-        // Get current image
-        final ImagePlus imp = WindowManager.getCurrentImage();
-        if (imp == null) {
-            IJ.noImage();
-            return;
-        }
-
-        // Get file name
-        final SaveDialog saveDialog = new SaveDialog(DIALOG_CAPTION,
-                imp.getTitle(), HEADER_EXTENSIONS[0]);
-        if (saveDialog.getFileName() == null) {
-            return;
-        }
-
-        final File file = new File(saveDialog.getDirectory(), saveDialog.getFileName());
-        try {
-            write(imp, file.getAbsolutePath());
-        } catch (final MiException ex) {
-            IJ.showMessage(DIALOG_CAPTION, ex.getMessage());
-            return;
-        }
-
-        IJ.showStatus("MetaImage " + saveDialog.getFileName() + " saved.");
-    }
 }

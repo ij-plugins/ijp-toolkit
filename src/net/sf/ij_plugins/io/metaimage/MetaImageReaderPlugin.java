@@ -19,9 +19,15 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.io.OpenDialog;
 import ij.plugin.PlugIn;
+
+import java.io.File;
 
 
 /**
@@ -34,10 +40,32 @@ import ij.plugin.PlugIn;
  * @since June 18, 2002
  */
 
-public class MetaImageReaderPlugin implements PlugIn {
+public final class MetaImageReaderPlugin implements PlugIn {
+
+    private static final String TITLE = "MetaImage Reader";
+
 
     @Override
     public void run(final String arg) {
-        new MiDecoder().run(arg);
+
+        // Get file name
+        final OpenDialog openDialog = new OpenDialog("Open as MetaImage...", arg);
+        if (openDialog.getFileName() == null) {
+            return;
+        }
+
+        final File file = new File(openDialog.getDirectory(), openDialog.getFileName());
+        try {
+            IJ.showStatus("Opening MetaImage: " + file.getName());
+            final long tStart = System.currentTimeMillis();
+            final ImagePlus imp = MiDecoder.open(file);
+            final long tStop = System.currentTimeMillis();
+            imp.show();
+            IJ.showStatus("MetaImage loaded in " + (tStop - tStart) + " ms.");
+        } catch (final MiException ex) {
+            ex.printStackTrace();
+            IJ.error(TITLE, "Error opening image: '"
+                    + file.getAbsolutePath() + "'\n" + ex.getMessage());
+        }
     }
 }

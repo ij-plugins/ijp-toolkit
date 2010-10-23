@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
 import net.sf.ij_plugins.util.Enumeration;
@@ -30,7 +31,7 @@ import net.sf.ij_plugins.util.Enumeration;
  * @author Jarek Sacha
  * @since June 18, 2002
  */
-public class MiElementType extends Enumeration {
+public final class MiElementType extends Enumeration {
 
     /**
      * MET_UCHAR

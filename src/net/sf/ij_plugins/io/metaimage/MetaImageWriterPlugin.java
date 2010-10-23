@@ -19,9 +19,16 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.WindowManager;
+import ij.io.SaveDialog;
 import ij.plugin.PlugIn;
+
+import java.io.File;
 
 
 /**
@@ -34,10 +41,34 @@ import ij.plugin.PlugIn;
  * @since June 18, 2002
  */
 
-public class MetaImageWriterPlugin implements PlugIn {
+public final class MetaImageWriterPlugin implements PlugIn {
+
+    private static final String TITLE = "MetaImage Writer";
+
 
     @Override
     public void run(final String arg) {
-        new MiEncoder().run(arg);
+        // Get current image
+        final ImagePlus imp = WindowManager.getCurrentImage();
+        if (imp == null) {
+            IJ.noImage();
+            return;
+        }
+
+        // Get file name
+        final SaveDialog saveDialog = new SaveDialog(TITLE, imp.getTitle(), ".mha");
+        if (saveDialog.getFileName() == null) {
+            return;
+        }
+
+        final File file = new File(saveDialog.getDirectory(), saveDialog.getFileName());
+        try {
+            MiEncoder.write(imp, file.getAbsolutePath());
+        } catch (final MiException ex) {
+            IJ.error(TITLE, ex.getMessage());
+            return;
+        }
+
+        IJ.showStatus("MetaImage " + saveDialog.getFileName() + " saved.");
     }
 }
