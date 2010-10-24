@@ -25,7 +25,6 @@ package net.sf.ij_plugins.clustering;
 import ij.IJ;
 import ij.ImageStack;
 import ij.process.ByteProcessor;
-import ij.process.FloatProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
 import net.sf.ij_plugins.util.Validate;
 
@@ -42,7 +41,7 @@ import java.util.Random;
  */
 public final class KMeans {
 
-    private Config config;
+    private final Config config;
 
 //    private Rectangle roi;
 //    private ByteProcessor mask;
@@ -143,7 +142,7 @@ public final class KMeans {
         Validate.isTrue(x.length == vp.getNumberOfValues(),
                 "Expecting argument 'x' of length " + vp.getNumberOfValues() + ", got " + x.length + ".");
 
-        return closestCluster(x, clusterCenters);
+        return KMeansUtils.closestCluster(x, clusterCenters);
     }
 
 
@@ -153,7 +152,7 @@ public final class KMeans {
         final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
         while (iterator.hasNext()) {
             final float[] v = iterator.next();
-            final int c = closestCluster(v, clusterCenters);
+            final int c = KMeansUtils.closestCluster(v, clusterCenters);
             dest.putPixel(iterator.getX(), iterator.getY(), c);
         }
         return dest;
@@ -161,26 +160,7 @@ public final class KMeans {
 
 
     private ImageStack encodeCentroidValueImage() {
-        final int width = vp.getWidth();
-        final int height = vp.getHeight();
-        final int numberOfValues = vp.getNumberOfValues();
-        final ImageStack s = new ImageStack(width, height);
-        for (int i = 0; i < numberOfValues; ++i) {
-            // TODO: Band label should be the same as in the input stack
-            s.addSlice("Band i", new FloatProcessor(width, height));
-        }
-
-        final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
-        final Object[] pixels = s.getImageArray();
-        while (iterator.hasNext()) {
-            final float[] v = iterator.next();
-            final int c = closestCluster(v, clusterCenters);
-            for (int j = 0; j < numberOfValues; ++j) {
-                ((float[]) pixels[j])[iterator.getOffset()] = clusterCenters[c][j];
-            }
-        }
-
-        return s;
+        return KMeansUtils.encodeCentroidValueImage(clusterCenters, vp);
     }
 
 
@@ -226,10 +206,10 @@ public final class KMeans {
 
             // Generate a new partition by assigning each pattern to its closest cluster center
             // Compute new cluster centers as the centroids of the clusters
-            VectorProcessor.PixelIterator iterator = vp.pixelIterator();
+            final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
             while (iterator.hasNext()) {
                 final float[] v = iterator.next();
-                final int c = closestCluster(v, clusterCenters);
+                final int c = KMeansUtils.closestCluster(v, clusterCenters);
                 newClusterMeans[c].add(v);
             }
 
@@ -238,7 +218,7 @@ public final class KMeans {
             for (int i = 0; i < clusterCenters.length; i++) {
                 final float[] clusterCenter = clusterCenters[i];
                 final float[] newClusterCenter = newClusterMeans[i].mean();
-                distanceSum += distance(clusterCenter, newClusterCenter);
+                distanceSum += KMeansUtils.distance(clusterCenter, newClusterCenter);
             }
 
             converged = distanceSum < config.getTolerance();
@@ -305,8 +285,8 @@ public final class KMeans {
 
                 // Distance to closest cluster
                 final float[] v = vp.get(p.x, p.y);
-                final int cci = closestCluster(v, centersArray);
-                final double d = distance(v, centersArray[cci]);
+                final int cci = KMeansUtils.closestCluster(v, centersArray);
+                final double d = KMeansUtils.distance(v, centersArray[cci]);
                 sum += d * d;
                 dp2[offset] = sum;
             }
@@ -347,46 +327,6 @@ public final class KMeans {
         final int y = offset / width;
         final int x = offset - y * width;
         return new Point(x, y);
-    }
-
-
-    /**
-     * Return index of the closest cluster to point <code>x</code>.
-     *
-     * @param x              point coordinates.
-     * @param clusterCenters cluster centers.
-     * @return index of the closest cluster
-     */
-    private static int closestCluster(final float[] x, final float[][] clusterCenters) {
-        double minDistance = Double.MAX_VALUE;
-        int closestCluster = -1;
-        for (int i = 0; i < clusterCenters.length; i++) {
-            final float[] clusterCenter = clusterCenters[i];
-            final double d = distance(clusterCenter, x);
-            if (d < minDistance) {
-                minDistance = d;
-                closestCluster = i;
-            }
-        }
-
-        return closestCluster;
-    }
-
-
-    /**
-     * Distance between points <code>a</code> and <code>b</code>.
-     *
-     * @param a first point.
-     * @param b second point.
-     * @return distance.
-     */
-    private static double distance(final float[] a, final float[] b) {
-        double sum = 0;
-        for (int i = 0; i < a.length; i++) {
-            final double d = a[i] - b[i];
-            sum += d * d;
-        }
-        return Math.sqrt(sum);
     }
 
 
@@ -536,7 +476,7 @@ public final class KMeans {
         public Config duplicate() {
             try {
                 return (Config) this.clone();
-            } catch (java.lang.CloneNotSupportedException e) {
+            } catch (final java.lang.CloneNotSupportedException e) {
                 throw new java.lang.RuntimeException("Error cloning object of class " + getClass().getName() + ".", e);
             }
         }

@@ -26,6 +26,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.GenericDialog;
+import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
@@ -44,11 +45,15 @@ import java.awt.image.IndexColorModel;
  */
 public final class KMeansClusteringPlugin implements PlugIn {
 
+    public static final String RESULTS_WINDOW_TITLE = "k-means cluster centers";
+
     private static final KMeans.Config CONFIG = new KMeans.Config();
     private static boolean showCentroidImage;
+    private static boolean sendToResultTable;
 
     private static final boolean APPLY_LUT = false;
     private static final boolean AUTO_BRIGHTNESS = true;
+
 
     private static final String TITLE = "k-means Clustering";
     private static final String ABOUT = "" +
@@ -94,6 +99,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         dialog.addCheckbox("Show_clusters_as_centroid_value", showCentroidImage);
         dialog.addCheckbox("Enable_clustering_animation", CONFIG.isClusterAnimationEnabled());
         dialog.addCheckbox("Print optimization trace", CONFIG.isPrintTraceEnabled());
+        dialog.addCheckbox("Send_to_results_table", sendToResultTable);
 
         // Show dialog
         dialog.showDialog();
@@ -109,6 +115,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         showCentroidImage = dialog.getNextBoolean();
         CONFIG.setClusterAnimationEnabled(dialog.getNextBoolean());
         CONFIG.setPrintTraceEnabled(dialog.getNextBoolean());
+        sendToResultTable = dialog.getNextBoolean();
 
         run(imp);
     }
@@ -160,9 +167,26 @@ public final class KMeansClusteringPlugin implements PlugIn {
 
         // Show centroid image
         if (showCentroidImage) {
-            ImagePlus cvImp = createCentroidImage(imp.getType(),
+            final ImagePlus cvImp = KMeansUtils.createCentroidImage(imp.getType(),
                     kMeans.getCentroidValueImage());
             cvImp.show();
+        }
+
+        if (sendToResultTable) {
+            // Send cluster centers to a Result Table
+            final float[][] centers = kMeans.getClusterCenters();
+            final String[] labels = stack.getStack().getSliceLabels();
+            final ResultsTable rt = new ResultsTable();
+            for (int i = 0; i < centers.length; i++) {
+                rt.incrementCounter();
+                final float[] center = centers[i];
+                rt.addLabel("Cluster", "" + i);
+                for (int j = 0; j < center.length; j++) {
+                    final float v = center[j];
+                    rt.addValue("" + labels[j], v);
+                }
+            }
+            rt.show(RESULTS_WINDOW_TITLE);
         }
 
         IJ.showStatus("Clustering completed in " + (endTime - startTime) + " ms.");
@@ -207,7 +231,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
 
             if (src.getType() == ImagePlus.COLOR_RGB) {
                 if (src.getStackSize() > 1) {
-                    throw new IllegalArgumentException("Unsupported image type: more than slice.");
+                    throw new IllegalArgumentException("Unsupported image type: RGB with more than one slice.");
                 }
                 final ImageConverter converter = new ImageConverter(dest);
                 converter.convertToRGBStack();
@@ -230,55 +254,4 @@ public final class KMeansClusteringPlugin implements PlugIn {
     }
 
 
-    private static ImagePlus createCentroidImage(final int originalImageType, final ImageStack centroidValueStack) {
-        final boolean doScaling = ImageConverter.getDoScaling();
-        try {
-            ImageConverter.setDoScaling(false);
-            final ImagePlus cvImp = new ImagePlus("Cluster centroid values", centroidValueStack);
-            if (centroidValueStack.getSize() > 1) {
-                final StackConverter stackConverter = new StackConverter(cvImp);
-                switch (originalImageType) {
-                    case ImagePlus.COLOR_RGB:
-                        stackConverter.convertToGray8();
-                        final ImageConverter imageConverter = new ImageConverter(cvImp);
-                        imageConverter.convertRGBStackToRGB();
-                        break;
-                    case ImagePlus.GRAY8:
-                        stackConverter.convertToGray8();
-                        break;
-                    case ImagePlus.GRAY16:
-                        stackConverter.convertToGray16();
-                        break;
-                    case ImagePlus.GRAY32:
-                        // No action needed
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported input image type: " + originalImageType);
-                }
-            } else {
-                final ImageConverter converter = new ImageConverter(cvImp);
-                // Convert image back to original type
-                switch (originalImageType) {
-                    case ImagePlus.COLOR_RGB:
-                        throw new IllegalArgumentException("Internal error: RGB image cannot have a single band.");
-                    case ImagePlus.GRAY8:
-                        converter.convertToGray8();
-                        break;
-                    case ImagePlus.GRAY16:
-                        converter.convertToGray16();
-                        break;
-                    case ImagePlus.GRAY32:
-                        // No action needed
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported input image type: " + originalImageType);
-                }
-            }
-
-            return cvImp;
-        } finally {
-            ImageConverter.setDoScaling(doScaling);
-        }
-
-    }
 }
