@@ -38,6 +38,11 @@ public class MiException extends Exception {
     }
 
 
+    public MiException(final Throwable cause) {
+        super(cause);
+    }
+
+
     public MiException(final String message, final Throwable cause) {
         super(message, cause);
     }
