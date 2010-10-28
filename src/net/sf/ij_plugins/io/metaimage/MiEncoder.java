@@ -30,8 +30,8 @@ import ij.measure.Calibration;
 import net.sf.ij_plugins.util.Validate;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 
@@ -68,42 +68,82 @@ public final class MiEncoder {
      * @throws MiException In case of error when saving the image.
      */
     public static void write(final ImagePlus imp, final String fileRootName) throws MiException {
+        write(imp, fileRootName, false);
+    }
+
+
+    public static void write(final ImagePlus imp, final String fileRootName, final boolean singleFile) throws MiException {
         Validate.argumentNotNull(imp, "imp");
         Validate.argumentNotNull(fileRootName, "fileRootName");
 
-        //
-        // Figure out file names.
-        //
-        String headerName = null;
-        String rawDataName = null;
-        // Check if header extension is already present.
-        for (final String headerExtension : HEADER_EXTENSIONS) {
-            if (fileRootName.endsWith(headerExtension)) {
-                headerName = fileRootName;
-                final String nameRoot = fileRootName.substring(
-                        0, fileRootName.length() - headerExtension.length());
-                rawDataName = nameRoot + RAW_DATA_EXTENSION;
-                break;
+        if (singleFile) {
+            final String fileName = fileRootName.endsWith(HEADER_EXTENSIONS[0])
+                    ? fileRootName
+                    : fileRootName + HEADER_EXTENSIONS[0];
+            final File file = new File(fileName).getAbsoluteFile();
+            final FileOutputStream fileOutputStream;
+            try {
+                fileOutputStream = new FileOutputStream(file);
+            } catch (final FileNotFoundException ex) {
+                throw new MiException("Error opening file for writing: " + file.getAbsolutePath() + ". " + ex.getMessage());
             }
-        }
-        // If not present then use default extension.
-        if (headerName == null) {
-            headerName = fileRootName + HEADER_EXTENSIONS[0];
-            rawDataName = fileRootName + RAW_DATA_EXTENSION;
+            try {
+                writeHeader(imp, fileOutputStream, "LOCAL");
+                writeRawImage(imp, fileOutputStream);
+            } catch (final IOException ex) {
+                throw new MiException("Error writing image to file: " + file.getAbsolutePath() + ". " + ex.getMessage(), ex);
+            } finally {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    IJ.log(e.getMessage());
+                }
+            }
+
+        } else {
+            //
+            // Figure out file names.
+            //
+            String headerName = null;
+            String rawDataName = null;
+            // Check if header extension is already present.
+            for (final String headerExtension : HEADER_EXTENSIONS) {
+                if (fileRootName.endsWith(headerExtension)) {
+                    headerName = fileRootName;
+                    final String nameRoot = fileRootName.substring(
+                            0, fileRootName.length() - headerExtension.length());
+                    rawDataName = nameRoot + RAW_DATA_EXTENSION;
+                    break;
+                }
+            }
+            // If not present then use default extension.
+            if (headerName == null) {
+                headerName = fileRootName + HEADER_EXTENSIONS[0];
+                rawDataName = fileRootName + RAW_DATA_EXTENSION;
+            }
+
+            // Remove path from rawDataName
+            String rawDataNameShort = rawDataName;
+            final int lastSeparatorIndex = rawDataName.lastIndexOf(File.separator);
+            if (lastSeparatorIndex >= 0) {
+                rawDataNameShort = rawDataName.substring(lastSeparatorIndex + 1);
+            }
+
+            //
+            // Create MetaImage files
+            //
+            writeHeader(imp, headerName, rawDataNameShort);
+            writeRawImage(imp, rawDataName);
         }
 
-        // Remove path from rawDataName
-        String rawDataNameShort = rawDataName;
-        final int lastSeparatorIndex = rawDataName.lastIndexOf(File.separator);
-        if (lastSeparatorIndex >= 0) {
-            rawDataNameShort = rawDataName.substring(lastSeparatorIndex + 1);
-        }
 
-        //
-        // Create MetaImage files
-        //
-        writeHeader(imp, headerName, rawDataNameShort);
-        writeRawImage(imp, rawDataName);
+    }
+
+
+    private static void writeHeader(final ImagePlus imp, final FileOutputStream fileOutputStream, final String rawDataFileName) throws MiException, IOException {
+        final String header = createHeaderText(imp, rawDataFileName);
+        fileOutputStream.write(header.getBytes());
     }
 
 
@@ -118,18 +158,20 @@ public final class MiEncoder {
     private static void writeHeader(final ImagePlus imp, final String headerFileName,
                                     final String rawDataFileName) throws MiException {
 
-        FileWriter fileWriter = null;
+
+        FileOutputStream fileOutputStream = null;
         try {
-            fileWriter = new FileWriter(headerFileName);
-            fileWriter.write(createHeaderText(imp, rawDataFileName));
+            fileOutputStream = new FileOutputStream(headerFileName);
+            writeHeader(imp, fileOutputStream, rawDataFileName);
         } catch (final IOException ex) {
             throw new MiException("Error writing to header file '" + headerFileName + "'.\n" + ex.getMessage(), ex);
         } finally {
-            if (fileWriter != null) {
+            if (fileOutputStream != null) {
                 try {
-                    fileWriter.close();
+                    fileOutputStream.close();
                 } catch (final IOException ex) {
-                    //
+                    ex.printStackTrace();
+                    IJ.log(ex.getMessage());
                 }
             }
         }
@@ -213,6 +255,19 @@ public final class MiEncoder {
     }
 
 
+    private static void writeRawImage(ImagePlus imp, FileOutputStream fileOutputStream) throws MiException {
+        final FileInfo fileInfo = imp.getFileInfo();
+        fileInfo.fileFormat = FileInfo.RAW;
+
+        try {
+            final ImageWriter imageWriter = new ImageWriter(fileInfo);
+            imageWriter.write(fileOutputStream);
+        } catch (final IOException ex) {
+            throw new MiException(ex);
+        }
+    }
+
+
     /**
      * Save only the raw image data.
      *
@@ -227,20 +282,21 @@ public final class MiEncoder {
         fileInfo.fileName = file.getName();
         fileInfo.fileFormat = FileInfo.RAW;
 
-        FileOutputStream fileOutputStream = null;
+        final FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(fileName);
-            final ImageWriter imageWriter = new ImageWriter(fileInfo);
-            imageWriter.write(fileOutputStream);
-        } catch (final IOException ex) {
-            throw new MiException("Error writing to raw image file '" + fileName + "'.\n" + ex.getMessage(), ex);
+        } catch (FileNotFoundException e) {
+            throw new MiException("Cannot open file: " + fileName);
+        }
+
+        try {
+            writeRawImage(imp, fileOutputStream);
         } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (final IOException ex) {
-                    IJ.log("Failed to close output stream. " + ex.getMessage());
-                }
+            try {
+                fileOutputStream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                IJ.log(ex.getMessage());
             }
         }
     }

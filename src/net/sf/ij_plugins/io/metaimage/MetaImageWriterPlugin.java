@@ -55,6 +55,12 @@ public final class MetaImageWriterPlugin implements PlugIn {
             return;
         }
 
+        if (imp.getType() == ImagePlus.COLOR_256 || imp.getType() == ImagePlus.COLOR_RGB) {
+            IJ.error(TITLE, "COLOR_256 and COLOR_RGB images are not supported.");
+            return;
+        }
+
+
         // Get file name
         final SaveDialog saveDialog = new SaveDialog(TITLE, imp.getTitle(), ".mha");
         if (saveDialog.getFileName() == null) {
@@ -63,8 +69,9 @@ public final class MetaImageWriterPlugin implements PlugIn {
 
         final File file = new File(saveDialog.getDirectory(), saveDialog.getFileName());
         try {
-            MiEncoder.write(imp, file.getAbsolutePath());
+            MiEncoder.write(imp, file.getAbsolutePath(), true);
         } catch (final MiException ex) {
+            ex.printStackTrace();
             IJ.error(TITLE, ex.getMessage());
             return;
         }
