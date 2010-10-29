@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
 
 import ij.IJ;
@@ -51,22 +52,6 @@ public class VtkDecoder {
     private FileInfo fileInfo;
     private Calibration calibration;
     private boolean asciiImageData;
-
-
-    /**
-     * The test program for the VTKDecoder class
-     *
-     * @param args The command line arguments
-     */
-    public static void main(final String[] args) {
-        try {
-            final ImagePlus imp = VtkDecoder.open(new File("data/Region.vtk"));
-            imp.show();
-        }
-        catch (final Throwable t) {
-            t.printStackTrace();
-        }
-    }
 
 
     public static ImagePlus open(final String fileName) throws VtkImageException {
@@ -247,10 +232,7 @@ public class VtkDecoder {
             fileInfo.directory += File.separator;
         }
 
-        String line = lineExtractor.nextLine(true);
-        while (line.trim().length() == 0) {
-            line = lineExtractor.nextLine(true);
-        }
+        String line = lineExtractor.nextNonEmptyLine();
         // Data file version
         if (!line.startsWith(VtkTag.DATA_FILE_VERSION.toString())) {
             throw new VtkImageException("File does not start with VTK header '"
@@ -259,20 +241,14 @@ public class VtkDecoder {
 //        String version = parseValueAsString(line, VtkTag.DATA_FILE_VERSION);
 
         // Image name
-        line = lineExtractor.nextLine(true);
-        while (line.trim().length() == 0) {
-            line = lineExtractor.nextLine(true);
-        }
+        line = lineExtractor.nextNonEmptyLine();
         if (line.length() > 256) {
             throw new VtkImageException("File too short, unable to read header.");
         }
         fileInfo.description = line;
 
         // Data type
-        line = lineExtractor.nextLine(true);
-        while (line.trim().length() == 0) {
-            line = lineExtractor.nextLine(true);
-        }
+        line = lineExtractor.nextNonEmptyLine();
         if (line.compareToIgnoreCase(VtkDataFormat.ASCII.toString()) == 0) {
             asciiImageData = true;
         } else if (line.compareToIgnoreCase(VtkDataFormat.BINARY.toString()) == 0) {
@@ -285,10 +261,7 @@ public class VtkDecoder {
         }
 
         // Geometry/topology
-        line = lineExtractor.nextLine(true);
-        while (line.trim().length() == 0) {
-            line = lineExtractor.nextLine(true);
-        }
+        line = lineExtractor.nextNonEmptyLine();
         if (line.startsWith(VtkTag.DATASET.toString())) {
             final String dataset = parseValueAsString(line, VtkTag.DATASET);
             if (dataset.trim().compareToIgnoreCase(
@@ -307,9 +280,9 @@ public class VtkDecoder {
         }
 
         try {
-            line = lineExtractor.nextLine(false);
-            while (line != null && line.trim().length() == 0) {
-                line = lineExtractor.nextLine(true);
+            line = lineExtractor.nextLine(false).trim();
+            while (line != null && line.length() == 0) {
+                line = lineExtractor.nextLine(true).trim();
             }
             while (line != null) {
                 if (line.startsWith(VtkTag.DIMENSIONS.toString())) {
@@ -450,17 +423,15 @@ public class VtkDecoder {
                     // LOOKUP_TABLE should be the last tag line before the data.
                     break;
                 } else {
-                    throw new VtkImageException("Unsupported file header tag '"
-                            + line + "'.");
+                    throw new VtkImageException("Unsupported file header tag '" + line + "'.");
                 }
 
-                line = lineExtractor.nextLine(false);
-                while (line != null && line.trim().length() == 0) {
-                    line = lineExtractor.nextLine(true);
+                line = lineExtractor.nextLine(false).trim();
+                while (line != null && line.length() == 0) {
+                    line = lineExtractor.nextLine(true).trim();
                 }
             }
-        }
-        catch (final VtkImageException ex) {
+        } catch (final VtkImageException ex) {
             throw new VtkImageException("Error processing line "
                     + lineExtractor.getCurrentLineNumber() + ". " + ex.getMessage());
         }
@@ -475,10 +446,6 @@ public class VtkDecoder {
     }
 
 
-    /**
-     * @return Description of the Returned Value
-     * @throws VtkImageException Description of Exception
-     */
     private ImagePlus readImageData() throws VtkImageException {
         final ImagePlus imp;
         if (!asciiImageData) {
@@ -536,12 +503,6 @@ public class VtkDecoder {
     }
 
 
-    /**
-     * @param r      Description of Parameter
-     * @param size   Description of Parameter
-     * @param pixels Description of Parameter
-     * @throws IOException Description of Exception
-     */
     private void readAsText(final Reader r, final int size, final float[] pixels) throws IOException {
         final StreamTokenizer tok = new StreamTokenizer(r);
         tok.resetSyntax();
@@ -550,10 +511,6 @@ public class VtkDecoder {
         tok.parseNumbers();
 
         int i = 0;
-        int inc = size / 20;
-        if (inc < 1) {
-            inc = 1;
-        }
         while (tok.nextToken() != StreamTokenizer.TT_EOF) {
             if (tok.ttype == StreamTokenizer.TT_NUMBER) {
                 pixels[i++] = (float) tok.nval;
@@ -688,11 +645,20 @@ public class VtkDecoder {
         }
 
 
+        public String nextNonEmptyLine() throws VtkImageException {
+            String line = nextLine(true);
+            while (line.length() == 0) {
+                line = nextLine(true);
+            }
+
+            return line;
+        }
+
+
         /**
-         * Extract next line.
+         * Extract next line. White space is trimmed from the line.
          *
-         * @param lineMustBePresent If 'true' an exception will be thrown if line cannot be
-         *                          extracted.
+         * @param lineMustBePresent If 'true' an exception will be thrown if line cannot be extracted.
          * @return Text representation of the extracted line, 'null' if no line was extracted.
          * @throws VtkImageException If a line can not be extracted and <code>lineMustBePresent</code>
          *                           is 'true'.
@@ -756,7 +722,7 @@ public class VtkDecoder {
             } else {
                 newLineMode = NEW_LINE_MODE_UNKNOWN;
             }
-            return currentLine;
+            return currentLine.trim();
         }
     }
 }
