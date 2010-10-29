@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +23,7 @@ package net.sf.ij_plugins.io.vtk;
 
 import net.sf.ij_plugins.util.Enumeration;
 
+
 /**
  * Represent possible values of scalar names for the SCALARS tag.
  *
@@ -31,6 +33,7 @@ import net.sf.ij_plugins.util.Enumeration;
  */
 
 class VtkScalarType extends Enumeration {
+
     /**
      * bit
      */
@@ -82,7 +85,7 @@ class VtkScalarType extends Enumeration {
      *
      * @param name Description of the Parameter
      */
-    private VtkScalarType(String name) {
+    private VtkScalarType(final String name) {
         super(name);
     }
 }

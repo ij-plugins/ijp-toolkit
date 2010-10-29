@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +23,7 @@ package net.sf.ij_plugins.io.vtk;
 
 import net.sf.ij_plugins.util.Enumeration;
 
+
 /**
  * Possible tags in the VTK file header.
  *
@@ -31,6 +33,7 @@ import net.sf.ij_plugins.util.Enumeration;
  */
 
 class VtkTag extends Enumeration {
+
     /**
      * # vtk DataFile Version
      */
@@ -82,7 +85,7 @@ class VtkTag extends Enumeration {
      *
      * @param name Description of the Parameter
      */
-    private VtkTag(String name) {
+    private VtkTag(final String name) {
         super(name);
     }
 }

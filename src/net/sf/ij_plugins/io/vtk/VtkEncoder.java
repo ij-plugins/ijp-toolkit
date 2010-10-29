@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2006 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +31,7 @@ import ij.plugin.PlugIn;
 
 import java.io.*;
 
+
 /**
  * Save image in <a HREF="http://public.kitware.com/VTK/">VTK</a> format. Supported image types:
  * GRAY8, GRAY16, GRAY32.
@@ -38,6 +40,7 @@ import java.io.*;
  */
 
 public class VtkEncoder implements PlugIn {
+
     private static final String DIALOG_CAPTION = "VTK Writer";
     private static final String TAG_SEPARATOR = " ";
     private static final String vtkFileVersion = "3.0";
@@ -82,11 +85,11 @@ public class VtkEncoder implements PlugIn {
             case ImagePlus.GRAY32:
                 scalarName = VtkScalarType.FLOAT.toString();
                 break;
-                // BEG KEESH RGB UPDATE
+            // BEG KEESH RGB UPDATE
             case ImagePlus.COLOR_RGB:
                 scalarName = VtkScalarType.UNSIGNED_CHAR.toString();
                 break;
-                // END KEESH RGB UPDATE
+            // END KEESH RGB UPDATE
             default:
                 throw new IllegalArgumentException("Unsupported image type. "
                         + "Only images of types: GRAY8, GRAY16, and GRAY32 are supported.");
@@ -123,6 +126,7 @@ public class VtkEncoder implements PlugIn {
             bos.close();
         }
     }
+
 
     public static void save(final String fileName, final ImagePlus imp) throws IOException {
         saveAsVtkBinary(fileName, imp);
@@ -227,19 +231,21 @@ public class VtkEncoder implements PlugIn {
     }
 
     // BEG KEESH RGB UPDATE
+
+
     private static void writeArray(final int[] a, final int length, final Writer writer, final int lineSize)
             throws IOException {
 
         int c = 0;
         for (int i = 0; i < length; ++i) {
             // Need to convert to [0,1] for VTK
-            int val = (a[i] & 0xffffffff);  // extract 32-bit integer
-            int r = (val & 0xff0000) >> 16;  // extract red
-            int g = (val & 0xff00) >> 8;     // extract green
-            int b = val & 0xff;            // extract blue
-            float fr = r / 255.0f;  // normalize to [0,1]
-            float fg = g / 255.0f;
-            float fb = b / 255.0f;
+            final int val = (a[i] & 0xffffffff);  // extract 32-bit integer
+            final int r = (val & 0xff0000) >> 16;  // extract red
+            final int g = (val & 0xff00) >> 8;     // extract green
+            final int b = val & 0xff;            // extract blue
+            final float fr = r / 255.0f;  // normalize to [0,1]
+            final float fg = g / 255.0f;
+            final float fb = b / 255.0f;
             writer.write("" + fr + " " + fg + " " + fb);
             c++;
             writer.write((c % lineSize) == 0 ? "\n" : " ");
@@ -247,12 +253,14 @@ public class VtkEncoder implements PlugIn {
     }
     // END KEESH RGB UPDATE
 
+
     /**
      * Main processing method for the VtkEncoder plugin
      *
      * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
      *            (MSB).
      */
+    @Override
     public void run(final String arg) {
 
         final ImagePlus imp = WindowManager.getCurrentImage();
