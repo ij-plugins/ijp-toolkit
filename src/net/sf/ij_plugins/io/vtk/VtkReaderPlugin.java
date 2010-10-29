@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
 
 import ij.IJ;
@@ -37,7 +38,7 @@ import java.io.File;
  * @since June 18, 2002
  */
 
-public class VtkReaderPlugin implements PlugIn {
+public final class VtkReaderPlugin implements PlugIn {
 
     private static final String DIALOG_CAPTION = "VTK Reader";
 

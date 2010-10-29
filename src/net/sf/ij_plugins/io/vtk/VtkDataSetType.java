@@ -19,34 +19,16 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
-
-import net.sf.ij_plugins.util.Enumeration;
-
 
 /**
  * Represents supported values VTK DATA_SET tag.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created June 21, 2002
+ * @since June 21, 2002
  */
+enum VtkDataSetType {
 
-class VtkDataSetType extends Enumeration {
-
-    /**
-     * STRUCTURED_POINTS
-     */
-    public final static VtkDataSetType STRUCTURED_POINTS
-            = new VtkDataSetType("STRUCTURED_POINTS");
-
-
-    /**
-     * Constructor for the VtkDataType object
-     *
-     * @param name Description of the Parameter
-     */
-    private VtkDataSetType(final String name) {
-        super(name);
-    }
+    STRUCTURED_POINTS
 }

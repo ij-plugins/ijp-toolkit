@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
 
 import net.sf.ij_plugins.util.Enumeration;
@@ -28,63 +29,57 @@ import net.sf.ij_plugins.util.Enumeration;
  * Represent possible values of scalar names for the SCALARS tag.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created June 21, 2002
+ * @since June 21, 2002
  */
 
-class VtkScalarType extends Enumeration {
+final class VtkScalarType extends Enumeration {
 
     /**
      * bit
      */
-    public final static VtkScalarType BIT = new VtkScalarType("bit");
+    public static final VtkScalarType BIT = new VtkScalarType("bit");
     /**
      * unsigned_char
      */
-    public final static VtkScalarType UNSIGNED_CHAR = new VtkScalarType("unsigned_char");
+    public static final VtkScalarType UNSIGNED_CHAR = new VtkScalarType("unsigned_char");
     /**
      * char
      */
-    public final static VtkScalarType CHAR = new VtkScalarType("char");
+    public static final VtkScalarType CHAR = new VtkScalarType("char");
     /**
      * unsigned_short
      */
-    public final static VtkScalarType UNSIGNED_SHORT = new VtkScalarType("unsigned_short");
+    public static final VtkScalarType UNSIGNED_SHORT = new VtkScalarType("unsigned_short");
     /**
      * short
      */
-    public final static VtkScalarType SHORT = new VtkScalarType("short");
+    public static final VtkScalarType SHORT = new VtkScalarType("short");
     /**
      * unsigned_int
      */
-    public final static VtkScalarType UNSIGNED_INT = new VtkScalarType("unsigned_int");
+    public static final VtkScalarType UNSIGNED_INT = new VtkScalarType("unsigned_int");
     /**
      * int
      */
-    public final static VtkScalarType INT = new VtkScalarType("int");
+    public static final VtkScalarType INT = new VtkScalarType("int");
     /**
      * unsigned_long
      */
-    public final static VtkScalarType UNSIGNED_LONG = new VtkScalarType("unsigned_long");
+    public static final VtkScalarType UNSIGNED_LONG = new VtkScalarType("unsigned_long");
     /**
      * long
      */
-    public final static VtkScalarType LONG = new VtkScalarType("long");
+    public static final VtkScalarType LONG = new VtkScalarType("long");
     /**
      * float
      */
-    public final static VtkScalarType FLOAT = new VtkScalarType("float");
+    public static final VtkScalarType FLOAT = new VtkScalarType("float");
     /**
      * double
      */
-    public final static VtkScalarType DOUBLE = new VtkScalarType("double");
+    public static final VtkScalarType DOUBLE = new VtkScalarType("double");
 
 
-    /**
-     * Constructor for the VtkDataType object
-     *
-     * @param name Description of the Parameter
-     */
     private VtkScalarType(final String name) {
         super(name);
     }

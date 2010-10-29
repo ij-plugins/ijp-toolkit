@@ -19,15 +19,13 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.WindowManager;
 import ij.io.ImageWriter;
-import ij.io.SaveDialog;
 import ij.measure.Calibration;
-import ij.plugin.PlugIn;
 
 import java.io.*;
 
@@ -39,17 +37,21 @@ import java.io.*;
  * @author Jarek Sacha
  */
 
-public class VtkEncoder implements PlugIn {
+public final class VtkEncoder {
 
-    private static final String DIALOG_CAPTION = "VTK Writer";
     private static final String TAG_SEPARATOR = " ";
-    private static final String vtkFileVersion = "3.0";
+    private static final String VTK_FILE_VERSION = "3.0";
+
+
+    private VtkEncoder() {
+
+    }
 
 
     private static String createHeader(final ImagePlus imp, final boolean asciiFormat) {
 
         final StringBuffer header = new StringBuffer();
-        header.append(VtkTag.DATA_FILE_VERSION).append(vtkFileVersion).append("\n");
+        header.append(VtkTag.DATA_FILE_VERSION).append(VTK_FILE_VERSION).append("\n");
 
         header.append(imp.getTitle()).append("\n");
 
@@ -112,8 +114,7 @@ public class VtkEncoder implements PlugIn {
     }
 
 
-    private static void saveAsVtkBinary(final String fileName, final ImagePlus imp)
-            throws FileNotFoundException, IOException {
+    private static void saveAsVtkBinary(final String fileName, final ImagePlus imp) throws IOException {
 
         final BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileName));
         try {
@@ -129,7 +130,16 @@ public class VtkEncoder implements PlugIn {
 
 
     public static void save(final String fileName, final ImagePlus imp) throws IOException {
-        saveAsVtkBinary(fileName, imp);
+        save(fileName, imp, false);
+    }
+
+
+    public static void save(final String fileName, final ImagePlus imp, final boolean saveAsAscii) throws IOException {
+        if (saveAsAscii) {
+            VtkEncoder.saveAsVtkAscii(fileName, imp);
+        } else {
+            VtkEncoder.saveAsVtkBinary(fileName, imp);
+        }
     }
 
 
@@ -239,7 +249,7 @@ public class VtkEncoder implements PlugIn {
         int c = 0;
         for (int i = 0; i < length; ++i) {
             // Need to convert to [0,1] for VTK
-            final int val = (a[i] & 0xffffffff);  // extract 32-bit integer
+            final int val = a[i];  // extract 32-bit integer
             final int r = (val & 0xff0000) >> 16;  // extract red
             final int g = (val & 0xff00) >> 8;     // extract green
             final int b = val & 0xff;            // extract blue
@@ -252,51 +262,4 @@ public class VtkEncoder implements PlugIn {
         }
     }
     // END KEESH RGB UPDATE
-
-
-    /**
-     * Main processing method for the VtkEncoder plugin
-     *
-     * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
-     *            (MSB).
-     */
-    @Override
-    public void run(final String arg) {
-
-        final ImagePlus imp = WindowManager.getCurrentImage();
-        if (imp == null) {
-            IJ.showMessage(DIALOG_CAPTION, "No image to save.");
-            return;
-        }
-
-        final SaveDialog saveDialog = new SaveDialog("Save as VTK", imp.getTitle(), ".vtk");
-
-        if (saveDialog.getFileName() == null) {
-            return;
-        }
-
-        IJ.showStatus("Saving current image as '" + saveDialog.getFileName() + "'...");
-        final String fileName = saveDialog.getDirectory() + File.separator + saveDialog.getFileName();
-
-        try {
-            final long tStart = System.currentTimeMillis();
-            if (arg.compareToIgnoreCase("ASCII") == 0) {
-                saveAsVtkAscii(fileName, imp);
-            } else {
-                saveAsVtkBinary(fileName, imp);
-            }
-            final long tStop = System.currentTimeMillis();
-            IJ.showStatus("Saving of '" + saveDialog.getFileName() + "' completed in " + (tStop - tStart) + " ms.");
-        } catch (final Exception ex) {
-            ex.printStackTrace();
-            String msg = ex.getMessage();
-            if (msg == null) {
-                msg = "";
-            } else {
-                msg = "\n" + msg;
-            }
-
-            IJ.showMessage(DIALOG_CAPTION, "Error writing file '" + fileName + "'." + msg);
-        }
-    }
 }

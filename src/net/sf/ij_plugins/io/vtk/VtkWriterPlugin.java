@@ -19,9 +19,16 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.WindowManager;
+import ij.io.SaveDialog;
 import ij.plugin.PlugIn;
+
+import java.io.File;
 
 
 /**
@@ -33,16 +40,51 @@ import ij.plugin.PlugIn;
  * @since April 28, 2002
  */
 
-public class VtkWriterPlugin implements PlugIn {
+public final class VtkWriterPlugin implements PlugIn {
+
+    private static final String DIALOG_CAPTION = "VTK Writer";
+
 
     /**
-     * Main processing method for the net.sf.ij_plugins.io.vtk.VtkWriterPlugin plugin
+     * Main processing method for the VtkEncoder plugin
      *
      * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
      *            (MSB).
      */
     @Override
     public void run(final String arg) {
-        new VtkEncoder().run(arg);
+
+        final ImagePlus imp = WindowManager.getCurrentImage();
+        if (imp == null) {
+            IJ.showMessage(DIALOG_CAPTION, "No image to save.");
+            return;
+        }
+
+        final SaveDialog saveDialog = new SaveDialog("Save as VTK", imp.getTitle(), ".vtk");
+
+        if (saveDialog.getFileName() == null) {
+            return;
+        }
+
+        IJ.showStatus("Saving current image as '" + saveDialog.getFileName() + "'...");
+        final String fileName = saveDialog.getDirectory() + File.separator + saveDialog.getFileName();
+
+        try {
+            final long tStart = System.currentTimeMillis();
+            VtkEncoder.save(fileName, imp, "ASCII".compareToIgnoreCase(arg) == 0);
+            final long tStop = System.currentTimeMillis();
+            IJ.showStatus("Saving of '" + saveDialog.getFileName() + "' completed in " + (tStop - tStart) + " ms.");
+        } catch (final Exception ex) {
+            ex.printStackTrace();
+            String msg = ex.getMessage();
+            if (msg == null) {
+                msg = "";
+            } else {
+                msg = "\n" + msg;
+            }
+
+            IJ.showMessage(DIALOG_CAPTION, "Error writing file '" + fileName + "'." + msg);
+        }
     }
+
 }

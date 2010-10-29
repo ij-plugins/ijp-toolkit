@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
 
 import net.sf.ij_plugins.util.Enumeration;
@@ -28,40 +29,39 @@ import net.sf.ij_plugins.util.Enumeration;
  * Possible tags in the VTK file header.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created June 21, 2002
+ * @since June 21, 2002
  */
 
-class VtkTag extends Enumeration {
+final class VtkTag extends Enumeration {
 
     /**
      * # vtk DataFile Version
      */
-    public final static VtkTag DATA_FILE_VERSION = new VtkTag("# vtk DataFile Version");
+    public static final VtkTag DATA_FILE_VERSION = new VtkTag("# vtk DataFile Version");
     /**
      * DATASET
      */
-    public final static VtkTag DATASET = new VtkTag("DATASET");
+    public static final VtkTag DATASET = new VtkTag("DATASET");
     /**
      * DIMENSIONS
      */
-    public final static VtkTag DIMENSIONS = new VtkTag("DIMENSIONS");
+    public static final VtkTag DIMENSIONS = new VtkTag("DIMENSIONS");
     /**
      * ORIGIN
      */
-    public final static VtkTag ORIGIN = new VtkTag("ORIGIN");
+    public static final VtkTag ORIGIN = new VtkTag("ORIGIN");
     /**
      * SPACING
      */
-    public final static VtkTag SPACING = new VtkTag("SPACING");
+    public static final VtkTag SPACING = new VtkTag("SPACING");
     /**
      * ASPECT_RATIO
      */
-    public final static VtkTag ASPECT_RATIO = new VtkTag("ASPECT_RATIO");
+    public static final VtkTag ASPECT_RATIO = new VtkTag("ASPECT_RATIO");
     /**
      * CELL_DATA
      */
-    public final static VtkTag CELL_DATA = new VtkTag("CELL_DATA");
+    public static final VtkTag CELL_DATA = new VtkTag("CELL_DATA");
     /**
      * POINT_DATA
      */

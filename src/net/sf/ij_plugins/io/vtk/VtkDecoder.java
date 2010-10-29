@@ -29,6 +29,7 @@ import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.measure.Calibration;
 import ij.process.FloatProcessor;
+import net.sf.ij_plugins.io.IOUtils;
 
 import java.io.*;
 import java.util.StringTokenizer;
@@ -41,10 +42,10 @@ import java.util.StringTokenizer;
  * Limitations <ul> <li> Files in ASCII format are always interpreted as containing
  * <code>float</code> pixels. </ul>
  *
- * @author Jarek
+ * @author Jarek Sacha
  * @since July 3, 2002
  */
-public class VtkDecoder {
+public final class VtkDecoder {
 
     private static final int MAX_LINE_SIZE = 260;
     private static final int MAX_HEADER_SIZE = MAX_LINE_SIZE * (2 + 9);
@@ -52,6 +53,11 @@ public class VtkDecoder {
     private FileInfo fileInfo;
     private Calibration calibration;
     private boolean asciiImageData;
+
+
+    private VtkDecoder() {
+
+    }
 
 
     public static ImagePlus open(final String fileName) throws VtkImageException {
@@ -103,7 +109,7 @@ public class VtkDecoder {
     /**
      * Parse value if VTK tag as an array of integers.
      *
-     * @param line     String contating VTK tag proceeded by a value.
+     * @param line     String containing VTK tag proceeded by a value.
      * @param tag      Expected VTK tag at the beginning of the line.
      * @param nbTokens Expected number of elements in the array.
      * @return The tag's value
@@ -129,7 +135,7 @@ public class VtkDecoder {
             }
         }
         catch (final NumberFormatException ex) {
-            throw new VtkImageException("Unable to parse token '" + token + "' as integer.");
+            throw new VtkImageException("Unable to parse token '" + token + "' as integer.", ex);
         }
 
         return r;
@@ -139,7 +145,7 @@ public class VtkDecoder {
     /**
      * Parse value if VTK tag as an array of floats.
      *
-     * @param line     String contating VTK tag proceeded by a value.
+     * @param line     String containing VTK tag proceeded by a value.
      * @param tag      Expected VTK tag at the begriming of the line.
      * @param nbTokens Expected number of elements in the array.
      * @return The tag's value
@@ -165,7 +171,7 @@ public class VtkDecoder {
             }
         }
         catch (final NumberFormatException ex) {
-            throw new VtkImageException("Unable to parse token '" + token + "' as integer.");
+            throw new VtkImageException("Unable to parse token '" + token + "' as integer.", ex);
         }
 
         return r;
@@ -205,7 +211,7 @@ public class VtkDecoder {
             }
         }
         catch (final IOException ex) {
-            throw new VtkImageException(ex.getMessage());
+            throw new VtkImageException(ex.getMessage(), ex);
         } finally {
             try {
                 fileInputStream.close();
@@ -263,12 +269,12 @@ public class VtkDecoder {
         // Geometry/topology
         line = lineExtractor.nextNonEmptyLine();
         if (line.startsWith(VtkTag.DATASET.toString())) {
-            final String dataset = parseValueAsString(line, VtkTag.DATASET);
-            if (dataset.trim().compareToIgnoreCase(
+            final String dataSet = parseValueAsString(line, VtkTag.DATASET);
+            if (dataSet.trim().compareToIgnoreCase(
                     VtkDataSetType.STRUCTURED_POINTS.toString()) != 0) {
                 throw new VtkImageException(
                         "File format error, incorrect data set type. Expecting '"
-                                + VtkDataSetType.STRUCTURED_POINTS + "', got '" + dataset.trim()
+                                + VtkDataSetType.STRUCTURED_POINTS + "', got '" + dataSet.trim()
                                 + "'. Line number: "
                                 + lineExtractor.getCurrentLineNumber());
             }
@@ -433,7 +439,7 @@ public class VtkDecoder {
             }
         } catch (final VtkImageException ex) {
             throw new VtkImageException("Error processing line "
-                    + lineExtractor.getCurrentLineNumber() + ". " + ex.getMessage());
+                    + lineExtractor.getCurrentLineNumber() + ". " + ex.getMessage(), ex);
         }
 
         fileInfo.intelByteOrder = (lineExtractor.getNewLineMode() == LineExtractor.NEW_LINE_MODE_PC);
@@ -466,7 +472,7 @@ public class VtkDecoder {
             }
 
             try {
-                reader.skip(fileInfo.offset);
+                IOUtils.skip(reader, fileInfo.offset);
                 IJ.showProgress(0);
                 final ImageStack stack = new ImageStack(fileInfo.width, fileInfo.height);
                 final int sliceSize = fileInfo.width * fileInfo.height;
@@ -480,7 +486,7 @@ public class VtkDecoder {
                 IJ.showProgress(1);
             } catch (final IOException ex) {
                 throw new VtkImageException("Error opening VTK image file.\n"
-                        + ex.getMessage());
+                        + ex.getMessage(), ex);
             } finally {
                 try {
                     reader.close();

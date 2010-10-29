@@ -19,37 +19,18 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.vtk;
-
-import net.sf.ij_plugins.util.Enumeration;
-
 
 /**
  * Represents names of VTK file format values.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
- * @created June 21, 2002
+ * @since June 21, 2002
  */
 
-class VtkDataFormat extends Enumeration {
+enum VtkDataFormat {
 
-    /**
-     * ASCII
-     */
-    public final static VtkDataFormat ASCII = new VtkDataFormat("ASCII");
-    /**
-     * BINARY
-     */
-    public final static VtkDataFormat BINARY = new VtkDataFormat("BINARY");
+    ASCII, BINARY
 
-
-    /**
-     * Constructor for the VtkDataFormat object
-     *
-     * @param name Description of the Parameter
-     */
-    private VtkDataFormat(final String name) {
-        super(name);
-    }
 }
