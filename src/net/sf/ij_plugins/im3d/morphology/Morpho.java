@@ -25,6 +25,7 @@ package net.sf.ij_plugins.im3d.morphology;
 import ij.IJ;
 import ij.ImageStack;
 import ij.plugin.filter.RankFilters;
+import net.sf.ij_plugins.im3d.Util;
 
 
 /**
@@ -161,6 +162,13 @@ public class Morpho {
             }
             IJ.showProgress((z + 1.0) / zSize);
         }
+    }
+
+
+    public ImageStack median(final ImageStack src) {
+        final ImageStack dest = Util.duplicateEmpty(src);
+        new Morpho().median(src, dest);
+        return dest;
     }
 
 

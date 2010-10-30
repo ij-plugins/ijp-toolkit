@@ -27,7 +27,6 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-import net.sf.ij_plugins.im3d.Util;
 import net.sf.ij_plugins.im3d.morphology.Morpho;
 
 
@@ -50,10 +49,7 @@ public final class Median3DPlugin implements PlugIn {
             return;
         }
 
-        final ImageStack src = imp.getStack();
-        final ImageStack dest = Util.duplicateEmpty(src);
-
-        new Morpho().median(imp.getStack(), dest);
+        final ImageStack dest = new Morpho().median(imp.getStack());
 
         new ImagePlus(imp.getTitle() + "+Median", dest).show();
     }
