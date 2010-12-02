@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.clustering;
 
 import ij.ImagePlus;
@@ -70,7 +71,11 @@ public final class KMeansTest extends junit.framework.TestCase {
         config.setRandomizationSeedEnabled(true);
         config.setRandomizationSeed(31415);
         final KMeans kmeans = new KMeans(config);
+        final long start = System.currentTimeMillis();
         final ImageProcessor ip = kmeans.run(imp.getStack());
+        final long stop = System.currentTimeMillis();
+        System.out.println("time: " + (stop - start) + "ms.");
+
         assertNotNull(ip);
 
         float[][] centers = kmeans.getClusterCenters();
