@@ -26,14 +26,12 @@ import com.jgoodies.binding.list.ArrayListModel;
 import ij.ImageListener;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.gui.ImageCanvas;
-import ij.gui.ImageWindow;
+import ij.gui.Overlay;
 import ij.gui.Roi;
-import ij.gui.StackWindow;
+import ij.gui.ShapeRoi;
 import net.sf.ij_plugins.beans.AbstractModel;
 import net.sf.ij_plugins.ui.AbstractModelAction;
-import net.sf.ij_plugins.ui.OverlayCanvas;
-import net.sf.ij_plugins.ui.ShapeOverlay;
+import net.sf.ij_plugins.ui.ShapeUtils;
 import net.sf.ij_plugins.ui.UIUtils;
 import net.sf.ij_plugins.util.IJUtils;
 
@@ -293,49 +291,29 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     private void updateShapes(final ImagePlus imp) {
 
-        if (lastSourceImage != imp && lastSourceImage != null) {
-            // Remove overlay canvas from the previous image
-            if (lastSourceImage.getWindow().getCanvas() instanceof OverlayCanvas) {
-                if (lastSourceImage.getStackSize() > 1)
-                    new StackWindow(lastSourceImage);
-                else
-                    new ImageWindow(lastSourceImage);
-            }
-        }
-
         lastSourceImage = imp;
 
         if (imp == null) {
             return;
         }
 
-        // Prepare overlay canvas
-        final ImageWindow imageWindow = imp.getWindow();
-        final ImageCanvas imageCanvas = imageWindow.getCanvas();
-        final OverlayCanvas overlayCanvas;
-        if (imageCanvas instanceof OverlayCanvas) {
-            overlayCanvas = (OverlayCanvas) imageCanvas;
-        } else {
-            overlayCanvas = new OverlayCanvas(imp);
-            if (imp.getStackSize() > 1)
-                new StackWindow(imp, overlayCanvas);
-            else
-                new ImageWindow(imp, overlayCanvas);
-        }
-
-        final List<ShapeOverlay> overlays = new ArrayList<ShapeOverlay>();
+        // Prepare overlay
+        final Overlay overlay = new Overlay();
         for (final Region region : regions) {
+
             final Area area = new Area();
             for (final SubRegion subRegion : region.getSubRegions()) {
-                final Shape shape = ShapeOverlay.toShape(subRegion.getRoi());
+                final Shape shape = ShapeUtils.toShape(subRegion.getRoi());
                 area.add(new Area(shape));
             }
-            overlays.add(new ShapeOverlay(region.getName(), area, region.getColor(), true));
+            final ShapeRoi roi = new ShapeRoi(area);
+            roi.setStrokeColor(region.getColor());
+            roi.setFillColor(region.getColor());
+            roi.setName(region.getName());
+            overlay.add(roi);
         }
 
-        overlayCanvas.setOverlays(overlays);
-        overlayCanvas.invalidate();
-        overlayCanvas.repaint();
+        imp.setOverlay(overlay);
     }
 
 

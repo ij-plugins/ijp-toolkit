@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2010 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,7 +20,6 @@
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
-
 package net.sf.ij_plugins.ui;
 
 import ij.gui.PointRoi;
@@ -32,60 +32,23 @@ import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 
+
 /**
- * Generalized representation of regions based on Java2D {@link Shape}. A region can be a mask, ROI, region of
- * interest, object detected in an image, or other concept that can be represented by a 2D shape.
- *
  * @author Jarek Sacha
- * @since Feb 11, 2008
+ * @since 12/9/10 6:59 PM
  */
-public class ShapeOverlay {
-    private final String name;
-    private final Shape shape;
-    private final Stroke stroke;
-    private final Color color;
-    private final boolean fill;
+public final class ShapeUtils {
 
-
-    public ShapeOverlay(final String name, final Shape shape, final Color color, final boolean fill) {
-        this(name, shape, color, fill, new BasicStroke());
+    private ShapeUtils() {
     }
 
 
-    public ShapeOverlay(final String name, final Shape shape, final Color color, final boolean fill, final Stroke stroke) {
-        this.name = name;
-        this.shape = shape;
-        this.color = color;
-        this.fill = fill;
-        this.stroke = stroke;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public Shape getShape() {
-        return shape;
-    }
-
-
-    public Stroke getStroke() {
-        return stroke;
-    }
-
-
-    public Color getColor() {
-        return color;
-    }
-
-
-    public boolean isFill() {
-        return fill;
-    }
-
-
+    /**
+     * Convert ImageJ's Roi to Java 3D Shape representation.
+     *
+     * @param roi source roi.
+     * @return translated to Shape.
+     */
     public static Shape toShape(final Roi roi) {
         final Shape result;
         if (roi instanceof PointRoi) {
@@ -183,5 +146,4 @@ public class ShapeOverlay {
             return 7;
         return -1;
     }
-
 }
