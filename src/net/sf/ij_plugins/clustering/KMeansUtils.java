@@ -76,7 +76,7 @@ final class KMeansUtils {
         int closestCluster = -1;
         for (int i = 0; i < clusterCenters.length; i++) {
             final float[] clusterCenter = clusterCenters[i];
-            final double d = distance(clusterCenter, x);
+            final double d = distanceSqr(clusterCenter, x);
             if (d < minDistance) {
                 minDistance = d;
                 closestCluster = i;
@@ -88,19 +88,20 @@ final class KMeansUtils {
 
 
     /**
-     * Distance between points <code>a</code> and <code>b</code>.
+     * Distance between points <code>a</code> and <code>b</code>, squared.
      *
      * @param a first point.
      * @param b second point.
      * @return distance.
      */
-    static double distance(final float[] a, final float[] b) {
+    static double distanceSqr(final float[] a, final float[] b) {
         double sum = 0;
         for (int i = 0; i < a.length; i++) {
             final double d = a[i] - b[i];
             sum += d * d;
         }
-        return Math.sqrt(sum);
+
+        return sum;
     }
 
 

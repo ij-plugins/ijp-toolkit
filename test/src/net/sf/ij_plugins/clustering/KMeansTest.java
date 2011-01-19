@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -27,28 +27,28 @@ import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 import ij.process.StackConverter;
 import net.sf.ij_plugins.io.IOUtils;
+import org.junit.Test;
 
 import java.io.File;
+
+import static org.junit.Assert.*;
 
 
 /**
  * @author Jarek Sacha
  */
-public final class KMeansTest extends junit.framework.TestCase {
-
-    public KMeansTest(final java.lang.String test) {
-        super(test);
-    }
+public final class KMeansTest {
 
 
+    @Test
     public void test01() throws java.lang.Exception {
         final File imageFile = new File("test/data/clown24.png");
         final double tolerance = 0.01;
         final double[][] expectedCenters = {
                 {182.389, 108.690, 45.733},
-                {224.589, 187.087, 151.137},
                 {115.623, 51.116, 20.329},
                 {30.557, 10.600, 5.617},
+                {224.589, 187.087, 151.137},
         };
 
         assertTrue("File exists", imageFile.exists());
@@ -56,20 +56,16 @@ public final class KMeansTest extends junit.framework.TestCase {
         // Read test image
         final ImagePlus imp = IOUtils.openImage(imageFile);
 
-        if (imp.getType() != ImagePlus.COLOR_RGB) {
-            throw new java.lang.Exception("Expecting color image.");
-        }
+        assertTrue("Expecting color image.", imp.getType() == ImagePlus.COLOR_RGB);
 
         // Convert RGB to a stack
-        final ImageConverter ic = new ImageConverter(imp);
-        ic.convertToRGBStack();
-        final StackConverter sc = new StackConverter(imp);
-        sc.convertToGray32();
+        new ImageConverter(imp).convertToRGBStack();
+        new StackConverter(imp).convertToGray32();
 
         final KMeans.Config config = new KMeans.Config();
         config.setNumberOfClusters(4);
         config.setRandomizationSeedEnabled(true);
-        config.setRandomizationSeed(31415);
+        config.setRandomizationSeed(48);
         final KMeans kmeans = new KMeans(config);
         final long start = System.currentTimeMillis();
         final ImageProcessor ip = kmeans.run(imp.getStack());
@@ -81,10 +77,18 @@ public final class KMeansTest extends junit.framework.TestCase {
         float[][] centers = kmeans.getClusterCenters();
         for (int i = 0; i < centers.length; i++) {
             for (int j = 0; j < centers[i].length; j++) {
+                System.out.println("center[" + i + "][" + j + "]: " + centers[i][j]);
+            }
+        }
+
+        for (int i = 0; i < centers.length; i++) {
+            for (int j = 0; j < centers[i].length; j++) {
                 assertEquals("center[" + i + "][" + j + "]",
                         expectedCenters[i][j], centers[i][j], tolerance);
             }
         }
+
+        System.out.println("Steps: " + kmeans.getNumberOfStepsToConvergence());
 
 //        final ImagePlus imp1 = new ImagePlus("K-means", ip);
 //        final FileSaver saver = new FileSaver(imp1);

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -49,6 +49,7 @@ public final class KMeans {
     private VectorProcessor vp;
     private float[][] clusterCenters;
     private ImageStack clusterAnimation;
+    private long numberOfStepsToConvergence;
 
 
     public KMeans() {
@@ -126,6 +127,11 @@ public final class KMeans {
     }
 
 
+    public long getNumberOfStepsToConvergence() {
+        return numberOfStepsToConvergence;
+    }
+
+
     /**
      * Find index of the cluster closest to the sample {@code x}.
      * {@link #run(ij.ImageStack)} must be run before calling this method.
@@ -183,6 +189,7 @@ public final class KMeans {
     private void cluster() {
 
         // Select initial partitioning - initialize cluster centers
+        numberOfStepsToConvergence = 0;
         clusterCenters = initializeClusterCenters();
         if (config.isPrintTraceEnabled()) {
             printClusters("Initial clusters");
@@ -218,7 +225,7 @@ public final class KMeans {
             for (int i = 0; i < clusterCenters.length; i++) {
                 final float[] clusterCenter = clusterCenters[i];
                 final float[] newClusterCenter = newClusterMeans[i].mean();
-                distanceSum += KMeansUtils.distance(clusterCenter, newClusterCenter);
+                distanceSum += KMeansUtils.distanceSqr(clusterCenter, newClusterCenter);
             }
 
             converged = distanceSum < config.getTolerance();
@@ -239,6 +246,8 @@ public final class KMeans {
                 clusterAnimation.addSlice("Iteration " + count, encodeSegmentedImage());
             }
         }
+
+        this.numberOfStepsToConvergence = count;
     }
 
 
@@ -286,8 +295,7 @@ public final class KMeans {
                 // Distance to closest cluster
                 final float[] v = vp.get(p.x, p.y);
                 final int cci = KMeansUtils.closestCluster(v, centersArray);
-                final double d = KMeansUtils.distance(v, centersArray[cci]);
-                sum += d * d;
+                sum += KMeansUtils.distanceSqr(v, centersArray[cci]);
                 dp2[offset] = sum;
             }
 
