@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,12 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
+
 package net.sf.ij_plugins.util.progress;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Default implementation of {@link ProgressReporter} interface. Can be used as a base class for
@@ -32,6 +34,7 @@ import java.util.List;
  * @author Jarek Sacha
  */
 public class DefaultProgressReporter implements ProgressReporter {
+
     protected final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
     private double currentProgress;
 
@@ -62,7 +65,7 @@ public class DefaultProgressReporter implements ProgressReporter {
      * This method is used when progress needs to be updated <strong>without notifying the listeners</strong>.
      * To update progress and update listeners use {@link #notifyProgressListeners(double)}.
      *
-     * @param progress new value of {@link #currentProgress}.
+     * @param progress new value of {@link #currentProgress}. The value must be not less than 0 and not more than 1.
      * @see #notifyProgressListeners()
      * @see #notifyProgressListeners(double)
      * @see #notifyProgressListeners(double, String)
@@ -99,7 +102,7 @@ public class DefaultProgressReporter implements ProgressReporter {
      * calling {@link #setCurrentProgress(double)} and {@link #notifyProgressListeners()}.
      * Progress message is an empty string.
      *
-     * @param progress new value of {@link #currentProgress}.
+     * @param progress new value of {@link #currentProgress}. The value must be not less than 0 and not more than 1.
      * @see #setCurrentProgress(double)
      * @see #notifyProgressListeners()
      */
@@ -111,7 +114,7 @@ public class DefaultProgressReporter implements ProgressReporter {
     /**
      * Set new progress value and notify listeners.
      *
-     * @param progress new value of {@link #currentProgress}.
+     * @param progress new value of {@link #currentProgress}. The value must be not less than 0 and not more than 1.
      * @param message  message that will be send to listeners within {#link ProgressEvent}
      */
     protected void notifyProgressListeners(final double progress, final String message) {
