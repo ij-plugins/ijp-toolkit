@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -30,6 +30,8 @@ import ij.measure.Calibration;
 import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsException;
+import net.sf.ij_plugins.io.ExportToSTL.FileType;
+import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import java.io.File;
@@ -42,7 +44,8 @@ import java.io.File;
 public final class ExportToSTLPlugIn implements PlugIn {
 
     private static final String TITLE = "Export to STL";
-    private static boolean binary = true;
+    private static FileType fileType = FileType.BINARY;
+    private static boolean saveSides = true;
 
 
     @Override
@@ -61,14 +64,21 @@ public final class ExportToSTLPlugIn implements PlugIn {
 
         //
         final GenericDialog gc = new GenericDialog(TITLE);
-        gc.addCheckbox("Binary format", binary);
+        final FileType[] fileTypes = FileType.values();
+        final String[] fileTypeStrings = new String[fileTypes.length];
+        for (int i = 0; i < fileTypes.length; i++) {
+            fileTypeStrings[i] = fileTypes[i].toString().toLowerCase();
+        }
+        gc.addChoice("File_encoding", fileTypeStrings, fileType.toString().toLowerCase());
+        gc.addCheckbox("Save_sides", saveSides);
         gc.showDialog();
 
         if (gc.wasCanceled()) {
             return;
         }
 
-        binary = gc.getNextBoolean();
+        fileType = fileTypes[gc.getNextChoiceIndex()];
+        saveSides = gc.getNextBoolean();
 
         // Write to STL
         final File file = new File(sd.getDirectory(), sd.getFileName());
@@ -78,14 +88,13 @@ public final class ExportToSTLPlugIn implements PlugIn {
         final ExportToSTL exporter = new ExportToSTL();
         exporter.addProgressListener(new IJProgressBarAdapter());
         try {
-            if (binary) {
+            if (FileType.BINARY == fileType) {
                 exporter.writeBinary(file, ip, c.pixelWidth, c.pixelHeight);
             } else {
                 exporter.writeASCII(file, ip, c.pixelWidth, c.pixelHeight);
             }
         } catch (final IJPluginsException e) {
-            e.printStackTrace();
-            IJ.error(TITLE, e.getMessage());
+            IJ.error(TITLE, e.getMessage() + "\n" + TextUtil.toString(e));
         } finally {
             exporter.removeAllProgressListener();
         }
