@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ package net.sf.ij_plugins.io.metaimage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.GenericDialog;
 import ij.io.SaveDialog;
 import ij.plugin.PlugIn;
 
@@ -44,6 +45,9 @@ import java.io.File;
 public final class MetaImageWriterPlugin implements PlugIn {
 
     private static final String TITLE = "MetaImage Writer";
+    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/3d-io/index.html";
+
+    private static boolean saveInSingleFile = false;
 
 
     @Override
@@ -55,21 +59,40 @@ public final class MetaImageWriterPlugin implements PlugIn {
             return;
         }
 
+        // Verify type
         if (imp.getType() == ImagePlus.COLOR_256 || imp.getType() == ImagePlus.COLOR_RGB) {
             IJ.error(TITLE, "COLOR_256 and COLOR_RGB images are not supported.");
             return;
         }
 
+        // Should the image be single file
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addCheckbox("Save_in_single_file", saveInSingleFile);
+        dialog.addMessage("" +
+                "Write current image in MetaImage format used by ITK. \n" +
+                "Option \"Save in single file\" indicates whether the image should be saved in a single \n" +
+                "file (extension *.mha) or the header and the image data should be saved in separate \n" +
+                "files (with extensions *.mhd and *.raw respectively.) ");
+        dialog.addHelp(HELP_URL);
+        dialog.showDialog();
+
+        if (dialog.wasCanceled()) {
+            return;
+        }
+
+        saveInSingleFile = dialog.getNextBoolean();
 
         // Get file name
-        final SaveDialog saveDialog = new SaveDialog(TITLE, imp.getTitle(), ".mha");
+        final String extension = saveInSingleFile ? ".mha" : ".mhd";
+        final SaveDialog saveDialog = new SaveDialog(TITLE, imp.getTitle(), extension);
         if (saveDialog.getFileName() == null) {
             return;
         }
 
+        // Save the image
         final File file = new File(saveDialog.getDirectory(), saveDialog.getFileName());
         try {
-            MiEncoder.write(imp, file.getAbsolutePath(), true);
+            MiEncoder.write(imp, file.getAbsolutePath(), saveInSingleFile);
         } catch (final MiException ex) {
             ex.printStackTrace();
             IJ.error(TITLE, ex.getMessage());
