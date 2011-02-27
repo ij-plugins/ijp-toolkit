@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,15 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.util;
 
-import java.io.IOException;
-import java.io.StreamTokenizer;
-import java.io.StringReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Text related utilities.
@@ -35,6 +34,7 @@ import java.util.List;
  */
 
 public class TextUtil {
+
     /**
      * Constructor for the TextUtil object
      */
@@ -56,8 +56,7 @@ public class TextUtil {
         if (str != null) {
             try {
                 f = Float.parseFloat(str);
-            }
-            catch (final NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 f = defaultValue;
             }
         }
@@ -78,8 +77,7 @@ public class TextUtil {
         if (str != null) {
             try {
                 i = Integer.parseInt(str);
-            }
-            catch (final NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 i = defaultValue;
             }
         }
@@ -115,8 +113,7 @@ public class TextUtil {
             if (tokens.size() < 1) {
                 throw new IllegalArgumentException("Input string does not contain any numbers.");
             }
-        }
-        catch (final IOException ex) {
+        } catch (final IOException ex) {
             throw new IllegalArgumentException("Unexpected error extracting tokens: " + ex);
         }
 
@@ -156,8 +153,7 @@ public class TextUtil {
             if (tokens.size() < 1) {
                 throw new IllegalArgumentException("Input string does not contain any numbers.");
             }
-        }
-        catch (final IOException ex) {
+        } catch (final IOException ex) {
             throw new IllegalArgumentException("Unexpected error extracting tokens: " + ex);
         }
 
@@ -167,5 +163,19 @@ public class TextUtil {
         }
 
         return f;
+    }
+
+
+    /**
+     * Convert exception stack trace to a string.
+     *
+     * @param t exception
+     * @return string with stack trace.
+     */
+    public static String toString(final Throwable t) {
+        final CharArrayWriter caw = new CharArrayWriter();
+        final PrintWriter pw = new PrintWriter(caw);
+        t.printStackTrace(pw);
+        return caw.toString();
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -38,12 +38,11 @@ import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerModel;
 import net.sf.ij_plugins.ui.multiregion.Region;
 import net.sf.ij_plugins.ui.multiregion.SubRegion;
 import net.sf.ij_plugins.util.IJUtils;
+import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -206,12 +205,7 @@ final class RegionGrowingModel extends AbstractModel {
 
 
     public void showError(final String message, final Throwable error) {
-        error.printStackTrace();
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final PrintWriter writer = new PrintWriter(out);
-        error.printStackTrace(writer);
-
-        IJ.error(CAPTION, message + " " + error.getMessage() + "\n" + out.toString());
+        IJ.error(CAPTION, message + " " + error.getMessage() + "\n" + TextUtil.toString(error));
     }
 
 
