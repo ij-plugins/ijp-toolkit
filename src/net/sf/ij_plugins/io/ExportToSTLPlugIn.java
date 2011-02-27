@@ -44,6 +44,8 @@ import java.io.File;
 public final class ExportToSTLPlugIn implements PlugIn {
 
     private static final String TITLE = "Export to STL";
+    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/3d-io/index.html";
+
     private static FileType fileType = FileType.BINARY;
     private static boolean saveSides = true;
 
@@ -56,29 +58,30 @@ public final class ExportToSTLPlugIn implements PlugIn {
             return;
         }
 
-        // Ask for file name to save to
-        final SaveDialog sd = new SaveDialog("Save as STL", imp.getTitle(), ".stl");
-        if (sd.getFileName() == null) {
-            return;
-        }
-
-        //
-        final GenericDialog gc = new GenericDialog(TITLE);
+        // Ask for options
+        final GenericDialog dialog = new GenericDialog(TITLE);
         final FileType[] fileTypes = FileType.values();
         final String[] fileTypeStrings = new String[fileTypes.length];
         for (int i = 0; i < fileTypes.length; i++) {
             fileTypeStrings[i] = fileTypes[i].toString().toLowerCase();
         }
-        gc.addChoice("File_encoding", fileTypeStrings, fileType.toString().toLowerCase());
-        gc.addCheckbox("Save_sides", saveSides);
-        gc.showDialog();
+        dialog.addChoice("File_encoding", fileTypeStrings, fileType.toString().toLowerCase());
+        dialog.addCheckbox("Save_sides", saveSides);
+        dialog.addHelp(HELP_URL);
+        dialog.showDialog();
 
-        if (gc.wasCanceled()) {
+        if (dialog.wasCanceled()) {
             return;
         }
 
-        fileType = fileTypes[gc.getNextChoiceIndex()];
-        saveSides = gc.getNextBoolean();
+        fileType = fileTypes[dialog.getNextChoiceIndex()];
+        saveSides = dialog.getNextBoolean();
+
+        // Ask for file name to save to
+        final SaveDialog sd = new SaveDialog("Save as STL", imp.getTitle(), ".stl");
+        if (sd.getFileName() == null) {
+            return;
+        }
 
         // Write to STL
         final File file = new File(sd.getDirectory(), sd.getFileName());
