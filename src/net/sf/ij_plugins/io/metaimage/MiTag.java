@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -62,6 +62,11 @@ public final class MiTag extends Enumeration {
     public static final MiTag HEADER_SIZE = new MiTag("HeaderSize");
 
     /**
+     * MET_INT - Number of values (of type <code>ElementType</code>) per voxel
+     */
+    public static final MiTag ELEMENT_NUMBER_OF_CHANNELS = new MiTag("ElementNumberOfChannels");
+
+    /**
      * Size of each voxel, e.g. '2.5 2.5 8'. Optional, by default is equal to
      * <code>ElementSpacing</code>, if that is not specified the it is 1 in each dimension.
      */
@@ -116,10 +121,6 @@ public final class MiTag extends Enumeration {
      * Color
      */
     public static final MiTag COLOR = new MiTag("Color");
-    /**
-     * ElementNumberOfChannels
-     */
-    public static final MiTag ELEMENT_NUMBER_OF_CHANNELS = new MiTag("ElementNumberOfChannels");
 
     public static final MiTag TRANSFORM_MATRIX = new MiTag("TransformMatrix");
     public static final MiTag OFFSET = new MiTag("Offset");

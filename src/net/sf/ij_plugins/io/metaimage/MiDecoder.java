@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -27,6 +27,7 @@ import ij.ImagePlus;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.RandomAccessStream;
+import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.Validate;
 
@@ -67,7 +68,14 @@ public final class MiDecoder {
         final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header
-        final FileInfo fileInfo = miDecoder.decodeHeader(file);
+        final Pair<FileInfo, Integer> p = miDecoder.decodeHeader(file);
+        final FileInfo fileInfo = p.getFirst();
+        final int elementNumberOfChannels = p.getSecond();
+        if (elementNumberOfChannels > 1) {
+            // Trick FileOpener to read all channels, they will be later separated
+            fileInfo.width *= elementNumberOfChannels;
+        }
+
         if (IJ.debugMode) {
             IJ.log("FileInfo: " + fileInfo.toString());
         }
@@ -77,6 +85,21 @@ public final class MiDecoder {
         final ImagePlus imp = fileOpener.open(false);
         if (imp == null) {
             throw new MiException("Unable to read image data from '" + fileInfo.fileName + "'.");
+        }
+
+        if (elementNumberOfChannels > 1) {
+            // TODO decode multiple channels
+            // Values for each channel are stored next to each other.
+            // Extract channels by copying every other pixel value to a separate image
+//            final ImagePlus imp2 = imp.createImagePlus();
+//            for (int i = 0; i < imp.getStackSize(); i++) {
+//                imp.setSlice(i + 1);
+//                for each pixel increment index by elementNumberOfChannels {
+//                  ip1(i) = ip(i*elementNumberOfChannels + 0)
+//                  ip2(i) = ip(i*elementNumberOfChannels + 1)
+//                  ip3(i) = ip(i*elementNumberOfChannels + 2)
+//                }
+//            }
         }
 
         return imp;
@@ -97,8 +120,7 @@ public final class MiDecoder {
         final MiTagValuePair tag = new MiTagValuePair();
         try {
             tag.id = (MiTag) MiTag.DIM_SIZE.byName(tagName);
-        }
-        catch (final IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.", ex);
         }
 
@@ -116,8 +138,9 @@ public final class MiDecoder {
      * @return MetaImage header information converted to FileInfo format.
      * @throws MiException In case of I/O errors or incorrect header format.
      */
-    private FileInfo decodeHeader(final File file) throws MiException {
+    private Pair<FileInfo, Integer> decodeHeader(final File file) throws MiException {
         final FileInfo fileInfo = new FileInfo();
+        int elementNumberOfChannels = 1;
         final BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file));
@@ -229,6 +252,17 @@ public final class MiDecoder {
                     elementSpacingDefined = true;
 
                 }
+                // TAG: ElementNumberOfChannels
+                else if (tag.id == MiTag.ELEMENT_NUMBER_OF_CHANNELS) {
+                    elementNumberOfChannels = TextUtil.parseInt(tag.value, 1);
+                    if (elementNumberOfChannels < 1) {
+                        throw new MiException("Number of channels in '"
+                                + MiTag.ELEMENT_NUMBER_OF_CHANNELS
+                                + "' cannot be less than 1, got " + elementNumberOfChannels
+                                + "'. Header line=" + lineNb + ".");
+                    }
+//                    fileInfo.samplesPerPixel = elementNumberOfChannels;
+                }
                 // TAG: ElementSize
                 else if (tag.id == MiTag.ELEMENT_SIZE && !elementSpacingDefined) {
                     if (nDims == -1) {
@@ -256,8 +290,7 @@ public final class MiDecoder {
                     final MiElementType elementType;
                     try {
                         elementType = (MiElementType) MiElementType.MET_CHAR.byName(tag.value);
-                    }
-                    catch (final IllegalArgumentException ex) {
+                    } catch (final IllegalArgumentException ex) {
                         throw new MiException("Invalid element type '" + line + "'.", ex);
                     }
                     if (elementType == MiElementType.MET_UCHAR) {
@@ -282,8 +315,7 @@ public final class MiDecoder {
                             throw new MiException("Header size cannot be negative '" + line + "'.");
                         }
                         fileInfo.offset = headerSize;
-                    }
-                    catch (final NumberFormatException ex) {
+                    } catch (final NumberFormatException ex) {
                         throw new MiException("Unable to parse value of tag '" + line + "' as integer.", ex);
                     }
                 }
@@ -311,13 +343,11 @@ public final class MiDecoder {
 
         } catch (final IOException ex) {
             throw new MiException("Error parsing line " + lineNb + " of the MetaImage header. " + ex.getMessage(), ex);
-        }
-        finally {
+        } finally {
             if (reader != null) {
                 try {
                     reader.close();
-                }
-                catch (final IOException ex) {
+                } catch (final IOException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -351,16 +381,14 @@ public final class MiDecoder {
             } finally {
                 try {
                     in.close();
-                }
-                catch (final IOException ex) {
+                } catch (final IOException ex) {
                     ex.printStackTrace();
                 }
 
             }
 
         }
-
-        return fileInfo;
+        return new Pair<FileInfo, Integer>(fileInfo, elementNumberOfChannels);
     }
 
 
