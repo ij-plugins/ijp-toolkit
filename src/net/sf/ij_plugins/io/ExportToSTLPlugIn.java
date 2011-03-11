@@ -90,11 +90,12 @@ public final class ExportToSTLPlugIn implements PlugIn {
 
         final ExportToSTL exporter = new ExportToSTL();
         exporter.addProgressListener(new IJProgressBarAdapter());
+        final Calibration cal = imp.getCalibration();
         try {
             if (FileType.BINARY == fileType) {
-                exporter.writeBinary(file, ip, c.pixelWidth, c.pixelHeight);
+                exporter.writeBinary(file, ip, c.pixelWidth, c.pixelHeight, cal.xOrigin, cal.yOrigin);
             } else {
-                exporter.writeASCII(file, ip, c.pixelWidth, c.pixelHeight);
+                exporter.writeASCII(file, ip, c.pixelWidth, c.pixelHeight, cal.xOrigin, cal.yOrigin);
             }
         } catch (final IJPluginsException e) {
             IJ.error(TITLE, e.getMessage() + "\n" + TextUtil.toString(e));

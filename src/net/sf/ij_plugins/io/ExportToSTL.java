@@ -56,6 +56,29 @@ public final class ExportToSTL extends DefaultProgressReporter {
                            final ImageProcessor ip,
                            final double pixelWidth,
                            final double pixelHeight) throws IJPluginsException {
+        writeASCII(file, ip, pixelWidth, pixelHeight, 0, 0);
+    }
+
+
+    /**
+     * Write height image in ASCII variant of STL format.
+     * Absolute location of x in calibrated coordinates is (x-xOrigin)*pixelWidth,
+     * where x is pixel index starting at 0.
+     *
+     * @param file        output file
+     * @param ip          image to be saved
+     * @param pixelWidth  pixel width
+     * @param pixelHeight pixel height
+     * @param xOrigin     X origin in pixels
+     * @param yOrigin     y origin in pixels
+     * @throws IJPluginsException if IO error occurred
+     */
+    public void writeASCII(final File file,
+                           final ImageProcessor ip,
+                           final double pixelWidth,
+                           final double pixelHeight,
+                           final double xOrigin,
+                           final double yOrigin) throws IJPluginsException {
 
         final boolean saveSides = true;
         final String solidName = "IJ";
@@ -72,7 +95,7 @@ public final class ExportToSTL extends DefaultProgressReporter {
         try {
             write(out, "solid " + solidName + "\n");
 
-            writeFacets(out, ip, pixelWidth, pixelHeight, statusMessage, FileType.ASCII, saveSides);
+            writeFacets(out, ip, pixelWidth, pixelHeight, xOrigin, yOrigin, statusMessage, FileType.ASCII, saveSides);
 
             write(out, "endsolid " + solidName + "\n");
         } catch (final IOException e) {
@@ -102,6 +125,27 @@ public final class ExportToSTL extends DefaultProgressReporter {
                             final ImageProcessor ip,
                             final double pixelWidth,
                             final double pixelHeight) throws IJPluginsException {
+        writeBinary(file, ip, pixelWidth, pixelHeight, 0, 0);
+    }
+
+
+    /**
+     * Write height image in binary variant of STL format.
+     *
+     * @param file        output file
+     * @param ip          image to be saved
+     * @param pixelWidth  pixel width
+     * @param pixelHeight pixel height
+     * @param xOrigin     X origin in pixels
+     * @param yOrigin     y origin in pixels
+     * @throws IJPluginsException if IO error occurred
+     */
+    public void writeBinary(final File file,
+                            final ImageProcessor ip,
+                            final double pixelWidth,
+                            final double pixelHeight,
+                            final double xOrigin,
+                            final double yOrigin) throws IJPluginsException {
 
         final boolean saveSides = true;
         final String statusMessage = "Saving STL to: " + file.getAbsolutePath();
@@ -125,7 +169,7 @@ public final class ExportToSTL extends DefaultProgressReporter {
             final int nbTriangles = nbTopTriangles + nbBottomTriangles + nbSideTriangles;
             writeInt32(out, nbTriangles);
 
-            writeFacets(out, ip, pixelWidth, pixelHeight, statusMessage, FileType.BINARY, saveSides);
+            writeFacets(out, ip, pixelWidth, pixelHeight, xOrigin, yOrigin, statusMessage, FileType.BINARY, saveSides);
 
             IJ.showProgress(xMax, xMax);
             IJ.showStatus("Saved STL to: " + file.getName());
@@ -147,6 +191,8 @@ public final class ExportToSTL extends DefaultProgressReporter {
                              final ImageProcessor ip,
                              final double pixelWidth,
                              final double pixelHeight,
+                             final double xOrigin,
+                             final double yOrigin,
                              final String statusMessage,
                              final FileType fileType,
                              final boolean saveSides) throws IOException {
@@ -162,10 +208,11 @@ public final class ExportToSTL extends DefaultProgressReporter {
         for (int x = 0; x < width - 1; x++) {
             notifyProgressListeners(x / (ip.getWidth() - 1d), statusMessage);
             for (int y = 0; y < ip.getHeight() - 1; y++) {
-
+                final double xx = x - xOrigin;
+                final double yy = y - yOrigin;
                 final double[][] r = {
-                        {x * pixelWidth, y * pixelHeight},
-                        {(x + 1) * pixelWidth, (y + 1) * pixelWidth}};
+                        {xx * pixelWidth, yy * pixelHeight},
+                        {(xx + 1) * pixelWidth, (yy + 1) * pixelWidth}};
                 final double[][] z = {
                         {ip.getPixelValue(x, y), ip.getPixelValue(x, y + 1)},
                         {ip.getPixelValue(x + 1, y), ip.getPixelValue(x + 1, y + 1)}};
@@ -175,9 +222,13 @@ public final class ExportToSTL extends DefaultProgressReporter {
         }
 
         if (saveSides) {
+            final double xMin = (0 - xOrigin) * pixelWidth;
+            final double yMin = (0 - yOrigin) * pixelHeight;
+            final double xMax = (width - xOrigin - 1) * pixelWidth;
+            final double yMax = (height - yOrigin - 1) * pixelHeight;
             // Save bottom side
             {
-                final double[][] r = {{0, 0}, {(width - 1) * pixelWidth, (height - 1) * pixelHeight}};
+                final double[][] r = {{xMin, yMin}, {xMax, yMax}};
                 final double[][] z = {{minLevel, minLevel}, {minLevel, minLevel}};
 
                 write4(out, r, z, fileType);
@@ -185,9 +236,10 @@ public final class ExportToSTL extends DefaultProgressReporter {
 
             // Save front side
             for (int x = 0; x < width - 1; x++) {
+                final double xx = x - xOrigin;
                 final double[][] r = {
-                        {x * pixelWidth, 0},
-                        {(x + 1) * pixelWidth, 0}};
+                        {xx * pixelWidth, yMin},
+                        {(xx + 1) * pixelWidth, yMin}};
                 final double[][] z = {
                         {ip.getPixelValue(x, 0), minLevel},
                         {ip.getPixelValue(x + 1, 0), minLevel}};
@@ -197,10 +249,10 @@ public final class ExportToSTL extends DefaultProgressReporter {
 
             // Save back side
             for (int x = 0; x < width - 1; x++) {
-                final double yMax = (height - 1) * pixelHeight;
+                final double xx = x - xOrigin;
                 final double[][] r = {
-                        {x * pixelWidth, yMax},
-                        {(x + 1) * pixelWidth, yMax}};
+                        {xx * pixelWidth, yMax},
+                        {(xx + 1) * pixelWidth, yMax}};
                 final double[][] z = {
                         {ip.getPixelValue(x, height - 1), minLevel},
                         {ip.getPixelValue(x + 1, height - 1), minLevel}};
@@ -210,9 +262,10 @@ public final class ExportToSTL extends DefaultProgressReporter {
 
             // Save left side
             for (int y = 0; y < height - 1; y++) {
+                final double yy = y - yOrigin;
                 final double[][] r = {
-                        {0, y * pixelHeight},
-                        {0, (y + 1) * pixelHeight}};
+                        {xMin, yy * pixelHeight},
+                        {xMin, (yy + 1) * pixelHeight}};
                 final double[][] z = {
                         {ip.getPixelValue(0, y), ip.getPixelValue(0, y + 1)},
                         {minLevel, minLevel}};
@@ -222,10 +275,10 @@ public final class ExportToSTL extends DefaultProgressReporter {
 
             // Save right side
             for (int y = 0; y < height - 1; y++) {
-                final double xMax = (width - 1) * pixelWidth;
+                final double yy = y - yOrigin;
                 final double[][] r = {
-                        {xMax, y * pixelHeight},
-                        {xMax, (y + 1) * pixelHeight}};
+                        {xMax, yy * pixelHeight},
+                        {xMax, (yy + 1) * pixelHeight}};
                 final double[][] z = {
                         {ip.getPixelValue(width - 1, y), ip.getPixelValue(width - 1, y + 1)},
                         {minLevel, minLevel}};
