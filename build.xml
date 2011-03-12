@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Image/J Plugins
-  ~ Copyright (C) 2002-2010 Jarek Sacha
+  ~ Copyright (C) 2002-2011 Jarek Sacha
   ~ Author's email: jsacha at users dot sourceforge dot net
   ~
   ~ This library is free software; you can redistribute it and/or
@@ -110,20 +110,6 @@
             <include name="**/commons-logging-*.jar"/>
         </fileset>
 
-        <!-- SVN setup -->
-        <property name="svn.repository" value="https://ij-plugins.svn.sourceforge.net/svnroot/ij-plugins"/>
-        <property name="svn.module" value="ij-plugins"/>
-        <property name="checkout.dir" location="${build.dir}/checkout"/>
-        <!-- path to the svnant libraries. Usually they will be located in ANT_HOME/lib -->
-        <property name="svnant.lib.dir" location="../vendor/svnant/lib"/>
-        <path id="svnant.classpath">
-            <fileset dir="${svnant.lib.dir}">
-                <include name="**/*.jar"/>
-            </fileset>
-        </path>
-        <!-- load the svn task -->
-        <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath"/>
-
         <!-- Create the time stamp -->
         <tstamp/>
 
@@ -137,12 +123,16 @@
     </target>
 
 
-    <target name="run" description="Run ImageJ with plugins" depends="setup-plugins">
+    <target name="run"
+            depends="setup-plugins"
+            description="Run ImageJ with plugins">
         <java dir="${sandbox.dir}" classname="ij.ImageJ" classpath="${run.classpath}" fork="true"/>
     </target>
 
 
-    <target name="setup-plugins" depends="jar" description="Prepare plugins for testing with ImageJ">
+    <target name="setup-plugins"
+            depends="jar"
+            description="Prepare plugins for testing with ImageJ">
         <copy file="${dist.jar}" todir="${plugins.dir}"/>
         <copy todir="${plugins.dir}">
             <fileset dir="lib" excludes="**/ij.jar"/>
@@ -150,7 +140,8 @@
     </target>
 
 
-    <target name="jar-all" depends="jar"
+    <target name="jar-all"
+            depends="jar"
             description="Create plugins' JAR with all dependencies">
 
         <!-- Create library jar -->
@@ -166,101 +157,9 @@
     </target>
 
 
-    <!-- Build distribution from current content of SVN -->
-    <target name="dist-from-svn" depends="init" description="Distribution from SVN">
-
-        <property name="svn.dir" location="${checkout.dir}/${svn.module}"/>
-
-        <!-- ................... -->
-        <!-- Source distribution -->
-        <!-- ................... -->
-        <!-- Cleanup SVN checkout directory -->
-        <delete dir="${svn.dir}"/>
-
-        <!-- Fresh checkout from SVN -->
-        <echo message="SVN ROOT: ${svn.repository}"/>
-        <antcall target="checkout" inheritall="false">
-            <param name="svn.dir" value="${svn.dir}"/>
-        </antcall>
-
-        <!-- Get revision number for checked out source -->
-        <echo message="svn.dir = ${svn.dir}"/>
-        <svn>
-            <status path="${svn.dir}" revisionProperty="svn.revision"/>
-        </svn>
-
-        <!--Copy dependencies-->
-        <!--<mkdir dir="${svn.dir}/lib"/>-->
-        <!--<copy file="${ij.jar}" todir="${svn.dir}/lib"/>-->
-        <!--<copy file="${license.file}" todir="${svn.dir}"/>-->
-
-        <!-- ZIP source -->
-        <mkdir dir="${dist.dir}"/>
-        <zip basedir="${svn.dir}"
-             destfile="${dist.dir}/${package.name}_src_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
-
-        <!-- ................................................... -->
-        <!-- Run tests                                           -->
-        <!-- ................................................... -->
-        <ant antfile="${svn.dir}/build.xml" target="test" inheritall="false">
-            <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
-        </ant>
-
-        <!-- ................................................... -->
-        <!-- Binary distribution from actual distribution source -->
-        <!-- ................................................... -->
-        <ant antfile="${svn.dir}/build.xml" target="jar-all" inheritall="false">
-            <property name="jar.dir" location="${dist.dir}"/>
-            <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
-        </ant>
-
-        <!--<ant antfile="${svn.dir}/build.xml" target="jar-nodep" inheritall="false">-->
-        <!--<property name="jar.dir" location="${base.dir}/dist"/>-->
-        <!--<property name="svnant.lib.dir" location="${svnant.lib.dir}"/>-->
-        <!--</ant>-->
-
-        <!-- ZIP binaries -->
-        <zip basedir="${dist.dir}"
-             includes="${package.name}.jar"
-             destfile="${dist.dir}/${package.name}_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
-
-        <!--<zip basedir="${base.dir}/dist"-->
-        <!--includes="${package.name}-nodep.jar"-->
-        <!--destfile="${dist.dir}/${package.name}-nodep_bin_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>-->
-
-        <!-- ................................................... -->
-        <!-- Binary distribution from actual distribution source -->
-        <!-- ................................................... -->
-        <ant antfile="${svn.dir}/build.xml" target="javadoc" inheritall="false">
-            <property name="dist.javadoc.dir" location="${dist.dir}/javadoc"/>
-            <property name="svnant.lib.dir" location="${svnant.lib.dir}"/>
-        </ant>
-
-        <!-- ZIP javadoc -->
-        <zip basedir="${dist.dir}/javadoc"
-             includes="*"
-             destfile="${dist.dir}/${package.name}_javadoc_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
-
+    <target name="build-from-svn"
+            depends="init"
+            description="Build distribution checking -out from SVN">
+        <ant antfile="build-from-svn.xml"/>
     </target>
-
-    <!-- Checkout sources from SVN repository -->
-    <target name="checkout"
-            depends="init">
-        <property name="svnant.latest.url" value="${svn.repository}/trunk/${svn.module}/"/>
-        <!--<property name="svnant.this.url"   url="${svn.repository}/tags/${svn.module}/${svnant.version}/"/>-->
-        <property name="svnant.repository.user" value="guest"/>
-        <property name="svnant.repository.passwd" value=""/>
-
-        <!-- Checkout latest sources -->
-        <mkdir dir="${svn.dir}"/>
-        <!--<svn username="${svnant.repository.user}" password="${svnant.repository.passwd}">-->
-        <!--<checkout url="${svnant.latest.url}" revision="HEAD" destPath="${svn.dir}"/>-->
-        <!--</svn>-->
-        <exec executable="svn">
-            <arg value="checkout"/>
-            <arg value="${svnant.latest.url}"/>
-            <arg value="${svn.dir}"/>
-        </exec>
-    </target>
-
 </project>
