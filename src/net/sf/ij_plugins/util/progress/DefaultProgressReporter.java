@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class DefaultProgressReporter implements ProgressReporter {
 
-    protected final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
+    private final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
     private double currentProgress;
 
 
@@ -45,17 +45,25 @@ public class DefaultProgressReporter implements ProgressReporter {
 
 
     public void addProgressListener(final ProgressListener l) {
-        progressListeners.add(l);
+        synchronized (progressListeners) {
+            progressListeners.add(l);
+        }
     }
 
 
     public void removeProgressListener(final ProgressListener l) {
-        progressListeners.remove(l);
+        synchronized (progressListeners) {
+            progressListeners.remove(l);
+        }
     }
 
 
     public void removeAllProgressListener() {
-        progressListeners.clear();
+        // Remove all listeners using call to #removeProgressListener to avoid problems if the class in inherited
+        // Iterate over a copy of the progressListeners, otherwise you get java.util.ConcurrentModificationException
+        for (final ProgressListener progressListener : new ArrayList<ProgressListener>(progressListeners)) {
+            removeProgressListener(progressListener);
+        }
     }
 
 
@@ -89,8 +97,7 @@ public class DefaultProgressReporter implements ProgressReporter {
         final int numberOfListeners = progressListeners.size();
         if (numberOfListeners > 0) {
             final ProgressEvent e = new ProgressEvent(this, currentProgress);
-            for (int i = 0; i < numberOfListeners; i++) {
-                final ProgressListener l = progressListeners.get(i);
+            for (final ProgressListener l : progressListeners) {
                 l.progressNotification(e);
             }
         }
@@ -122,8 +129,7 @@ public class DefaultProgressReporter implements ProgressReporter {
         final int numberOfListeners = progressListeners.size();
         if (numberOfListeners > 0) {
             final ProgressEvent e = new ProgressEvent(this, currentProgress, message);
-            for (int i = 0; i < numberOfListeners; i++) {
-                final ProgressListener l = progressListeners.get(i);
+            for (final ProgressListener l : progressListeners) {
                 l.progressNotification(e);
             }
         }
