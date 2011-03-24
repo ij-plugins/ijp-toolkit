@@ -50,13 +50,15 @@ public final class ExportToSTL extends DefaultProgressReporter {
      * @param ip          image to be saved
      * @param pixelWidth  pixel width
      * @param pixelHeight pixel height
+     * @param saveSides   should the sides be saved
      * @throws IJPluginsException if IO error occurred
      */
     public void writeASCII(final File file,
                            final ImageProcessor ip,
                            final double pixelWidth,
-                           final double pixelHeight) throws IJPluginsException {
-        writeASCII(file, ip, pixelWidth, pixelHeight, 0, 0);
+                           final double pixelHeight,
+                           final boolean saveSides) throws IJPluginsException {
+        writeASCII(file, ip, pixelWidth, pixelHeight, 0, 0, saveSides);
     }
 
 
@@ -71,6 +73,7 @@ public final class ExportToSTL extends DefaultProgressReporter {
      * @param pixelHeight pixel height
      * @param xOrigin     X origin in pixels
      * @param yOrigin     y origin in pixels
+     * @param saveSides   should the sides be saved
      * @throws IJPluginsException if IO error occurred
      */
     public void writeASCII(final File file,
@@ -78,9 +81,9 @@ public final class ExportToSTL extends DefaultProgressReporter {
                            final double pixelWidth,
                            final double pixelHeight,
                            final double xOrigin,
-                           final double yOrigin) throws IJPluginsException {
+                           final double yOrigin,
+                           final boolean saveSides) throws IJPluginsException {
 
-        final boolean saveSides = true;
         final String solidName = "IJ";
         ip.resetMinAndMax();
 
@@ -119,13 +122,15 @@ public final class ExportToSTL extends DefaultProgressReporter {
      * @param ip          image to be saved
      * @param pixelWidth  pixel width
      * @param pixelHeight pixel height
+     * @param saveSides   should the sides be saved
      * @throws IJPluginsException if IO error occurred
      */
     public void writeBinary(final File file,
                             final ImageProcessor ip,
                             final double pixelWidth,
-                            final double pixelHeight) throws IJPluginsException {
-        writeBinary(file, ip, pixelWidth, pixelHeight, 0, 0);
+                            final double pixelHeight,
+                            final boolean saveSides) throws IJPluginsException {
+        writeBinary(file, ip, pixelWidth, pixelHeight, 0, 0, saveSides);
     }
 
 
@@ -138,6 +143,7 @@ public final class ExportToSTL extends DefaultProgressReporter {
      * @param pixelHeight pixel height
      * @param xOrigin     X origin in pixels
      * @param yOrigin     y origin in pixels
+     * @param saveSides   should the sides be saved
      * @throws IJPluginsException if IO error occurred
      */
     public void writeBinary(final File file,
@@ -145,9 +151,9 @@ public final class ExportToSTL extends DefaultProgressReporter {
                             final double pixelWidth,
                             final double pixelHeight,
                             final double xOrigin,
-                            final double yOrigin) throws IJPluginsException {
+                            final double yOrigin,
+                            final boolean saveSides) throws IJPluginsException {
 
-        final boolean saveSides = true;
         final String statusMessage = "Saving STL to: " + file.getAbsolutePath();
         notifyProgressListeners(0, statusMessage);
         final OutputStream out;
