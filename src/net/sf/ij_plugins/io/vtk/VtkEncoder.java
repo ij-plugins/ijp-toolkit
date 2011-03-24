@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -129,11 +129,27 @@ public final class VtkEncoder {
     }
 
 
+    /**
+     * Save image in VTK format using binary encoding.
+     *
+     * @param fileName output file name.
+     * @param imp      image to save
+     * @throws IOException in case of I/O error.
+     * @see #save(String, ij.ImagePlus, boolean)
+     */
     public static void save(final String fileName, final ImagePlus imp) throws IOException {
         save(fileName, imp, false);
     }
 
 
+    /**
+     * Save image in VTK format.
+     *
+     * @param fileName    output file name.
+     * @param imp         image to save
+     * @param saveAsAscii if {@code true} save in text format, otherwise in binary
+     * @throws IOException in case of I/O error.
+     */
     public static void save(final String fileName, final ImagePlus imp, final boolean saveAsAscii) throws IOException {
         if (saveAsAscii) {
             VtkEncoder.saveAsVtkAscii(fileName, imp);
