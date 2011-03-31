@@ -38,7 +38,7 @@ import java.io.*;
  * @author Jarek Sacha
  * @since 11/29/10 10:49 PM
  */
-public final class ExportToSTL extends DefaultProgressReporter {
+public final class ExportAsSTL extends DefaultProgressReporter {
 
     enum FileType {ASCII, BINARY}
 

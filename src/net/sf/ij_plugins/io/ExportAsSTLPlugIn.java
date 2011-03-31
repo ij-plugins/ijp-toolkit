@@ -30,7 +30,7 @@ import ij.measure.Calibration;
 import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsException;
-import net.sf.ij_plugins.io.ExportToSTL.FileType;
+import net.sf.ij_plugins.io.ExportAsSTL.FileType;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
@@ -41,9 +41,9 @@ import java.io.File;
  * @author Jarek Sacha
  * @since 11/29/10 10:49 PM
  */
-public final class ExportToSTLPlugIn implements PlugIn {
+public final class ExportAsSTLPlugIn implements PlugIn {
 
-    private static final String TITLE = "Export to STL";
+    private static final String TITLE = "Export as STL";
     private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/3d-io/index.html";
 
     private static FileType fileType = FileType.BINARY;
@@ -78,7 +78,7 @@ public final class ExportToSTLPlugIn implements PlugIn {
         saveSides = dialog.getNextBoolean();
 
         // Ask for file name to save to
-        final SaveDialog sd = new SaveDialog("Save as STL", imp.getTitle(), ".stl");
+        final SaveDialog sd = new SaveDialog(TITLE, imp.getTitle(), ".stl");
         if (sd.getFileName() == null) {
             return;
         }
@@ -88,7 +88,7 @@ public final class ExportToSTLPlugIn implements PlugIn {
         final ImageProcessor ip = imp.getProcessor();
         final Calibration c = imp.getCalibration();
 
-        final ExportToSTL exporter = new ExportToSTL();
+        final ExportAsSTL exporter = new ExportAsSTL();
         exporter.addProgressListener(new IJProgressBarAdapter());
         final Calibration cal = imp.getCalibration();
         try {
