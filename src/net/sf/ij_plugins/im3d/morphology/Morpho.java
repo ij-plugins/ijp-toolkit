@@ -62,7 +62,7 @@ public class Morpho {
         new Morpho().dilate(srcStack, destStack);
         final ImagePlus dest = src.createImagePlus();
         dest.setStack(destStack);
-        dest.setTitle(src.getTitle() + "Dilate3D");
+        dest.setTitle(src.getTitle() + "+Dilate3D");
         return dest;
     }
 
@@ -137,7 +137,7 @@ public class Morpho {
         new Morpho().erode(srcStack, destStack);
         final ImagePlus dest = src.createImagePlus();
         dest.setStack(destStack);
-        dest.setTitle(src.getTitle() + "Erode3D");
+        dest.setTitle(src.getTitle() + "+Erode3D");
         return dest;
     }
 
@@ -210,7 +210,7 @@ public class Morpho {
         final ImageStack destStack = median(src.getStack());
         final ImagePlus dest = src.createImagePlus();
         dest.setStack(destStack);
-        dest.setTitle(src.getTitle() + "Median3D");
+        dest.setTitle(src.getTitle() + "+Median3D");
         return dest;
     }
 
