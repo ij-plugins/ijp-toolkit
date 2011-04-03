@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,18 +18,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 
 package net.sf.ij_plugins.im3d.filters;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-import net.sf.ij_plugins.im3d.Util;
 import net.sf.ij_plugins.im3d.morphology.Morpho;
+
 
 /**
  * Performs morphological erosion (min) for 2D and 3D images, using 8- or 26-connectedness,
@@ -38,6 +37,7 @@ import net.sf.ij_plugins.im3d.morphology.Morpho;
  * @since July 14, 2002
  */
 public class MorphologicalErode3DPlugin implements PlugIn {
+
     /**
      * Main processing method for the net.sf.ij_plugins.im3d.filters.MorphologicalErode3DPlugin
      * plugin
@@ -57,13 +57,6 @@ public class MorphologicalErode3DPlugin implements PlugIn {
             return;
         }
 
-
-        ImageStack src = imp.getStack();
-        ImageStack dest = Util.duplicateEmpty(src);
-
-        Morpho morpho = new Morpho();
-        morpho.erode(imp.getStack(), dest);
-
-        new ImagePlus(imp.getTitle() + "+Erode", dest).show();
+        Morpho.erode(imp).show();
     }
 }

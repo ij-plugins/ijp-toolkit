@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -23,6 +23,7 @@
 package net.sf.ij_plugins.im3d.morphology;
 
 import ij.IJ;
+import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.filter.RankFilters;
 import net.sf.ij_plugins.im3d.Util;
@@ -50,7 +51,24 @@ public class Morpho {
 
 
     /**
-     * Perform morphological erosion (min) of <code>src</code> image, write results to
+     * Compute 3D morphological dilation (max) of <code>src</code> image.
+     *
+     * @param src input image
+     * @return dilation filtered input image.
+     */
+    public static ImagePlus dilate(final ImagePlus src) {
+        final ImageStack srcStack = src.getStack();
+        final ImageStack destStack = Util.duplicateEmpty(srcStack);
+        new Morpho().dilate(srcStack, destStack);
+        final ImagePlus dest = src.createImagePlus();
+        dest.setStack(destStack);
+        dest.setTitle(src.getTitle() + "Dilate3D");
+        return dest;
+    }
+
+
+    /**
+     * Perform morphological dilation (max) of <code>src</code> image, write results to
      * <code>dest</code> image. <code>src</code> and <code>dest</code> must be of the same type and
      * size.
      *
@@ -104,6 +122,23 @@ public class Morpho {
             }
             IJ.showProgress((z + 1.0) / zSize);
         }
+    }
+
+
+    /**
+     * Compute 3D morphological erosion (min) of <code>src</code> image.
+     *
+     * @param src input image
+     * @return dilation filtered input image.
+     */
+    public static ImagePlus erode(final ImagePlus src) {
+        final ImageStack srcStack = src.getStack();
+        final ImageStack destStack = Util.duplicateEmpty(srcStack);
+        new Morpho().erode(srcStack, destStack);
+        final ImagePlus dest = src.createImagePlus();
+        dest.setStack(destStack);
+        dest.setTitle(src.getTitle() + "Erode3D");
+        return dest;
     }
 
 
@@ -165,7 +200,22 @@ public class Morpho {
     }
 
 
-    public ImageStack median(final ImageStack src) {
+    /**
+     * Compute 3D median filter of an image, assuming equally sized pixels
+     *
+     * @param src input image
+     * @return median filtered input image.
+     */
+    public static ImagePlus median(final ImagePlus src) {
+        final ImageStack destStack = median(src.getStack());
+        final ImagePlus dest = src.createImagePlus();
+        dest.setStack(destStack);
+        dest.setTitle(src.getTitle() + "Median3D");
+        return dest;
+    }
+
+
+    public static ImageStack median(final ImageStack src) {
         final ImageStack dest = Util.duplicateEmpty(src);
         new Morpho().median(src, dest);
         return dest;

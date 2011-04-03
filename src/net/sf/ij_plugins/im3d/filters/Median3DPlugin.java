@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -24,7 +24,6 @@ package net.sf.ij_plugins.im3d.filters;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
 import net.sf.ij_plugins.im3d.morphology.Morpho;
@@ -38,19 +37,17 @@ public final class Median3DPlugin implements PlugIn {
 
     @Override
     public void run(final String arg) {
-        final ImagePlus imp = WindowManager.getCurrentImage();
-        if (imp == null) {
+        final ImagePlus src = WindowManager.getCurrentImage();
+        if (src == null) {
             IJ.noImage();
             return;
         }
 
-        if (imp.getType() != ImagePlus.GRAY8) {
+        if (src.getType() != ImagePlus.GRAY8) {
             IJ.showMessage("Median 3D", "This plugin works only with GRAY8 images.");
             return;
         }
 
-        final ImageStack dest = new Morpho().median(imp.getStack());
-
-        new ImagePlus(imp.getTitle() + "+Median", dest).show();
+        Morpho.median(src).show();
     }
 }
