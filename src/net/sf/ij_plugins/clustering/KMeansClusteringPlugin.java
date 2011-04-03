@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -39,6 +39,8 @@ import java.awt.image.IndexColorModel;
 
 /**
  * ImageJ plugin wrapper for k-means clustering algorithm.
+ * <p/>
+ * {@value #ABOUT}
  *
  * @author Jarek Sacha
  * @see KMeans
