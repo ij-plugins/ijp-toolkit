@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,17 +18,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.im3d.filters;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-import net.sf.ij_plugins.im3d.Box3D;
-import net.sf.ij_plugins.im3d.Util;
+
 
 /**
  * Reduce size of an image to smallest one containing all non-zero pixels. Stacks are treated as 3D
@@ -37,7 +35,8 @@ import net.sf.ij_plugins.im3d.Util;
  * @since May 8, 2002
  */
 
-public class AutoClipVolumePlugin implements PlugIn {
+public class AutoCrop3DPlugin implements PlugIn {
+
     /**
      * Main processing method for the net.sf.ij_plugins.im3d.filters.AutoClipVolumePlugin plugin
      *
@@ -56,14 +55,6 @@ public class AutoClipVolumePlugin implements PlugIn {
             return;
         }
 
-
-        final ImageStack src = imp.getStack();
-        final Box3D bb = Util.getBoundingBox(src);
-        final ImageStack dest = Util.clip(src, bb);
-
-        final ImagePlus impDest = new ImagePlus(imp.getTitle() + "+AutoClip", dest);
-        Util.offsetOrigin(impDest, bb.origin());
-
-        impDest.show();
+        AutoCrop3D.run(imp).show();
     }
 }

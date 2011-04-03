@@ -14,6 +14,8 @@ Improvements:
 * Order of plugin changed in Filter menu
 * Improved error reporting for SRG
 * MetaImage writer ask if data should be saved to a single file
+* 3D filters maintain image calibration (dilate, erode, median, clip)
+* Rename AutoClipVolume to AutoCropVolume
 
 Developer visible:
 * SRG Tools is now using standard overlays provided in newer versions of
