@@ -24,9 +24,11 @@ package net.sf.ij_plugins.io.metaimage;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.RandomAccessStream;
+import ij.process.ImageProcessor;
 import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.Validate;
@@ -58,13 +60,13 @@ public final class MiDecoder {
 
 
     /**
-     * Load image from a MetaImage file.
+     * Load image from a MetaImage file. Number of returned images is equal to the number of channels in the file.
      *
      * @param file MetaImage file.
      * @return Decoded image.
      * @throws MiException In case of IO errors.
      */
-    public static ImagePlus open(final File file) throws MiException {
+    public static ImagePlus[] open(final File file) throws MiException {
         final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header
@@ -88,21 +90,47 @@ public final class MiDecoder {
         }
 
         if (elementNumberOfChannels > 1) {
-            // TODO decode multiple channels
+            // Decode multiple channels
             // Values for each channel are stored next to each other.
             // Extract channels by copying every other pixel value to a separate image
-//            final ImagePlus imp2 = imp.createImagePlus();
-//            for (int i = 0; i < imp.getStackSize(); i++) {
-//                imp.setSlice(i + 1);
-//                for each pixel increment index by elementNumberOfChannels {
-//                  ip1(i) = ip(i*elementNumberOfChannels + 0)
-//                  ip2(i) = ip(i*elementNumberOfChannels + 1)
-//                  ip3(i) = ip(i*elementNumberOfChannels + 2)
-//                }
-//            }
-        }
 
-        return imp;
+            final int finalWidth = imp.getWidth() / elementNumberOfChannels;
+            final int finalHeight = imp.getHeight();
+            final ImageStack[] channelStacks = new ImageStack[elementNumberOfChannels];
+            for (int c = 0; c < elementNumberOfChannels; c++) {
+                channelStacks[c] = new ImageStack(finalWidth, finalHeight);
+            }
+
+            final ImageStack inputStack = imp.getStack();
+            final int pixelsPerChannel = finalWidth * finalHeight;
+            for (int slice = 1; slice <= imp.getStackSize(); slice++) {
+
+                final ImageProcessor ip = inputStack.getProcessor(slice);
+                final String label = inputStack.getSliceLabel(slice);
+
+                // Copy pixel values to separate channels
+                for (int c = 0; c < elementNumberOfChannels; c++) {
+                    final ImageProcessor channel = ip.createProcessor(finalWidth, finalHeight);
+                    for (int n = 0; n < pixelsPerChannel; n++) {
+                        channel.setf(n, ip.getf(n * elementNumberOfChannels + c));
+                    }
+                    channelStacks[c].addSlice(label, channel);
+                }
+            }
+
+            // Add ImagePlus wrapper to each channel's stack
+            final ImagePlus[] imps = new ImagePlus[elementNumberOfChannels];
+            for (int c = 0; c < elementNumberOfChannels; c++) {
+                imps[c] = imp.createImagePlus();
+                imps[c].setStack(channelStacks[c]);
+                imps[c].setTitle(imp.getTitle() + " channel " + c);
+            }
+
+            return imps;
+
+        } else {
+            return new ImagePlus[]{imp};
+        }
     }
 
 

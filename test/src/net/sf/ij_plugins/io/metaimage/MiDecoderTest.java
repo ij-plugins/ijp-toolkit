@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -40,8 +40,10 @@ public final class MiDecoderTest {
     @Test
     public void testRead1() throws Exception {
         final File inFile = new File("test/data/Image0075.mhd");
-        final ImagePlus imp = MiDecoder.open(inFile);
-        assertNotNull(imp);
+        final ImagePlus[] imps = MiDecoder.open(inFile);
+        assertNotNull(imps);
+        assertEquals(1, imps.length);
+        final ImagePlus imp = imps[0];
         assertEquals(256, imp.getWidth());
         assertEquals(256, imp.getHeight());
         assertEquals(1, imp.getStackSize());
@@ -53,13 +55,14 @@ public final class MiDecoderTest {
     @Test
     public void testReadLocal() throws Exception {
         final File inFile = new File("test/data/RFE-3091583_mha-internal/neuron.mha");
-        final ImagePlus imp = MiDecoder.open(inFile);
-        assertNotNull(imp);
+        final ImagePlus[] imps = MiDecoder.open(inFile);
+        assertNotNull(imps);
+        assertEquals(1, imps.length);
+        final ImagePlus imp = imps[0];
         assertEquals(192, imp.getWidth());
         assertEquals(192, imp.getHeight());
         assertEquals(1, imp.getStackSize());
         assertEquals(ImagePlus.GRAY16, imp.getType());
-
     }
 
 }

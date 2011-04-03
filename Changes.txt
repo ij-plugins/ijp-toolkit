@@ -7,6 +7,7 @@ Version 1.6.0
 -------------------------------------------------------------------------------
 New:
 * Export as STL plugin allows saving image surfaces are a STL mesh data
+* MetaImage reader now supports multi-channel 3D images.
 
 Improvements:
 * Correct cluster distance measure in k-means.
@@ -17,6 +18,8 @@ Improvements:
 Developer visible:
 * SRG Tools is now using standard overlays provided in newer versions of
   ImageJ.
+* Signature of net.sf.ij_plugins.io.metaimage.MiDecoder.open changed to support
+  multi-channel MetaImage files.
 * Improvements to JavaDoc
 * Separate distribution building Ant script into separate file for simpler
   dependency.
