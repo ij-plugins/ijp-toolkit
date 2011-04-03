@@ -6,25 +6,34 @@
 Version 1.6.0
 -------------------------------------------------------------------------------
 New:
-* Export as STL plugin allows saving image surfaces are a STL mesh data
+* Export as STL plugin allows saving image surfaces are a STL mesh data.
 * MetaImage reader now supports multi-channel 3D images.
 
 Improvements:
 * Correct cluster distance measure in k-means.
-* Order of plugin changed in Filter menu
-* Improved error reporting for SRG
-* MetaImage writer ask if data should be saved to a single file
-* 3D filters maintain image calibration (dilate, erode, median, clip)
-* Rename AutoClipVolume to AutoCropVolume
+* Order of plugin changed in Filter menu.
+* Improved error reporting for SRG.
+* MetaImage writer ask if data should be saved to a single file.
+* 3D filters maintain image calibration (dilate, erode, median, clip).
+* Rename AutoClipVolume to AutoCropVolume.
 
 Developer visible:
 * SRG Tools is now using standard overlays provided in newer versions of
   ImageJ.
 * Signature of net.sf.ij_plugins.io.metaimage.MiDecoder.open changed to support
   multi-channel MetaImage files.
-* Improvements to JavaDoc
+* Improvements to JavaDoc.
 * Separate distribution building Ant script into separate file for simpler
   dependency.
+
+-------------------------------------------------------------------------------
+Version 1.5.2
+-------------------------------------------------------------------------------
+Improved:
+ * RFE-3095953: MetaImage writer saved images in a single file (no header/raw separation)
+
+Bug fixes:
+ * Bug-3097792: VTK Reader can handle images that spaces at the end of header lines.
 
 -------------------------------------------------------------------------------
 ...
