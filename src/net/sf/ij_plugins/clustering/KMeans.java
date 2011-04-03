@@ -36,6 +36,9 @@ import java.util.Random;
 
 /**
  * Pixel-based multi-band image segmentation using k-means clustering algorithm.
+ * <p/>
+ * <p/>
+ * {@value #ABOUT}
  *
  * @author Jarek Sacha
  */
@@ -50,6 +53,23 @@ public final class KMeans {
     private float[][] clusterCenters;
     private ImageStack clusterAnimation;
     private long numberOfStepsToConvergence;
+
+    public static final String ABOUT = "" +
+            "k-means Clustering performs pixel-based segmentation of multi-band\n" +
+            "images. An image stack is interpreted as a set of bands corresponding to\n" +
+            "the same image. For instance, an RGB color images has three bands: red,\n" +
+            "green, and blue. Each pixels is represented by an n-valued vector , where\n" +
+            "n is a number of bands, for instance, a 3-value vector [r,g,b] in case of\n" +
+            "a color image.\n" +
+            "Each cluster is defined by its centroid in n-dimensional space. Pixels are\n" +
+            "grouped by their proximity to cluster's centroids.\n" +
+            "Cluster centroids are determined using a heuristics: initially centroids\n" +
+            "are randomly initialized and then their location is interactively\n" +
+            "optimized.\n" +
+            "For more information on this and other clustering approaches see:\n" +
+            "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
+            "Prentice Hall, 1988.\n" +
+            "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
 
 
     public KMeans() {
