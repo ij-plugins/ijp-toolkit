@@ -54,6 +54,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
     private static final boolean APPLY_LUT = false;
     private static final boolean AUTO_BRIGHTNESS = true;
 
+    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/k-means.html";
 
     private static final String TITLE = "k-means Clustering";
     private static final String ABOUT = "" +
@@ -100,6 +101,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         dialog.addCheckbox("Enable_clustering_animation", CONFIG.isClusterAnimationEnabled());
         dialog.addCheckbox("Print optimization trace", CONFIG.isPrintTraceEnabled());
         dialog.addCheckbox("Send_to_results_table", sendToResultTable);
+        dialog.addHelp(HELP_URL);
 
         // Show dialog
         dialog.showDialog();

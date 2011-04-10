@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -52,6 +52,8 @@ public final class RegionGrowingPlugIn implements PlugIn {
     private static final String RUN_INDEPENDENT_SLICES = "All slices independent";
     private static final String RUN_3D = "3D volume";
     private static final String[] STACK_TREATMENT = {RUN_CURRENT_SLICE, RUN_INDEPENDENT_SLICES, RUN_3D};
+    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/srg.html";
+
 
     final AtomicReference<String> stackTreatment = new AtomicReference<String>(STACK_TREATMENT[0]);
     final AtomicBoolean growHistoryEnabled = new AtomicBoolean(false);
@@ -96,6 +98,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         gd.addChoice("Stack treatment:", STACK_TREATMENT, stackTreatment.get());
         gd.addCheckbox("Save_grow_history (for " + RUN_3D + " only)", growHistoryEnabled.get());
         gd.addMessage("Seeds image should be of the same size as the image for segmentation.");
+        gd.addHelp(HELP_URL);
         gd.showDialog();
         if (gd.wasCanceled()) {
             return;
@@ -166,6 +169,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         r.setColorModel(seeds.getColorModel());
         new ImagePlus(prefix + "-SRG", r).show();
     }
+
 
     private static void run(final ImageStack image, final ImageStack seeds, final String prefix, final boolean growHistoryEnabled) {
         final SRG3D srg = new SRG3D();
