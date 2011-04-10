@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -30,23 +30,29 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
+
 /**
  * Automatic thresholding technique based on the maximum entropy of the histogram. See: P.K. Sahoo,
  * S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of Thresholding Techniques", Computer Vision,
  * Graphics, and Image Processing, Vol. 41, pp.233-260, 1988.
+ * <p/>
+ * The original bi-level threshold is extended here to multiple-levels.
  *
  * @author Jarek Sacha
  */
 public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
+
     private static final String ABOUT_MESSAGE =
             "Automatic multiple thresholding technique, generalization of a single maximum\n" +
                     "entropy thresholding of Kapur, Sahoo, and Wond:\n" +
                     "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
                     "\"Thresholding Using the Entropy of the Histogram\"CVGIP, (29), pp.273-285,\n" +
                     "1985.";
-    private static final String TITLE = "Maximum Entropy Multi-Theshold";
+    private static final String TITLE = "Maximum Entropy Multi-Threshold";
+    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/maximum_entropy_threshold.html";
 
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
+
 
     public int setup(final String s, final ImagePlus imagePlus) {
 
@@ -58,10 +64,13 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         return PlugInFilter.DOES_8G | PlugInFilter.DOES_STACKS;
     }
 
+
     public void run(final ImageProcessor imageProcessor) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
-        dialog.addNumericField("Number of thresolds:", 2, 0);
+        dialog.addNumericField("Number of thresholds:", 2, 0);
+        dialog.addHelp(HELP_URL);
+
 
         dialog.showDialog();
 
@@ -91,13 +100,14 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         encode((ByteProcessor) imageProcessor, thresholds);
     }
 
+
     private void encode(final ByteProcessor ip, final int[] thresholds) {
         final int[] values = new int[thresholds.length + 1];
         double inc = 255.0 / thresholds.length;
         for (int i = 0; i < values.length; i++) {
             values[i] = (int) Math.round(i * inc);
         }
-        String logMsg = "Levels in thresholoded image: ";
+        String logMsg = "Levels in thresholded image: ";
         for (final int v : values) {
             logMsg += " " + v;
         }
