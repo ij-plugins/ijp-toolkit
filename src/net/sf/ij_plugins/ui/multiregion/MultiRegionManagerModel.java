@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@
 
 package net.sf.ij_plugins.ui.multiregion;
 
-import com.jgoodies.binding.list.ArrayListModel;
+import com.jgoodies.common.collect.ArrayListModel;
 import ij.ImageListener;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -79,6 +79,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
         // Monitor GUI for possible changes to lastSourceImage
         ImagePlus.addImageListener(new ImageListener() {
+            @Override
             public void imageOpened(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     updateShapes(lastSourceImage);
@@ -86,6 +87,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             }
 
 
+            @Override
             public void imageClosed(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     lastSourceImage = null;
@@ -93,6 +95,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             }
 
 
+            @Override
             public void imageUpdated(final ImagePlus imp) {
                 if (lastSourceImage == imp) {
                     updateShapes(lastSourceImage);
@@ -137,6 +140,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             private static final long serialVersionUID = 1L;
 
 
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionAddRegion();
             }
@@ -149,6 +153,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             private static final long serialVersionUID = 1L;
 
 
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionRemoveRegion();
             }
@@ -167,6 +172,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             private static final long serialVersionUID = 1L;
 
 
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionAddSubRegion();
             }
@@ -185,6 +191,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             private static final long serialVersionUID = 1L;
 
 
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 getModel().actionRemoveSubRegion();
             }
@@ -203,6 +210,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             private static final long serialVersionUID = 1L;
 
 
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 updateShapes(WindowManager.getCurrentImage());
             }
@@ -221,6 +229,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
             private static final long serialVersionUID = 1L;
 
 
+            @Override
             public void actionPerformed(final ActionEvent e) {
                 updateShapes(null);
             }
@@ -388,18 +397,21 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     private class ListListener implements ListDataListener {
 
+        @Override
         public void intervalAdded(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
 
+        @Override
         public void intervalRemoved(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);
         }
 
 
+        @Override
         public void contentsChanged(final ListDataEvent e) {
             updateShapes(lastSourceImage);
             MultiRegionManagerModel.this.firePropertyChange("regions", null, null);

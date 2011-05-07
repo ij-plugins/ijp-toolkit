@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -85,6 +85,7 @@ public class MultiRegionManagerView extends JPanel {
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 final JPanel panel = new MultiRegionManagerView();
 
@@ -193,27 +194,27 @@ public class MultiRegionManagerView extends JPanel {
         layout.setHorizontalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-                                .addComponent(roiLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(regionLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                                .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+                                        .addComponent(roiLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(regionLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(12, 12, 12)
+                                .addGroup(layout.createParallelGroup(Alignment.TRAILING)
+                                        .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                                        .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(Alignment.LEADING)
                                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(addRegionButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(removeRegionButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(redrawOverlaysButton, Alignment.TRAILING)
-                                                .addComponent(removeOverlayButton, Alignment.TRAILING))
-                                        .addComponent(jSeparator1, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(addROIButton, Alignment.TRAILING)
-                                .addComponent(removeROIButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
+                                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                                        .addComponent(addRegionButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(removeRegionButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(redrawOverlaysButton, Alignment.TRAILING)
+                                                        .addComponent(removeOverlayButton, Alignment.TRAILING))
+                                                .addComponent(jSeparator1, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(addROIButton, Alignment.TRAILING)
+                                                .addComponent(removeROIButton, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
         );
 
         layout.linkSize(SwingConstants.HORIZONTAL, new Component[]{addROIButton, addRegionButton, jSeparator1, redrawOverlaysButton, removeOverlayButton, removeROIButton, removeRegionButton});
@@ -221,32 +222,32 @@ public class MultiRegionManagerView extends JPanel {
         layout.setVerticalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                         .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(regionLabel)
-                                                .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
-                                        .addPreferredGap(ComponentPlacement.RELATED))
-                                .addGroup(layout.createSequentialGroup()
-                                .addComponent(addRegionButton)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(removeRegionButton)
-                                .addGap(73, 73, 73)))
-                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(addROIButton)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(removeROIButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                                        .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(redrawOverlaysButton)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(removeOverlayButton))
-                                .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
-                                .addComponent(roiLabel))
-                        .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                                        .addComponent(regionLabel)
+                                                        .addComponent(regionScrollPane, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
+                                                .addPreferredGap(ComponentPlacement.RELATED))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(addRegionButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(removeRegionButton)
+                                                .addGap(73, 73, 73)))
+                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                        .addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(addROIButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(removeROIButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                                                .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(redrawOverlaysButton)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(removeOverlayButton))
+                                        .addComponent(subRegionScrollPane, GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                                        .addComponent(roiLabel))
+                                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -289,6 +290,7 @@ public class MultiRegionManagerView extends JPanel {
         // We just reconfigure the JLabel each time we're called.
 
 
+        @Override
         public Component getListCellRendererComponent(
                 final JList list,              // the list
                 final Object value,            // value to display

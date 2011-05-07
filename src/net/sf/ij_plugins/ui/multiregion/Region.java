@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +23,8 @@
 
 package net.sf.ij_plugins.ui.multiregion;
 
-import com.jgoodies.binding.list.ArrayListModel;
-import com.jgoodies.binding.list.ObservableList;
+import com.jgoodies.common.collect.ArrayListModel;
+import com.jgoodies.common.collect.ObservableList;
 import net.sf.ij_plugins.beans.AbstractModel;
 
 import javax.swing.event.ListDataEvent;
@@ -50,16 +50,19 @@ public class Region extends AbstractModel {
         setName(name);
         setColor(color);
         subRegions.addListDataListener(new ListDataListener() {
+            @Override
             public void intervalAdded(ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
 
 
+            @Override
             public void intervalRemoved(ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
 
 
+            @Override
             public void contentsChanged(ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
