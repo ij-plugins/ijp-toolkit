@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -25,9 +25,7 @@ package net.sf.ij_plugins.ui;
 import ij.*;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 
@@ -72,8 +70,9 @@ public final class UIUtils {
             // TODO: throw exception on error.
             error("There are no images open.");
             return null;
-        } else
+        } else {
             return imp;
+        }
     }
 
 
@@ -108,9 +107,9 @@ public final class UIUtils {
      */
     public static IndexColorModel createIndexColorModel(final java.util.List<Color> colors) {
         final int mapSize = 256;
-        byte[] reds = new byte[mapSize];
-        byte[] greens = new byte[mapSize];
-        byte[] blues = new byte[mapSize];
+        final byte[] reds = new byte[mapSize];
+        final byte[] greens = new byte[mapSize];
+        final byte[] blues = new byte[mapSize];
         for (int i = 0; i < mapSize; i++) {
             final Color color = colors.get(i % colors.size());
             reds[i] = (byte) (color.getRed() & 0xff);

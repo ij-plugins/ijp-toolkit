@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +23,7 @@ package net.sf.ij_plugins.operators;
 
 import ij.process.FloatProcessor;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -42,7 +43,7 @@ public class PixelIterator implements Iterator<Neighborhood3x3> {
     private int y;
     private final Neighborhood3x3 neighborhood3x3 = new Neighborhood3x3();
 
-    public PixelIterator(FloatProcessor fp) {
+    public PixelIterator(final FloatProcessor fp) {
         final Rectangle roi = fp.getRoi();
         width = fp.getWidth();
         pixels = (float[]) fp.getPixels();
@@ -54,10 +55,12 @@ public class PixelIterator implements Iterator<Neighborhood3x3> {
         rewind();
     }
 
+    @Override
     public boolean hasNext() {
         return x < xMax || y < yMax;
     }
 
+    @Override
     public Neighborhood3x3 next() {
         // Update center location
         if (x < xMax) {
@@ -71,7 +74,7 @@ public class PixelIterator implements Iterator<Neighborhood3x3> {
         }
 
         // ENH: offset can be incremented rather than computed each time
-        int offset = x + y * width;
+        final int offset = x + y * width;
 
         // Update neighborhood information
         neighborhood3x3.neighbor4 = pixels[offset - rowOffset - 1];
@@ -93,6 +96,7 @@ public class PixelIterator implements Iterator<Neighborhood3x3> {
         return neighborhood3x3;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException("Method remove() not supported.");
     }

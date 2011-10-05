@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,12 +28,12 @@ public class TwoDLoc {
     private int row;
     private int col;
 
-    public TwoDLoc(int row, int col) {
+    public TwoDLoc(final int row, final int col) {
         this.row = row;
         this.col = col;
     }
 
-    public void set(int row, int col) {
+    public void set(final int row, final int col) {
         this.row = row;
         this.col = col;
     }

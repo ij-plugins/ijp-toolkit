@@ -91,7 +91,7 @@ final class RegionGrowingModel extends AbstractModel {
         // Prepare seeds
         final ByteProcessor seeds = new ByteProcessor(imp.getWidth(), imp.getHeight());
         for (int i = 0; i < regions.size(); ++i) {
-            int nbPoints = markSeedPoints(regions.get(i), seeds, i + 1);
+            final int nbPoints = markSeedPoints(regions.get(i), seeds, i + 1);
             if (nbPoints < 1) {
                 IJ.error(CAPTION, "Cannot perform growing, region '" + regions.get(i).getName() + "' is empty (no unique seeds).");
                 return;

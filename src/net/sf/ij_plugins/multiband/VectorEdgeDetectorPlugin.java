@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.multiband;
 
@@ -46,6 +46,7 @@ public class VectorEdgeDetectorPlugin implements PlugIn {
      * <li>'VectorDifferenceEdgeOperator' - invoke {@link VectorDifferenceEdgeOperator} filter.</li>
      * </ul>
      */
+    @Override
     public void run(final String arg) {
 
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {

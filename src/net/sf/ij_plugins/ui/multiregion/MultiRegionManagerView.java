@@ -110,7 +110,7 @@ public class MultiRegionManagerView extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         final JMenuItem toROIManagerMenuItem = new JMenuItem();
-        JMenuItem fromROIManagerMenuItem = new JMenuItem();
+        final JMenuItem fromROIManagerMenuItem = new JMenuItem();
         final JScrollPane regionScrollPane = new JScrollPane();
         final JScrollPane subRegionScrollPane = new JScrollPane();
         final JButton addRegionButton = new JButton(model.createNewRegionAction());
@@ -126,7 +126,8 @@ public class MultiRegionManagerView extends JPanel {
         toROIManagerMenuItem.setText("Send to ROI Manager");
         toROIManagerMenuItem.setToolTipText("Send all ROIs in this region to ROI Manager");
         toROIManagerMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
                 toROIManagerMenuItemActionPerformed(evt);
             }
         });
@@ -135,7 +136,8 @@ public class MultiRegionManagerView extends JPanel {
         fromROIManagerMenuItem.setText("Load selected in ROI Manager");
         fromROIManagerMenuItem.setToolTipText("Load ROIs in this region from ROI Manager. At least one must be selected in ROI Manager.");
         fromROIManagerMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
                 fromROIManagerMenuItemActionPerformed(evt);
             }
         });
@@ -144,7 +146,8 @@ public class MultiRegionManagerView extends JPanel {
         regionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         regionList.setSelectedIndex(0);
         regionList.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
+            @Override
+            public void mouseClicked(final MouseEvent evt) {
                 regionListMouseClicked(evt);
             }
         });
@@ -189,7 +192,7 @@ public class MultiRegionManagerView extends JPanel {
         removeOverlayButton.setToolTipText("Remove overlays from the current image, if any.");
         removeOverlayButton.setHorizontalAlignment(SwingConstants.LEADING);
 
-        GroupLayout layout = new GroupLayout(this);
+        final GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
@@ -252,7 +255,7 @@ public class MultiRegionManagerView extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
 
-    private void regionListMouseClicked(MouseEvent evt) {//GEN-FIRST:event_regionListMouseClicked
+    private void regionListMouseClicked(final MouseEvent evt) {//GEN-FIRST:event_regionListMouseClicked
         // if right mouse button clicked (or me.isPopupTrigger())
         if (SwingUtilities.isRightMouseButton(evt)
                 && !regionList.isSelectionEmpty()
@@ -264,12 +267,12 @@ public class MultiRegionManagerView extends JPanel {
     }//GEN-LAST:event_regionListMouseClicked
 
 
-    private void toROIManagerMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_toROIManagerMenuItemActionPerformed
+    private void toROIManagerMenuItemActionPerformed(final ActionEvent evt) {//GEN-FIRST:event_toROIManagerMenuItemActionPerformed
         model.sentCurrentRegionToROIManager();
     }//GEN-LAST:event_toROIManagerMenuItemActionPerformed
 
 
-    private void fromROIManagerMenuItemActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fromROIManagerMenuItemActionPerformed
+    private void fromROIManagerMenuItemActionPerformed(final ActionEvent evt) {//GEN-FIRST:event_fromROIManagerMenuItemActionPerformed
         model.loadCurrentRegionFromROIManager();
     }//GEN-LAST:event_fromROIManagerMenuItemActionPerformed
 

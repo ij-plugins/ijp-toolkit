@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -47,7 +47,7 @@ public final class VectorMath {
     public static double distance(final float[] a, final float[] b) {
         double s = 0;
         for (int i = 0; i < a.length; i++) {
-            double d = a[i] - b[i];
+            final double d = a[i] - b[i];
             s += d * d;
         }
 
@@ -58,7 +58,7 @@ public final class VectorMath {
     public static double distance(final double[] a, final double[] b) {
         double s = 0;
         for (int i = 0; i < a.length; i++) {
-            double d = a[i] - b[i];
+            final double d = a[i] - b[i];
             s += d * d;
         }
 
@@ -69,7 +69,7 @@ public final class VectorMath {
     public static double distanceSqr(final float[] a, final double[] b) {
         double s = 0;
         for (int i = 0; i < a.length; i++) {
-            double d = a[i] - b[i];
+            final double d = a[i] - b[i];
             s += d * d;
         }
 

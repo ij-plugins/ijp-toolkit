@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.filters;
 
@@ -50,8 +50,8 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     protected final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
     private double currentProgress;
     private double lastReportedProgress;
-    private double minProgress = 0.01;
-    private DecimalFormat decimalFormat = new DecimalFormat("0.######");
+    private final double minProgress = 0.01;
+    private final DecimalFormat decimalFormat = new DecimalFormat("0.######");
     private double time;
 
 
@@ -70,7 +70,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
-    public void setTimeStep(double timeStep) {
+    public void setTimeStep(final double timeStep) {
         this.timeStep = timeStep;
     }
 
@@ -80,11 +80,12 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
-    public void setMeanSquareError(double meanSquareError) {
+    public void setMeanSquareError(final double meanSquareError) {
         this.meanSquareError = meanSquareError;
     }
 
 
+    @Override
     public double currentProgress() {
         return currentProgress;
     }
@@ -102,6 +103,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
+    @Override
     public void addProgressListener(final ProgressListener l) {
         if (!progressListeners.contains(l)) {
             progressListeners.add(l);
@@ -109,11 +111,13 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
+    @Override
     public void removeProgressListener(final ProgressListener l) {
         progressListeners.remove(l);
     }
 
 
+    @Override
     public void removeAllProgressListener() {
         progressListeners.clear();
     }
@@ -138,7 +142,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
             diffuse(fp1, fp2);
 
             // swap
-            FloatProcessor tmp = fp2;
+            final FloatProcessor tmp = fp2;
             fp2 = fp1;
             fp1 = tmp;
 
@@ -184,7 +188,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
 
         double sum = 0;
         for (int i = 0; i < a.length; i++) {
-            float d = a[i] - b[i];
+            final float d = a[i] - b[i];
             sum += d * d;
         }
 

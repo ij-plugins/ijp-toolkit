@@ -97,7 +97,7 @@ public final class MiEncoder {
             } finally {
                 try {
                     fileOutputStream.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     IJ.log(e.getMessage());
                 }
@@ -257,7 +257,7 @@ public final class MiEncoder {
     }
 
 
-    private static void writeRawImage(ImagePlus imp, FileOutputStream fileOutputStream) throws MiException {
+    private static void writeRawImage(final ImagePlus imp, final FileOutputStream fileOutputStream) throws MiException {
         final FileInfo fileInfo = imp.getFileInfo();
         fileInfo.fileFormat = FileInfo.RAW;
         // Eric Nodwell:
@@ -295,7 +295,7 @@ public final class MiEncoder {
         final FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(fileName);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             throw new MiException("Cannot open file: " + fileName);
         }
 
@@ -304,7 +304,7 @@ public final class MiEncoder {
         } finally {
             try {
                 fileOutputStream.close();
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 ex.printStackTrace();
                 IJ.log(ex.getMessage());
             }

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -48,8 +48,7 @@ public class AbstractAnisotropicDiffusionBeanInfo extends IJPluginsSimpleBeanInf
                             "If the mean square error of images between two iterations is less than limit diffusion " +
                                     "stops, unless maximum number of iterations is reached first. "),
             };
-        }
-        catch (IntrospectionException e) {
+        } catch (final IntrospectionException e) {
             throw new IJPluginsRuntimeException(e);
         }
     }

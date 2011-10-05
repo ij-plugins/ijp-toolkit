@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -104,6 +104,7 @@ public final class SRG2DVector extends SRG2DBase {
     }
 
 
+    @Override
     protected void initializeImageStructures() {
         xSize = image.getWidth();
         ySize = image.getHeight();
@@ -111,12 +112,14 @@ public final class SRG2DVector extends SRG2DBase {
     }
 
 
+    @Override
     protected double distanceFromMean(final int offset, final RegionInfo regionInfo) {
         final float[] value = imagePixels[offset];
         return VectorMath.distanceSqr(value, ((RegionInfoVector) regionInfo).mean());
     }
 
 
+    @Override
     protected RegionInfo newRegionInfo(final int originalSeedID) {
         return new RegionInfoVector(image, originalSeedID);
     }
@@ -136,6 +139,7 @@ public final class SRG2DVector extends SRG2DBase {
         }
 
 
+        @Override
         public void addPoint(final Point point) {
             ++pointCount;
             final float[] b = new float[sumIntensity.length];

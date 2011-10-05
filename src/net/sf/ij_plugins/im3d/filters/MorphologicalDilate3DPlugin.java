@@ -46,8 +46,8 @@ public class MorphologicalDilate3DPlugin implements PlugIn {
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
     @Override
-    public void run(String arg) {
-        ImagePlus src = WindowManager.getCurrentImage();
+    public void run(final String arg) {
+        final ImagePlus src = WindowManager.getCurrentImage();
         if (src == null) {
             IJ.noImage();
             return;

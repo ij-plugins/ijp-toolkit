@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -49,8 +49,9 @@ public class ConnectedThresholdGrowerPlugin implements PlugIn {
      *
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
-    public void run(String arg) {
-        ImagePlus imp = WindowManager.getCurrentImage();
+    @Override
+    public void run(final String arg) {
+        final ImagePlus imp = WindowManager.getCurrentImage();
         if (imp == null) {
             IJ.noImage();
             return;
@@ -72,7 +73,7 @@ public class ConnectedThresholdGrowerPlugin implements PlugIn {
         }
         ctf.setValueMin(valueMin);
         ctf.setValueMax(valueMax);
-        ImageStack out = ctf.run(imp.getStack(), seedPoint);
+        final ImageStack out = ctf.run(imp.getStack(), seedPoint);
 
         new ImagePlus("Region", out).show();
     }
@@ -84,7 +85,7 @@ public class ConnectedThresholdGrowerPlugin implements PlugIn {
      *         otherwise.
      */
     private boolean showDialog() {
-        GenericDialog gd = new GenericDialog("Grow options");
+        final GenericDialog gd = new GenericDialog("Grow options");
         gd.addMessage("Seed point coordinates");
         gd.addNumericField("x", seedPoint.x, 0);
         gd.addNumericField("y", seedPoint.y, 0);

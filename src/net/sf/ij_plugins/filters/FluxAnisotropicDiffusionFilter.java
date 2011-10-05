@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,17 +36,17 @@ public class FluxAnisotropicDiffusionFilter {
     private FloatProcessor smoothedImage;
     private double sigma = 1;
     private double beta = 0.05;
-    private double k = 10;
+    private final double k = 10;
     private int numberOfIterations = 1;
-    private double tangCoeff = 1.0;
-    private double epsilon = 1E-2;
-    private boolean smoothedParam = false;
+    private final double tangCoeff = 1.0;
+    private final double epsilon = 1E-2;
+    private final boolean smoothedParam = false;
 
     public int getNumberOfIterations() {
         return numberOfIterations;
     }
 
-    public void setNumberOfIterations(int numberOfIterations) {
+    public void setNumberOfIterations(final int numberOfIterations) {
         this.numberOfIterations = numberOfIterations;
     }
 
@@ -53,7 +54,7 @@ public class FluxAnisotropicDiffusionFilter {
         return sigma;
     }
 
-    public void setSigma(double sigma) {
+    public void setSigma(final double sigma) {
         this.sigma = sigma;
     }
 
@@ -61,20 +62,20 @@ public class FluxAnisotropicDiffusionFilter {
         return beta;
     }
 
-    public void setBeta(double beta) {
+    public void setBeta(final double beta) {
         this.beta = beta;
     }
 
-    public FloatProcessor run(FloatProcessor src) {
+    public FloatProcessor run(final FloatProcessor src) {
         sizeX = src.getWidth();
         sizeY = src.getHeight();
 
-        FloatProcessor tmpSrc = (FloatProcessor) src.duplicate();
+        final FloatProcessor tmpSrc = (FloatProcessor) src.duplicate();
         ;
 
-        FloatProcessor tmpDest = new FloatProcessor(sizeX, sizeY);
+        final FloatProcessor tmpDest = new FloatProcessor(sizeX, sizeY);
 
-        GaussianSmoothFilter gaussianSmooth = new GaussianSmoothFilter();
+        final GaussianSmoothFilter gaussianSmooth = new GaussianSmoothFilter();
 
         for (int i = 1; i <= numberOfIterations; i++) {
             // 1. compute the smoothed image
@@ -92,37 +93,37 @@ public class FluxAnisotropicDiffusionFilter {
         return tmpSrc;
     }
 
-    private static void copy(FloatProcessor src, FloatProcessor dest) {
-        float[] srcPixels = (float[]) src.getPixels();
-        float[] destPixels = (float[]) dest.getPixels();
+    private static void copy(final FloatProcessor src, final FloatProcessor dest) {
+        final float[] srcPixels = (float[]) src.getPixels();
+        final float[] destPixels = (float[]) dest.getPixels();
         System.arraycopy(srcPixels, 0, destPixels, 0, srcPixels.length);
     }
 
-    private double iterate2D(FloatProcessor inData, FloatProcessor outData) {
-        double[] _alpha_y = new double[sizeX];
-        double[] _gamma_y = new double[sizeX];
+    private double iterate2D(final FloatProcessor inData, final FloatProcessor outData) {
+        final double[] _alpha_y = new double[sizeX];
+        final double[] _gamma_y = new double[sizeX];
 
         double _alpha_x = 0;
         double _gamma_x = 0;
 
         double maxError = 0;
-        Point maxErrorPoint = new Point(-1, -1);
+        final Point maxErrorPoint = new Point(-1, -1);
 
         int nbUnstabilePoints = 0;
 
-        float[] in = (float[]) inData.getPixels();
-        float[] Iconv = (float[]) smoothedImage.getPixels();
+        final float[] in = (float[]) inData.getPixels();
+        final float[] Iconv = (float[]) smoothedImage.getPixels();
 
         for (int y = 0; y < (sizeY - 1); ++y) {
-            int offset = y * sizeX;
+            final int offset = y * sizeX;
 
             for (int x = 0; x < (sizeX - 1); ++x) {
-                int pos = offset + x;
+                final int pos = offset + x;
 
-                double val0 = in[pos];
-                Vector2D grad = new Vector2D();
-                Point2D e0 = new Point2D();
-                Point2D e1 = new Point2D();
+                final double val0 = in[pos];
+                final Vector2D grad = new Vector2D();
+                final Point2D e0 = new Point2D();
+                final Point2D e1 = new Point2D();
 
                 //----- Calcul de alpha1_x, gamma1_x
                 // Gradient en (x+1/2,y)
@@ -170,10 +171,10 @@ public class FluxAnisotropicDiffusionFilter {
                     phi0_param = u_e0;
                 }
 
-                double alpha1_x = (phi0(phi0_param) * e0.x * e0.x) +
+                final double alpha1_x = (phi0(phi0_param) * e0.x * e0.x) +
                         (phi1(u_e1) * e1.x * e1.x);
 
-                double gamma1_x = grad.y * ((e0.y * phi0(phi0_param) * e0.x) +
+                final double gamma1_x = grad.y * ((e0.y * phi0(phi0_param) * e0.x) +
                         (e1.y * phi1(u_e1) * e1.x));
 
                 //----- Calcul de alpha1_y, gamma1_y
@@ -222,10 +223,10 @@ public class FluxAnisotropicDiffusionFilter {
                     phi0_param = u_e0;
                 }
 
-                double alpha1_y = (phi0(phi0_param) * e0.y * e0.y) +
+                final double alpha1_y = (phi0(phi0_param) * e0.y * e0.y) +
                         (phi1(u_e1) * e1.y * e1.y);
 
-                double gamma1_y = (grad.x * e0.x * phi0(phi0_param) * e0.y) +
+                final double gamma1_y = (grad.x * e0.x * phi0(phi0_param) * e0.y) +
                         (grad.x * e1.x * phi1(u_e1) * e1.y);
 
                 //----- Mise a jour de l'image
@@ -280,11 +281,11 @@ public class FluxAnisotropicDiffusionFilter {
         return maxError;
     }
 
-    private double phi0(double x) {
+    private double phi0(final double x) {
         return Math.exp(-0.5 * (((x) * (x)) / k / k));
     }
 
-    private double phi1(double x) {
+    private double phi1(final double x) {
         return tangCoeff;
     }
 

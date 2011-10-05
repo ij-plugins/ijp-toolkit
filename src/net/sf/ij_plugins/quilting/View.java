@@ -1,8 +1,7 @@
-/***
- * Copyright (C) 2002 Nick Vavra
- *
+/*
  * Image/J Plugins
- * Copyright (C) 2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,9 +30,8 @@ import ij.process.ImageProcessor;
  */
 public class View {
     protected final ImageProcessor image;
-    protected int xoffset
-    ,
-    yoffset;
+    protected int xoffset,
+            yoffset;
 
 
     /**
@@ -45,7 +43,7 @@ public class View {
      * @param y     This is the x coord of the upper left corner of the view in image's pixel
      *              coordinates.
      */
-    public View(ImageProcessor image, int x, int y) {
+    public View(final ImageProcessor image, final int x, final int y) {
 
         this.image = image;
         setCorner(x, y);
@@ -54,7 +52,7 @@ public class View {
     /**
      * This moves the view to the specified position.
      */
-    public void setCorner(int x, int y) {
+    public void setCorner(final int x, final int y) {
         this.xoffset = x;
         this.yoffset = y;
     }
@@ -104,7 +102,7 @@ public class View {
     /**
      * This sets the RGB sample at the given view coordinates.
      */
-    public void putSample(int x, int y, int[] newvals) {
+    public void putSample(int x, int y, final int[] newvals) {
         // TODO: optimize pixel access
         x = imageX(x);
         y = imageY(y);
@@ -119,12 +117,12 @@ public class View {
     }
 
     /* This converts view coordinates into image coordinates. */
-            protected int imageX(int x) {
+    protected int imageX(final int x) {
         return x + xoffset;
     }
 
     /* This converts view coordinates into image coordinates. */
-            protected int imageY(int y) {
+    protected int imageY(final int y) {
         return y + yoffset;
     }
 

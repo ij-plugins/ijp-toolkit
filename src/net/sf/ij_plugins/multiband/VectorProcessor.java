@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -292,7 +292,7 @@ public class VectorProcessor {
      * @param y y
      * @param v pixel value
      */
-    public void set(final int x, final int y, float[] v) {
+    public void set(final int x, final int y, final float[] v) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             throw new IllegalArgumentException("Value of coordinates (x,y) is out of range.");
         }
@@ -378,11 +378,13 @@ public class VectorProcessor {
         }
 
 
+        @Override
         public boolean hasNext() {
             return x < xMax1 || y < yMax1;
         }
 
 
+        @Override
         public float[] next() {
             // Update center location
             if (x < xMax1) {
@@ -406,6 +408,7 @@ public class VectorProcessor {
         /**
          * Not supported.
          */
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("Method remove() not supported.");
         }
@@ -436,11 +439,13 @@ public class VectorProcessor {
         }
 
 
+        @Override
         public boolean hasNext() {
             return x < xMax || y < yMax;
         }
 
 
+        @Override
         public Neighborhood3x3 next() {
             // Update center location
             if (x < xMax) {
@@ -454,7 +459,7 @@ public class VectorProcessor {
                     progressBar.show(y - yMin, yMax - yMin);
                 }
             }
-            int offset = x + y * width;
+            final int offset = x + y * width;
 
             // Update neighbourhood information
             neighborhood3x3.p1 = pixels[offset - rowOffset - 1];
@@ -480,6 +485,7 @@ public class VectorProcessor {
         /**
          * Not supported.
          */
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("Method remove() not supported.");
         }

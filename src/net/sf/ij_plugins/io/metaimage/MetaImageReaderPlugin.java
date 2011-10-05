@@ -71,7 +71,7 @@ public final class MetaImageReaderPlugin implements PlugIn {
             final long tStart = System.currentTimeMillis();
             final ImagePlus[] imps = MiDecoder.open(file, virtual);
             final long tStop = System.currentTimeMillis();
-            for (ImagePlus imp : imps) {
+            for (final ImagePlus imp : imps) {
                 imp.show();
             }
             IJ.showStatus("MetaImage loaded in " + (tStop - tStart) + " ms.");

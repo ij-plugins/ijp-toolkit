@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -319,9 +319,9 @@ public final class ColorSpaceConversion {
             final float[] pixel = pixels[i];
             ColorSpaceConversion.labToXYZ(pixel, tmpXYZ);
             ColorSpaceConversion.xyzToRGB(tmpXYZ, tmpRGB);
-            int r = Math.min(Math.max(Math.round(tmpRGB[0]), 0), 255);
-            int g = Math.min(Math.max(Math.round(tmpRGB[1]), 0), 255);
-            int b = Math.min(Math.max(Math.round(tmpRGB[2]), 0), 255);
+            final int r = Math.min(Math.max(Math.round(tmpRGB[0]), 0), 255);
+            final int g = Math.min(Math.max(Math.round(tmpRGB[1]), 0), 255);
+            final int b = Math.min(Math.max(Math.round(tmpRGB[2]), 0), 255);
             red[i] = (byte) (r & 0xff);
             green[i] = (byte) (g & 0xff);
             blue[i] = (byte) (b & 0xff);
@@ -360,9 +360,9 @@ public final class ColorSpaceConversion {
             }
             final float[] pixel = pixels[i];
             ColorSpaceConversion.xyzToRGB(pixel, rgb);
-            int r = Math.min(Math.max(Math.round(rgb[0]), 0), 255);
-            int g = Math.min(Math.max(Math.round(rgb[1]), 0), 255);
-            int b = Math.min(Math.max(Math.round(rgb[2]), 0), 255);
+            final int r = Math.min(Math.max(Math.round(rgb[0]), 0), 255);
+            final int g = Math.min(Math.max(Math.round(rgb[1]), 0), 255);
+            final int b = Math.min(Math.max(Math.round(rgb[2]), 0), 255);
             red[i] = (byte) (r & 0xff);
             green[i] = (byte) (g & 0xff);
             blue[i] = (byte) (b & 0xff);
@@ -401,7 +401,7 @@ public final class ColorSpaceConversion {
      * @param rgb source RGB (cannot be null).
      * @param ybr destination Y, Cb, and Cr (cannot be null).
      */
-    static void rgbToYCbCr(byte[] rgb, byte[] ybr) {
+    static void rgbToYCbCr(final byte[] rgb, final byte[] ybr) {
         final int r = 0xff & rgb[0];
         final int g = 0xff & rgb[1];
         final int b = 0xff & rgb[2];
@@ -500,7 +500,7 @@ public final class ColorSpaceConversion {
      *
      * @param rgb inpuit image in sRGB color space.
      * @return array of ByteProcessor representing color planes: Y, Cb, and Cr.
-     * @see #rgbToYCbCr(ij.process.ColorProcessor,net.sf.ij_plugins.util.progress.ProgressListener)
+     * @see #rgbToYCbCr(ij.process.ColorProcessor, net.sf.ij_plugins.util.progress.ProgressListener)
      */
     public static ByteProcessor[] rgbToYCbCr(final ColorProcessor rgb) {
         return rgbToYCbCr(rgb, null);
@@ -620,7 +620,7 @@ public final class ColorSpaceConversion {
      *
      * @param ybr array of ByteProcessor representing color planes: Y, Cb, and Cr.
      * @return ColorProcessor representing image in sRGB color space.
-     * @see #ycbcrToRGB(ij.process.ByteProcessor[],net.sf.ij_plugins.util.progress.ProgressListener)
+     * @see #ycbcrToRGB(ij.process.ByteProcessor[], net.sf.ij_plugins.util.progress.ProgressListener)
      */
     public static ColorProcessor ycbcrToRGB(final ByteProcessor[] ybr) {
         return ycbcrToRGB(ybr, null);

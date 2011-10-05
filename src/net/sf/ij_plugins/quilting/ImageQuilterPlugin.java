@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -76,14 +76,15 @@ public class ImageQuilterPlugin implements PlugInFilter {
         public Config duplicate() {
             try {
                 return (Config) clone();
-            } catch (CloneNotSupportedException e) {
+            } catch (final CloneNotSupportedException e) {
                 throw new IJPluginsRuntimeException(e);
             }
         }
     }
 
 
-    public int setup(String s, ImagePlus imagePlus) {
+    @Override
+    public int setup(final String s, final ImagePlus imagePlus) {
 
         if (imagePlus != null) {
             imageTitle = imagePlus.getTitle();
@@ -98,7 +99,8 @@ public class ImageQuilterPlugin implements PlugInFilter {
     }
 
 
-    public void run(ImageProcessor input) {
+    @Override
+    public void run(final ImageProcessor input) {
 
         final GenericDialog dialog = new GenericDialog(PLUGIN_NAME + " options");
         synchronized (CONFIG) {
@@ -150,7 +152,7 @@ public class ImageQuilterPlugin implements PlugInFilter {
 
         IJ.log("Quilting started at " + new java.util.Date());
 
-        ImageProcessor output = synther.synthesize(config.width, config.height);
+        final ImageProcessor output = synther.synthesize(config.width, config.height);
 
         IJ.log("Quilting ended at " + new java.util.Date());
 

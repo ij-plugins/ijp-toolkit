@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +42,7 @@ public class GaussianSmoothFilter {
     /**
      * @param standardDeviation new Gaussian kernel standard deviation.
      */
-    public void setStandardDeviation(double standardDeviation) {
+    public void setStandardDeviation(final double standardDeviation) {
         this.standardDeviation = standardDeviation;
     }
 
@@ -58,8 +59,8 @@ public class GaussianSmoothFilter {
      * @param ip input image.
      * @return filtered image.
      */
-    public ImageProcessor run(ImageProcessor ip) {
-        ImageProcessor dest = ip.duplicate();
+    public ImageProcessor run(final ImageProcessor ip) {
+        final ImageProcessor dest = ip.duplicate();
         runInPlace(dest);
 
         return dest;
@@ -70,8 +71,8 @@ public class GaussianSmoothFilter {
      *
      * @param ip image to be filtered.
      */
-    public void runInPlace(ImageProcessor ip) {
-        GaussianBlur gaussianBlur = new GaussianBlur();
+    public void runInPlace(final ImageProcessor ip) {
+        final GaussianBlur gaussianBlur = new GaussianBlur();
         gaussianBlur.blur(ip, kernelRadius());
     }
 }

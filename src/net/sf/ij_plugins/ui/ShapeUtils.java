@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -113,37 +113,48 @@ public final class ShapeUtils {
     private static int extractSegment(final float[] array, final float[] segment, int index) {
         final int length = array.length;
 
-        if (index >= length)
+        if (index >= length) {
             return -1;
+        }
 
         segment[0] = array[index++];
         final int type = (int) segment[0];
-        if (type == PathIterator.SEG_CLOSE)
+        if (type == PathIterator.SEG_CLOSE) {
             return 1;
-        if (index >= length)
+        }
+        if (index >= length) {
             return -1;
+        }
         segment[1] = array[index++];
-        if (index >= length)
+        if (index >= length) {
             return -1;
+        }
         segment[2] = array[index++];
-        if (type == PathIterator.SEG_MOVETO || type == PathIterator.SEG_LINETO)
+        if (type == PathIterator.SEG_MOVETO || type == PathIterator.SEG_LINETO) {
             return 3;
-        if (index >= length)
+        }
+        if (index >= length) {
             return -1;
+        }
         segment[3] = array[index++];
-        if (index >= length)
+        if (index >= length) {
             return -1;
+        }
         segment[4] = array[index++];
-        if (type == PathIterator.SEG_QUADTO)
+        if (type == PathIterator.SEG_QUADTO) {
             return 5;
-        if (index >= length)
+        }
+        if (index >= length) {
             return -1;
+        }
         segment[5] = array[index++];
-        if (index >= length)
+        if (index >= length) {
             return -1;
+        }
         segment[6] = array[index];
-        if (type == PathIterator.SEG_CUBICTO)
+        if (type == PathIterator.SEG_CUBICTO) {
             return 7;
+        }
         return -1;
     }
 }

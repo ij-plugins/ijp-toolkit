@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -47,7 +47,8 @@ public class ConvertRGBToXYZStackPlugin implements PlugInFilter {
     private String imageTitle = "";
 
 
-    public int setup(String arg, ImagePlus imp) {
+    @Override
+    public int setup(final String arg, final ImagePlus imp) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
             return DONE;
@@ -60,6 +61,7 @@ public class ConvertRGBToXYZStackPlugin implements PlugInFilter {
     }
 
 
+    @Override
     public void run(final ImageProcessor ip) {
 //        IJ.showStatus(PLUGIN_NAME);
 

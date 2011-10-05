@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,6 +45,7 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
 
     // TODO: Make this plugin available for 2D, 3D, and stacks
 
+    @Override
     public int setup(final java.lang.String s, final ImagePlus imagePlus) {
         if ("about".equalsIgnoreCase(s)) {
             IJ.showMessage("Maximum Entropy Threshold", ABOUT_MESSAGE);
@@ -53,6 +55,7 @@ public final class MaximumEntropyThresholdPlugin implements PlugInFilter {
         return PlugInFilter.DOES_8G | PlugInFilter.DOES_16 | PlugInFilter.DOES_STACKS;
     }
 
+    @Override
     public void run(final ImageProcessor imageProcessor) {
         final int[] hist = imageProcessor.getHistogram();
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();

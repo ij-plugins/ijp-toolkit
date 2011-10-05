@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -50,8 +50,7 @@ public class SRADBeanInfo extends IJPluginsSimpleBeanInfo {
                     create("ro", "Coefficient of variation decay rate",
                             "Spackle coefficient of variation decay rate: q0(t)=q0*exp(-ro*t), ro < 1"),
             };
-        }
-        catch (IntrospectionException e) {
+        } catch (final IntrospectionException e) {
             throw new IJPluginsRuntimeException(e);
         }
     }
@@ -60,7 +59,7 @@ public class SRADBeanInfo extends IJPluginsSimpleBeanInfo {
     public BeanInfo[] getAdditionalBeanInfo() {
         try {
             return new BeanInfo[]{Introspector.getBeanInfo(beanClass.getSuperclass())};
-        } catch (IntrospectionException e) {
+        } catch (final IntrospectionException e) {
             throw new IJPluginsRuntimeException(e);
         }
     }

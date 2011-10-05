@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.thresholding;
 
@@ -86,8 +86,9 @@ public final class HistogramThreshold {
 
     private static int leadingOffset(final int[] hist) {
         for (int i = 0; i < hist.length; i++) {
-            if (hist[i] != 0)
+            if (hist[i] != 0) {
                 return i;
+            }
         }
         return hist.length;
     }
@@ -95,8 +96,9 @@ public final class HistogramThreshold {
 
     private static int trailingOffset(final int[] hist) {
         for (int i = hist.length - 1; i >= 0; i--) {
-            if (hist[i] != 0)
+            if (hist[i] != 0) {
                 return i + 1;
+            }
         }
         return 0;
     }

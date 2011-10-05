@@ -1,8 +1,7 @@
-/***
- * Copyright (C) 2002 Nick Vavra
- *
+/*
  * Image/J Plugins
- * Copyright (C) 2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,9 +44,9 @@ public class MinPathFinder {
      * @param allowHorizontal This says whether or not to allow the path to follow along a row if it
      *                        wants to.
      */
-    public MinPathFinder(double[][] dists, boolean allowHorizontal) {
+    public MinPathFinder(final double[][] dists, final boolean allowHorizontal) {
 
-        int rowcnt = dists.length, colcnt = dists[0].length;
+        final int rowcnt = dists.length, colcnt = dists[0].length;
         path = new TwoDLoc[rowcnt][colcnt];
         costs = new double[rowcnt][colcnt];
 
@@ -86,7 +85,7 @@ public class MinPathFinder {
             }
 
             // handle the right column
-            int c = colcnt - 1;
+            final int c = colcnt - 1;
             choice = (costs[r][c] < costs[r][c - 1] ? c : c - 1);
             costs[r + 1][c] = dists[r + 1][c] + costs[r][choice];
             path[r + 1][c] = new TwoDLoc(r, choice);
@@ -102,7 +101,7 @@ public class MinPathFinder {
     /**
      * Given a row and column number, this says where to go next to head toward the destination.
      */
-    public TwoDLoc follow(TwoDLoc currentLoc) {
+    public TwoDLoc follow(final TwoDLoc currentLoc) {
         return path[currentLoc.getRow()][currentLoc.getCol()];
     }
 
@@ -119,7 +118,7 @@ public class MinPathFinder {
         return new TwoDLoc(costs.length - 1, best);
     }
 
-    public double costOf(int row, int col) {
+    public double costOf(final int row, final int col) {
         return costs[row][col];
     }
 
@@ -135,7 +134,7 @@ public class MinPathFinder {
      * This updates costs and path for the given row such that the path can travel horizontally
      * along the row if it improves the costs of the paths.
      */
-    private void handleHorizontalMovement(double[] dists, int row) {
+    private void handleHorizontalMovement(final double[] dists, final int row) {
 
         boolean changed;
 

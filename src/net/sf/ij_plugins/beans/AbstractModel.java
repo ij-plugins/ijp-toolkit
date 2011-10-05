@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,62 +35,69 @@ import java.beans.PropertyChangeSupport;
 public abstract class AbstractModel implements Model {
     protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
+    @Override
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
+    @Override
     public void addPropertyChangeListener(final String propertyName,
                                           final PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
     }
 
+    @Override
     public PropertyChangeListener[] getPropertyChangeListeners() {
         return propertyChangeSupport.getPropertyChangeListeners();
     }
 
+    @Override
     public PropertyChangeListener[] getPropertyChangeListeners(final String propertyName) {
         return propertyChangeSupport.getPropertyChangeListeners(propertyName);
     }
 
+    @Override
     public boolean hasListeners(final String propertyName) {
         return propertyChangeSupport.hasListeners(propertyName);
     }
 
+    @Override
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
+    @Override
     public void removePropertyChangeListener(final String propertyName,
                                              final PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(propertyName,
                 listener);
     }
 
-    protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+    protected void firePropertyChange(final String propertyName, final Object oldValue, final Object newValue) {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-    protected void firePropertyChange(String propertyName, int oldValue, int newValue) {
+    protected void firePropertyChange(final String propertyName, final int oldValue, final int newValue) {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-    protected void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+    protected void firePropertyChange(final String propertyName, final boolean oldValue, final boolean newValue) {
         propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 
-    protected void firePropertyChange(PropertyChangeEvent evt) {
+    protected void firePropertyChange(final PropertyChangeEvent evt) {
         propertyChangeSupport.firePropertyChange(evt);
     }
 
-    protected void fireIndexedPropertyChange(String propertyName, int index, Object oldValue, Object newValue) {
+    protected void fireIndexedPropertyChange(final String propertyName, final int index, final Object oldValue, final Object newValue) {
         propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
     }
 
-    protected void fireIndexedPropertyChange(String propertyName, int index, int oldValue, int newValue) {
+    protected void fireIndexedPropertyChange(final String propertyName, final int index, final int oldValue, final int newValue) {
         propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
     }
 
-    protected void fireIndexedPropertyChange(String propertyName, int index, boolean oldValue, boolean newValue) {
+    protected void fireIndexedPropertyChange(final String propertyName, final int index, final boolean oldValue, final boolean newValue) {
         propertyChangeSupport.fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
     }
 

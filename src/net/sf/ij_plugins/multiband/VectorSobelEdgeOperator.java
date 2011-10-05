@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,14 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.multiband;
 
 import ij.ImagePlus;
 import ij.process.FloatProcessor;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 /**
  * Sobel edge detector for vector valued images.
@@ -53,7 +53,7 @@ public class VectorSobelEdgeOperator {
 
         final VectorProcessor.Iterator iterator = vp.iterator();
         while (iterator.hasNext()) {
-            VectorProcessor.Neighborhood3x3 vn = iterator.next();
+            final VectorProcessor.Neighborhood3x3 vn = iterator.next();
             // 3x3 Sobel filter
             //sum1 = p1 + 2 * p2 + p3 - p7 - 2 * p8 - p9;
             final float[] sum11 = new float[nbBands];

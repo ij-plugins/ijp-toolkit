@@ -51,19 +51,19 @@ public class Region extends AbstractModel {
         setColor(color);
         subRegions.addListDataListener(new ListDataListener() {
             @Override
-            public void intervalAdded(ListDataEvent e) {
+            public void intervalAdded(final ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
 
 
             @Override
-            public void intervalRemoved(ListDataEvent e) {
+            public void intervalRemoved(final ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
 
 
             @Override
-            public void contentsChanged(ListDataEvent e) {
+            public void contentsChanged(final ListDataEvent e) {
                 firePropertyChange(PROPERTYNAME_SUB_REGIONS, null, null);
             }
         });
@@ -75,7 +75,7 @@ public class Region extends AbstractModel {
     }
 
 
-    public void setColor(Color color) {
+    public void setColor(final Color color) {
         firePropertyChange(PROPERTYNAME_COLOR, this.color, this.color = color);
     }
 

@@ -1,6 +1,7 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
- *
  */
 package net.sf.ij_plugins.thresholding;
 
@@ -107,7 +107,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
     /**
      * Generate all possible divisions of a range of numbers <code>min</code> to <code>max</code>.
      */
-    private static int[][] intervals(int nbDivisions, int min, int max) {
+    private static int[][] intervals(final int nbDivisions, final int min, final int max) {
         if (nbDivisions <= 0) {
             throw new IllegalArgumentException("Argument 'nbDivisions' must be greater than 0.");
         }
@@ -120,11 +120,11 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
         } else {
             for (int n = min + 1; n <= max - nbDivisions + 1; ++n) {
-                int[][] subIntervals = intervals(nbDivisions - 1, n, max);
+                final int[][] subIntervals = intervals(nbDivisions - 1, n, max);
 
                 // combine
                 for (final int[] subInterval : subIntervals) {
-                    int[] interval = new int[subInterval.length + 1];
+                    final int[] interval = new int[subInterval.length + 1];
                     interval[0] = n;
                     System.arraycopy(subInterval, 0, interval, 1, subInterval.length);
                     intervals.add(interval);
@@ -152,9 +152,9 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
             double e = 0;
             for (int i = begin; i < end; ++i) {
-                double h = histogram[i];
+                final double h = histogram[i];
                 if (h > EPSILON) {
-                    double a = histogram[i] / hSum;
+                    final double a = histogram[i] / hSum;
                     e -= a * Math.log(a);
                 }
             }

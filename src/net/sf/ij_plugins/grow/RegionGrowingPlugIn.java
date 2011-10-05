@@ -59,6 +59,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
     final AtomicBoolean growHistoryEnabled = new AtomicBoolean(false);
 
 
+    @Override
     public void run(final String arg) {
 
         final int[] wList = WindowManager.getIDList();
@@ -245,6 +246,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         }
 
 
+        @Override
         public ByteProcessor call() throws Exception {
             // Setup SRG
             final SRG srg = new SRG();
@@ -252,6 +254,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
             srg.setSeeds(seeds);
             // Forward progress notification
             srg.addProgressListener(new ProgressListener() {
+                @Override
                 public void progressNotification(final ProgressEvent e) {
                     notifyProgressListeners(e.getProgress(), e.getMessage());
                 }

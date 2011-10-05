@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -50,10 +50,10 @@ public class ConnectedThresholdFilterUInt8 extends ConnectedThresholdFilterBase 
      * @param src Description of the Parameter
      */
     @Override
-    final protected void createHandleToSrcPixels(ImageStack src) {
-        Object[] imageArray = src.getImageArray();
+    final protected void createHandleToSrcPixels(final ImageStack src) {
+        final Object[] imageArray = src.getImageArray();
 
-        int n = src.getSize();
+        final int n = src.getSize();
         srcPixels = new byte[n][];
         for (int z = 0; z < n; ++z) {
             srcPixels[z] = (byte[]) imageArray[z];
@@ -75,16 +75,16 @@ public class ConnectedThresholdFilterUInt8 extends ConnectedThresholdFilterBase 
      * @param z
      */
     @Override
-    final protected void checkForGrow(int x, int y, int z) {
+    final protected void checkForGrow(final int x, final int y, final int z) {
         if (x < xMin || x >= xMax ||
                 y < yMin || y >= yMax ||
                 z < zMin || z >= zMax) {
             return;
         }
 
-        int offset = y * xSize + x;
+        final int offset = y * xSize + x;
         if (destPixels[z][offset] == BACKGROUND) {
-            int value = srcPixels[z][offset] & 0xff;
+            final int value = srcPixels[z][offset] & 0xff;
             if (value >= valueMin && value < valueMax) {
                 destPixels[z][offset] = MARKER;
                 candidatePoints.addLast(new Point3DInt(x, y, z));

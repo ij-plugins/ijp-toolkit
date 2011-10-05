@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -51,6 +51,7 @@ public final class RegionGrowingToolPlugIn implements PlugIn {
     private static JDialog dialog;
 
 
+    @Override
     public void run(final String arg) {
         if (view == null) {
             view = new RegionGrowingView();
@@ -64,7 +65,7 @@ public final class RegionGrowingToolPlugIn implements PlugIn {
             // Add listener to store window location and size on close
             dialog.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowClosing(WindowEvent e) {
+                public void windowClosing(final WindowEvent e) {
                     super.windowClosing(e);
                     Prefs.saveLocation(LOC_KEY, dialog.getLocation());
                     final Dimension d = dialog.getSize();

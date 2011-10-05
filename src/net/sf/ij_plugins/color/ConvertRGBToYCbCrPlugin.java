@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -51,7 +51,8 @@ public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
     private String imageTitle = "";
 
 
-    public int setup(String arg, ImagePlus imp) {
+    @Override
+    public int setup(final String arg, final ImagePlus imp) {
         if (ConvertRGBToYCbCrPlugin.ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + ConvertRGBToYCbCrPlugin.PLUGIN_NAME, ConvertRGBToYCbCrPlugin.ABOUT_MESSAGE);
             return DONE;
@@ -64,6 +65,7 @@ public class ConvertRGBToYCbCrPlugin implements PlugInFilter {
     }
 
 
+    @Override
     public void run(final ImageProcessor ip) {
         IJ.showStatus(ConvertRGBToYCbCrPlugin.PLUGIN_NAME);
 

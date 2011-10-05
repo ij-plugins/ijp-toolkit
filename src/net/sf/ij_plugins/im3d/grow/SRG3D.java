@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -498,8 +498,9 @@ public final class SRG3D extends DefaultProgressReporter {
         int mostSimilarRegionId = -1;
         for (int regionID = 1; regionID < regionInfos.length; regionID++) {
             // Skip region if it is not a neighbour
-            if (!flags[regionID])
+            if (!flags[regionID]) {
                 continue;
+            }
 
             final RegionInfo3D regionInfo = regionInfos[regionID];
             final double sigma = Math.abs(value - regionInfo.mean());

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -43,12 +43,13 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
      *
      * @param operator operator over which this filter iterates.
      */
-    public RunningUInt8Filter(IRunningUInt8Operator operator) {
+    public RunningUInt8Filter(final IRunningUInt8Operator operator) {
         Validate.argumentNotNull(operator, "operator");
 
         this.operator = operator;
     }
 
+    @Override
     public ByteProcessor run(final ByteProcessor src, final int filterWidth, final int filterHeight) {
 
         final int width = src.getWidth();
@@ -81,7 +82,7 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
             final int xxMin = xMin;
             final int xxMax = Math.min(xMin + xr, xMax);
             for (int yy = yyMin; yy < yyMax; ++yy) {
-                int yyOfset = yy * width;
+                final int yyOfset = yy * width;
                 for (int xx = xxMin; xx < xxMax; ++xx) {
                     operator.add(srcPixels[xx + yyOfset]);
                 }
@@ -116,13 +117,15 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
     }
 
 
+    @Override
     public void setProgressBar(final ProgressBar progressBar) {
         this.progressBar = progressBar;
     }
 
-    protected void showProgress(double percentDone) {
-        if (progressBar != null)
+    protected void showProgress(final double percentDone) {
+        if (progressBar != null) {
             progressBar.show(percentDone);
+        }
     }
 
     protected void hideProgress() {

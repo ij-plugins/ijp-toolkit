@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -46,8 +46,7 @@ public class PeronaMalikAnisotropicDiffusionBeanInfo extends IJPluginsSimpleBean
                     create("bigRegionFunction"),
                     create("k"),
             };
-        }
-        catch (IntrospectionException e) {
+        } catch (final IntrospectionException e) {
             throw new IJPluginsRuntimeException(e);
         }
     }
@@ -56,7 +55,7 @@ public class PeronaMalikAnisotropicDiffusionBeanInfo extends IJPluginsSimpleBean
     public BeanInfo[] getAdditionalBeanInfo() {
         try {
             return new BeanInfo[]{Introspector.getBeanInfo(beanClass.getSuperclass())};
-        } catch (IntrospectionException e) {
+        } catch (final IntrospectionException e) {
             throw new IJPluginsRuntimeException(e);
         }
     }

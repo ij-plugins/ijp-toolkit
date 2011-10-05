@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -62,8 +62,8 @@ public class ImageQuilter {
      *                             same range. The total cost is then pathCost*pathCostWeight plus
      *                             ssd*(1-pathCostWeight).
      */
-    public ImageQuilter(ImageProcessor input, int patchsize, int overlapsize,
-                        boolean allowHorizontalPaths, double pathCostWeight) {
+    public ImageQuilter(final ImageProcessor input, final int patchsize, final int overlapsize,
+                        final boolean allowHorizontalPaths, final double pathCostWeight) {
 
         this.overlapsize = overlapsize;
         this.patchsize = patchsize;
@@ -88,8 +88,8 @@ public class ImageQuilter {
                 (patchsize - overlapsize));
         int patchrows = Math.round((float) (outheight - patchsize) /
                 (patchsize - overlapsize));
-        int okwidth = patchcols * (patchsize - overlapsize) + patchsize;
-        int okheight = patchrows * (patchsize - overlapsize) + patchsize;
+        final int okwidth = patchcols * (patchsize - overlapsize) + patchsize;
+        final int okheight = patchrows * (patchsize - overlapsize) + patchsize;
         patchcols++;
         patchrows++;
         if (okwidth != outwidth || okheight != outheight) {
@@ -100,17 +100,19 @@ public class ImageQuilter {
         }
 
         // create the output image
-        ImageProcessor output = input.createProcessor(outwidth, outheight);
+        final ImageProcessor output = input.createProcessor(outwidth, outheight);
 
         // choose a patch at random to get started
-        int x = (int) (Math.random() * (input.getWidth() - patchsize));
-        int y = (int) (Math.random() * (input.getHeight() - patchsize));
-        View inView = new View(input, x, y);
-        Patch outPatch = new Patch(output, 0, 0, patchsize, patchsize);
+        final int x = (int) (Math.random() * (input.getWidth() - patchsize));
+        final int y = (int) (Math.random() * (input.getHeight() - patchsize));
+        final View inView = new View(input, x, y);
+        final Patch outPatch = new Patch(output, 0, 0, patchsize, patchsize);
         SynthAide.copy(inView, outPatch, 0, 0, patchsize, patchsize);
 
         // done already?
-        if (!outPatch.nextColumn(overlapsize)) return output;
+        if (!outPatch.nextColumn(overlapsize)) {
+            return output;
+        }
 
         if (previewImp != null) {
             previewImp.setProcessor(null, output);
@@ -119,7 +121,7 @@ public class ImageQuilter {
 
         // loop over the rows of output patches
         int currow = 0;
-        double dists[][] = new double[input.getHeight() - patchsize + 1]
+        final double dists[][] = new double[input.getHeight() - patchsize + 1]
                 [input.getWidth() - patchsize + 1];
         double progress = 0;
         do {
@@ -133,14 +135,14 @@ public class ImageQuilter {
                         + " (" + ((int) (progress * 100)) + "%)");
 
                 // get the distances for this neighborhood
-                TwoDLoc bestloc = calcDists(dists, outPatch);
-                double bestval = dists[bestloc.getRow()][bestloc.getCol()];
+                final TwoDLoc bestloc = calcDists(dists, outPatch);
+                final double bestval = dists[bestloc.getRow()][bestloc.getCol()];
 
                 // pick one of the close matches
-                double threshold = bestval * 1.1;
-                LinkedList<TwoDLoc> loclist = SynthAide.lessThanEqual(dists, threshold);
-                int choice = (int) (Math.random() * loclist.size());
-                TwoDLoc loc = loclist.get(choice);
+                final double threshold = bestval * 1.1;
+                final LinkedList<TwoDLoc> loclist = SynthAide.lessThanEqual(dists, threshold);
+                final int choice = (int) (Math.random() * loclist.size());
+                final TwoDLoc loc = loclist.get(choice);
 
                 // copy in the patch
                 //fillAndBlend(outPatch, loc);
@@ -199,13 +201,13 @@ public class ImageQuilter {
      * @param dists This will be filled in. The return value in dists[y][x] will be the SSD between
      *              an input patch with corner (x,y) and the given output patch.
      */
-    private TwoDLoc calcDists(double[][] dists, Patch outPatch) {
+    private TwoDLoc calcDists(final double[][] dists, final Patch outPatch) {
 
         double best = Double.MAX_VALUE;
         TwoDLoc bestloc = null;
 
         // loop over the possible input patch row locations
-        Patch inPatch = new Patch(input, 0, 0, patchsize, patchsize);
+        final Patch inPatch = new Patch(input, 0, 0, patchsize, patchsize);
         do {
 
             // loop over the possible input patch column locations
@@ -220,8 +222,8 @@ public class ImageQuilter {
                 if (!outPatch.isAtLeftEdge()) {
 
                     leftoverlap = getLeftOverlapDists(outPatch, inPatch);
-                    for (double[] aLeftoverlap : leftoverlap) {
-                        for (double anALeftoverlap : aLeftoverlap) {
+                    for (final double[] aLeftoverlap : leftoverlap) {
+                        for (final double anALeftoverlap : aLeftoverlap) {
                             sum += anALeftoverlap;
                         }
                     }
@@ -232,8 +234,8 @@ public class ImageQuilter {
                 if (!outPatch.isAtTopEdge()) {
 
                     topoverlap = getTopOverlapDists(outPatch, inPatch);
-                    for (double[] aTopoverlap : topoverlap) {
-                        for (double anATopoverlap : aTopoverlap) {
+                    for (final double[] aTopoverlap : topoverlap) {
+                        for (final double anATopoverlap : aTopoverlap) {
                             sum += anATopoverlap;
                         }
                     }
@@ -264,8 +266,8 @@ public class ImageQuilter {
                 }
 
                 // save the total and compare to the best yet
-                int y = inPatch.getCornerY();
-                int x = inPatch.getCornerX();
+                final int y = inPatch.getCornerY();
+                final int x = inPatch.getCornerX();
                 dists[y][x] = sum;
                 if (sum < best) {
                     best = sum;
@@ -283,32 +285,32 @@ public class ImageQuilter {
      * This returns the cost of the path through the given overlap region divided by the length of
      * the path.
      */
-    private double avgCostOfBestPath(double[][] leftoverlap,
-                                     double[][] topoverlap) {
+    private double avgCostOfBestPath(final double[][] leftoverlap,
+                                     final double[][] topoverlap) {
         double cost;
         int rowcnt;
 
         if (leftoverlap == null) {
 
-            MinPathFinder tpath = new MinPathFinder(topoverlap,
+            final MinPathFinder tpath = new MinPathFinder(topoverlap,
                     allowHorizontalPaths);
-            TwoDLoc loc = tpath.bestSourceLoc();
+            final TwoDLoc loc = tpath.bestSourceLoc();
             cost = tpath.costOf(loc.getRow(), loc.getCol());
             rowcnt = patchsize;
         } else if (topoverlap == null) {
 
-            MinPathFinder lpath = new MinPathFinder(leftoverlap,
+            final MinPathFinder lpath = new MinPathFinder(leftoverlap,
                     allowHorizontalPaths);
-            TwoDLoc loc = lpath.bestSourceLoc();
+            final TwoDLoc loc = lpath.bestSourceLoc();
             cost = lpath.costOf(loc.getRow(), loc.getCol());
             rowcnt = patchsize;
         } else {
-            MinPathFinder lpath = new MinPathFinder(leftoverlap,
+            final MinPathFinder lpath = new MinPathFinder(leftoverlap,
                     allowHorizontalPaths);
-            MinPathFinder tpath = new MinPathFinder(topoverlap,
+            final MinPathFinder tpath = new MinPathFinder(topoverlap,
                     allowHorizontalPaths);
-            TwoDLoc lloc = new TwoDLoc(0, 0);
-            TwoDLoc tloc = new TwoDLoc(0, 0);
+            final TwoDLoc lloc = new TwoDLoc(0, 0);
+            final TwoDLoc tloc = new TwoDLoc(0, 0);
             choosePathIntersection(lpath, tpath, lloc, tloc);
 
             // what is the total cost of the two paths?
@@ -330,29 +332,29 @@ public class ImageQuilter {
      * array[0][0] is the lower left corner of the overlap region. (it's that way to be convenient
      * input to net.sf.ij_plugins.quilting.MinPathFinder)
      */
-    private double[][] getLeftOverlapDists(Patch outPatch, Patch inPatch) {
+    private double[][] getLeftOverlapDists(final Patch outPatch, final Patch inPatch) {
         final int rowcnt = outPatch.getHeight();
-        double dists[][] = new double[rowcnt][overlapsize];
+        final double dists[][] = new double[rowcnt][overlapsize];
 
         // Calculate using blitting
         final ImageProcessor outIP = outPatch.getImage();
         final ImageProcessor inIP = inPatch.getImage();
-        ImageProcessor overlapIP = outIP.createProcessor(overlapsize, rowcnt);
+        final ImageProcessor overlapIP = outIP.createProcessor(overlapsize, rowcnt);
         overlapIP.setProgressBar(null);
         overlapIP.copyBits(outIP, -outPatch.getXOffset(), -outPatch.getYOffset(), Blitter.COPY);
         overlapIP.copyBits(inIP, -inPatch.getXOffset(), -inPatch.getYOffset(), Blitter.DIFFERENCE);
 
         int arrayr = rowcnt - 1;
         if (overlapIP instanceof ColorProcessor) {
-            int[] rgb = new int[3];
+            final int[] rgb = new int[3];
             for (int r = 0; r < rowcnt; r++) {
                 final double[] dists_a = dists[arrayr];
                 for (int c = 0; c < overlapsize; c++) {
                     overlapIP.getPixel(c, r, rgb);
-                    double rr = rgb[0];
-                    double gg = rgb[1];
-                    double bb = rgb[2];
-                    double v = (rr * rr + gg * gg + bb * bb) / 3.0;
+                    final double rr = rgb[0];
+                    final double gg = rgb[1];
+                    final double bb = rgb[2];
+                    final double v = (rr * rr + gg * gg + bb * bb) / 3.0;
                     dists_a[c] = v;
                 }
                 arrayr--;
@@ -361,8 +363,8 @@ public class ImageQuilter {
             for (int r = 0; r < rowcnt; r++) {
                 final double[] dists_a = dists[arrayr];
                 for (int c = 0; c < overlapsize; c++) {
-                    double bv = overlapIP.getPixelValue(c, r);
-                    double v = bv * bv;
+                    final double bv = overlapIP.getPixelValue(c, r);
+                    final double v = bv * bv;
                     dists_a[c] = v;
                 }
                 arrayr--;
@@ -371,8 +373,8 @@ public class ImageQuilter {
             for (int r = 0; r < rowcnt; r++) {
                 final double[] dists_a = dists[arrayr];
                 for (int c = 0; c < overlapsize; c++) {
-                    double bv = overlapIP.getPixel(c, r);
-                    double v = bv * bv;
+                    final double bv = overlapIP.getPixel(c, r);
+                    final double v = bv * bv;
                     dists_a[c] = v;
                 }
                 arrayr--;
@@ -391,50 +393,50 @@ public class ImageQuilter {
      * row per column of the overlap region and array[0][0] being the upper right corner of the
      * overlap region.
      */
-    private double[][] getTopOverlapDists(Patch outPatch, Patch inPatch) {
+    private double[][] getTopOverlapDists(final Patch outPatch, final Patch inPatch) {
         // so arrayr = patchwidth-1-patchx  and arrayc = patchy
-        int rowcnt = outPatch.getWidth();
-        double dists[][] = new double[rowcnt][overlapsize];
+        final int rowcnt = outPatch.getWidth();
+        final double dists[][] = new double[rowcnt][overlapsize];
 
         // Calculate using blitting
         final ImageProcessor outIP = outPatch.getImage();
         final ImageProcessor inIP = inPatch.getImage();
-        ImageProcessor overlapIP = outIP.createProcessor(rowcnt, overlapsize);
+        final ImageProcessor overlapIP = outIP.createProcessor(rowcnt, overlapsize);
         overlapIP.setProgressBar(null);
         overlapIP.copyBits(outIP, -outPatch.getXOffset(), -outPatch.getYOffset(), Blitter.COPY);
         overlapIP.copyBits(inIP, -inPatch.getXOffset(), -inPatch.getYOffset(), Blitter.DIFFERENCE);
 
         // Compare results
         if (overlapIP instanceof ColorProcessor) {
-            int[] rgb = new int[3];
+            final int[] rgb = new int[3];
             for (int patchx = 0; patchx < rowcnt; patchx++) {
-                int arrayr = rowcnt - patchx - 1;
+                final int arrayr = rowcnt - patchx - 1;
                 for (int patchy = 0; patchy < overlapsize; patchy++) {
                     overlapIP.getPixel(patchx, patchy, rgb);
-                    double rr = rgb[0];
-                    double gg = rgb[1];
-                    double bb = rgb[2];
-                    double v = (rr * rr + gg * gg + bb * bb) / 3.0;
+                    final double rr = rgb[0];
+                    final double gg = rgb[1];
+                    final double bb = rgb[2];
+                    final double v = (rr * rr + gg * gg + bb * bb) / 3.0;
                     dists[arrayr][patchy] = v;
                 }
             }
 
         } else if (overlapIP instanceof FloatProcessor) {
             for (int patchx = 0; patchx < rowcnt; patchx++) {
-                int arrayr = rowcnt - patchx - 1;
+                final int arrayr = rowcnt - patchx - 1;
                 for (int patchy = 0; patchy < overlapsize; patchy++) {
-                    double bv = overlapIP.getPixelValue(patchx, patchy);
-                    double v = bv * bv;
+                    final double bv = overlapIP.getPixelValue(patchx, patchy);
+                    final double v = bv * bv;
                     dists[arrayr][patchy] = v;
                 }
             }
 
         } else if (overlapIP instanceof ByteProcessor || overlapIP instanceof ShortProcessor) {
             for (int patchx = 0; patchx < rowcnt; patchx++) {
-                int arrayr = rowcnt - patchx - 1;
+                final int arrayr = rowcnt - patchx - 1;
                 for (int patchy = 0; patchy < overlapsize; patchy++) {
-                    double bv = overlapIP.getPixel(patchx, patchy);
-                    double v = bv * bv;
+                    final double bv = overlapIP.getPixel(patchx, patchy);
+                    final double v = bv * bv;
                     dists[arrayr][patchy] = v;
                 }
             }
@@ -514,32 +516,32 @@ public class ImageQuilter {
     /**
      * Uses the min path boundary method to fill in outPatch from the input image patch at loc.
      */
-    private void pathAndFill(Patch outPatch, TwoDLoc loc) {
+    private void pathAndFill(final Patch outPatch, final TwoDLoc loc) {
 
-        boolean allow = allowHorizontalPaths;
-        Patch inPatch = new Patch(input, loc.getX(), loc.getY(),
+        final boolean allow = allowHorizontalPaths;
+        final Patch inPatch = new Patch(input, loc.getX(), loc.getY(),
                 patchsize, patchsize);
 
         if (outPatch.isAtLeftEdge()) {
 
             SynthAide.copy(inPatch, outPatch, 0, 0, overlapsize, patchsize);
-            double[][] topOverlap = getTopOverlapDists(outPatch, inPatch);
-            MinPathFinder topFinder = new MinPathFinder(topOverlap, allow);
-            TwoDLoc source = topFinder.bestSourceLoc();
+            final double[][] topOverlap = getTopOverlapDists(outPatch, inPatch);
+            final MinPathFinder topFinder = new MinPathFinder(topOverlap, allow);
+            final TwoDLoc source = topFinder.bestSourceLoc();
             followTopOverlapPath(outPatch, inPatch, topFinder, source);
         } else if (outPatch.isAtTopEdge()) {
 
             SynthAide.copy(inPatch, outPatch, 0, 0, patchsize, overlapsize);
-            double[][] leftOverlap = getLeftOverlapDists(outPatch, inPatch);
-            MinPathFinder leftFinder = new MinPathFinder(leftOverlap, allow);
-            TwoDLoc source = leftFinder.bestSourceLoc();
+            final double[][] leftOverlap = getLeftOverlapDists(outPatch, inPatch);
+            final MinPathFinder leftFinder = new MinPathFinder(leftOverlap, allow);
+            final TwoDLoc source = leftFinder.bestSourceLoc();
             followLeftOverlapPath(outPatch, inPatch, leftFinder, source);
         } else {
 
-            double[][] topOverlap = getTopOverlapDists(outPatch, inPatch);
-            double[][] leftOverlap = getLeftOverlapDists(outPatch, inPatch);
-            MinPathFinder topFinder = new MinPathFinder(topOverlap, allow);
-            MinPathFinder leftFinder = new MinPathFinder(leftOverlap, allow);
+            final double[][] topOverlap = getTopOverlapDists(outPatch, inPatch);
+            final double[][] leftOverlap = getLeftOverlapDists(outPatch, inPatch);
+            final MinPathFinder topFinder = new MinPathFinder(topOverlap, allow);
+            final MinPathFinder leftFinder = new MinPathFinder(leftOverlap, allow);
             TwoDLoc leftloc = new TwoDLoc(0, 0);
             TwoDLoc toploc = new TwoDLoc(0, 0);
 
@@ -549,11 +551,11 @@ public class ImageQuilter {
             // fill in the corner
 
             // first figure out where to take each pixel from
-            boolean where[][] = new boolean[overlapsize][overlapsize];
+            final boolean where[][] = new boolean[overlapsize][overlapsize];
 
             // figure out where the left overlap says to take each pixel from
             while (leftloc.getRow() < overlapsize) {
-                int r = leftloc.getRow();
+                final int r = leftloc.getRow();
                 for (int c = leftloc.getCol(); c < overlapsize; c++) {
                     where[r][c] = true;
                 }
@@ -562,7 +564,7 @@ public class ImageQuilter {
 
             // figure out where the top overlap agrees with the left overlap
             while (toploc.getRow() < overlapsize) {
-                int r = toploc.getRow();
+                final int r = toploc.getRow();
                 for (int c = 0; c < overlapsize; c++) {
                     where[c][r] = where[c][r] && c >= toploc.getCol();
                 }
@@ -570,7 +572,7 @@ public class ImageQuilter {
             }
 
             // fill in the corner for real now
-            int[] sample = new int[3];
+            final int[] sample = new int[3];
             for (int r = 0; r < overlapsize; r++) {
                 for (int c = 0; c < overlapsize; c++) {
                     if (where[r][c]) {
@@ -585,7 +587,7 @@ public class ImageQuilter {
         }
 
         // fill in the non-overlap area
-        int size = patchsize - overlapsize;
+        final int size = patchsize - overlapsize;
         SynthAide.copy(inPatch, outPatch, overlapsize, overlapsize, size, size);
     }
 
@@ -594,14 +596,14 @@ public class ImageQuilter {
      * Fills in the left overlap area of toPatch using values from fromPatch while following the
      * path from source in finder.
      */
-    private void followLeftOverlapPath(Patch toPatch, Patch fromPatch,
-                                       MinPathFinder finder, TwoDLoc source) {
+    private void followLeftOverlapPath(final Patch toPatch, final Patch fromPatch,
+                                       final MinPathFinder finder, TwoDLoc source) {
 
         // loop until we reach the destination
         final int[] sample = new int[3];
         while (source != null) {
 
-            int y = patchsize - source.getRow() - 1;
+            final int y = patchsize - source.getRow() - 1;
             int x = source.getCol();
 
             // values to the right of x are filled in from fromPatch
@@ -620,7 +622,7 @@ public class ImageQuilter {
             // continue to the next row
             //   we should probably check for this ahead of time and blend
             //   (instead of replace or ignore) all pixels along the path
-            int oldrow = source.getRow();
+            final int oldrow = source.getRow();
             do {
                 source = finder.follow(source);
             } while (source != null && source.getRow() == oldrow);
@@ -632,14 +634,14 @@ public class ImageQuilter {
      * Fills in the top overlap area of toPatch using values from fromPatch while following the path
      * from source in finder.
      */
-    private void followTopOverlapPath(Patch toPatch, Patch fromPatch,
-                                      MinPathFinder finder, TwoDLoc source) {
+    private void followTopOverlapPath(final Patch toPatch, final Patch fromPatch,
+                                      final MinPathFinder finder, TwoDLoc source) {
 
         // loop until we reach the destination
         final int[] sample = new int[3];
         while (source != null) {
 
-            int x = patchsize - source.getRow() - 1;
+            final int x = patchsize - source.getRow() - 1;
             int y = source.getCol();
 
             // values below y are filled in from fromPatch
@@ -658,7 +660,7 @@ public class ImageQuilter {
             // continue to the next row
             //   we should probably check for this ahead of time and blend
             //   (instead of replace or ignore) all pixels along the path
-            int oldrow = source.getRow();
+            final int oldrow = source.getRow();
             do {
                 source = finder.follow(source);
             } while (source != null && source.getRow() == oldrow);
@@ -670,10 +672,10 @@ public class ImageQuilter {
      * This finds the intersection of the two given paths. The intersection point (in each path's
      * coordinates) is put into the leftloc and toploc params.
      */
-    private void choosePathIntersection(MinPathFinder leftpath,
-                                        MinPathFinder toppath,
-                                        TwoDLoc leftloc,
-                                        TwoDLoc toploc) {
+    private void choosePathIntersection(final MinPathFinder leftpath,
+                                        final MinPathFinder toppath,
+                                        final TwoDLoc leftloc,
+                                        final TwoDLoc toploc) {
 
         // find the best combined source
         leftloc.set(patchsize - 1, 0);          // upper left corner
@@ -683,7 +685,7 @@ public class ImageQuilter {
 
         for (int y = 0; y < overlapsize; y++) {
             for (int x = 0; x < overlapsize; x++) {
-                double cost = leftpath.costOf(patchsize - 1 - y, x)
+                final double cost = leftpath.costOf(patchsize - 1 - y, x)
                         + toppath.costOf(patchsize - 1 - x, y);
                 if (bestcost > cost) {
                     leftloc.set(patchsize - 1 - y, x);
@@ -694,7 +696,7 @@ public class ImageQuilter {
         }
     }
 
-    public void setPreviewImage(ImagePlus previewImp) {
+    public void setPreviewImage(final ImagePlus previewImp) {
         this.previewImp = previewImp;
     }
 }

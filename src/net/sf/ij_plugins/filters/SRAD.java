@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -57,7 +57,7 @@ public class SRAD extends AbstractAnisotropicDiffusion {
         return cThreshold;
     }
 
-    public void setCThreshold(double cThreshold) {
+    public void setCThreshold(final double cThreshold) {
         this.cThreshold = cThreshold;
     }
 
@@ -65,7 +65,7 @@ public class SRAD extends AbstractAnisotropicDiffusion {
         return q0;
     }
 
-    public void setQ0(double q0) {
+    public void setQ0(final double q0) {
         this.q0 = q0;
     }
 
@@ -73,7 +73,7 @@ public class SRAD extends AbstractAnisotropicDiffusion {
         return ro;
     }
 
-    public void setRo(double ro) {
+    public void setRo(final double ro) {
         this.ro = ro;
     }
 

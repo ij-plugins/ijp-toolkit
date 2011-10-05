@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -130,23 +130,24 @@ public class RunningFilter {
         this.progressBar = progressBar;
     }
 
-    protected void showProgress(double percentDone) {
-        if (progressBar != null)
+    protected void showProgress(final double percentDone) {
+        if (progressBar != null) {
             progressBar.show(percentDone);
+        }
     }
 
     protected void hideProgress() {
         showProgress(1.0);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         ij.ImageJ.main(null);
 //        ImagePlus imp = IOUtils.openImage("test_images/blobs_noise.tif");
-        ImagePlus imp = IOUtils.openImage("test_images/boats_x2.png");
+        final ImagePlus imp = IOUtils.openImage("test_images/boats_x2.png");
         final FloatProcessor fp = (FloatProcessor) imp.getProcessor().convertToFloat();
 
         final RunningFilter filter = new RunningFilter(new RunningMedianRBTOperator(), 29, 29);
-        FloatProcessor dest = filter.run(fp);
+        final FloatProcessor dest = filter.run(fp);
         new ImagePlus("result", dest).show();
     }
 

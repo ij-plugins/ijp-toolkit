@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,7 +34,8 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
     private long largerCount = 0;
     private boolean needsUpdate = false;
 
-    public void add(byte v) {
+    @Override
+    public void add(final byte v) {
         final int vi = v & 0xFF;
         ++histogram[vi];
         if (vi < median) {
@@ -45,7 +47,8 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
         }
     }
 
-    public void remove(byte v) {
+    @Override
+    public void remove(final byte v) {
         final int vi = v & 0xFF;
 
         assert histogram[vi] > 0;
@@ -60,11 +63,13 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
         }
     }
 
-    public boolean contains(byte v) {
+    @Override
+    public boolean contains(final byte v) {
         final int vi = v & 0xFF;
         return histogram[vi] > 0;
     }
 
+    @Override
     public void clear() {
         for (int i = 0; i < histogram.length; i++) {
             histogram[i] = 0;
@@ -75,6 +80,7 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
         needsUpdate = false;
     }
 
+    @Override
     public byte evaluate() {
         while (needsUpdate) {
 
@@ -83,7 +89,9 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
             if (smallerCount > (largerCount + medianCount)) {
 
                 // First non-empty bin below old median bean
-                while (histogram[--median] == 0) ;
+                while (histogram[--median] == 0) {
+                    ;
+                }
 
                 // Update counts
                 smallerCount -= histogram[median];
@@ -94,7 +102,9 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
             } else if ((smallerCount + medianCount) <= largerCount || medianCount == 0) {
 
                 // First non-empty bin above old median bean
-                while (histogram[++median] == 0) ;
+                while (histogram[++median] == 0) {
+                    ;
+                }
 
                 // Update counts
                 smallerCount += medianCount;
@@ -109,7 +119,9 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
                 if (count % 2 == 0 && smallerCount == (largerCount + medianCount)) {
                     int lowMedian = median;
                     // First non-empty bin below the current median bean
-                    while (histogram[--lowMedian] == 0) ;
+                    while (histogram[--lowMedian] == 0) {
+                        ;
+                    }
                     final int newMedian = (lowMedian + median + 1) / 2;
                     if (newMedian < median) {
                         largerCount += medianCount;

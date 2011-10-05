@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.util;
 
 import ij.gui.GenericDialog;
@@ -38,6 +39,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Jarek Sacha
  * @deprecated scheduled for removal
  */
+@Deprecated
 public class DialogUtil {
 
     private DialogUtil() {
@@ -57,7 +59,7 @@ public class DialogUtil {
         final BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(bean.getClass());
-        } catch (IntrospectionException e) {
+        } catch (final IntrospectionException e) {
             throw new IJPluginsRuntimeException("Error extracting bean info.", e);
         }
 
@@ -74,27 +76,27 @@ public class DialogUtil {
 
                 final Object o = PropertyUtils.getSimpleProperty(bean, pd.getName());
                 if (type.equals(Boolean.TYPE)) {
-                    boolean value = (Boolean) o;
+                    final boolean value = (Boolean) o;
                     genericDialog.addCheckbox(pd.getDisplayName(), value);
                 } else if (type.equals(Integer.TYPE)) {
-                    int value = (Integer) o;
+                    final int value = (Integer) o;
                     genericDialog.addNumericField(pd.getDisplayName(), value, 0);
                 } else if (type.equals(Float.TYPE)) {
-                    double value = ((Float) o).doubleValue();
+                    final double value = ((Float) o).doubleValue();
                     genericDialog.addNumericField(pd.getDisplayName(), value, 6, 10, "");
                 } else if (type.equals(Double.TYPE)) {
-                    double value = (Double) o;
+                    final double value = (Double) o;
                     genericDialog.addNumericField(pd.getDisplayName(), value, 6, 10, "");
                 } else {
                     genericDialog.addMessage(pd.getDisplayName() + "[Unsupported type: " + type + "]");
                 }
 
             }
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new IJPluginsRuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             throw new IJPluginsRuntimeException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             throw new IJPluginsRuntimeException(e);
         }
 
@@ -130,11 +132,11 @@ public class DialogUtil {
                 }
                 PropertyUtils.setProperty(bean, pd.getName(), propertyValue);
             }
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new IJPluginsRuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             throw new IJPluginsRuntimeException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             throw new IJPluginsRuntimeException(e);
         }
 

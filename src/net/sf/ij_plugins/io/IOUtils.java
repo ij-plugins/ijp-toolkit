@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -118,7 +118,7 @@ public class IOUtils {
      * @param file  destination file.
      * @throws IOException when image cannot be saved.
      */
-    public static void saveAsTiff(ImageStack stack, final File file) throws IOException {
+    public static void saveAsTiff(final ImageStack stack, final File file) throws IOException {
         saveAsTiff(new ImagePlus(file.getName(), stack), file);
     }
 

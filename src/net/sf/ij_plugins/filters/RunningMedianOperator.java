@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,6 +40,7 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
     public RunningMedianOperator() {
     }
 
+    @Override
     public void reset(final int maxPackets, final int maxElementsPerPacket) {
         packets = new Packet[maxPackets];
         for (int i = 0; i < packets.length; ++i) {
@@ -50,7 +52,8 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
     }
 
 
-    public void push(final int length, float[] data) {
+    @Override
+    public void push(final int length, final float[] data) {
 
         final Packet packet = packets[updatablePacket];
 
@@ -107,6 +110,7 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
         updatablePacket = (updatablePacket + 1) % packets.length;
     }
 
+    @Override
     public float evaluate() {
         while (needsUpdate) {
 
@@ -171,6 +175,7 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
         return median;
     }
 
+    @Override
     public void clear() {
         updatablePacket = 0;
         median = 0;
@@ -179,8 +184,7 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
         upperSetSize = 0;
         revaluateMedian = false;
 
-        for (int i = 0; i < packets.length; ++i) {
-            final Packet packet = packets[i];
+        for (final Packet packet : packets) {
             packet.size = 0;
             packet.split = 0;
             Arrays.fill(packet.data, 0);
@@ -191,18 +195,16 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
     private void updateSetCounts() {
         lowerSetSize = 0;
         upperSetSize = 0;
-        for (int i = 0; i < packets.length; ++i) {
-            final Packet packet = packets[i];
+        for (final Packet packet : packets) {
             lowerSetSize += packet.split;
             upperSetSize += packet.size - packet.split;
         }
     }
 
     private float findSmallestInUpperSet() {
-        // Find largerst key in the lower set
+        // Find largest key in the lower set
         float minValue = Float.POSITIVE_INFINITY;
-        for (int i = 0; i < packets.length; ++i) {
-            final Packet packet = packets[i];
+        for (final Packet packet : packets) {
             if (packet.split < packet.size && packet.data[packet.split] < minValue) {
                 minValue = packet.data[packet.split];
             }
@@ -214,15 +216,15 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
     }
 
     private float moveOneUp() {
-        // Find largerst key in the lower set
+        // Find largest key in the lower set
         int selection = -1;
-        float firstLagest = Float.NEGATIVE_INFINITY;
+        float firstLargest = Float.NEGATIVE_INFINITY;
         for (int i = 0; i < packets.length; ++i) {
             final Packet packet = packets[i];
             if (packet.split > 0
-                    && packet.data[packet.split - 1] > firstLagest) {
+                    && packet.data[packet.split - 1] > firstLargest) {
                 selection = i;
-                firstLagest = packet.data[packet.split - 1];
+                firstLargest = packet.data[packet.split - 1];
             }
         }
 
@@ -232,7 +234,7 @@ public class RunningMedianOperator implements IRunningMedianFloatOperator {
             --packet.split;
             final float movedValue = packet.data[packet.split];
 
-            assert firstLagest == movedValue;
+            assert firstLargest == movedValue;
 
             return movedValue;
         } else {

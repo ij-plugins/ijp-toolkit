@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,19 +38,19 @@ public class FastMedianUInt8 extends RunningUInt8Filter {
         super(new RunningMedianUInt8Operator());
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             ij.ImageJ.main(null);
             ImagePlus imp = null;
             imp = IOUtils.openImage("test_images/blobs_noise.tif");
             imp.show();
-            ByteProcessor src = (ByteProcessor) imp.getProcessor();
+            final ByteProcessor src = (ByteProcessor) imp.getProcessor();
 
             final FastMedianUInt8 fastMedianUInt8 = new FastMedianUInt8();
-            ByteProcessor dest = fastMedianUInt8.run(src, 11, 11);
+            final ByteProcessor dest = fastMedianUInt8.run(src, 11, 11);
             new ImagePlus("Median", dest).show();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }

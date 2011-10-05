@@ -45,8 +45,8 @@ public class MorphologicalErode3DPlugin implements PlugIn {
      * @param arg Optional argument required by ij.plugin.PlugIn interface (not used).
      */
     @Override
-    public void run(String arg) {
-        ImagePlus imp = WindowManager.getCurrentImage();
+    public void run(final String arg) {
+        final ImagePlus imp = WindowManager.getCurrentImage();
         if (imp == null) {
             IJ.noImage();
             return;

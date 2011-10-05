@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,7 +22,7 @@
 
 package net.sf.ij_plugins.grow;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -33,6 +34,7 @@ import java.util.Comparator;
 public final class PointYXComparator implements Comparator<Point>, Serializable {
     private static final long serialVersionUID = -2567466662073965563L;
 
+    @Override
     public int compare(final Point p1, final Point p2) {
         if (p1.y < p2.y) {
             return -1;

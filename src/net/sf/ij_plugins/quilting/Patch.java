@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ public class Patch extends View {
     /**
      * This makes a patch based on the given dimensions and view parameters.
      */
-    public Patch(ImageProcessor image, int x, int y, int width, int height) {
+    public Patch(final ImageProcessor image, final int x, final int y, final int width, final int height) {
         super(image, x, y);
         this.width = width;
         this.height = height;
@@ -46,7 +46,7 @@ public class Patch extends View {
      * This moves the patch to have the upper left corner at (x,y) in image coordinates.
      */
     @Override
-    public void setCorner(int x, int y) {
+    public void setCorner(final int x, final int y) {
         if (x + width > image.getWidth() || y + height > image.getHeight()
                 || x < 0 || y < 0) {
             throw new IllegalArgumentException("can not create a patch there");
@@ -67,7 +67,7 @@ public class Patch extends View {
      * the view.
      */
     @Override
-    public int[] getSample(int x, int y, int[] out) {
+    public int[] getSample(final int x, final int y, final int[] out) {
         // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return super.getSample(x, y, out);
@@ -81,13 +81,14 @@ public class Patch extends View {
      * the view.
      */
     @Override
-    public void putSample(int x, int y, int values[]) {
+    public void putSample(final int x, final int y, final int values[]) {
         // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
             super.putSample(x, y, values);
-        } else
+        } else {
             throw new IllegalArgumentException("Attempted to put (" + x + "," + y
                     + ") in " + toString());
+        }
     }
 
     /**
@@ -127,8 +128,8 @@ public class Patch extends View {
      * This moves the patch to the left side of the image and down by height-overlap. If the move
      * fails, this returns false.
      */
-    public boolean nextRow(int overlap) {
-        int newy = yoffset + height - overlap;
+    public boolean nextRow(final int overlap) {
+        final int newy = yoffset + height - overlap;
         if (IJ.debugMode) {
             IJ.log("newy = " + newy);
             IJ.log("height = " + image.getHeight());
@@ -144,8 +145,8 @@ public class Patch extends View {
      * This moves the patch to the right in this row of patches if able. The amount moved will be
      * width-overlap. This returns false on failure.
      */
-    public boolean nextColumn(int overlap) {
-        int newx = xoffset + width - overlap;
+    public boolean nextColumn(final int overlap) {
+        final int newx = xoffset + width - overlap;
         if (newx + width > image.getWidth()) {
             return false;
         }

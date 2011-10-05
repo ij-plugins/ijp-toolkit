@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -82,12 +82,12 @@ public class ColorProcessorUtils {
             throw new IllegalArgumentException("All imput processor have to be of the same size.");
         }
 
-        byte[][] pixels = new byte[3][];
+        final byte[][] pixels = new byte[3][];
         for (int i = 0; i < bps.length; i++) {
             pixels[i] = (byte[]) bps[i].getPixels();
         }
 
-        ColorProcessor dest = new ColorProcessor(width, height);
+        final ColorProcessor dest = new ColorProcessor(width, height);
 
         dest.setRGB(pixels[0], pixels[1], pixels[2]);
 

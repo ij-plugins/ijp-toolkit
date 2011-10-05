@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.thresholding;
 
 
@@ -54,6 +55,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
 
 
+    @Override
     public int setup(final String s, final ImagePlus imagePlus) {
 
         if ("about".equalsIgnoreCase(s)) {
@@ -65,6 +67,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
     }
 
 
+    @Override
     public void run(final ImageProcessor imageProcessor) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
@@ -103,7 +106,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
 
     private void encode(final ByteProcessor ip, final int[] thresholds) {
         final int[] values = new int[thresholds.length + 1];
-        double inc = 255.0 / thresholds.length;
+        final double inc = 255.0 / thresholds.length;
         for (int i = 0; i < values.length; i++) {
             values[i] = (int) Math.round(i * inc);
         }
@@ -115,7 +118,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
 
         final byte[] pixels = (byte[]) ip.getPixels();
         for (int i = 0; i < pixels.length; i++) {
-            int srcPixel = pixels[i] & 0xff;
+            final int srcPixel = pixels[i] & 0xff;
             int destPixel = -1;
             if (srcPixel <= thresholds[0]) {
                 destPixel = values[0];

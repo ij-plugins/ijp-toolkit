@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -47,7 +47,8 @@ public class ConvertYCbCrToRGBPlugin implements PlugIn {
                     "http://en.wikipedia.org/wiki/YCbCr";
 
 
-    public void run(String arg) {
+    @Override
+    public void run(final String arg) {
         if (ConvertYCbCrToRGBPlugin.ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
             return;

@@ -80,7 +80,7 @@ public final class MiDecoder {
      * @return Decoded image.
      * @throws MiException In case of IO errors.
      */
-    public static ImagePlus[] open(final File file, boolean virtual) throws MiException {
+    public static ImagePlus[] open(final File file, final boolean virtual) throws MiException {
         final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header

@@ -1,8 +1,7 @@
-/***
- * Copyright (C) 2002 Nick Vavra
- *
+/*
  * Image/J Plugins
- * Copyright (C) 2004-2008 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,11 +32,11 @@ public class SynthAide {
      * start at (firstx,firsty) and extend to include (firstx+width-1, firsty+height-1). Coordinates
      * are view coordinates.
      */
-    public static void copy(View from, View to, int firstx, int firsty,
-                            int width, int height) {
+    public static void copy(final View from, final View to, final int firstx, final int firsty,
+                            final int width, final int height) {
         // TODO: copy by blittering
-        int lastx = firstx + width - 1;
-        int lasty = firsty + height - 1;
+        final int lastx = firstx + width - 1;
+        final int lasty = firsty + height - 1;
         final int[] sample = new int[3];
         for (int y = firsty; y <= lasty; y++) {
             for (int x = firstx; x <= lastx; x++) {
@@ -52,22 +51,23 @@ public class SynthAide {
      */
     public static double[][] gaussian(int length) {
 
-        if (length % 2 == 0)
+        if (length % 2 == 0) {
             length++;
+        }
 
         // this stddev puts makes a good spread for a given size
-        double stddev = length / 4.9;
+        final double stddev = length / 4.9;
 
         // make a 1d gaussian kernel
-        double oned[] = new double[length];
+        final double oned[] = new double[length];
         for (int i = 0; i < length; i++) {
-            int x = i - length / 2;
-            double exponent = x * x / (-2 * stddev * stddev);
+            final int x = i - length / 2;
+            final double exponent = x * x / (-2 * stddev * stddev);
             oned[i] = Math.exp(exponent);
         }
 
         // make the 2d version based on the 1d
-        double twod[][] = new double[length][length];
+        final double twod[][] = new double[length][length];
         double sum = 0.0;
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
@@ -93,7 +93,7 @@ public class SynthAide {
      *
      * @return This returns a list of net.sf.ij_plugins.quilting.TwoDLoc objects.
      */
-    public static LinkedList<TwoDLoc> lessThanEqual(double[][] vals, double threshold) {
+    public static LinkedList<TwoDLoc> lessThanEqual(final double[][] vals, final double threshold) {
 
         final LinkedList<TwoDLoc> list = new LinkedList<TwoDLoc>();
         for (int r = 0; r < vals.length; r++) {
@@ -112,14 +112,14 @@ public class SynthAide {
      * @param frompart This gives the ration of the fromPatch value to use (0 <= frompart <= 1). The
      *                 rest of the value comes from toPatch.
      */
-    public static void blend(Patch fromPatch, Patch toPatch, int x, int y,
-                             double frompart) {
+    public static void blend(final Patch fromPatch, final Patch toPatch, final int x, final int y,
+                             final double frompart) {
 
-        int[] tovals = toPatch.getSample(x, y, null);
-        int[] fromvals = fromPatch.getSample(x, y, null);
-        int[] newvals = new int[3];
+        final int[] tovals = toPatch.getSample(x, y, null);
+        final int[] fromvals = fromPatch.getSample(x, y, null);
+        final int[] newvals = new int[3];
         for (int i = 0; i < 3; i++) {
-            double sum = tovals[i] * (1 - frompart) + fromvals[i] * frompart;
+            final double sum = tovals[i] * (1 - frompart) + fromvals[i] * frompart;
             newvals[i] = (int) Math.round(sum);
         }
         toPatch.putSample(x, y, newvals);
@@ -130,10 +130,10 @@ public class SynthAide {
      * This computes the sum (across channels) of squared differences between the pixel values at
      * the given coordinate in the given views.
      */
-    public static int ssd(View view1, View view2, int x, int y) {
+    public static int ssd(final View view1, final View view2, final int x, final int y) {
 
-        int vals[] = view1.getSample(x, y, null);
-        int vals2[] = view2.getSample(x, y, null);
+        final int vals[] = view1.getSample(x, y, null);
+        final int vals2[] = view2.getSample(x, y, null);
 
         int diff = vals[0] - vals2[0];
         int sum = diff * diff;

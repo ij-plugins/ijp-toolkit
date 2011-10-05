@@ -39,11 +39,13 @@ public class DefaultProgressReporter implements ProgressReporter {
     private double currentProgress;
 
 
+    @Override
     public double currentProgress() {
         return currentProgress;
     }
 
 
+    @Override
     public void addProgressListener(final ProgressListener l) {
         synchronized (progressListeners) {
             progressListeners.add(l);
@@ -51,6 +53,7 @@ public class DefaultProgressReporter implements ProgressReporter {
     }
 
 
+    @Override
     public void removeProgressListener(final ProgressListener l) {
         synchronized (progressListeners) {
             progressListeners.remove(l);
@@ -58,6 +61,7 @@ public class DefaultProgressReporter implements ProgressReporter {
     }
 
 
+    @Override
     public void removeAllProgressListener() {
         // Remove all listeners using call to #removeProgressListener to avoid problems if the class in inherited
         // Iterate over a copy of the progressListeners, otherwise you get java.util.ConcurrentModificationException

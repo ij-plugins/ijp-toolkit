@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -46,11 +46,13 @@ public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
 
     private int filterSize = 5;
 
-    public int setup(String s, ImagePlus imagePlus) {
+    @Override
+    public int setup(final String s, final ImagePlus imagePlus) {
         return FLAGS;
     }
 
 
+    @Override
     public void run(final ImageProcessor ip) {
 
         final long start = System.currentTimeMillis();
@@ -63,6 +65,7 @@ public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
     }
 
 
+    @Override
     public int showDialog(final ImagePlus imp, final String command, final PlugInFilterRunner pfr) {
         loadFromIJPref();
 
@@ -82,11 +85,13 @@ public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
     }
 
 
+    @Override
     public void setNPasses(final int nPasses) {
         // ?
     }
 
 
+    @Override
     public boolean dialogItemChanged(final GenericDialog dialog, final AWTEvent e) {
         filterSize = (int) Math.round(dialog.getNextNumber());
         return filterSize >= 0;

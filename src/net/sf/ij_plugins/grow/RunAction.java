@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -26,8 +26,7 @@ import net.sf.ij_plugins.ui.AbstractModelAction;
 import net.sf.ij_plugins.ui.GlassPane;
 
 import javax.swing.*;
-import java.awt.Component;
-import java.awt.Cursor;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -44,6 +43,7 @@ final class RunAction extends AbstractModelAction<RegionGrowingModel> {
         this.parent = parent;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
 
         // Block SRG dialog

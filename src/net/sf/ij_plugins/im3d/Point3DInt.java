@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -75,6 +75,7 @@ final public class Point3DInt implements Comparable<Point3DInt> {
     }
 
 
+    @Override
     public int compareTo(final Point3DInt p) {
         Validate.argumentNotNull(p, "p");
 

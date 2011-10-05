@@ -104,7 +104,7 @@ public class Morpho {
                             }
                             final int nhbOffset = yy * xSize;
                             for (int dx = -1; dx <= 1; ++dx) {
-                                int xx = x + dx;
+                                final int xx = x + dx;
                                 if (xx < xMin || xx >= xMax) {
                                     continue;
                                 }
@@ -167,7 +167,7 @@ public class Morpho {
                     // Iterate through neighborhood and find minimum value
                     int minValue = MAX_VALUE;
                     for (int dz = -1; dz <= 1; ++dz) {
-                        int zz = z + dz;
+                        final int zz = z + dz;
                         if (zz < zMin || zz >= zMax) {
                             continue;
                         }
@@ -305,11 +305,11 @@ public class Morpho {
     */
 
 
-    private void initialize(ImageStack src, ImageStack dest) {
+    private void initialize(final ImageStack src, final ImageStack dest) {
         xSize = src.getWidth();
         xMin = 0;
         xMax = xSize;
-        int ySize = src.getHeight();
+        final int ySize = src.getHeight();
         yMin = 0;
         yMax = ySize;
         zSize = src.getSize();

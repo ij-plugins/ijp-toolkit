@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,10 +35,12 @@ import net.sf.ij_plugins.util.DialogUtil;
 public class CoherenceEnhancingDiffusionPlugin implements PlugInFilter {
     private final static String TITLE = "Coherence Enhancing Diffusion";
 
+    @Override
     public int setup(final String s, final ImagePlus imagePlus) {
         return DOES_8G | DOES_16 | DOES_32 | DOES_STACKS | NO_CHANGES;
     }
 
+    @Override
     public void run(final ImageProcessor ip) {
         final FloatProcessor src = (FloatProcessor) ip.convertToFloat();
 

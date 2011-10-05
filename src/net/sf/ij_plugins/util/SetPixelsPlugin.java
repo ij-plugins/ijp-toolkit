@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -40,10 +40,12 @@ public final class SetPixelsPlugin implements PlugInFilter {
     final private static String TITLE = "Set Pixels";
     final private static AtomicInteger value = new AtomicInteger(1);
 
+    @Override
     public int setup(final String arg, final ImagePlus imp) {
         return DOES_8G + ROI_REQUIRED + SNAPSHOT + PARALLELIZE_STACKS;
     }
 
+    @Override
     public void run(final ImageProcessor ip) {
 
         final GenericDialog gd = new GenericDialog(TITLE);
@@ -59,7 +61,7 @@ public final class SetPixelsPlugin implements PlugInFilter {
         value.set(Math.max(0, Math.min(255, (int) Math.round(gd.getNextNumber()))));
         IJ.showStatus("Setting ROI pixels to " + value);
 
-        ByteProcessor bp = (ByteProcessor) ip;
+        final ByteProcessor bp = (ByteProcessor) ip;
         bp.setColor(value.get());
         bp.fill();
     }

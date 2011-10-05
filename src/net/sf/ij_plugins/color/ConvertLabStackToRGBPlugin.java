@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.color;
 
 import ij.IJ;
@@ -49,7 +50,8 @@ public class ConvertLabStackToRGBPlugin implements PlugIn {
     private static WhiteReference whiteReference = WhiteReference.A;
 
 
-    public void run(String arg) {
+    @Override
+    public void run(final String arg) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
             return;

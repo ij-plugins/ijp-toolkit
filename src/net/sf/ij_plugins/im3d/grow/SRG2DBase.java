@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -339,8 +339,9 @@ abstract class SRG2DBase extends DefaultProgressReporter {
         int mostSimilarRegionId = -1;
         for (int regionID = 1; regionID < regionInfos.length; regionID++) {
             // Skip region if it is not a neighbor
-            if (!flags[regionID])
+            if (!flags[regionID]) {
                 continue;
+            }
 
             final RegionInfo regionInfo = regionInfos[regionID];
             final double sigma = distanceFromMean(offset, regionInfo);
@@ -533,6 +534,7 @@ abstract class SRG2DBase extends DefaultProgressReporter {
         }
 
 
+        @Override
         public int compareTo(final Candidate c) {
             Validate.argumentNotNull(c, "c");
 

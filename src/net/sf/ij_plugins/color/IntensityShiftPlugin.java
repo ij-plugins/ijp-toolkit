@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,7 +40,8 @@ public class IntensityShiftPlugin implements PlugInFilter {
 
     private static int shift = 128;
 
-    public int setup(String arg, ImagePlus imp) {
+    @Override
+    public int setup(final String arg, final ImagePlus imp) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
             return DONE;
@@ -48,7 +50,8 @@ public class IntensityShiftPlugin implements PlugInFilter {
         return PlugInFilter.DOES_8G;
     }
 
-    public void run(ImageProcessor ip) {
+    @Override
+    public void run(final ImageProcessor ip) {
 
         final GenericDialog dialog = new GenericDialog(PLUGIN_NAME);
         dialog.addNumericField("Intensity shift", shift, 0);

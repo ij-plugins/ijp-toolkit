@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -41,7 +41,7 @@ public class ProgressAccumulator
         double weight;
         String message;
 
-        public Data(double weight, String message) {
+        public Data(final double weight, final String message) {
             this.weight = weight;
             this.message = message;
         }
@@ -125,6 +125,7 @@ public class ProgressAccumulator
     }
 
 
+    @Override
     public void progressNotification(final ProgressEvent event) {
         Validate.argumentNotNull(event, "event");
 
@@ -148,7 +149,7 @@ public class ProgressAccumulator
         for (final Map.Entry<ProgressReporter, Data> entry : reporters.entrySet()) {
             final Data data = entry.getValue();
             weightSum += data.weight;
-            double progress = entry.getKey().currentProgress();
+            final double progress = entry.getKey().currentProgress();
             progressSum += progress * data.weight;
         }
 

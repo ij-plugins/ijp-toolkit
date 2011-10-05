@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,14 +31,14 @@ import java.util.EventObject;
  */
 public class ProgressEvent extends EventObject {
     private static final long serialVersionUID = 1L;
-    private double progress;
-    private String message;
+    private final double progress;
+    private final String message;
 
     public ProgressEvent(final Object source, final double progress) {
         this(source, progress, "");
     }
 
-    public ProgressEvent(final Object source, double progress, final String message) {
+    public ProgressEvent(final Object source, final double progress, final String message) {
         super(source);
         this.progress = progress;
         this.message = message;

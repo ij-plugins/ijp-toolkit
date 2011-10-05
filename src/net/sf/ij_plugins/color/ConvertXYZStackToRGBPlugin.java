@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -45,7 +45,8 @@ public class ConvertXYZStackToRGBPlugin implements PlugIn {
                     "Uses formulas provided at: http://www.brucelindbloom.com";
 
 
-    public void run(String arg) {
+    @Override
+    public void run(final String arg) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
             IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
             return;

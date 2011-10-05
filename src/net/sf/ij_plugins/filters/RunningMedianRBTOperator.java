@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,11 +30,12 @@ import java.util.Arrays;
 public class RunningMedianRBTOperator implements IRunningMedianFloatOperator {
     private Packet[] packets;
     private int updatablePacket = 0;
-    private RedBlackTreeFloat rankTree = new RedBlackTreeFloat();
+    private final RedBlackTreeFloat rankTree = new RedBlackTreeFloat();
 
     public RunningMedianRBTOperator() {
     }
 
+    @Override
     public void reset(final int maxPackets, final int maxElementsPerPacket) {
         packets = new Packet[maxPackets];
         for (int i = 0; i < packets.length; ++i) {
@@ -45,7 +47,8 @@ public class RunningMedianRBTOperator implements IRunningMedianFloatOperator {
     }
 
 
-    public void push(final int length, float[] data) {
+    @Override
+    public void push(final int length, final float[] data) {
 
         final Packet packet = packets[updatablePacket];
 
@@ -90,20 +93,21 @@ public class RunningMedianRBTOperator implements IRunningMedianFloatOperator {
         updatablePacket = (updatablePacket + 1) % packets.length;
     }
 
+    @Override
     public float evaluate() {
         final int medianRank = rankTree.size() / 2 + 1;
 
         return rankTree.select(medianRank);
     }
 
+    @Override
     public void clear() {
         updatablePacket = 0;
         rankTree.clear();
         rankTree.verify();
 
 
-        for (int i = 0; i < packets.length; ++i) {
-            final Packet packet = packets[i];
+        for (final Packet packet : packets) {
             packet.size = 0;
             Arrays.fill(packet.data, 0);
         }

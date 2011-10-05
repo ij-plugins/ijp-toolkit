@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -29,6 +29,12 @@ package net.sf.ij_plugins;
  * @since 11/29/10 10:58 PM
  */
 public final class IJPluginsException extends Exception {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
 
     public IJPluginsException(final String message) {
         super(message);

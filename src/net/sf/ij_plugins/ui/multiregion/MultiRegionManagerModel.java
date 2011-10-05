@@ -337,25 +337,33 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
 
     static String getLabel(final ImagePlus imp, final Roi roi, final int n) {
-        Rectangle r = roi.getBounds();
+        final Rectangle r = roi.getBounds();
         int xc = r.x + r.width / 2;
         int yc = r.y + r.height / 2;
         if (n >= 0) {
             xc = yc;
             yc = n;
         }
-        if (xc < 0) xc = 0;
-        if (yc < 0) yc = 0;
+        if (xc < 0) {
+            xc = 0;
+        }
+        if (yc < 0) {
+            yc = 0;
+        }
         int digits = 4;
         String xs = "" + xc;
-        if (xs.length() > digits) digits = xs.length();
+        if (xs.length() > digits) {
+            digits = xs.length();
+        }
         String ys = "" + yc;
-        if (ys.length() > digits) digits = ys.length();
+        if (ys.length() > digits) {
+            digits = ys.length();
+        }
         xs = "000000" + xc;
         ys = "000000" + yc;
         String label = ys.substring(ys.length() - digits) + "-" + xs.substring(xs.length() - digits);
         if (imp.getStackSize() > 1) {
-            String zs = "000000" + imp.getCurrentSlice();
+            final String zs = "000000" + imp.getCurrentSlice();
             label = zs.substring(zs.length() - digits) + "-" + label;
         }
         return label;
@@ -366,7 +374,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
         final Region region = getSelectedRegion();
         if (region != null) {
             final List<Roi> rois = new ArrayList<Roi>();
-            for (SubRegion subRegion : region.getSubRegions()) {
+            for (final SubRegion subRegion : region.getSubRegions()) {
                 rois.add(subRegion.getRoi());
             }
             IJUtils.addToROIManager(rois);

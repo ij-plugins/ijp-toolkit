@@ -92,7 +92,7 @@ public final class ExportAsSTL extends DefaultProgressReporter {
         final OutputStream out;
         try {
             out = new BufferedOutputStream(new FileOutputStream(file));
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             throw new IJPluginsException("Error creating STL output stream. " + e.getMessage(), e);
         }
         try {
@@ -159,7 +159,7 @@ public final class ExportAsSTL extends DefaultProgressReporter {
         final OutputStream out;
         try {
             out = new BufferedOutputStream(new FileOutputStream(file));
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             throw new IJPluginsException("Error creating STL output stream. " + e.getMessage(), e);
         }
         try {
@@ -298,7 +298,7 @@ public final class ExportAsSTL extends DefaultProgressReporter {
     }
 
 
-    private static void write4(final OutputStream out, final double[][] r, double[][] z, final FileType fileType) throws IOException {
+    private static void write4(final OutputStream out, final double[][] r, final double[][] z, final FileType fileType) throws IOException {
         final double x0 = r[0][0];
         final double x1 = r[1][0];
         final double y0 = r[0][1];

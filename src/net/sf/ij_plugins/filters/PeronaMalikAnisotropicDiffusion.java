@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2009 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
         return k;
     }
 
-    public void setK(float k) {
+    public void setK(final float k) {
         this.k = k;
         inv_k = 1 / k;
     }
@@ -48,7 +48,7 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
         return bigRegionFunction;
     }
 
-    public void setBigRegionFunction(boolean bigRegionFunction) {
+    public void setBigRegionFunction(final boolean bigRegionFunction) {
         this.bigRegionFunction = bigRegionFunction;
     }
 
@@ -56,20 +56,20 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
      * Perform single diffusion operation
      */
     @Override
-    protected void diffuse(FloatProcessor src, FloatProcessor dest) {
-        float[] destPixels = (float[]) dest.getPixels();
-        PixelIterator iterator = new PixelIterator(src);
+    protected void diffuse(final FloatProcessor src, final FloatProcessor dest) {
+        final float[] destPixels = (float[]) dest.getPixels();
+        final PixelIterator iterator = new PixelIterator(src);
 
         /* TODO: Update: "Calculate the gradient values for each point" */
         while (iterator.hasNext()) {
-            Neighborhood3x3 n = iterator.next();
-            float[] neighbors = n.getNeighbors();
+            final Neighborhood3x3 n = iterator.next();
+            final float[] neighbors = n.getNeighbors();
 
             // 4-connected neighbors
             double sum4component = 0;
 
             for (int i = 1; i < neighbors.length; i += 2) {
-                float gradient = neighbors[i] - n.center;
+                final float gradient = neighbors[i] - n.center;
                 sum4component += (g(gradient) * gradient);
             }
 
@@ -82,7 +82,7 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
             //
             //      double sqrt2div2 = .707106781;
             //      double newValue = (n.center + timeStep * (sum4component + sqrt2div2 * sum8component));
-            double newValue = n.center + (getTimeStep() * (sum4component));
+            final double newValue = n.center + (getTimeStep() * (sum4component));
 
             destPixels[n.offset] = (float) newValue;
         }
@@ -91,15 +91,15 @@ public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusio
     /**
      * Function preserving (and enhancing) edges
      */
-    public final double g(double v) {
+    public final double g(final double v) {
         if (bigRegionFunction) {
             //            return 1 / (1 + Math.pow(v / k, 2));
-            double h = v * inv_k;
+            final double h = v * inv_k;
 
             return 1 / (1 + (h * h));
         } else {
             //            return Math.exp(-Math.pow(v / k, 2));
-            double h = v * inv_k;
+            final double h = v * inv_k;
 
             return Math.exp(-h * h);
         }

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -79,7 +79,7 @@ public final class GlassPane extends JPanel {
         // This component keeps the focus until is made hidden
         setInputVerifier(new InputVerifier() {
             @Override
-            public boolean verify(JComponent input) {
+            public boolean verify(final JComponent input) {
                 return !isVisible();
             }
         });

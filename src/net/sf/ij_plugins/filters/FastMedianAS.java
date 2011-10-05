@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,31 +79,29 @@ public class FastMedianAS {
     private static final int NMSMlBY2 = (N - SM1BY2);
     private static final int POSITION = (S * RP2 + RPlBY2);
 
-    private int[] colvec = new int[N * RP2];
-    private int[] border = new int[S];
+    private final int[] colvec = new int[N * RP2];
+    private final int[] border = new int[S];
     private int median;
     private int count;
     private int pointer;
     private int row;
-    private int[][] iout = new int[M - R + 1][N - S + 1];
+    private final int[][] iout = new int[M - R + 1][N - S + 1];
 
-    private int[][] ix = new int[M][N];
+    private final int[][] ix = new int[M][N];
 
-    public void run(ByteProcessor ip) {
+    public void run(final ByteProcessor ip) {
 
-        int[][] pixels = {
-        {19, 15, 22, 1, 5, 7},
-        {24, 31, 28, 9, 11, 23},
-        {21, 24, 24, 21, 23, 14},
-        {23, 25, 14, 23, 8, 8},
-        {22, 24, 6, 15, 16, 7},
-        {23, 25, 5, 13, 17, 3}
+        final int[][] pixels = {
+                {19, 15, 22, 1, 5, 7},
+                {24, 31, 28, 9, 11, 23},
+                {21, 24, 24, 21, 23, 14},
+                {23, 25, 14, 23, 8, 8},
+                {22, 24, 6, 15, 16, 7},
+                {23, 25, 5, 13, 17, 3}
         };
 
         for (int y = 0; y < M; ++y) {
-            for (int x = 0; x < N; ++x) {
-                ix[y][x] = pixels[y][x];
-            }
+            System.arraycopy(pixels[y], 0, ix[y], 0, N);
         }
 
         fast_median();
@@ -114,19 +113,18 @@ public class FastMedianAS {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
 //            ij.ImageJ.main(null);
-            ImagePlus imp = null;
-            imp = IOUtils.openImage("test_images/blobs_noise.tif");
+            final ImagePlus imp = IOUtils.openImage("test_images/blobs_noise.tif");
             imp.show();
-            ByteProcessor bp = (ByteProcessor) imp.getProcessor().duplicate();
+            final ByteProcessor bp = (ByteProcessor) imp.getProcessor().duplicate();
 
             final FastMedianAS fastMedian = new FastMedianAS();
             fastMedian.run(bp);
             new ImagePlus("Median", bp).show();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -235,7 +233,7 @@ public class FastMedianAS {
         for (int i = 0, index = 1; i < N; i++, index += RP2) {
             colvec[index] = ix[0][i];
             for (int i1 = index + 1; i1 < index + S; i1++) {
-                int temp = ix[i1 - index][i];
+                final int temp = ix[i1 - index][i];
                 int i2 = i1 - 1;
                 while (temp < colvec[i2]) {
                     colvec[i2 + 1] = colvec[i2--];
@@ -364,7 +362,9 @@ public class FastMedianAS {
             if (delete != insert) {
                 if (colvec[delpos] > delete) {
                     // searching upwards for deleting position
-                    while (colvec[--delpos] != delete) ;
+                    while (colvec[--delpos] != delete) {
+                        ;
+                    }
                 } else {
                     // searching downwards for deleting position
                     while (colvec[delpos] != delete) {

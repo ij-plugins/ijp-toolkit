@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -137,7 +137,7 @@ public final class SRG extends SRG2DBase {
 
 
     @Override
-    protected double distanceFromMean(int offset, RegionInfo regionInfo) {
+    protected double distanceFromMean(final int offset, final RegionInfo regionInfo) {
         return Math.abs(imagePixels[offset] - ((RegionInfoScalar) regionInfo).mean());
     }
 
@@ -151,7 +151,7 @@ public final class SRG extends SRG2DBase {
 
 
     @Override
-    protected RegionInfo newRegionInfo(int originalSeedID) {
+    protected RegionInfo newRegionInfo(final int originalSeedID) {
         return new RegionInfoScalar(image, originalSeedID);
     }
 
@@ -169,6 +169,7 @@ public final class SRG extends SRG2DBase {
         }
 
 
+        @Override
         public void addPoint(final Point point) {
             ++pointCount;
             sumIntensity += image.getf(point.x, point.y);
