@@ -24,6 +24,7 @@ package net.sf.ij_plugins.io.metaimage;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.io.OpenDialog;
 import ij.plugin.PlugIn;
 
@@ -43,6 +44,7 @@ import java.io.File;
 public final class MetaImageReaderPlugin implements PlugIn {
 
     private static final String TITLE = "MetaImage Reader";
+    private static boolean virtual = false;
 
 
     @Override
@@ -54,11 +56,20 @@ public final class MetaImageReaderPlugin implements PlugIn {
             return;
         }
 
+        // Get options (only virtual stack at the moment)
+        final GenericDialog optionsDialog = new GenericDialog(TITLE);
+        optionsDialog.addCheckbox("Use_virtual_stack", virtual);
+        optionsDialog.showDialog();
+        if (optionsDialog.wasCanceled()) {
+            return;
+        }
+        virtual = optionsDialog.getNextBoolean();
+
         final File file = new File(openDialog.getDirectory(), openDialog.getFileName());
         try {
             IJ.showStatus("Opening MetaImage: " + file.getName());
             final long tStart = System.currentTimeMillis();
-            final ImagePlus[] imps = MiDecoder.open(file);
+            final ImagePlus[] imps = MiDecoder.open(file, virtual);
             final long tStop = System.currentTimeMillis();
             for (ImagePlus imp : imps) {
                 imp.show();

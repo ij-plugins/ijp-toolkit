@@ -25,9 +25,11 @@ package net.sf.ij_plugins.io.metaimage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.VirtualStack;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.RandomAccessStream;
+import ij.plugin.FileInfoVirtualStack;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.TextUtil;
@@ -46,6 +48,7 @@ import java.io.*;
  * @since July 31, 2002
  */
 public final class MiDecoder {
+
     // TODO Validate MetaImage tag dependency (some tags need always be present, some only if other tags are present, etc.)
 
 
@@ -58,7 +61,6 @@ public final class MiDecoder {
     private MiDecoder() {
     }
 
-
     /**
      * Load image from a MetaImage file. Number of returned images is equal to the number of channels in the file.
      *
@@ -67,6 +69,18 @@ public final class MiDecoder {
      * @throws MiException In case of IO errors.
      */
     public static ImagePlus[] open(final File file) throws MiException {
+        return open(file, false);
+    }
+
+    /**
+     * Load image from a MetaImage file. Number of returned images is equal to the number of channels in the file.
+     *
+     * @param file    MetaImage file.
+     * @param virtual Specifies whether a virtual stack should be used.
+     * @return Decoded image.
+     * @throws MiException In case of IO errors.
+     */
+    public static ImagePlus[] open(final File file, boolean virtual) throws MiException {
         final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header
@@ -82,9 +96,20 @@ public final class MiDecoder {
             IJ.log("FileInfo: " + fileInfo.toString());
         }
 
+        if (elementNumberOfChannels > 1 && virtual) {
+            throw new MiException("MetaImage Reader does not support virtual stacks for multi-channel images.");
+        }
+
         // Read binary image data
-        final FileOpener fileOpener = new FileOpener(fileInfo);
-        final ImagePlus imp = fileOpener.open(false);
+        final ImagePlus imp;
+        if (virtual) {
+            final VirtualStack virtualStack = new FileInfoVirtualStack(fileInfo, false);
+            imp = new ImagePlus(fileInfo.fileName, virtualStack);
+        } else {
+            final FileOpener fileOpener = new FileOpener(fileInfo);
+            imp = fileOpener.open(false);
+        }
+
         if (imp == null) {
             throw new MiException("Unable to read image data from '" + fileInfo.fileName + "'.");
         }

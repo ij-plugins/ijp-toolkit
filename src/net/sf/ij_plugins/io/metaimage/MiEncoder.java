@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -24,6 +24,8 @@ package net.sf.ij_plugins.io.metaimage;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
+import ij.VirtualStack;
 import ij.io.FileInfo;
 import ij.io.ImageWriter;
 import ij.measure.Calibration;
@@ -188,7 +190,7 @@ public final class MiEncoder {
      */
     private static String createHeaderText(final ImagePlus imp, final String rawDataFileName)
             throws MiException {
-        final StringBuffer header = new StringBuffer();
+        final StringBuilder header = new StringBuilder();
 
         // NDims
         final String nDims = imp.getStackSize() > 1 ? "3" : "2";
@@ -258,6 +260,14 @@ public final class MiEncoder {
     private static void writeRawImage(ImagePlus imp, FileOutputStream fileOutputStream) throws MiException {
         final FileInfo fileInfo = imp.getFileInfo();
         fileInfo.fileFormat = FileInfo.RAW;
+        // Eric Nodwell:
+        // The following line is basically a bug work-around as far as I can
+        // tell, as getFileInfo() ought to set virtualStack if the ImagePlus
+        // is a VirtualStack.  In 1.44 it does not.
+        final ImageStack imageStack = imp.getStack();
+        if (imageStack.isVirtual() && imageStack instanceof VirtualStack) {
+            fileInfo.virtualStack = (VirtualStack) imp.getStack();
+        }
 
         try {
             final ImageWriter imageWriter = new ImageWriter(fileInfo);
