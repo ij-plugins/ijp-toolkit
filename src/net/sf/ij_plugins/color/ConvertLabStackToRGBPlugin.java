@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2011 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -45,6 +45,8 @@ public class ConvertLabStackToRGBPlugin implements PlugIn {
                     "and 100\n" +
                     "Conversions assume observer = 2°, illuminant = D65, and use formulas provided at:\n" +
                     "http://www.brucelindbloom.com";
+
+    private static WhiteReference whiteReference = WhiteReference.A;
 
 
     public void run(String arg) {
