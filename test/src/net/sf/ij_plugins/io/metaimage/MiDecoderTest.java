@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.io.metaimage;
 
 import ij.ImagePlus;
@@ -26,8 +27,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 
 /**
@@ -64,5 +64,34 @@ public final class MiDecoderTest {
         assertEquals(1, imp.getStackSize());
         assertEquals(ImagePlus.GRAY16, imp.getType());
     }
+
+    @Test
+    public void mhaVirtualStack() throws MiException {
+        final File inFile = new File("test/data/mri-stack.mha");
+        final ImagePlus[] imps = MiDecoder.open(inFile, true);
+        assertNotNull(imps);
+        assertEquals(1, imps.length);
+        final ImagePlus imp = imps[0];
+        assertTrue(imp.getStack().isVirtual());
+        assertEquals(186, imp.getWidth());
+        assertEquals(226, imp.getHeight());
+        assertEquals(27, imp.getStackSize());
+        assertEquals(ImagePlus.GRAY8, imp.getType());
+    }
+
+    @Test
+    public void mhaNoVirtualStack() throws MiException {
+        final File inFile = new File("test/data/mri-stack.mha");
+        final ImagePlus[] imps = MiDecoder.open(inFile, false);
+        assertNotNull(imps);
+        assertEquals(1, imps.length);
+        final ImagePlus imp = imps[0];
+        assertFalse("isVirtual", imp.getStack().isVirtual());
+        assertEquals(186, imp.getWidth());
+        assertEquals(226, imp.getHeight());
+        assertEquals(27, imp.getStackSize());
+        assertEquals(ImagePlus.GRAY8, imp.getType());
+    }
+
 
 }
