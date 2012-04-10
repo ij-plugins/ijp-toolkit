@@ -75,7 +75,7 @@
 
         <!--Copy dependencies-->
         <!--<mkdir dir="${svn.dir}/lib"/>-->
-        <!--<copy file="${ij.jar}" todir="${svn.dir}/lib"/>-->
+        <!--<copy file="${ij-1.45s.jar}" todir="${svn.dir}/lib"/>-->
         <!--<copy file="${license.file}" todir="${svn.dir}"/>-->
 
         <!-- ZIP source -->
