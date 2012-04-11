@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2012 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -35,8 +35,8 @@ import java.awt.*;
 
 
 /**
- * Represents vector valued image. Value at each pixel in the image is a vector of floating point
- * numbers.
+ * Represents vector valued image.
+ * Value at each pixel in the image is a vector of floating point numbers.
  *
  * @author Jarek Sacha
  */
@@ -189,16 +189,42 @@ public class VectorProcessor {
     /**
      * Convert VectorProcessor to ImagePlus with FloatProcessor stack.
      *
+     * @param labels labels to be assigned to slice in the stack.
+     *               Number of labels must match number of pixel values (slices in the output stack).
+     *               This argument cannot be {@code null}.
      * @return ImagePlus representation of this object.
+     * @see #toFloatStack()
      * @see #toFloatProcessors()
      */
-    public ImagePlus toFloatStack() {
+    public ImagePlus toFloatStack(final String[] labels) {
+        Validate.argumentNotNull(labels, "labels");
+        Validate.isTrue(labels.length == getNumberOfValues(),
+                "Number of labels must match number of pixel values. " +
+                        "Expecting " + getNumberOfValues() + " labels, got " + labels.length);
+
         final ImageStack stack = new ImageStack(width, height);
         final FloatProcessor[] fps = toFloatProcessors();
         for (int i = 0; i < fps.length; i++) {
-            stack.addSlice("band " + i, fps[i]);
+            stack.addSlice(labels[i], fps[i]);
         }
         return new ImagePlus("From VectorProcessor", stack);
+    }
+
+
+    /**
+     * Convert VectorProcessor to ImagePlus with FloatProcessor stack.
+     * Slice labels are band numbers starting from 0.
+     *
+     * @return ImagePlus representation of this object.
+     * @see #toFloatStack(String[])
+     * @see #toFloatProcessors()
+     */
+    public ImagePlus toFloatStack() {
+        final String[] labels = new String[getNumberOfValues()];
+        for (int i = 0; i < labels.length; i++) {
+            labels[i] = "band " + i;
+        }
+        return toFloatStack(labels);
     }
 
 
