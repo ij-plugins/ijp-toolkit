@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Image/J Plugins
-  ~ Copyright (C) 2002-2011 Jarek Sacha
+  ~ Copyright (C) 2002-2012 Jarek Sacha
   ~ Author's email: jsacha at users dot sourceforge dot net
   ~
   ~ This library is free software; you can redistribute it and/or
@@ -92,7 +92,7 @@
     <target name="-post-init">
         <!-- Package name and version -->
         <property name="package.name" value="ij-plugins_toolkit"/>
-        <property name="package.version" value="1.6.0"/>
+        <property name="package.version" value="1.6.1"/>
 
         <property name="sandbox.dir" value="sandbox"/>
         <property name="plugins.dir" value="${sandbox.dir}/plugins"/>
