@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2012 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -21,29 +21,32 @@
  */
 package net.sf.ij_plugins.color;
 
+import ij.ImageStack;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.util.Validate;
 
 /**
- * <p/>
+ * Helper methods for working with ColorProcessor.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @since Apr 5, 2005 9:20:35 PM
  */
-public class ColorProcessorUtils {
+public final class ColorProcessorUtils {
+
     private ColorProcessorUtils() {
     }
 
     /**
-     * Splits ColorProcessor into ByteProcessors representing each of three bands (red, gree, and blue).
+     * Splits ColorProcessor into ByteProcessors representing each of three bands (red, green, and blue).
      *
      * @param cp input color processor
      * @return ByteProcessor for each band.
      * @see #mergeRGB(ij.process.ByteProcessor[])
      */
-    static public ByteProcessor[] splitRGB(final ColorProcessor cp) {
+    public static ByteProcessor[] splitRGB(final ColorProcessor cp) {
+        Validate.argumentNotNull(cp, "cp");
+
         final int width = cp.getWidth();
         final int height = cp.getHeight();
 
@@ -66,20 +69,16 @@ public class ColorProcessorUtils {
      * @param bps ByteProcessor for red, green, and blue band.
      * @return merged bands
      */
-    static public ColorProcessor mergeRGB(final ByteProcessor[] bps) {
-
+    public static ColorProcessor mergeRGB(final ByteProcessor[] bps) {
         Validate.argumentNotNull(bps, "bps");
-        if (bps.length != 3) {
-            throw new IllegalArgumentException("Size of array 'bps' has to equal 3, got "
-                    + bps.length + ".");
-        }
+        Validate.isTrue(bps.length == 3, "Size of array 'bps' has to equal 3, got " + bps.length + ".");
 
         final int width = bps[0].getWidth();
         final int height = bps[0].getHeight();
 
         if (!(width == bps[1].getWidth() && height == bps[1].getHeight()
                 && width == bps[2].getWidth() && height == bps[2].getHeight())) {
-            throw new IllegalArgumentException("All imput processor have to be of the same size.");
+            throw new IllegalArgumentException("All input processor have to be of the same size.");
         }
 
         final byte[][] pixels = new byte[3][];
@@ -92,5 +91,24 @@ public class ColorProcessorUtils {
         dest.setRGB(pixels[0], pixels[1], pixels[2]);
 
         return dest;
+    }
+
+    /**
+     * Convert RGB image to a stack of ByteProcessors.
+     *
+     * @param cp RGB image
+     * @return RGB stack
+     * @see #splitRGB(ij.process.ColorProcessor)
+     */
+    public static ImageStack toStack(final ColorProcessor cp) {
+        Validate.argumentNotNull(cp, "cp");
+
+        final ByteProcessor[] rgb = splitRGB(cp);
+        final String[] labels = {"R", "G", "B"};
+        final ImageStack stack = new ImageStack(cp.getWidth(), cp.getHeight());
+        for (int i = 0; i < 3; i++) {
+            stack.addSlice(labels[i], rgb[i]);
+        }
+        return stack;
     }
 }
