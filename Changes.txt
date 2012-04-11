@@ -3,6 +3,30 @@
 ******************************
 
 -------------------------------------------------------------------------------
+Version 1.6.1
+-------------------------------------------------------------------------------
+
+New:
+* Plugins > Color > Measure Bands - measures color images and stacks writing
+  results in a single row, rather than a separate row for each band or slice.
+  Works on RGB images or gray level stacks.
+
+Improvements:
+* Stach created by RGB to CIE L*a*b* and RGB to XYZ converters now have 
+  correct labels for each slice (name of the color band).
+* Updated dependet libraries to recent versions.
+* Add support for virtual stack to metaimage IO, based on patch provided 
+  by Eric Nodwell.
+* Add help button to plugin options dialog
+  -- Maximum Entropy Multi-Theshold plugin
+  -- k-means Clustering plugin
+  -- Region Growing plugin
+
+Developer visible:
+* Some utility methods added to VectorProcessor and ColorProcesorUtils.
+* Support for color space conversions with custom white point
+
+-------------------------------------------------------------------------------
 Version 1.6.0
 -------------------------------------------------------------------------------
 New:
