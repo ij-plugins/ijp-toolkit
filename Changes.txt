@@ -18,7 +18,7 @@ Improvements:
 * Add support for virtual stack to metaimage IO, based on patch provided 
   by Eric Nodwell.
 * Add help button to plugin options dialog
-  -- Maximum Entropy Multi-Theshold plugin
+  -- Maximum Entropy Multi-Threshold plugin
   -- k-means Clustering plugin
   -- Region Growing plugin
 
