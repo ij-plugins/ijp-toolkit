@@ -12,9 +12,9 @@ New:
   Works on RGB images or gray level stacks.
 
 Improvements:
-* Stach created by RGB to CIE L*a*b* and RGB to XYZ converters now have 
+* Stacks created by RGB to CIE L*a*b* and RGB to XYZ converters now have 
   correct labels for each slice (name of the color band).
-* Updated dependet libraries to recent versions.
+* Updated dependent libraries to recent versions.
 * Add support for virtual stack to metaimage IO, based on patch provided 
   by Eric Nodwell.
 * Add help button to plugin options dialog
@@ -23,7 +23,7 @@ Improvements:
   -- Region Growing plugin
 
 Developer visible:
-* Some utility methods added to VectorProcessor and ColorProcesorUtils.
+* Some utility methods added to VectorProcessor and ColorProcessorUtils.
 * Support for color space conversions with custom white point
 
 -------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ New:
  * Seeder Region Growing (SRG) plugin.
  
 Improved:
- * Fast Median Filter plugin � added preview to options dialog.
+ * Fast Median Filter plugin - added preview to options dialog.
  
 Bug fixes:
  * BUG-2687379: Division by zero in entropy threshold progress reporting.
