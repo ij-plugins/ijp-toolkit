@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -41,21 +41,15 @@ import java.awt.image.IndexColorModel;
  * ImageJ plugin wrapper for k-means clustering algorithm.
  *
  * @author Jarek Sacha
- * @see KMeans
+ * @see KMeans2D
  */
 public final class KMeansClusteringPlugin implements PlugIn {
 
     public static final String RESULTS_WINDOW_TITLE = "k-means cluster centers";
-
-    private static final KMeans.Config CONFIG = new KMeans.Config();
-    private static boolean showCentroidImage;
-    private static boolean sendToResultTable;
-
+    private static final KMeansConfig CONFIG = new KMeansConfig();
     private static final boolean APPLY_LUT = false;
     private static final boolean AUTO_BRIGHTNESS = true;
-
     private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/k-means.html";
-
     private static final String TITLE = "k-means Clustering";
     private static final String ABOUT = "" +
             "k-means Clustering performs pixel-based segmentation of multi-band\n" +
@@ -73,7 +67,68 @@ public final class KMeansClusteringPlugin implements PlugIn {
             "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
             "Prentice Hall, 1988.\n" +
             "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
+    private static boolean showCentroidImage;
+    private static boolean sendToResultTable;
+    private static boolean interpretStackAs3D;
 
+    /**
+     * Create 3-3-2-RGB color model
+     *
+     * @return 3-3-2-RGB color model.
+     */
+    private static ColorModel defaultColorModel() {
+        final byte[] reds = new byte[256];
+        final byte[] greens = new byte[256];
+        final byte[] blues = new byte[256];
+        for (int i = 0; i < 256; i++) {
+            reds[i] = (byte) (i & 0xe0);
+            greens[i] = (byte) ((i << 3) & 0xe0);
+            blues[i] = (byte) ((i << 6) & 0xc0);
+        }
+
+        return new IndexColorModel(8, 256, reds, greens, blues);
+    }
+
+    /**
+     * Convert image to a stack of FloatProcessors.
+     *
+     * @param src image to convert.
+     * @return float stack.
+     */
+    private static ImagePlus convertToFloatStack(final ImagePlus src) {
+
+        final ImagePlus dest = new Duplicator().run(src);
+
+        // Remember scaling setup
+        final boolean doScaling = ImageConverter.getDoScaling();
+
+        try {
+            // Disable scaling
+            ImageConverter.setDoScaling(false);
+
+            if (src.getType() == ImagePlus.COLOR_RGB) {
+                if (src.getStackSize() > 1) {
+                    throw new IllegalArgumentException("Unsupported image type: RGB with more than one slice.");
+                }
+                final ImageConverter converter = new ImageConverter(dest);
+                converter.convertToRGBStack();
+            }
+
+            if (dest.getStackSize() > 1) {
+                final StackConverter converter = new StackConverter(dest);
+                converter.convertToGray32();
+            } else {
+                final ImageConverter converter = new ImageConverter(dest);
+                converter.convertToGray32();
+            }
+
+            return dest;
+        } finally {
+            // Restore original scaling option
+            ImageConverter.setDoScaling(doScaling);
+
+        }
+    }
 
     @Override
     public void run(final String arg) {
@@ -95,6 +150,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         final GenericDialog dialog = new GenericDialog("K-means Configuration");
         dialog.addNumericField("Number_of_clusters", CONFIG.getNumberOfClusters(), 0);
         dialog.addNumericField("Cluster_center_tolerance", CONFIG.getTolerance(), 8);
+        dialog.addCheckbox("Interpret_stack_as_3D", interpretStackAs3D);
         dialog.addCheckbox("Enable_randomization_seed", CONFIG.isRandomizationSeedEnabled());
         dialog.addNumericField("Randomization_seed", CONFIG.getRandomizationSeed(), 0);
         dialog.addCheckbox("Show_clusters_as_centroid_value", showCentroidImage);
@@ -112,6 +168,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         // Read configuration from dialog
         CONFIG.setNumberOfClusters((int) Math.round(dialog.getNextNumber()));
         CONFIG.setTolerance((float) dialog.getNextNumber());
+        interpretStackAs3D = dialog.getNextBoolean();
         CONFIG.setRandomizationSeedEnabled(dialog.getNextBoolean());
         CONFIG.setRandomizationSeed((int) Math.round(dialog.getNextNumber()));
         showCentroidImage = dialog.getNextBoolean();
@@ -119,16 +176,55 @@ public final class KMeansClusteringPlugin implements PlugIn {
         CONFIG.setPrintTraceEnabled(dialog.getNextBoolean());
         sendToResultTable = dialog.getNextBoolean();
 
-        run(imp);
+        if (interpretStackAs3D) {
+            run3D(imp);
+        } else {
+            run(imp);
+        }
     }
 
+    private void run3D(final ImagePlus imp) {
+        // Convert to a stack of float images
+        final ImageStack stack = imp.getStack();
+
+        // Run clustering
+        final KMeans3D kMeans = new KMeans3D(CONFIG);
+        final long startTime = System.currentTimeMillis();
+        final ImageStack dest = kMeans.run(stack);
+        final long endTime = System.currentTimeMillis();
+
+        // Apply default color map
+        if (APPLY_LUT) {
+            dest.setColorModel(defaultColorModel());
+        }
+
+        // Show result image
+        final ImagePlus r = new ImagePlus("Clusters", dest);
+        if (AUTO_BRIGHTNESS) {
+            r.setDisplayRange(0, CONFIG.getNumberOfClusters());
+        }
+        r.show();
+
+        // Show centroid image
+        if (showCentroidImage) {
+            final ImagePlus cvImp = KMeansUtils.createCentroidImage(imp.getType(),
+                    kMeans.getCentroidValueImage());
+            cvImp.show();
+        }
+
+        if (sendToResultTable) {
+            sendToResultTable(kMeans.getClusterCenters(), stack.getSliceLabels());
+        }
+
+        IJ.showStatus("Clustering completed in " + (endTime - startTime) + " ms.");
+    }
 
     private void run(final ImagePlus imp) {
         // Convert to a stack of float images
         final ImagePlus stack = convertToFloatStack(imp);
 
         // Run clustering
-        final KMeans kMeans = new KMeans(CONFIG);
+        final KMeans2D kMeans = new KMeans2D(CONFIG);
 //        Roi roi =  imp.getRoi();
 //        ByteProcessor mask = (ByteProcessor) imp.getMask();
 //        kMeans.setRoi(roi.getBoundingRect());
@@ -175,84 +271,29 @@ public final class KMeansClusteringPlugin implements PlugIn {
         }
 
         if (sendToResultTable) {
-            // Send cluster centers to a Result Table
-            final float[][] centers = kMeans.getClusterCenters();
-            final String[] labels = stack.getStack().getSliceLabels();
-            final ResultsTable rt = new ResultsTable();
-            for (int i = 0; i < centers.length; i++) {
-                rt.incrementCounter();
-                final float[] center = centers[i];
-                rt.addLabel("Cluster", "" + i);
-                for (int j = 0; j < center.length; j++) {
-                    final float v = center[j];
-                    rt.addValue("" + labels[j], v);
-                }
-            }
-            rt.show(RESULTS_WINDOW_TITLE);
+            sendToResultTable(kMeans.getClusterCenters(), stack.getStack().getSliceLabels());
         }
 
         IJ.showStatus("Clustering completed in " + (endTime - startTime) + " ms.");
     }
 
-
-    /**
-     * Create 3-3-2-RGB color model
-     *
-     * @return 3-3-2-RGB color model.
-     */
-    private static ColorModel defaultColorModel() {
-        final byte[] reds = new byte[256];
-        final byte[] greens = new byte[256];
-        final byte[] blues = new byte[256];
-        for (int i = 0; i < 256; i++) {
-            reds[i] = (byte) (i & 0xe0);
-            greens[i] = (byte) ((i << 3) & 0xe0);
-            blues[i] = (byte) ((i << 6) & 0xc0);
-        }
-
-        return new IndexColorModel(8, 256, reds, greens, blues);
-    }
-
-
-    /**
-     * Convert image to a stack of FloatProcessors.
-     *
-     * @param src image to convert.
-     * @return float stack.
-     */
-    private static ImagePlus convertToFloatStack(final ImagePlus src) {
-
-        final ImagePlus dest = new Duplicator().run(src);
-
-        // Remember scaling setup
-        final boolean doScaling = ImageConverter.getDoScaling();
-
-        try {
-            // Disable scaling
-            ImageConverter.setDoScaling(false);
-
-            if (src.getType() == ImagePlus.COLOR_RGB) {
-                if (src.getStackSize() > 1) {
-                    throw new IllegalArgumentException("Unsupported image type: RGB with more than one slice.");
-                }
-                final ImageConverter converter = new ImageConverter(dest);
-                converter.convertToRGBStack();
-            }
-
-            if (dest.getStackSize() > 1) {
-                final StackConverter converter = new StackConverter(dest);
-                converter.convertToGray32();
+    private void sendToResultTable(final float[][] centers, final String[] labels) {
+        // Send cluster centers to a Result Table
+        final ResultsTable rt = new ResultsTable();
+        for (int i = 0; i < centers.length; i++) {
+            rt.incrementCounter();
+            final float[] center = centers[i];
+            rt.addLabel("Cluster", "" + i);
+            if (center.length == 1) {
+                rt.addValue("Value", center[0]);
             } else {
-                final ImageConverter converter = new ImageConverter(dest);
-                converter.convertToGray32();
+                for (int j = 0; j < center.length; j++) {
+                    final float v = center[j];
+                    rt.addValue(labels[j] != null ? "" + labels[j] : "Band " + j, v);
+                }
             }
-
-            return dest;
-        } finally {
-            // Restore original scaling option
-            ImageConverter.setDoScaling(doScaling);
-
         }
+        rt.show(RESULTS_WINDOW_TITLE);
     }
 
 
