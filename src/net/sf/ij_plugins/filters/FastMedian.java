@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -45,7 +45,7 @@ import net.sf.ij_plugins.color.ColorProcessorUtils;
 public final class FastMedian {
 
     /**
-     * Apply median filter to input image {@code ip}.
+     * Apply fast median filter to input image {@code ip}.
      * For color images ({@link ColorProcessor}) it will process each color band (R,G,B) independently.
      *
      * @param ip         input image.
@@ -85,7 +85,16 @@ public final class FastMedian {
     }
 
 
-    private static ByteProcessor process(final ByteProcessor src, final int filterSize) {
+    /**
+     * Apply fast median filter to input image {@code ip}.
+     * Implementation for ByteProcessor is faster than for other pixel types.
+     *
+     * @param src        input image.
+     * @param filterSize filter size (window size is filterSize x filterSize)
+     * @return median filtered input image.
+     */
+    public static ByteProcessor process(final ByteProcessor src, final int filterSize) {
+        // TODO: This method should be public, as ByteProcessor is a special case with faster implementation
         final FastMedianUInt8 filter = new FastMedianUInt8();
 
         // Set progress bar
