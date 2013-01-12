@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -48,7 +48,7 @@ public class ProgressAccumulator
     }
 
 
-    private final Map<ProgressReporter, Data> reporters = new HashMap<ProgressReporter, Data>();
+    private final Map<ProgressReporter, Data> reporters = new HashMap<>();
     private double minimumChange = 0.01;
     private double lastReportedProgress = -1;
 

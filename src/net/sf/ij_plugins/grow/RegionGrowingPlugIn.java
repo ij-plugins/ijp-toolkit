@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -55,7 +55,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
     private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/srg.html";
 
 
-    final AtomicReference<String> stackTreatment = new AtomicReference<String>(STACK_TREATMENT[0]);
+    final AtomicReference<String> stackTreatment = new AtomicReference<>(STACK_TREATMENT[0]);
     final AtomicBoolean growHistoryEnabled = new AtomicBoolean(false);
 
 
@@ -69,7 +69,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         }
 
         final List<String> imageTitleList = new ArrayList<String>();
-        final List<String> seedTitleList = new ArrayList<String>();
+        final List<String> seedTitleList = new ArrayList<>();
         for (final int id : wList) {
             final ImagePlus imp = WindowManager.getImage(id);
             if (imp != null && !imp.getTitle().trim().isEmpty()) {
@@ -223,9 +223,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
             final String sliceLabel = image.getStack().getSliceLabel(i + 1);
             try {
                 stack.addSlice(sliceLabel, worker.get());
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            } catch (final ExecutionException e) {
+            } catch (final InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }

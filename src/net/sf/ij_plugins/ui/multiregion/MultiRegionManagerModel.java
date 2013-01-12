@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -62,7 +62,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
 
     private Component parent;
 
-    private final ArrayListModel<Region> regions = new ArrayListModel<Region>();
+    private final ArrayListModel<Region> regions = new ArrayListModel<>();
 
     private Region selectedRegion;
     private SubRegion selectedSubRegion;

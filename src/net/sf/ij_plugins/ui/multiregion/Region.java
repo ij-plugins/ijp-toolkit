@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@ public class Region extends AbstractModel {
 
     private String name = "?";
     private Color color = Color.RED;
-    private final ObservableList<SubRegion> subRegions = new ArrayListModel<SubRegion>();
+    private final ObservableList<SubRegion> subRegions = new ArrayListModel<>();
 
 
     public Region(final String name, final Color color) {

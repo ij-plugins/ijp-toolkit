@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -586,7 +586,7 @@ public final class SRG3D extends DefaultProgressReporter {
         }
 
         // Create candidate list and define rules for ordering of its elements
-        ssl = new TreeSet<Candidate3D>();
+        ssl = new TreeSet<>();
 
         // Mark pixels outside of the mask
         fillOutsideMask(regionMarkerPixels, SRGSupport.OUTSIDE_MARK);

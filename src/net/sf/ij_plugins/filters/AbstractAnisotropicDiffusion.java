@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -47,7 +47,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     private double meanSquareError = 0.01;
 
     // Internal variables
-    protected final List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
+    protected final List<ProgressListener> progressListeners = new ArrayList<>();
     private double currentProgress;
     private double lastReportedProgress;
     private final double minProgress = 0.01;

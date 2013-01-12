@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -50,7 +50,7 @@ public final class VtkEncoder {
 
     private static String createHeader(final ImagePlus imp, final boolean asciiFormat) {
 
-        final StringBuffer header = new StringBuffer();
+        final StringBuilder header = new StringBuilder();
         header.append(VtkTag.DATA_FILE_VERSION).append(VTK_FILE_VERSION).append("\n");
 
         header.append(imp.getTitle()).append("\n");
@@ -116,15 +116,12 @@ public final class VtkEncoder {
 
     private static void saveAsVtkBinary(final String fileName, final ImagePlus imp) throws IOException {
 
-        final BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileName));
-        try {
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileName))) {
             final String header = createHeader(imp, false);
             bos.write(header.getBytes());
 
             final ImageWriter imageWriter = new ImageWriter(imp.getFileInfo());
             imageWriter.write(bos);
-        } finally {
-            bos.close();
         }
     }
 

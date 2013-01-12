@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -60,7 +60,7 @@ final class SRGSupport {
 
         }
 
-        return new Pair<int[], Integer>(regionToSeedLookup, regionCount);
+        return new Pair<>(regionToSeedLookup, regionCount);
     }
 
 

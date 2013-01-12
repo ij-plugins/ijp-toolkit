@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -447,7 +447,7 @@ abstract class SRG2DBase extends DefaultProgressReporter {
         }
 
         // Create candidate list and define rules for ordering of its elements
-        ssl = new TreeSet<Candidate>();
+        ssl = new TreeSet<>();
 
         // Mark pixels outside of the mask
         SRGSupport.fillOutsideMask(regionMarkerPixels, SRGSupport.OUTSIDE_MARK, mask);

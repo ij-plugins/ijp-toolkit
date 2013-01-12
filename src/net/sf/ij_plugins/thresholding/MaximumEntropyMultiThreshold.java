@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -112,7 +112,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
             throw new IllegalArgumentException("Argument 'nbDivisions' must be greater than 0.");
         }
 
-        final List<int[]> intervals = new ArrayList<int[]>();
+        final List<int[]> intervals = new ArrayList<>();
         if (nbDivisions == 1) {
             for (int n = min + 1; n < max; ++n) {
                 intervals.add(new int[]{n});

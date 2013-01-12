@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -167,7 +167,7 @@ final class RegionGrowingModel extends AbstractModel {
         }
 
         // Color code segments to match region names
-        final List<Color> colors = new ArrayList<Color>();
+        final List<Color> colors = new ArrayList<>();
         colors.add(Color.BLACK);
         for (final Region region : regions) {
             colors.add(region.getColor());

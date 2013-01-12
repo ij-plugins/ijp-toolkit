@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -49,12 +49,12 @@ public class MultiRegionManagerView extends JPanel {
 
     private final ListModel regionListModel = this.model.getRegions();
     private final ValueHolder regionSelectedItemHolder = new ValueHolder();
-    private final SelectionInList<Region> regionSelectionInList = new SelectionInList<Region>(regionListModel, regionSelectedItemHolder);
+    private final SelectionInList<Region> regionSelectionInList = new SelectionInList<>(regionListModel, regionSelectedItemHolder);
 
     private final PresentationModel<Region> detailsModel = new PresentationModel<Region>(regionSelectionInList);
     private final ValueModel subRegionsValueModel = detailsModel.getModel(Region.PROPERTYNAME_SUB_REGIONS);
     private final ValueHolder subRegionSelectedItemHolder = new ValueHolder();
-    private final SelectionInList<Region> subRegionSelectionInList = new SelectionInList<Region>(subRegionsValueModel, subRegionSelectedItemHolder);
+    private final SelectionInList<Region> subRegionSelectionInList = new SelectionInList<>(subRegionsValueModel, subRegionSelectedItemHolder);
 
     private static final long serialVersionUID = 3522389261778035936L;
 

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -92,11 +92,7 @@ public class DialogUtil {
                 }
 
             }
-        } catch (final IllegalAccessException e) {
-            throw new IJPluginsRuntimeException(e);
-        } catch (final InvocationTargetException e) {
-            throw new IJPluginsRuntimeException(e);
-        } catch (final NoSuchMethodException e) {
+        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new IJPluginsRuntimeException(e);
         }
 
@@ -132,11 +128,7 @@ public class DialogUtil {
                 }
                 PropertyUtils.setProperty(bean, pd.getName(), propertyValue);
             }
-        } catch (final IllegalAccessException e) {
-            throw new IJPluginsRuntimeException(e);
-        } catch (final InvocationTargetException e) {
-            throw new IJPluginsRuntimeException(e);
-        } catch (final NoSuchMethodException e) {
+        } catch (final IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new IJPluginsRuntimeException(e);
         }
 

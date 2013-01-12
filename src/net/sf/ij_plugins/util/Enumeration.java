@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ import java.util.List;
  */
 public abstract class Enumeration {
 
-    private static List<Enumeration> allMembers = new ArrayList<Enumeration>();
+    private static List<Enumeration> allMembers = new ArrayList<>();
 
     private final String name;
 

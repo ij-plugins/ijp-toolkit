@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -78,7 +78,7 @@ public final class RedBlackTree<K extends Comparable<K>> {
         }
 
         // FIXME: Rule 5
-        final List<Node> leaves = new ArrayList<Node>();
+        final List<Node> leaves = new ArrayList<>();
         findLeaves(node, leaves);
         if (leaves.size() > 0) {
             final int blackInPath = countBlackToParent(leaves.get(0), node);

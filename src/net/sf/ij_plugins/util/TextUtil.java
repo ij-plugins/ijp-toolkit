@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -99,7 +99,7 @@ public class TextUtil {
         final StreamTokenizer tokenizer = new StreamTokenizer(reader);
         tokenizer.parseNumbers();
 
-        final List<Integer> tokens = new ArrayList<Integer>();
+        final List<Integer> tokens = new ArrayList<>();
         try {
             int id = tokenizer.nextToken();
             while (id != StreamTokenizer.TT_EOF) {

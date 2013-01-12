@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -95,7 +95,7 @@ public class SynthAide {
      */
     public static LinkedList<TwoDLoc> lessThanEqual(final double[][] vals, final double threshold) {
 
-        final LinkedList<TwoDLoc> list = new LinkedList<TwoDLoc>();
+        final LinkedList<TwoDLoc> list = new LinkedList<>();
         for (int r = 0; r < vals.length; r++) {
             for (int c = 0; c < vals[r].length; c++) {
                 if (vals[r][c] >= 0 && vals[r][c] <= threshold) {
