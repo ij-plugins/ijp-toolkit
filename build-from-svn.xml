@@ -30,10 +30,9 @@
         It is intended to be run from the main build file using target: build-from-svn
     </description>
 
-
     <target name="init">
         <!-- SVN setup -->
-        <property name="svn.repository" value="https://ij-plugins.svn.sourceforge.net/svnroot/ij-plugins"/>
+        <property name="svn.repository" value="http://svn.code.sf.net/p/ij-plugins/code"/>
         <property name="svn.module" value="ij-plugins"/>
         <property name="checkout.dir" location="${build.dir}/checkout"/>
         <!-- path to the svnant libraries. Usually they will be located in ANT_HOME/lib -->
