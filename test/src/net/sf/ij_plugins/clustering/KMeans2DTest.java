@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 /**
  * @author Jarek Sacha
  */
-public final class KMeansTest {
+public final class KMeans2DTest {
 
 
     @Test
@@ -62,33 +62,45 @@ public final class KMeansTest {
         new ImageConverter(imp).convertToRGBStack();
         new StackConverter(imp).convertToGray32();
 
-        final KMeans.Config config = new KMeans.Config();
+        final KMeansConfig config = new KMeansConfig();
         config.setNumberOfClusters(4);
         config.setRandomizationSeedEnabled(true);
         config.setRandomizationSeed(48);
-        final KMeans kmeans = new KMeans(config);
-        final long start = System.currentTimeMillis();
-        final ImageProcessor ip = kmeans.run(imp.getStack());
-        final long stop = System.currentTimeMillis();
-        System.out.println("time: " + (stop - start) + "ms.");
 
-        assertNotNull(ip);
+        long totalTime = 0;
+        long minTime = Long.MAX_VALUE;
+        final int iterations = 10;
+        for (int l = 0; l < iterations; l++) {
+            final KMeans2D kmeans = new KMeans2D(config);
+            final long start = System.currentTimeMillis();
+            final ImageProcessor ip = kmeans.run(imp.getStack());
+            final long stop = System.currentTimeMillis();
+            final long time = stop - start;
+            System.out.println("time: " + time + "ms.");
+            totalTime += time;
+            minTime = Math.min(time, minTime);
 
-        float[][] centers = kmeans.getClusterCenters();
-        for (int i = 0; i < centers.length; i++) {
-            for (int j = 0; j < centers[i].length; j++) {
-                System.out.println("center[" + i + "][" + j + "]: " + centers[i][j]);
+            assertNotNull(ip);
+
+            float[][] centers = kmeans.getClusterCenters();
+//            for (int i = 0; i < centers.length; i++) {
+//                for (int j = 0; j < centers[i].length; j++) {
+//                    System.out.println("center[" + i + "][" + j + "]: " + centers[i][j]);
+//                }
+//            }
+
+            for (int i = 0; i < centers.length; i++) {
+                for (int j = 0; j < centers[i].length; j++) {
+                    assertEquals("center[" + i + "][" + j + "]",
+                            expectedCenters[i][j], centers[i][j], tolerance);
+                }
             }
         }
 
-        for (int i = 0; i < centers.length; i++) {
-            for (int j = 0; j < centers[i].length; j++) {
-                assertEquals("center[" + i + "][" + j + "]",
-                        expectedCenters[i][j], centers[i][j], tolerance);
-            }
-        }
+        System.out.println("Average time: " + totalTime / (double) iterations + "ms");
+        System.out.println("Min time: " + minTime + "ms");
 
-        System.out.println("Steps: " + kmeans.getNumberOfStepsToConvergence());
+//        System.out.println("Steps: " + kmeans.getNumberOfStepsToConvergence());
 
 //        final ImagePlus imp1 = new ImagePlus("K-means", ip);
 //        final FileSaver saver = new FileSaver(imp1);
