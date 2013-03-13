@@ -11,6 +11,9 @@ New:
 Developer visible:
 * k-means implementation renamed to KMeans2D. New class KMeans3D.
 
+Requirements:
+* Java 7 or better.
+
 -------------------------------------------------------------------------------
 Version 1.6.1
 -------------------------------------------------------------------------------
