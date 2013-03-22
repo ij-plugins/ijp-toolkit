@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -63,8 +63,7 @@ public class RunningFilter {
     public FloatProcessor run(final FloatProcessor src) {
 
         final int width = src.getWidth();
-        final int height = src.getHeight();
-        final FloatProcessor dest = new FloatProcessor(width, height);
+        final FloatProcessor dest = (FloatProcessor) src.duplicate();
 
         final float[] srcPixels = (float[]) src.getPixels();
         final float[] destPixels = (float[]) dest.getPixels();
@@ -84,7 +83,6 @@ public class RunningFilter {
 
         final float[] packet = new float[filterHeight];
         for (int y = yMin; y < yMax; ++y) {
-//            System.out.println("y = " + y);
             final int yOffset = y * width;
 
             // Initialize median operator, with all but the last column in the structural key
@@ -102,7 +100,6 @@ public class RunningFilter {
 
 
             for (int x = xMin; x < xMax; ++x) {
-//                System.out.println("x = " + x);
                 if (x + xr < xMax) {
                     for (int yy = yyMin; yy < yyMax; ++yy) {
                         packet[yy - yyMin] = srcPixels[x + xr + yy * width];

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -53,8 +53,7 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
     public ByteProcessor run(final ByteProcessor src, final int filterWidth, final int filterHeight) {
 
         final int width = src.getWidth();
-        final int height = src.getHeight();
-        final ByteProcessor dest = new ByteProcessor(width, height);
+        final ByteProcessor dest = (ByteProcessor) src.duplicate();
 
         final byte[] srcPixels = (byte[]) src.getPixels();
         final byte[] destPixels = (byte[]) dest.getPixels();
@@ -115,7 +114,6 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
         return dest;
 
     }
-
 
     @Override
     public void setProgressBar(final ProgressBar progressBar) {
