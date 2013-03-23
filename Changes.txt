@@ -3,6 +3,17 @@
 ******************************
 
 -------------------------------------------------------------------------------
+Version 1.7.1
+-------------------------------------------------------------------------------
+Improvements:
+* Update ReadMe file that got quite out od date
+* Fast filters modified to reproduce content of the image that is outside of
+  the ROI to follow ImageJ convention.
+
+Requirements:
+* Java 7 or better.
+
+-------------------------------------------------------------------------------
 Version 1.7.0
 -------------------------------------------------------------------------------
 New:
