@@ -24,7 +24,9 @@ package net.sf.ij_plugins.clustering;
 
 import ij.ImageStack;
 import ij.process.ByteProcessor;
+import ij.process.FloatProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.Validate;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -62,9 +64,10 @@ public final class KMeans2D extends KMeans<ByteProcessor> {
      */
     public ByteProcessor run(final ImageStack stack) {
 
-        if (stack.getSize() < 1) {
-            throw new IllegalArgumentException("Input stack cannot be empty");
-        }
+        Validate.isTrue(stack.getSize() > 0, "Input stack cannot be empty.");
+        Validate.isTrue(
+                stack.getProcessor(1) instanceof FloatProcessor,
+                "Slices on the stack must be floating point images (FloatProcessor).");
 
         vp = new VectorProcessor(stack);
 
