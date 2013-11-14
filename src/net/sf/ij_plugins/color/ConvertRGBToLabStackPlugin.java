@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2012 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -68,7 +68,7 @@ public class ConvertRGBToLabStackPlugin implements PlugInFilter {
         final ColorProcessor cp = (ColorProcessor) ip;
         final VectorProcessor vp = ColorSpaceConversion.rgbToLabVectorProcessor(cp);
         final ImagePlus imp = vp.toFloatStack(new String[]{"L*", "a*", "b*"});
-        imp.setTitle(imageTitle + " - Lab");
+        imp.setTitle(imageTitle + " - L*a*b*");
         imp.show();
     }
 }
