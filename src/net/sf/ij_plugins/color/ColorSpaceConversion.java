@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -173,7 +173,7 @@ public final class ColorSpaceConversion {
      *
      * @param rgb source sRGB values. Size of array <code>rgb</code> must be at least 3. If size of
      *            array <code>rgb</code> larger than three then only first 3 values are used.
-     * @param xyz destinaltion CIE XYZ values. Size of array <code>xyz</code> must be at least 3. If
+     * @param xyz destination CIE XYZ values. Size of array <code>xyz</code> must be at least 3. If
      *            size of array <code>xyz</code> larger than three then only first 3 values are
      *            used.
      */
@@ -334,6 +334,35 @@ public final class ColorSpaceConversion {
         return cp;
     }
 
+    /**
+     * Convert between CIE L*a*b* and XYZ color image representation.
+     *
+     * @param vp L*a*b* image represented by {@link VectorProcessor}.
+     * @return XYZ image represented by a {@link VectorProcessor}.
+     */
+    public static VectorProcessor labToXYZVectorProcessor(final VectorProcessor vp) {
+        final float[][] pixels = vp.getPixels();
+        final int width = vp.getWidth();
+        final int height = vp.getHeight();
+
+        final VectorProcessor dest = new VectorProcessor(width, height, 3);
+        final float[][] destPixels = dest.getPixels();
+
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(pixels.length / 10, 1);
+        for (int i = 0; i < pixels.length; i++) {
+            if (i % progressStep == 0) {
+                IJ.showProgress(i, pixels.length);
+            }
+            final float[] pixel = pixels[i];
+            final float[] xyz = destPixels[i];
+            ColorSpaceConversion.labToXYZ(pixel, xyz);
+        }
+        IJ.showProgress(pixels.length, pixels.length);
+
+        return dest;
+    }
+
 
     /**
      * Convert between XYZ and RGB color image representation.
@@ -374,6 +403,35 @@ public final class ColorSpaceConversion {
         cp.setRGB(red, green, blue);
 
         return cp;
+    }
+
+    /**
+     * Convert between CIE XYZ and L*a*b* color image representation.
+     *
+     * @param vp XYZ image represented by {@link VectorProcessor}.
+     * @return L*a*b* image represented by a {@link VectorProcessor}.
+     */
+    public static VectorProcessor xyzToLabVectorProcessor(final VectorProcessor vp) {
+        final float[][] pixels = vp.getPixels();
+        final int width = vp.getWidth();
+        final int height = vp.getHeight();
+
+        final VectorProcessor dest = new VectorProcessor(width, height, 3);
+        final float[][] destPixels = dest.getPixels();
+
+        // Calculate increment, make sure that different/larger than 0 otherwise '%' operation will fail.
+        final int progressStep = Math.max(pixels.length / 10, 1);
+        for (int i = 0; i < pixels.length; i++) {
+            if (i % progressStep == 0) {
+                IJ.showProgress(i, pixels.length);
+            }
+            final float[] pixel = pixels[i];
+            final float[] lab = destPixels[i];
+            ColorSpaceConversion.xyzToLab(pixel, lab);
+        }
+        IJ.showProgress(pixels.length, pixels.length);
+
+        return dest;
     }
 
 
@@ -498,7 +556,7 @@ public final class ColorSpaceConversion {
      * Converts image pixels from RGB color space to YCbCr color space.
      * Equivalent to calling <code>rgbToYCbCr(rgb, null)</code>.
      *
-     * @param rgb inpuit image in sRGB color space.
+     * @param rgb input image in sRGB color space.
      * @return array of ByteProcessor representing color planes: Y, Cb, and Cr.
      * @see #rgbToYCbCr(ij.process.ColorProcessor, net.sf.ij_plugins.util.progress.ProgressListener)
      */
