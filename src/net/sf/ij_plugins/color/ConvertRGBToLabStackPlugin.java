@@ -19,6 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
+
 package net.sf.ij_plugins.color;
 
 import ij.IJ;
@@ -36,7 +37,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  */
 public class ConvertRGBToLabStackPlugin implements PlugInFilter {
 
-    private static final String PLUGIN_NAME = "Convert RGB to CIE L*a*b*";
+    private static final String PLUGIN_NAME = "Convert sRGB to CIE L*a*b*";
     private static final String ABOUT_COMMAND = "about";
     private static final String ABOUT_MESSAGE =
             "Converts image pixels from RGB color space to CIE L*a*b* color space.\n" +

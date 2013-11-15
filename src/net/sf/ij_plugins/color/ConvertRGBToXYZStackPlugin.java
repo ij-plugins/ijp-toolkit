@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2012 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  */
 public class ConvertRGBToXYZStackPlugin implements PlugInFilter {
 
-    private static final String PLUGIN_NAME = "Convert sRGB to XYZ";
+    private static final String PLUGIN_NAME = "Convert sRGB to CIE XYZ";
     private static final String ABOUT_COMMAND = "about";
     private static final String ABOUT_MESSAGE =
             "Converts image pixels from sRGB color space to XYZ color space.\n" +

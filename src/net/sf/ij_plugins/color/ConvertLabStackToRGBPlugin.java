@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2013 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -37,10 +37,10 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  */
 public class ConvertLabStackToRGBPlugin implements PlugIn {
 
-    private static final String PLUGIN_NAME = "Convert CIE L*a*b* to RGB";
+    private static final String PLUGIN_NAME = "Convert CIE L*a*b* to sRGB";
     private static final String ABOUT_COMMAND = "about";
     private static final String ABOUT_MESSAGE =
-            "Converts image pixels from CIE L*a*b* color space to RGB color space.\n" +
+            "Converts image pixels from CIE L*a*b* color space to sRGB color space.\n" +
                     "The CIE L*a*b* image is assumed to be a stack of floating point images (32 bit).\n" +
                     "The L* band is in the range 0 to 100, the a* band and the b* band between -100\n" +
                     "and 100\n" +

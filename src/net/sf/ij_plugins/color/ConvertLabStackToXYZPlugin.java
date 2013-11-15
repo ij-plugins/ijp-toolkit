@@ -36,7 +36,7 @@ import net.sf.ij_plugins.multiband.VectorProcessor;
  */
 public class ConvertLabStackToXYZPlugin implements PlugIn {
 
-    private static final String PLUGIN_NAME = "Convert CIE L*a*b* to XYZ";
+    private static final String PLUGIN_NAME = "Convert CIE L*a*b* to CIE XYZ";
     private static final String ABOUT_COMMAND = "about";
     private static final String ABOUT_MESSAGE =
             "Converts image pixels from CIE L*a*b* color space to XYZ color space.\n" +
