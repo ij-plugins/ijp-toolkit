@@ -3,6 +3,24 @@
 ******************************
 
 -------------------------------------------------------------------------------
+Version 1.8.0
+-------------------------------------------------------------------------------
+New:
+* Plugin to convert L*a*b* stack to XYZ color space
+* Plugin to convert XYZ stack to L*a*b* color space
+
+Improved:
+* Create color space stacks, like L*a*b*, have now slices labeled
+  using band names rather than numbers
+
+Developer visible:
+* KMeans verifies that input stack is of correct type
+* CubicSplineFunction is now part of ij-plugins toolkit, moved from ij-VTK
+
+Requirements:
+* Java 7 or better.
+
+-------------------------------------------------------------------------------
 Version 1.7.1
 -------------------------------------------------------------------------------
 Improvements:
