@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -55,6 +55,24 @@ public final class KMeans2D extends KMeans<ByteProcessor> {
         super(config);
     }
 
+    static ByteProcessor encodeSegmentedImage(final VectorProcessor vp, final float[][] clusterCenters) {
+        // Encode output image
+        final ByteProcessor dest = new ByteProcessor(vp.getWidth(), vp.getHeight());
+        final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
+        while (iterator.hasNext()) {
+            final float[] v = iterator.next();
+            final int c = KMeansUtils.closestCluster(v, clusterCenters);
+            dest.putPixel(iterator.getX(), iterator.getY(), c);
+        }
+        return dest;
+    }
+
+    private static Point toPoint(final int offset, final int width) {
+        final int y = offset / width;
+        final int x = offset - y * width;
+        return new Point(x, y);
+    }
+
     /**
      * Perform k-means clustering of the input <code>stack</code>. Elements of the
      * <code>stack</code> must be of type <code>FloatProcessor</code>.
@@ -80,7 +98,7 @@ public final class KMeans2D extends KMeans<ByteProcessor> {
         // Run clustering
         cluster();
 
-        return encodeSegmentedImage();
+        return encodeSegmentedImage(vp, clusterCenters);
     }
 
     /**
@@ -96,18 +114,6 @@ public final class KMeans2D extends KMeans<ByteProcessor> {
 
     protected int numberOfValues() {
         return vp.getNumberOfValues();
-    }
-
-    private ByteProcessor encodeSegmentedImage() {
-        // Encode output image
-        final ByteProcessor dest = new ByteProcessor(vp.getWidth(), vp.getHeight());
-        final VectorProcessor.PixelIterator iterator = vp.pixelIterator();
-        while (iterator.hasNext()) {
-            final float[] v = iterator.next();
-            final int c = KMeansUtils.closestCluster(v, clusterCenters);
-            dest.putPixel(iterator.getX(), iterator.getY(), c);
-        }
-        return dest;
     }
 
     protected ImageStack encodeCentroidValueImage() {
@@ -194,12 +200,6 @@ public final class KMeans2D extends KMeans<ByteProcessor> {
     }
 
     protected void clusterAnimationAddCurrent(final String title) {
-        clusterAnimation.addSlice(title, encodeSegmentedImage());
-    }
-
-    private static Point toPoint(final int offset, final int width) {
-        final int y = offset / width;
-        final int x = offset - y * width;
-        return new Point(x, y);
+        clusterAnimation.addSlice(title, encodeSegmentedImage(vp, clusterCenters));
     }
 }

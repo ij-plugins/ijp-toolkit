@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -46,10 +46,10 @@ import java.awt.image.IndexColorModel;
 public final class KMeansClusteringPlugin implements PlugIn {
 
     public static final String RESULTS_WINDOW_TITLE = "k-means cluster centers";
+    static final boolean APPLY_LUT = false;
+    static final boolean AUTO_BRIGHTNESS = true;
+    static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/k-means.html";
     private static final KMeansConfig CONFIG = new KMeansConfig();
-    private static final boolean APPLY_LUT = false;
-    private static final boolean AUTO_BRIGHTNESS = true;
-    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/k-means.html";
     private static final String TITLE = "k-means Clustering";
     private static final String ABOUT = "" +
             "k-means Clustering performs pixel-based segmentation of multi-band\n" +
@@ -76,7 +76,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
      *
      * @return 3-3-2-RGB color model.
      */
-    private static ColorModel defaultColorModel() {
+    static ColorModel defaultColorModel() {
         final byte[] reds = new byte[256];
         final byte[] greens = new byte[256];
         final byte[] blues = new byte[256];
@@ -95,7 +95,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
      * @param src image to convert.
      * @return float stack.
      */
-    private static ImagePlus convertToFloatStack(final ImagePlus src) {
+    static ImagePlus convertToFloatStack(final ImagePlus src) {
 
         final ImagePlus dest = new Duplicator().run(src);
 
@@ -140,9 +140,13 @@ public final class KMeansClusteringPlugin implements PlugIn {
 
         // Get reference to current image
         final ImagePlus imp = IJ.getImage();
+        if (imp == null) {
+            IJ.noImage();
+            return;
+        }
 
         if (imp.getType() == ImagePlus.COLOR_256) {
-            IJ.error(TITLE, "Only color images are supported.");
+            IJ.error(TITLE, "Indexed color images are not supported.");
             return;
         }
 
@@ -283,7 +287,7 @@ public final class KMeansClusteringPlugin implements PlugIn {
         for (int i = 0; i < centers.length; i++) {
             rt.incrementCounter();
             final float[] center = centers[i];
-            rt.addLabel("Cluster", "" + i);
+            rt.addValue("Cluster", i);
             if (center.length == 1) {
                 rt.addValue("Value", center[0]);
             } else {
