@@ -92,7 +92,7 @@
     <target name="-post-init">
         <!-- Package name and version -->
         <property name="package.name" value="ij-plugins_toolkit"/>
-        <property name="package.version" value="1.8.0"/>
+        <property name="package.version" value="1.9.0"/>
 
         <property name="sandbox.dir" value="sandbox"/>
         <property name="plugins.dir" value="${sandbox.dir}/plugins"/>
