@@ -121,7 +121,6 @@
 
         <!-- ZIP javadoc -->
         <zip basedir="${dist.dir}/javadoc"
-             includes="*"
              destfile="${dist.dir}/${package.name}_javadoc_${package.version}_r${svn.revision}_${DSTAMP}.zip"/>
 
     </target>
