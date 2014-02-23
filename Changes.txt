@@ -6,7 +6,7 @@
 Version 1.9.0
 -------------------------------------------------------------------------------
 New:
-* Plugin to apply k-means klustering to another image
+* Plugin to apply k-means clustering to another image
 
 Developer visible:
 * Dependent libraries updated to latest "full" release versions.
