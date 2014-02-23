@@ -32,6 +32,7 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.text.TextWindow;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -52,6 +53,34 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
     private static final String ABOUT = "" +
             "Applies k-means Clustering computed on one image to another image of the same type.";
 
+    private static Pair<List<ResultsTable>, List<String>> listTextWindows() {
+        final Frame[] windows = WindowManager.getNonImageWindows();
+        final List<ResultsTable> resultTables = new ArrayList<>();
+        final List<String> names = new ArrayList<>();
+        for (Frame frame : windows) {
+            if (frame instanceof TextWindow && ((TextWindow) frame).getTextPanel().getResultsTable() != null) {
+                final TextWindow textWindow = (TextWindow) frame;
+                resultTables.add(textWindow.getTextPanel().getResultsTable());
+                names.add(textWindow.getTitle());
+            }
+        }
+        return new Pair<>(resultTables, names);
+    }
+
+    private static Pair<List<ImagePlus>, List<String>> listSupportedImages() {
+        final int[] ids = WindowManager.getIDList();
+        final List<ImagePlus> images = new ArrayList<>();
+        final List<String> titles = new ArrayList<>();
+        for (int id : ids) {
+            final ImagePlus imp = WindowManager.getImage(id);
+            if (imp != null && imp.getType() != ImagePlus.COLOR_256) {
+                images.add(imp);
+                titles.add(imp.getTitle());
+            }
+        }
+        return new Pair<>(images, titles);
+    }
+
     @Override
     public void run(String arg) {
         if ("about".equalsIgnoreCase(arg)) {
@@ -59,47 +88,33 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
             return;
         }
 
-        // Get reference to current image
-        final ImagePlus imp = IJ.getImage();
-        if (imp == null) {
-            IJ.noImage();
-            return;
-        }
-
-        if (imp.getType() == ImagePlus.COLOR_256) {
-            IJ.error(TITLE, "Indexed color images are not supported.");
-            return;
-        }
-
-        final Frame[] windows = WindowManager.getNonImageWindows();
-        final List<TextWindow> resultTables = new ArrayList<>();
-        for (Frame frame : windows) {
-            if (frame instanceof TextWindow) resultTables.add((TextWindow) frame);
-        }
-
-        if (resultTables.size() < 1) {
+        final Pair<List<ResultsTable>, List<String>> resultTables = listTextWindows();
+        if (resultTables.getFirst().size() < 1) {
             IJ.error("Expecting at least one open Result Table window.");
             return;
         }
 
-        final String[] resultTableNames = new String[resultTables.size()];
-        for (int i = 0; i < resultTableNames.length; i++) {
-            resultTableNames[i] = resultTables.get(i).getTitle();
+        final Pair<List<ImagePlus>, List<String>> images = listSupportedImages();
+        if (images.getFirst().size() < 1) {
+            IJ.error("Expecting at least one open image (that is not indexed color).");
+            return;
         }
 
-        if (!showOptionsDialog(resultTableNames)) {
+        // Ask user for image, results table, and other options
+        if (!showOptionsDialog(resultTables.getSecond(), images.getSecond())) {
             return;
         }
 
         if (CONFIG.interpretStackAs3D) {
-            IJ.error(TITLE, "Inpreting stacks as 3D images not yet supported.");
+            IJ.error(TITLE, "Interpreting stacks as 3D images not yet supported.");
             return;
         }
 
-        final ResultsTable rt = resultTables.get(CONFIG.tableIndex).getTextPanel().getResultsTable();
+        final ResultsTable rt = resultTables.getFirst().get(CONFIG.tableIndex);
+        final ImagePlus imp = images.getFirst().get(CONFIG.imageIndex);
 
         //
-        // Verify that table has proper headings
+        // Verify that table headings match image bands
         //
         final ImagePlus stack = KMeansClusteringPlugin.convertToFloatStack(imp);
 
@@ -128,8 +143,8 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
                 clusterCenters[clusterIndex][bandIndex - 1] = (float) rt.getValueAsDouble(bandIndex, clusterIndex);
         }
 
+        // Apply clustering to input image
         final VectorProcessor vp = new VectorProcessor(stack);
-
         final ByteProcessor bp = KMeans2D.encodeSegmentedImage(vp, clusterCenters);
         // Apply default color map
         if (KMeansClusteringPlugin.APPLY_LUT) {
@@ -148,12 +163,15 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
         }
     }
 
-    private boolean showOptionsDialog(final String[] resultTableNames) {
+    private boolean showOptionsDialog(final List<String> resultTableNames, final List<String> imageNames) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
         dialog.addMessage("Select result table containing cluster centers produced by k-means clustering plugin.");
-        dialog.addChoice("Table with cluster centers", resultTableNames, resultTableNames[0]);
-        dialog.addCheckbox("Interpret_stack_as_3D", CONFIG.interpretStackAs3D);
+        dialog.addChoice("Table with cluster centers", resultTableNames.toArray(new String[resultTableNames.size()]),
+                resultTableNames.get(0));
+        dialog.addChoice("Image to apply clusters", imageNames.toArray(new String[imageNames.size()]),
+                imageNames.get(0));
+        dialog.addCheckbox("Interpret_stack_as_3D (not supported)", CONFIG.interpretStackAs3D);
         dialog.addCheckbox("Show_clusters_as_centroid_value", CONFIG.showCentroidImage);
         dialog.addHelp(KMeansClusteringPlugin.HELP_URL);
 
@@ -162,6 +180,7 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
         if (dialog.wasCanceled()) return false;
 
         CONFIG.tableIndex = dialog.getNextChoiceIndex();
+        CONFIG.imageIndex = dialog.getNextChoiceIndex();
         CONFIG.interpretStackAs3D = dialog.getNextBoolean();
         CONFIG.showCentroidImage = dialog.getNextBoolean();
 
@@ -172,5 +191,6 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
         boolean showCentroidImage;
         boolean interpretStackAs3D;
         int tableIndex = -1;
+        int imageIndex = -1;
     }
 }
