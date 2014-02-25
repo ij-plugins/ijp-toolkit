@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -54,9 +54,8 @@ public final class Validate {
      * throwing an exception with the specified message. This method is useful when
      * validating according to an arbitrary boolean expression, such as validating a
      * primitive number or using your own custom validation expression.</p>
-     * <p/>
      * <pre>
-     * Validate.isTrue( (i > 0), "The value must be greater than zero");
+     * Validate.isTrue( (i &gt; 0), "The value must be greater than zero");
      * Validate.isTrue( myObject.isOk(), "The object is not OK");
      * </pre>
      *

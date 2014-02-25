@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -31,7 +31,6 @@ import java.io.IOException;
  * Implements fast median filter using running median approach.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class FastMedianUInt8 extends RunningUInt8Filter {
     public FastMedianUInt8() {

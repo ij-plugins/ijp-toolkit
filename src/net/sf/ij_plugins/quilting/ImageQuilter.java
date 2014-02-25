@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@ import java.util.LinkedList;
  * This class implements the texture synthesis algorithm described by the paper "Image Quilting for
  * Texture Synthesis and Transfer". This only knows how to make a new texture image (ie it does not
  * implement hole filling or other uses of the algorithm).
- * <p/>
+ * <br>
  * This class adds some optional extensions to improve the quality of the output given more run
  * time.
  */

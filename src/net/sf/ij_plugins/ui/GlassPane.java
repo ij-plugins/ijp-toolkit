@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -36,12 +36,12 @@ import java.awt.event.MouseAdapter;
  * glassPane.set(new Color(255, 255, 255, 128);
  * </pre>
  * sets the GlassPane to be white (255,255,255) and semi transparent (128).
- * <p/>
+ * <br>
  * Inspired on class created by Alexander Potochkin,
  * http://weblogs.java.net/blog/alexfromsun/archive/2006/09/a_wellbehaved_g.html
  * This implementation restores automatically captures and restores the focus to correct component after
  * glass pane in no longer visible.
- * <p/>
+ * <br>
  * Sample use:
  * <pre>
  * final JFrame frame = ...

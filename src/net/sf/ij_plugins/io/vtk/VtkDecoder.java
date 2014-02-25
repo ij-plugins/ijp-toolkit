@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2010 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
 /**
  * Reads images form files in <a HREF="http://public.kitware.com/VTK/">VTK</a> format. Only VTK
  * files containing images (VTK structured points) are supported. <p>
- * <p/>
+ * <br>
  * Limitations <ul> <li> Files in ASCII format are always interpreted as containing
  * <code>float</code> pixels. </ul>
  *
@@ -133,8 +133,7 @@ public final class VtkDecoder {
                 token = st.nextToken();
                 r[i] = Integer.parseInt(token);
             }
-        }
-        catch (final NumberFormatException ex) {
+        } catch (final NumberFormatException ex) {
             throw new VtkImageException("Unable to parse token '" + token + "' as integer.", ex);
         }
 
@@ -169,8 +168,7 @@ public final class VtkDecoder {
                 token = st.nextToken();
                 r[i] = Float.parseFloat(token);
             }
-        }
-        catch (final NumberFormatException ex) {
+        } catch (final NumberFormatException ex) {
             throw new VtkImageException("Unable to parse token '" + token + "' as integer.", ex);
         }
 
@@ -209,8 +207,7 @@ public final class VtkDecoder {
                 throw new IOException("File too short. Cannot read header from: "
                         + file.getName());
             }
-        }
-        catch (final IOException ex) {
+        } catch (final IOException ex) {
             throw new VtkImageException(ex.getMessage(), ex);
         } finally {
             try {
@@ -263,7 +260,8 @@ public final class VtkDecoder {
             throw new VtkImageException(
                     "File format error. Expecting either '" + VtkDataFormat.ASCII
                             + "' or '" + VtkDataFormat.BINARY + "'. Got: '" + line
-                            + "'. Line number: " + lineExtractor.getCurrentLineNumber());
+                            + "'. Line number: " + lineExtractor.getCurrentLineNumber()
+            );
         }
 
         // Geometry/topology
@@ -276,13 +274,15 @@ public final class VtkDecoder {
                         "File format error, incorrect data set type. Expecting '"
                                 + VtkDataSetType.STRUCTURED_POINTS + "', got '" + dataSet.trim()
                                 + "'. Line number: "
-                                + lineExtractor.getCurrentLineNumber());
+                                + lineExtractor.getCurrentLineNumber()
+                );
             }
         } else {
             throw new VtkImageException(
                     "File format error. Expecting tag '" + VtkTag.DATASET
                             + "', got: '" + line
-                            + "'. Line number: " + lineExtractor.getCurrentLineNumber());
+                            + "'. Line number: " + lineExtractor.getCurrentLineNumber()
+            );
         }
 
         try {

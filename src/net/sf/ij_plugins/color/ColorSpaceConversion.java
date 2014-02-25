@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -56,26 +56,26 @@ public final class ColorSpaceConversion {
 
     /**
      * XYZ to sRGB conversion based on conversion coefficients at: http://www.brucelindbloom.com/Eqn_XYZ_to_RGB.html
-     * <p/>
+     * <br>
      * Conversion from CIE XYZ to sRGB as defined in the IEC 619602-1 standard
      * (http://www.colour.org/tc8-05/Docs/colorspace/61966-2-1.pdf)
      * <pre>
      * r_linear = +3.2404542 * X - 1.5371385 * Y - 0.4985314 * Z;
      * g_linear = -0.9692660 * X + 1.8760108 * Y + 0.0415560 * Z;
      * b_linear = +0.0556434 * X - 0.2040259 * Y + 1.0572252 * Z;
-     * r = r_linear > 0.0031308
+     * r = r_linear &gt; 0.0031308
      *       ? 1.055 * Math.pow(r_linear, (1 / 2.4)) - 0.055
      *       : 12.92 * r_linear;
-     * g = g_linear > 0.0031308
+     * g = g_linear &gt; 0.0031308
      *       ? 1.055 * Math.pow(g_linear, (1 / 2.4)) - 0.055
      *       : 12.92 * g_linear;
-     * b = b_linear > 0.0031308
+     * b = b_linear &gt; 0.0031308
      *       ? 1.055 * Math.pow(b_linear, (1 / 2.4)) - 0.055
      *       : 12.92 * b_linear;
      * R = r * 255
      * G = r * 255
      * B = r * 255
-     * <pre>
+     * </pre>
      *
      * @param xyz input CIE XYZ values.
      * @param rgb output sRGB values in [0, 255] range.
@@ -157,13 +157,13 @@ public final class ColorSpaceConversion {
      * r = R / 255;
      * g = G / 255;
      * b = B / 255;
-     * r_linear = r > 0.04045
+     * r_linear = r &gt; 0.04045
      *          ? Math.pow((r + 0.055) / 1.055, 2.4)
      *          : r / 12.92;
-     * g_linear = g > 0.04045
+     * g_linear = g &gt; 0.04045
      *          ? Math.pow((g + 0.055) / 1.055, 2.4)
      *          : g / 12.92;
-     * b_linear = b > 0.04045
+     * b_linear = b &gt; 0.04045
      *          ? Math.pow((b + 0.055) / 1.055, 2.4)
      *          : b / 12.92;
      * X = 0.4124564 * r_linear + 0.3575761 * g_linear + 0.1804375 * b_linear;
@@ -440,7 +440,7 @@ public final class ColorSpaceConversion {
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
      * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
      * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
-     * <p/>
+     * <br>
      * YCbCb (601) from "digital 8-bit RGB  "
      * <pre>
      * ========================================================================
@@ -479,7 +479,7 @@ public final class ColorSpaceConversion {
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
      * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
      * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
-     * <p/>
+     * <br>
      * YCbCb (601) from "digital 8-bit RGB  "
      * <pre>
      * ========================================================================
@@ -570,7 +570,7 @@ public final class ColorSpaceConversion {
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
      * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
      * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
-     * <p/>
+     * <br>
      * "digital 8-bit RGB" from YCbCb (601)
      * <pre>
      * ========================================================================
@@ -602,7 +602,7 @@ public final class ColorSpaceConversion {
      * <a href="http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30">
      * http://www.poynton.com/notes/colour_and_gamma/ColorFAQ.html#RTFToC30</a>. See also:
      * <a href="http://en.wikipedia.org/wiki/YCbCr">http://en.wikipedia.org/wiki/YCbCr</a>.
-     * <p/>
+     * <br>
      * "digital 8-bit RGB" from YCbCb (601)
      * <pre>
      * ========================================================================

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,13 +28,13 @@ import net.sf.ij_plugins.io.IOUtils;
 import java.io.IOException;
 
 /**
- * <pre>
  * The variables:
- * ix = M X N input array
- * iout=(M-R+l)X(N-S+l) output array
- * median = the median of the past window
- * fmedian = the median of the first window in the previous row
- * row = points to the current row
+ * <ul>
+ * <li>ix = M X N input array</li>
+ * <li>iout=(M-R+l)X(N-S+l) output array
+ * <li>median = the median of the past window
+ * <li>fmedian = the median of the first window in the previous row
+ * <li>row = points to the current row
  * column = points to the current column
  * newcol = the column number assigned to the rightmost column of a window
  * position = position where the old median partitions the rightmost column
@@ -49,6 +49,7 @@ import java.io.IOException;
  * border = l-dimensional array of S elements holding the partitioned
  *          position of each column vector of the window. The elements
  *         at the borders belong to Subset 2
+ * </ul>
  */
 public class FastMedianAS {
     /**

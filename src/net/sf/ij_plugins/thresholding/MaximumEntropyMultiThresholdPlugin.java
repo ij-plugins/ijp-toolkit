@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -36,7 +36,7 @@ import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
  * Automatic thresholding technique based on the maximum entropy of the histogram. See: P.K. Sahoo,
  * S. Soltani, K.C. Wong and, Y.C. Chen "A Survey of Thresholding Techniques", Computer Vision,
  * Graphics, and Image Processing, Vol. 41, pp.233-260, 1988.
- * <p/>
+ * <br>
  * The original bi-level threshold is extended here to multiple-levels.
  *
  * @author Jarek Sacha

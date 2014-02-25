@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -109,7 +109,7 @@ public class SynthAide {
     /**
      * This blends the pixel values at (x,y) from the two patches and puts the result in toPatch.
      *
-     * @param frompart This gives the ration of the fromPatch value to use (0 <= frompart <= 1). The
+     * @param frompart This gives the ration of the fromPatch value to use (0 &lt;= frompart &lt;= 1). The
      *                 rest of the value comes from toPatch.
      */
     public static void blend(final Patch fromPatch, final Patch toPatch, final int x, final int y,

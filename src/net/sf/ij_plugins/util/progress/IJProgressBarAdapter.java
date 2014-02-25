@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Simple adapter for attaching a {@link ProgressReporter} to ImageJ's progress bar.
- * <p/>
+ * <br>
  * Example use:
  * <pre>
  *   final ProgressReporter r = ...;

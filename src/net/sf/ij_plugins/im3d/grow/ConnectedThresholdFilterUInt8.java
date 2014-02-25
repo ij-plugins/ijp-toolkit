@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +29,6 @@ import net.sf.ij_plugins.im3d.Point3DInt;
  * intensities are within given threshold limits. Min limit is inclusive, max limit is exclusive.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  * @since April 29, 2002
  */
 
@@ -67,12 +66,8 @@ public class ConnectedThresholdFilterUInt8 extends ConnectedThresholdFilterBase 
     /**
      * Check if point with coordinates (x,y,z) is a new candidate. Point is a candidate if 1) its
      * coordinates are within ROI, 2) it was not yet analyzed, 3) its value is within limits. <p>
-     * <p/>
+     * <br>
      * This method modifies 'candidatePoints' and 'destPixels'.
-     *
-     * @param x
-     * @param y
-     * @param z
      */
     @Override
     final protected void checkForGrow(final int x, final int y, final int z) {

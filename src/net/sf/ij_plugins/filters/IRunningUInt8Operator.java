@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,7 +26,7 @@ package net.sf.ij_plugins.filters;
  * added using {@link #add}, and removed using {@link #remove}. Order in which values are added or
  * removed is not relevant. A value that was not added cannot be removed. Call to {@link #evaluate}
  * returns current value computed by the operator.
- * <p/>
+ * <br>
  * Values handled by this operator are assumed to be unsigned 8 bit integers, that is integers in
  * range 0 to 255 (inclusive). Here is an example of using the operator and converting between
  * <code>int</code> and unsigned 8 bit integers.
@@ -40,7 +41,6 @@ package net.sf.ij_plugins.filters;
  * </pre>
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 interface IRunningUInt8Operator {
     /**

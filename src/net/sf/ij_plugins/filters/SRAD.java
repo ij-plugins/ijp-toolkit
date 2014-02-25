@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,12 +28,11 @@ import net.sf.ij_plugins.util.IJDebug;
 
 
 /**
- * Speckle Reducing Anisotropic Diffusion (SRAD) filter based on paper:<br/> Y. Yu and T. Acton,
+ * Speckle Reducing Anisotropic Diffusion (SRAD) filter based on paper:<br> Y. Yu and T. Acton,
  * "Speckle Reducing Anisotropic Diffusion", <i>IEEE Transactions on Image Processing</i>, Vol.11,
- * No.11, 2002.<br>
+ * No.11, 2002.
  *
  * @author Jarek Sacha
- * @version $ Revision: $
  */
 public class SRAD extends AbstractAnisotropicDiffusion {
 

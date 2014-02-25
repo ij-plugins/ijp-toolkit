@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -51,7 +51,8 @@ public abstract class Enumeration {
             byName(name);
             throw new IJPluginsRuntimeException(
                     "An Enumeration cannot have two members with the same name ['"
-                            + name + "].");
+                            + name + "]."
+            );
         } catch (final IllegalArgumentException ex) {
             // Expect this exception as a confirmation that the name is not on
             // the member list.
@@ -65,7 +66,7 @@ public abstract class Enumeration {
     /**
      * Returns a reference to the named member of this Enumeration, throes IllegalArgumentException
      * of name is not found.<p>
-     * <p/>
+     * <br>
      * <strong>API NOTE:</strong> This method looks as it should have been defines as static.
      * However, this could lead to an unpredictable behavior of this method due to the way Java
      * initializes static member variables of a class. In particular, if this method was static it

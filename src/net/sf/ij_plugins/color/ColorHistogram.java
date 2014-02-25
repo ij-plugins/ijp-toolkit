@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -27,7 +27,6 @@ import java.awt.*;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 public class ColorHistogram {
     private final static int BAND_RANGE = 256;
@@ -131,9 +130,6 @@ public class ColorHistogram {
 
     /**
      * Compute index of the bin where this colors belongs.
-     *
-     * @param color
-     * @return
      */
     private int[] whichBin(final Color color) {
         final int[] binIndex = new int[3];

@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@ import java.util.Random;
 
 /**
  * Pixel-based multi-band image segmentation using k-means clustering algorithm.
- * <p/>
+ * <br>
  * k-means clustering performs pixel-based segmentation of multi-band
  * images. An image stack is interpreted as a set of bands corresponding to
  * the same image. For instance, an RGB color images has three bands: red,

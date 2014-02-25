@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -28,10 +28,9 @@ import net.sf.ij_plugins.util.Validate;
 import java.awt.*;
 
 /**
- * Implemnts iteratoin over an {@link IRunningUInt8Operator}.
+ * Implements iterating over an {@link IRunningUInt8Operator}.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 class RunningUInt8Filter implements IRunningUInt8Filter {
     final private IRunningUInt8Operator operator;

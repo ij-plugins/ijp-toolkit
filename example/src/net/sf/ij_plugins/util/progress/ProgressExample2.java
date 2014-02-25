@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2005 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +25,6 @@ package net.sf.ij_plugins.util.progress;
  * Simple example of creating and listening to {@link net.sf.ij_plugins.util.progress.ProgressEvent}'s.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 final public class ProgressExample2 {
     public static void main(String[] args) {

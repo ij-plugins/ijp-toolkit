@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@ import net.sf.ij_plugins.color.ColorProcessorUtils;
 /**
  * Helper for calling fast median filter algorithms.
  * It will call an implementation that best matches input Image {@code ip}.
- * <p/>
+ * <br>
  * Sample usa of a 7x7 median filter:
  * <pre>
  *   ColorProcessor src = ...
@@ -51,7 +51,7 @@ public final class FastMedian {
      * @param ip         input image.
      * @param filterSize filter size (window size is filterSize x filterSize)
      * @return median filtered input image. The type is the same sa input image,
-     *         so for ColorProcessor it will be ColorProcessor.
+     * so for ColorProcessor it will be ColorProcessor.
      */
     public static ImageProcessor process(final ImageProcessor ip, final int filterSize) {
 

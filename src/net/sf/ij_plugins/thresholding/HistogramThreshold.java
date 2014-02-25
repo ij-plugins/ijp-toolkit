@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -54,10 +54,10 @@ public final class HistogramThreshold {
      * Calculate maximum entropy split of a histogram. For more information see: J.N. Kapur, P.K.
      * Sahoo and A.K.C. Wong, "A New Method for Gray-Level Picture Thresholding Using the Entropy of
      * the Histogram", <i>CVGIP</i>, (29), pp.273-285 , 1985.
-     * <p/>
+     * <br>
      * Returned value indicates split position <code>t</code>. First interval are values less than
      * <code>t</code>, second interval are values equal or larger than <code>t</code>.
-     * <p/>
+     * <br>
      * If all values in <code>hist</code> are zero, the split, return value, is set to zero.
      *
      * @param hist             histogram to be thresholded.

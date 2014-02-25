@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -25,7 +25,6 @@ package net.sf.ij_plugins.filters;
  * Computes running median of 8 bit unsigned integer values.
  *
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 class RunningMedianUInt8Operator implements IRunningUInt8Operator {
     final private int[] histogram = new int[256];

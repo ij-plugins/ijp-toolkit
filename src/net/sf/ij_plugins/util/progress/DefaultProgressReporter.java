@@ -1,6 +1,6 @@
 /*
  * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
  * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
@@ -73,7 +73,7 @@ public class DefaultProgressReporter implements ProgressReporter {
 
     /**
      * Update value of {@link #currentProgress}, value must be not less than 0 and not more than 1.
-     * <p/>
+     * <br>
      * This method is used when progress needs to be updated <strong>without notifying the listeners</strong>.
      * To update progress and update listeners use {@link #notifyProgressListeners(double)}.
      *

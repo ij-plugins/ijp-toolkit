@@ -1,6 +1,7 @@
-/***
+/*
  * Image/J Plugins
- * Copyright (C) 2002-2004 Jarek Sacha
+ * Copyright (C) 2002-2014 Jarek Sacha
+ * Author's email: jsacha at users dot sourceforge dot net
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,7 +26,6 @@ import ij.process.ByteProcessor;
 
 /**
  * @author Jarek Sacha
- * @version $Revision: 1.1 $
  */
 interface IRunningUInt8Filter {
     /**
@@ -42,7 +42,7 @@ interface IRunningUInt8Filter {
     ByteProcessor run(ByteProcessor src, int filterWidth, int filterHeight);
 
     /**
-     * Assigns a progress bar to this filter. Set <code>progressBar<code> to <code>null</code> to
+     * Assigns a progress bar to this filter. Set {@code progressBar} to {@code null} to
      * disable the progress bar.
      */
 
