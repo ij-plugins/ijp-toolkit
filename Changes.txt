@@ -3,6 +3,16 @@
 ******************************
 
 -------------------------------------------------------------------------------
+Version 1.9.1
+-------------------------------------------------------------------------------
+
+This release is intended to correct 1.9.0 issue with missing classes in binary
+distribution. There are also some small improvements in JavaDocs.
+
+Bug fix:
+* Issue #31 - Some plugins in 1.9.0 do not work - ClassNotFoundException
+
+-------------------------------------------------------------------------------
 Version 1.9.0
 -------------------------------------------------------------------------------
 New:
