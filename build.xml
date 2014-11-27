@@ -107,7 +107,7 @@
                  dir="lib">
             <include name="**/jgoodies-binding-*.jar"/>
             <include name="**/jgoodies-common-*.jar"/>
-            <include name="**/commons-beanutils-core-*.jar"/>
+            <include name="**/commons-beanutils-*.jar"/>
             <include name="**/commons-logging-*.jar"/>
         </fileset>
 
