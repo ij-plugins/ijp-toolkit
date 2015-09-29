@@ -3,6 +3,16 @@
 ******************************
 
 -------------------------------------------------------------------------------
+Version 1.10.0
+-------------------------------------------------------------------------------
+
+* New [SBT](http://www.scala-sbt.org/)-based build system and new packaging
+  approach.
+
+* Coherence Enhancing Diffusion retired here, it was moved and significantly
+  improved in [Toolkit2](https://github.com/ij-plugins/ijp-toolkit2).
+
+-------------------------------------------------------------------------------
 Version 1.9.1
 -------------------------------------------------------------------------------
 
