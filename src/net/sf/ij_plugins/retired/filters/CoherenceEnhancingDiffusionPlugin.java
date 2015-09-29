@@ -19,7 +19,7 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
-package net.sf.ij_plugins.filters;
+package net.sf.ij_plugins.retired.filters;
 
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;

@@ -18,13 +18,14 @@
  *
  * Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
-package net.sf.ij_plugins.filters;
+package net.sf.ij_plugins.retired.filters;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.filter.Convolver;
 import ij.process.FloatProcessor;
+import net.sf.ij_plugins.filters.GaussianSmoothFilter;
 import net.sf.ij_plugins.operators.Neighborhood3x3;
 import net.sf.ij_plugins.operators.PixelIterator;
 
