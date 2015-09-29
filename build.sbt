@@ -1,8 +1,5 @@
 import java.net.URL
 
-// Import default Sonatype publish settings.
-sonatypeSettings
-
 name         := "ij-plugins_toolkit"
 organization := "net.sf.ij-plugins"
 version      := "1.10.0-SNAPSHOT" // + svnRevision.value.revision
@@ -22,17 +19,12 @@ description := "<html>" +
     "</ul>" +
     "</html>"
 
-javaSource        in Compile := baseDirectory.value / "src"
-resourceDirectory in Compile := baseDirectory.value / "src"
-javaSource        in Test    := baseDirectory.value / "test" / "src"
-resourceDirectory in Test    := baseDirectory.value / "test" / "src"
-
 libraryDependencies ++= Seq(
-  "com.jgoodies"      % "jgoodies-binding"  % "2.10.0",
-  "commons-beanutils" % "commons-beanutils" % "1.9.1",
+  "com.jgoodies"      % "jgoodies-binding"  % "2.13.0",
+  "commons-beanutils" % "commons-beanutils" % "1.9.2",
   "net.imagej"        % "ij"                % "1.49v",
   // Test
-  "junit"             % "junit"             % "4.11" % "test",
+  "junit"             % "junit"             % "4.12" % "test",
   // JUnit runner SBT plugin
   "com.novocode"      % "junit-interface"   % "0.11" % "test->default"
 )
@@ -42,6 +34,7 @@ fork := true
 
 // add a JVM option to use when forking a JVM for 'run'
 javaOptions ++= Seq("-Xmx2G", "-server")
+javacOptions ++= Seq("-Xlint")
 
 // Set the prompt (for this build) to include the project id.
 shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> "}
