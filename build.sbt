@@ -4,10 +4,10 @@ name         := "ij-plugins_toolkit"
 organization := "net.sf.ij-plugins"
 version      := "1.10.0-SNAPSHOT" // + svnRevision.value.revision
 
-homepage := Some(new URL("https://ij-plugins.sf.net"))
-startYear := Some(2002)
-licenses := Seq(("LGPL-2.1", new URL("http://opensource.org/licenses/LGPL-2.1")))
-description := "<html>" +
+homepage     := Some(new URL("https://ij-plugins.sf.net"))
+startYear    := Some(2002)
+licenses     := Seq(("LGPL-2.1", new URL("http://opensource.org/licenses/LGPL-2.1")))
+description  := "<html>" +
     "IJ Plugins Toolkit is a set of ImageJ plugins grouped into:" +
     "<ul>" +
     "<li>3D IO - import and export of data in 3D formats.</li>" +
@@ -34,7 +34,7 @@ fork := true
 
 // add a JVM option to use when forking a JVM for 'run'
 javaOptions ++= Seq("-Xmx2G", "-server")
-javacOptions ++= Seq("-Xlint")
+javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all")
 
 // Set the prompt (for this build) to include the project id.
 shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> "}
@@ -49,6 +49,9 @@ ijCleanBeforePrepareRun := true
 cleanFiles += ijPluginsDir.value
 
 baseDirectory in run := baseDirectory.value / "sandbox"
+
+// Automatically find def main(args:Array[String]) methods from classpath
+packAutoSettings
 
 //
 // Customize Java style publishing
