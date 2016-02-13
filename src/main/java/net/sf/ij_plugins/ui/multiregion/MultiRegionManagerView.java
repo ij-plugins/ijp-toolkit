@@ -47,7 +47,7 @@ public class MultiRegionManagerView extends JPanel {
 
     private final MultiRegionManagerModel model = new MultiRegionManagerModel();
 
-    private final ListModel regionListModel = this.model.getRegions();
+    private final ListModel<Region> regionListModel = this.model.getRegions();
     private final ValueHolder regionSelectedItemHolder = new ValueHolder();
     private final SelectionInList<Region> regionSelectionInList = new SelectionInList<>(regionListModel, regionSelectedItemHolder);
 
@@ -284,7 +284,7 @@ public class MultiRegionManagerView extends JPanel {
     // End of variables declaration//GEN-END:variables
 
 
-    static class RegionCellRenderer extends JLabel implements ListCellRenderer {
+    static class RegionCellRenderer extends JLabel implements ListCellRenderer<Region> {
 
         private static final int ICON_SIZE = 10;
         private static final long serialVersionUID = 1L;
@@ -295,27 +295,16 @@ public class MultiRegionManagerView extends JPanel {
 
         @Override
         public Component getListCellRendererComponent(
-                final JList list,              // the list
-                final Object value,            // value to display
+                final JList<? extends Region> list,              // the list
+                final Region region,            // value to display
                 final int index,               // cell index
                 final boolean isSelected,      // is the cell selected
                 final boolean cellHasFocus)    // does the cell have focus
         {
-            final String text;
-            final Color color;
-            if (value instanceof Region) {
-                final Region r = (Region) value;
-                text = r.getName();
-                // Get color without alpha
-                color = new Color(r.getColor().getRGB());
-            } else {
-                text = value.toString();
-                color = new Color(0, 0, 0, 255);
-            }
-
-            setText(text);
+            setText(region.getName());
 
             // Create icon
+            final Color color = new Color(region.getColor().getRGB());
             setIcon(UIUtils.createColorIcon(ICON_SIZE, ICON_SIZE, color));
 
             if (isSelected) {
