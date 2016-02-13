@@ -39,10 +39,11 @@ public final class SetPixelsPlugin implements PlugInFilter {
 
     final private static String TITLE = "Set Pixels";
     final private static AtomicInteger value = new AtomicInteger(1);
+    final private static int flags = DOES_8G + ROI_REQUIRED + SUPPORTS_MASKING;
 
     @Override
     public int setup(final String arg, final ImagePlus imp) {
-        return DOES_8G + ROI_REQUIRED + SNAPSHOT + PARALLELIZE_STACKS;
+        return IJ.setupDialog(imp, flags);
     }
 
     @Override
