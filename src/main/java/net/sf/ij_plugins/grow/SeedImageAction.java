@@ -26,16 +26,16 @@ import java.awt.*;
 
 /**
  * @author Jarek Sacha
- * @since Feb 18, 2008
+ * @since Feb 13, 2016
  */
-final class RunAction extends AbstractWorkerAction {
+final class SeedImageAction extends AbstractWorkerAction {
 
-    RunAction(final RegionGrowingModel model, final Component parent) {
-        super("Run", model, parent, "Error running Seeded Region Growing.");
+    SeedImageAction(final RegionGrowingModel model, final Component parent) {
+        super("Seed Image", model, parent, "Error creating seed image.");
     }
 
     @Override
     protected void workerAction() {
-        getModel().actionRun();
+        getModel().actionSeedImage();
     }
 }

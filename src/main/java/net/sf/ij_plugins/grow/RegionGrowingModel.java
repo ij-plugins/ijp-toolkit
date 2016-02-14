@@ -1,23 +1,23 @@
 /*
- * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
- * Author's email: jsacha at users dot sourceforge dot net
+ *  Image/J Plugins
+ *  Copyright (C) 2002-2016 Jarek Sacha
+ *  Author's email: jsacha at users dot sourceforge dot net
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
 package net.sf.ij_plugins.grow;
@@ -89,13 +89,9 @@ final class RegionGrowingModel extends AbstractModel {
         }
 
         // Prepare seeds
-        final ByteProcessor seeds = new ByteProcessor(imp.getWidth(), imp.getHeight());
-        for (int i = 0; i < regions.size(); ++i) {
-            final int nbPoints = markSeedPoints(regions.get(i), seeds, i + 1);
-            if (nbPoints < 1) {
-                IJ.error(CAPTION, "Cannot perform growing, region '" + regions.get(i).getName() + "' is empty (no unique seeds).");
-                return;
-            }
+        final ByteProcessor seeds = createSeedImage(regions, imp.getWidth(), imp.getHeight());
+        if (seeds == null) {
+            return;
         }
 
         // Run region growing
@@ -105,6 +101,40 @@ final class RegionGrowingModel extends AbstractModel {
         displayResults(regions, result);
     }
 
+    public void actionSeedImage() {
+        final ImagePlus imp = UIUtils.getImage();
+        if (imp == null) {
+            return;
+        }
+
+        final List<Region> regions = multiRegionManagerModel.getRegions();
+        if (regions.size() < 1) {
+            IJ.error(CAPTION, "Cannot create seed image, at least one regions required.");
+            return;
+        }
+
+        final ByteProcessor seeds = createSeedImage(regions, imp.getWidth(), imp.getHeight());
+        if (seeds == null) {
+            return;
+        }
+
+        seeds.setMinAndMax(0, regions.size());
+        new ImagePlus("Seeds", seeds).show();
+    }
+
+    private ByteProcessor createSeedImage(final List<Region> regions, final int width, final int height) {
+        // Prepare seeds
+        final ByteProcessor seeds = new ByteProcessor(width, height);
+        for (int i = 0; i < regions.size(); ++i) {
+            final int nbPoints = markSeedPoints(regions.get(i), seeds, i + 1);
+            if (nbPoints < 1) {
+                IJ.error(CAPTION, "Cannot create seed image, region '" + regions.get(i).getName() + "' is empty (no unique seeds).");
+                return null;
+            }
+        }
+
+        return seeds;
+    }
 
     private static Result runSRG(final ImagePlus imp, final ByteProcessor seeds, final int numberOfAnimationFrames) {
         final ImageProcessor ip = imp.getProcessor().duplicate();
