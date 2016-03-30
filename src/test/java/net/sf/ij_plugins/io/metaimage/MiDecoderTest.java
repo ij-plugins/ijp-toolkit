@@ -1,28 +1,29 @@
 /*
- * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
- * Author's email: jsacha at users dot sourceforge dot net
+ * IJ-Plugins
+ * Copyright (C) 2002-2016 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
 package net.sf.ij_plugins.io.metaimage;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import org.junit.Test;
 
 import java.io.File;
@@ -48,7 +49,6 @@ public final class MiDecoderTest {
         assertEquals(256, imp.getHeight());
         assertEquals(1, imp.getStackSize());
         assertEquals(ImagePlus.GRAY8, imp.getType());
-
     }
 
 
@@ -91,6 +91,25 @@ public final class MiDecoderTest {
         assertEquals(226, imp.getHeight());
         assertEquals(27, imp.getStackSize());
         assertEquals(ImagePlus.GRAY8, imp.getType());
+    }
+
+    @Test
+    public void testReadOffset() throws Exception {
+        final File inFile = new File("test/data/Issue_001/fixed.mhd");
+        final ImagePlus[] imps = MiDecoder.open(inFile);
+        assertNotNull(imps);
+        assertEquals(1, imps.length);
+        final ImagePlus imp = imps[0];
+        assertEquals("width", 305, imp.getWidth());
+        assertEquals("heights", 311, imp.getHeight());
+        assertEquals("slices", 11, imp.getStackSize());
+        assertEquals("image type", ImagePlus.GRAY32, imp.getType());
+
+        // Test if origin is read correctly, Issue #1.
+        final Calibration cal = imp.getCalibration();
+        assertEquals("xOrigin", 0, cal.xOrigin, 0.001);
+        assertEquals("yOrigin", 0, cal.yOrigin, 0.001);
+        assertEquals("zOrigin", 10.4, cal.zOrigin, 0.001);
     }
 
 
