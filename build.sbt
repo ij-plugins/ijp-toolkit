@@ -50,9 +50,6 @@ cleanFiles += ijPluginsDir.value
 
 baseDirectory in run := baseDirectory.value / "sandbox"
 
-// Automatically find def main(args:Array[String]) methods from classpath
-packAutoSettings
-
 //
 // Customize Java style publishing
 //
