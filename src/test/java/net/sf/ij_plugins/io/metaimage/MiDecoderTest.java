@@ -27,6 +27,9 @@ import ij.measure.Calibration;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.zip.InflaterInputStream;
 
 import static org.junit.Assert.*;
 
@@ -94,8 +97,8 @@ public final class MiDecoderTest {
     }
 
     @Test
-    public void testReadOffset() throws Exception {
-        final File inFile = new File("test/data/Issue_001/fixed.mhd");
+    public void testReadITKTags() throws Exception {
+        final File inFile = new File("test/data/Issue_001+2/fixed+itk.mhd");
         final ImagePlus[] imps = MiDecoder.open(inFile);
         assertNotNull(imps);
         assertEquals(1, imps.length);
@@ -104,13 +107,6 @@ public final class MiDecoderTest {
         assertEquals("heights", 311, imp.getHeight());
         assertEquals("slices", 11, imp.getStackSize());
         assertEquals("image type", ImagePlus.GRAY32, imp.getType());
-
-        // Test if origin is read correctly, Issue #1.
-        final Calibration cal = imp.getCalibration();
-        assertEquals("xOrigin", 0, cal.xOrigin, 0.001);
-        assertEquals("yOrigin", 0, cal.yOrigin, 0.001);
-        assertEquals("zOrigin", 10.4, cal.zOrigin, 0.001);
     }
-
 
 }

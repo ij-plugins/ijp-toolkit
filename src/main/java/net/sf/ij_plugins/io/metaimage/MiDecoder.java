@@ -159,6 +159,9 @@ public final class MiDecoder {
     }
 
 
+    /**
+     * Extract tag value for known tags. If tag is not recognized return {@code null}.
+     */
     private MiTagValuePair extractTagAndValue(final String line) throws MiException {
 
         Validate.argumentNotNull(line, "line");
@@ -174,7 +177,9 @@ public final class MiDecoder {
         try {
             tag.id = (MiTag) MiTag.DIM_SIZE.byName(tagName);
         } catch (final IllegalArgumentException ex) {
-            throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.", ex);
+//            throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.", ex);
+            IJ.log("Ignoring unrecognized MetaImage tag: " + line);
+            return null;
         }
 
         tag.value = line.substring(position + 1, line.length()).trim();
@@ -212,8 +217,12 @@ public final class MiDecoder {
             for (; line != null; line = reader.readLine()) {
                 ++lineNb;
 
-                // Parse line, throw exception if tag's name is invalid.
+                // Parse line.
                 final MiTagValuePair tag = extractTagAndValue(line);
+                if (tag == null) {
+                    // Ignore unrecognized tags.
+                    continue;
+                }
 
                 // TAG: NDim
                 if (tag.id == MiTag.N_DIMS) {
