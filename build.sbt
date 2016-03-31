@@ -34,7 +34,7 @@ fork := true
 
 // add a JVM option to use when forking a JVM for 'run'
 javaOptions ++= Seq("-Xmx2G", "-server")
-javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all")
+javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all", "-source",  "1.7", "-target",  "1.7")
 
 // Set the prompt (for this build) to include the project id.
 shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> "}
