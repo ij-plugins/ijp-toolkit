@@ -3,14 +3,22 @@
 ******************************
 
 -------------------------------------------------------------------------------
-Version 1.10.0
+Version 1.10.0 - 2016-04-01
 -------------------------------------------------------------------------------
+
+* Source code moved to GitHub: https://github.com/ij-plugins/ijp-toolkit
 
 * New [SBT](http://www.scala-sbt.org/)-based build system and new packaging
   approach.
 
 * Coherence Enhancing Diffusion retired here, it was moved and significantly
   improved in [Toolkit2](https://github.com/ij-plugins/ijp-toolkit2).
+
+* [Seeded Region Growing Tool] add button to create seed image.
+
+* MetaImage Reader/Writer respect `Origin` tag, mapped into calibration x.y.z origin.
+
+* MetaImage Reader - does not bread on unknown tags, just ignores them.
 
 -------------------------------------------------------------------------------
 Version 1.9.1
