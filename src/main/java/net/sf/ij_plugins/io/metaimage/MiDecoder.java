@@ -29,9 +29,9 @@ import ij.VirtualStack;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.RandomAccessStream;
+import ij.measure.Calibration;
 import ij.plugin.FileInfoVirtualStack;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.Validate;
 
@@ -48,6 +48,18 @@ import java.io.*;
  * @since July 31, 2002
  */
 public final class MiDecoder {
+
+    private static class HeaderInfo {
+        final FileInfo fileInfo;
+        final int elementNumberOfChannels;
+        final double[] offset;
+
+        public HeaderInfo(FileInfo fileInfo, int elementNumberOfChannels, double[] offset) {
+            this.fileInfo = fileInfo;
+            this.elementNumberOfChannels = elementNumberOfChannels;
+            this.offset = offset;
+        }
+    }
 
     // TODO Validate MetaImage tag dependency (some tags need always be present, some only if other tags are present, etc.)
 
@@ -84,9 +96,9 @@ public final class MiDecoder {
         final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header
-        final Pair<FileInfo, Integer> p = miDecoder.decodeHeader(file);
-        final FileInfo fileInfo = p.getFirst();
-        final int elementNumberOfChannels = p.getSecond();
+        final HeaderInfo hi = miDecoder.decodeHeader(file);
+        final FileInfo fileInfo = hi.fileInfo;
+        final int elementNumberOfChannels = hi.elementNumberOfChannels;
         if (elementNumberOfChannels > 1) {
             // Trick FileOpener to read all channels, they will be later separated
             fileInfo.width *= elementNumberOfChannels;
@@ -112,6 +124,17 @@ public final class MiDecoder {
 
         if (imp == null) {
             throw new MiException("Unable to read image data from '" + fileInfo.fileName + "'.");
+        }
+
+        // Add offset info to calibration
+        if (hi.offset != null) {
+            Calibration cal = imp.getCalibration();
+            cal.xOrigin = hi.offset[0];
+            cal.yOrigin = hi.offset[1];
+            if (imp.getStackSize() > 1) {
+                cal.zOrigin = hi.offset[2];
+            }
+            imp.setCalibration(cal);
         }
 
         if (elementNumberOfChannels > 1) {
@@ -195,9 +218,10 @@ public final class MiDecoder {
      * @return MetaImage header information converted to FileInfo format.
      * @throws MiException In case of I/O errors or incorrect header format.
      */
-    private Pair<FileInfo, Integer> decodeHeader(final File file) throws MiException {
+    private HeaderInfo decodeHeader(final File file) throws MiException {
         final FileInfo fileInfo = new FileInfo();
         int elementNumberOfChannels = 1;
+        double[] offsets = null;
         final BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file));
@@ -297,7 +321,7 @@ public final class MiDecoder {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    final float[] elementSpacing = TextUtil.parseFloatArray(tag.value);
+                    final double[] elementSpacing = TextUtil.parseDoubleArray(tag.value);
                     if (elementSpacing.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -332,7 +356,7 @@ public final class MiDecoder {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    final float[] elementSize = TextUtil.parseFloatArray(tag.value);
+                    final double[] elementSize = TextUtil.parseDoubleArray(tag.value);
                     if (elementSize.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -400,6 +424,22 @@ public final class MiDecoder {
                     // ElementDataFile is always the last tag in the header.
                     break;
                 }
+                // TAG: Offset / Origin / Position
+                else if (tag.id == MiTag.OFFSET || tag.id == MiTag.ORIGIN || tag.id == MiTag.POSITION) {
+                    if (nDims == -1) {
+                        throw new MiException("Got tag '" + tag.id
+                                + "' but there was no tag '" + MiTag.N_DIMS
+                                + "' yet. Header line=" + lineNb + ".");
+                    }
+
+                    offsets = TextUtil.parseDoubleArray(tag.value);
+                    if (offsets.length != nDims) {
+                        throw new MiException("Number of offsets in tag '"
+                                + tag.id
+                                + "' does not match number of dimensions in tag '"
+                                + MiTag.N_DIMS + "'. Header line=" + lineNb + ".");
+                    }
+                }
             }
 
         } catch (final IOException ex) {
@@ -449,7 +489,7 @@ public final class MiDecoder {
             }
 
         }
-        return new Pair<>(fileInfo, elementNumberOfChannels);
+        return new HeaderInfo(fileInfo, elementNumberOfChannels, offsets);
     }
 
 

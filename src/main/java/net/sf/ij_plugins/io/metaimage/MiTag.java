@@ -1,23 +1,23 @@
 /*
- * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
- * Author's email: jsacha at users dot sourceforge dot net
+ * IJ-Plugins
+ * Copyright (C) 2002-2016 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
 package net.sf.ij_plugins.io.metaimage;
@@ -123,7 +123,15 @@ public final class MiTag extends Enumeration {
     public static final MiTag COLOR = new MiTag("Color");
 
     public static final MiTag TRANSFORM_MATRIX = new MiTag("TransformMatrix");
+
+    /**
+     * Offset, Origin, Position have the same meaning:
+     * location, in real world units, of the image origin, pixel (0,0,0).
+     */
     public static final MiTag OFFSET = new MiTag("Offset");
+    public static final MiTag ORIGIN = new MiTag("Origin");
+    public static final MiTag POSITION = new MiTag("Position");
+
     public static final MiTag CENTER_OF_ROTATION = new MiTag("CenterOfRotation");
     public static final MiTag ANATOMICAL_ORIENTATION = new MiTag("AnatomicalOrientation");
 

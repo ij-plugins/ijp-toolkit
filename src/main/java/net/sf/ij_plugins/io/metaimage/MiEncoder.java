@@ -1,23 +1,23 @@
 /*
- * Image/J Plugins
- * Copyright (C) 2002-2011 Jarek Sacha
- * Author's email: jsacha at users dot sourceforge dot net
+ * IJ-Plugins
+ * Copyright (C) 2002-2016 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
 package net.sf.ij_plugins.io.metaimage;
@@ -197,11 +197,25 @@ public final class MiEncoder {
         header.append(MiTag.N_DIMS).append(ASSIGNMENT_SEPARATOR).append(nDims).append(LINE_SEPARATOR);
 
         // DimSize
-        header.append(MiTag.DIM_SIZE).append(ASSIGNMENT_SEPARATOR).append(imp.getWidth()).append(" ").append(imp.getHeight());
+        header.append(MiTag.DIM_SIZE)
+                .append(ASSIGNMENT_SEPARATOR)
+                .append(imp.getWidth()).append(" ").append(imp.getHeight());
         if (imp.getStackSize() > 1) {
             header.append(" ").append(imp.getStackSize());
         }
         header.append(LINE_SEPARATOR);
+
+        // Offset
+        final Calibration cal = imp.getCalibration();
+        if (!(cal.xOrigin != 0.0 && cal.yOrigin != 0 && (imp.getStackSize() == 1 || cal.zOrigin == 0))) {
+            header.append(MiTag.OFFSET)
+                    .append(ASSIGNMENT_SEPARATOR)
+                    .append(cal.xOrigin).append(" ").append(cal.yOrigin);
+            if (imp.getStackSize() > 1) {
+                header.append(" ").append(cal.zOrigin);
+            }
+            header.append(LINE_SEPARATOR);
+        }
 
         // ElementType
         final String elementType;
@@ -234,8 +248,7 @@ public final class MiEncoder {
         // ElementSize
         // ElementSpacing
         String elementSize = null;
-        final Calibration cal = imp.getCalibration();
-        if (cal != null && cal.pixelWidth > 0 && cal.pixelHeight > 0) {
+        if (cal.pixelWidth > 0 && cal.pixelHeight > 0) {
             elementSize = "" + cal.pixelWidth + " " + cal.pixelHeight;
             if (imp.getStackSize() > 1) {
                 if (cal.pixelDepth > 0) {
