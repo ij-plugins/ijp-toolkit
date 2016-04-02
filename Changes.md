@@ -1,18 +1,17 @@
-******************************
- ij-plugins Toolkit Changelog 
-******************************
+ij-plugins Toolkit Changelog
+============================
 
--------------------------------------------------------------------------------
+
 Version 1.10.0 - 2016-04-01
--------------------------------------------------------------------------------
+---------------------------
 
-* Source code moved to GitHub: https://github.com/ij-plugins/ijp-toolkit
+* Source code moved to GitHub [ij-plugins/ijp-toolkit](https://github.com/ij-plugins/ijp-toolkit)
 
 * New [SBT](http://www.scala-sbt.org/)-based build system and new packaging
   approach.
 
 * Coherence Enhancing Diffusion retired here, it was moved and significantly
-  improved in [Toolkit2](https://github.com/ij-plugins/ijp-toolkit2).
+  improved in [ij-plugins/ijp-toolkit2](https://github.com/ij-plugins/ijp-toolkit2).
 
 * [Seeded Region Growing Tool] add button to create seed image.
 
@@ -20,9 +19,9 @@ Version 1.10.0 - 2016-04-01
 
 * MetaImage Reader - does not bread on unknown tags, just ignores them.
 
--------------------------------------------------------------------------------
+
 Version 1.9.1
--------------------------------------------------------------------------------
+-------------
 
 This release is intended to correct 1.9.0 issue with missing classes in binary
 distribution. There are also some small improvements in JavaDocs.
@@ -30,9 +29,10 @@ distribution. There are also some small improvements in JavaDocs.
 Bug fix:
 * Issue #31 - Some plugins in 1.9.0 do not work - ClassNotFoundException
 
--------------------------------------------------------------------------------
+
 Version 1.9.0
--------------------------------------------------------------------------------
+-------------
+
 New:
 * Plugin to apply k-means clustering to another image
 
@@ -42,15 +42,16 @@ Developer visible:
 Requirements:
 * Java 7 or better.
 
--------------------------------------------------------------------------------
+
 Version 1.8.0
--------------------------------------------------------------------------------
+-------------
+
 New:
-* Plugin to convert L*a*b* stack to XYZ color space
-* Plugin to convert XYZ stack to L*a*b* color space
+* Plugin to convert L\*a\*b\* stack to XYZ color space
+* Plugin to convert XYZ stack to L\*a\*b\* color space
 
 Improved:
-* Create color space stacks, like L*a*b*, have now slices labeled
+* Create color space stacks, like L\*a\*b\*, have now slices labeled
   using band names rather than numbers
 
 Developer visible:
@@ -60,9 +61,10 @@ Developer visible:
 Requirements:
 * Java 7 or better.
 
--------------------------------------------------------------------------------
+
 Version 1.7.1
--------------------------------------------------------------------------------
+-------------
+
 Improvements:
 * Update ReadMe file that got quite out od date
 * Fast filters modified to reproduce content of the image that is outside of
@@ -71,9 +73,10 @@ Improvements:
 Requirements:
 * Java 7 or better.
 
--------------------------------------------------------------------------------
+
 Version 1.7.0
--------------------------------------------------------------------------------
+-------------
+
 New:
 * k-means plugin now supports segmentation of 3D images.
 
@@ -83,9 +86,9 @@ Developer visible:
 Requirements:
 * Java 7 or better.
 
--------------------------------------------------------------------------------
+
 Version 1.6.1
--------------------------------------------------------------------------------
+-------------
 
 New:
 * Plugins > Color > Measure Bands - measures color images and stacks writing
@@ -93,23 +96,24 @@ New:
   Works on RGB images or gray level stacks.
 
 Improvements:
-* Stacks created by RGB to CIE L*a*b* and RGB to XYZ converters now have 
+* Stacks created by RGB to CIE L\*a\*b\* and RGB to XYZ converters now have
   correct labels for each slice (name of the color band).
 * Updated dependent libraries to recent versions.
 * Add support for virtual stack to metaimage IO, based on patch provided 
   by Eric Nodwell.
 * Add help button to plugin options dialog
-  -- Maximum Entropy Multi-Threshold plugin
-  -- k-means Clustering plugin
-  -- Region Growing plugin
+  - Maximum Entropy Multi-Threshold plugin
+  - k-means Clustering plugin
+  - Region Growing plugin
 
 Developer visible:
 * Some utility methods added to VectorProcessor and ColorProcessorUtils.
 * Support for color space conversions with custom white point
 
--------------------------------------------------------------------------------
+
 Version 1.6.0
--------------------------------------------------------------------------------
+-------------
+
 New:
 * Export as STL plugin allows saving image surfaces are a STL mesh data.
 * MetaImage reader now supports multi-channel 3D images.
@@ -131,22 +135,24 @@ Developer visible:
 * Separate distribution building Ant script into separate file for simpler
   dependency.
 
--------------------------------------------------------------------------------
+
 Version 1.5.2
--------------------------------------------------------------------------------
+-------------
+
 Improved:
  * RFE-3095953: MetaImage writer saved images in a single file (no header/raw separation)
 
 Bug fixes:
  * Bug-3097792: VTK Reader can handle images that spaces at the end of header lines.
 
--------------------------------------------------------------------------------
-...
--------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------
+...
+---
+
+
 Version 1.4.2
--------------------------------------------------------------------------------
+-------------
+
 New:
  * SRG: Add action icons.
  * SRG: Send/load regions from ROI Manager.
@@ -156,12 +162,13 @@ Improved:
  * Update RGB <-> Lab conversions to better match http://www.brucelindbloom.com
 
 Developer visible:
- * Add KMeans.closestCluster(final float[] x) to enabble using result to
+ * Add KMeans.closestCluster(final float[] x) to enable using result to
    cluster new image.
 
--------------------------------------------------------------------------------
+
 Version 1.4.1
--------------------------------------------------------------------------------
+-------------
+
 New:
  * SRG: Support for seeded region growing segmentation of 3D images.
 
@@ -179,16 +186,17 @@ Bug fixes:
 Developer visible:
  * Use SVNAnt 1.3 for release number generation.
  
--------------------------------------------------------------------------------
+
 Version 1.4.0
--------------------------------------------------------------------------------
+-------------
 Change:
  * Introduces incompatibility in SRG.setPoints(): seeds are set as an image
    instead of a list of points.
 
--------------------------------------------------------------------------------
+
 Version 1.3.0
--------------------------------------------------------------------------------
+-------------
+
 New:
  * Seeder Region Growing (SRG) plugin.
  
@@ -209,9 +217,10 @@ Other:
  * API for display of multi color overlays (OverlayCanvas)
  * I/O Utilities API (IOUtils)
 
--------------------------------------------------------------------------------
+
 Version 1.2.1
--------------------------------------------------------------------------------
+-------------
+
 Improvements:
  * Maximum Entropy Threshold plugin now supports 16 bit images.
  * Several improvements to SRG algorithm (available through API).
@@ -221,11 +230,12 @@ Bug fixes:
    to plugins that used VectorProcessor, like k-means and vector edge
    detector.
 
--------------------------------------------------------------------------------
+
 Version 1.2
--------------------------------------------------------------------------------
+-----------
+
 Improvements:
-* sRGB <-> XYZ <-> CIE L*a*b* conversion modified to use approach presented
+* sRGB <-> XYZ <-> CIE L\*a\*b\* conversion modified to use approach presented
   at http://www.brucelindbloom.com/.
 * Improvements to maximum entropy threshold plugins.
 
@@ -234,9 +244,9 @@ Bug fixes:
 * BUG-1812587: FastMedian Exception for even kernel size.
 * BUG-1881444: k-means macro always showed animations.
 
--------------------------------------------------------------------------------
-Version 1.1
--------------------------------------------------------------------------------
+
+Version 1.1.1
+-------------
 
 Bug fixes:
 * BUG-1594780: Correct reading of COLOR_SCALARS: use GRAY8 when nValue==1, use 
@@ -245,9 +255,9 @@ Bug fixes:
 Improvements:
 * Fast Median Filter Plugin: add support for RGB images.
 
--------------------------------------------------------------------------------
+
 Version 1.1
--------------------------------------------------------------------------------
+------------
 
 Bug fixes:
 * Correct spelling of PeronaMalikAnisotropicDiffusion* classes.
@@ -278,15 +288,15 @@ New:
 
 * IJDebug utility for logging only when IJ.debugMode is on.
 
--------------------------------------------------------------------------------
+
 Version 1.0
--------------------------------------------------------------------------------
+-----------
 
 * Jar file renamed from 'ij-plugins-toolkit.jar' to 'ij-plugins_toolkit.jar',
   So it can be recognized bu ImageJ plugin discovery (presence of '_' in file 
   name needed.
 
-* New souce code layout. 'Plugins' and 'Toolkit' subdirectories depreciated, all 
+* New source code layout. 'Plugins' and 'Toolkit' subdirectories depreciated, all
   source moved to root 'src' directory. Plugins distributed in a single JAR:
   ''ij-plugins_toolkit.jar' (RFE-1208248).
 
@@ -296,24 +306,22 @@ Version 1.0
 
 * 3D IO plugins moved to main source directory ('src').  
 
--------------------------------------------------------------------------------
+
 Changes - 3D Toolkit
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-Version *
--------------------------------------------------------------------------------
+--------------------
+
+### Version *
 
 * VTK Filters moved to module ij-VTK
 
--------------------------------------------------------------------------------
-Version 0.3.x
--------------------------------------------------------------------------------
+
+### Version 0.3.x
 
 * VTK Filters - Optimize loading of dynamic VTK libraries.
 
--------------------------------------------------------------------------------
-Version 0.3 - New features + some bug fix
--------------------------------------------------------------------------------
+
+### Version 0.3 - New features + some bug fix
+
 New & improved:
    * Set of plugins for direct access to native VTK 3D filters: anisotropic
      diffusion, Laplacian, median, erosion, dilation.
@@ -327,16 +335,13 @@ New & improved:
 Bug fixes:
    * Corrected problems with voxel calibration in VTK and MetaImage I/O. 
 
--------------------------------------------------------------------------------
-Version 0.2.x - bug fix release
--------------------------------------------------------------------------------
+
+### Version 0.2.x - bug fix release
 
 * ij.jar (ImageJ v.1.28u binaries) added to source distribution. This way
     no additional libraries are needed to build from source.
 
--------------------------------------------------------------------------------
-Version 0.2.1 - bug fix release
--------------------------------------------------------------------------------
+### Version 0.2.1 - bug fix release
 
 * VTK Writer: Removed bug introduced in v.0.2 - VTK was unable to read
     images generated by vtkEncoder - there was no space separating a tag
@@ -344,9 +349,7 @@ Version 0.2.1 - bug fix release
     
 * VTK Reader was not aware of tags CELL_DATA and COLOR_SCALARS.
 
--------------------------------------------------------------------------------
-Version 0.2
--------------------------------------------------------------------------------
+### Version 0.2
 
 New plugins added:
   
