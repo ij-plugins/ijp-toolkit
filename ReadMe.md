@@ -1,7 +1,7 @@
 IJ Plugins Toolkit
 ==================
 
-[![Build Status](https://travis-ci.org/ij-plugins/ijp-toolkit.svg?branch=master)](https://travis-ci.org/ij-plugins/ijp-toolkit)
+[![Build Status](https://travis-ci.org/ij-plugins/ijp-toolkit.svg?branch=develop)](https://travis-ci.org/ij-plugins/ijp-toolkit)
 
 [IJ Plugins Toolkit](http://ij-plugins.sourceforge.net/plugins/toolkit.html)
 is a set of ImageJ plugins grouped into:
