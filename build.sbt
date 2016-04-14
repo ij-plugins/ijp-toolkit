@@ -61,12 +61,12 @@ crossPaths        := false
 autoScalaLibrary  := false
 pomExtra :=
     <scm>
-      <url>https://sourceforge.net/p/ij-plugins/code/</url>
-      <connection>scm:svn://svn.code.sf.net/p/ij-plugins/code/trunk/ij-plugins</connection>
+      <url>https://github.com/ij-plugins/ijp-toolkit</url>
+      <connection>scm:https://github.com/ij-plugins/ijp-toolkit.git</connection>
     </scm>
     <developers>
       <developer>
-        <id>jsacha</id>
+        <id>jpsacha</id>
         <name>Jarek Sacha</name>
       </developer>
     </developers>
