@@ -129,10 +129,10 @@ public final class MiDecoder {
         // Add offset info to calibration
         if (hi.offset != null) {
             Calibration cal = imp.getCalibration();
-            cal.xOrigin = hi.offset[0];
-            cal.yOrigin = hi.offset[1];
+            cal.xOrigin = hi.offset[0] / hi.fileInfo.pixelWidth;
+            cal.yOrigin = hi.offset[1] / hi.fileInfo.pixelHeight;
             if (imp.getStackSize() > 1) {
-                cal.zOrigin = hi.offset[2];
+                cal.zOrigin = hi.offset[2] / hi.fileInfo.pixelDepth;
             }
             imp.setCalibration(cal);
         }

@@ -109,7 +109,7 @@ public final class MiDecoderTest {
         final Calibration cal = imp.getCalibration();
         assertEquals("xOrigin", 0, cal.xOrigin, 0.001);
         assertEquals("yOrigin", 0, cal.yOrigin, 0.001);
-        assertEquals("zOrigin", 10.4, cal.zOrigin, 0.001);
+        assertEquals("zOrigin", 10.4 / 0.04, cal.zOrigin, 0.001);
     }
 
     @Test
