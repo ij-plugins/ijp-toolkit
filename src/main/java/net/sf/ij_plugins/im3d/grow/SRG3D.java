@@ -606,7 +606,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
 
     private List<Point3DInt> backgroundNeighbours(final Point3DInt point) {
-        final List<Point3DInt> backgroundPoints = new ArrayList<Point3DInt>(26);
+        final List<Point3DInt> backgroundPoints = new ArrayList<>(26);
         for (final Point3DInt offset : NEIGHBOUR_OFFSET) {
             addIfBackground(point.x + offset.x, point.y + offset.y, point.z + offset.z, backgroundPoints);
         }

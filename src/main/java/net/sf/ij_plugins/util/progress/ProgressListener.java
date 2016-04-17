@@ -32,5 +32,5 @@ public interface ProgressListener {
      *
      * @param e event information.
      */
-    public void progressNotification(ProgressEvent e);
+    void progressNotification(ProgressEvent e);
 }

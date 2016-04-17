@@ -65,7 +65,7 @@ public class DefaultProgressReporter implements ProgressReporter {
     public void removeAllProgressListener() {
         // Remove all listeners using call to #removeProgressListener to avoid problems if the class in inherited
         // Iterate over a copy of the progressListeners, otherwise you get java.util.ConcurrentModificationException
-        for (final ProgressListener progressListener : new ArrayList<ProgressListener>(progressListeners)) {
+        for (final ProgressListener progressListener : new ArrayList<>(progressListeners)) {
             removeProgressListener(progressListener);
         }
     }

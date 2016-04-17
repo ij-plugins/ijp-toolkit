@@ -48,7 +48,7 @@ public class ColorHistogram {
     /**
      * Create histogram
      *
-     * @param cp
+     * @param cp inout image
      */
     final public void run(final ColorProcessor cp) {
 

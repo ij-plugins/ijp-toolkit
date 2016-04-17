@@ -68,7 +68,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
             return;
         }
 
-        final List<String> imageTitleList = new ArrayList<String>();
+        final List<String> imageTitleList = new ArrayList<>();
         final List<String> seedTitleList = new ArrayList<>();
         for (final int id : wList) {
             final ImagePlus imp = WindowManager.getImage(id);
@@ -205,7 +205,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         final ProgressAccumulator accumulator = new ProgressAccumulator();
         accumulator.addProgressListener(progressBarAdapter);
         final ImageStack stack = new ImageStack(image.getWidth(), image.getHeight());
-        final List<Future<ByteProcessor>> futures = new ArrayList<Future<ByteProcessor>>(image.getNSlices());
+        final List<Future<ByteProcessor>> futures = new ArrayList<>(image.getNSlices());
         for (int i = 0; i < image.getNSlices(); ++i) {
             final ByteProcessor bp = (ByteProcessor) image.getStack().getProcessor(i + 1);
             final ByteProcessor s = (ByteProcessor) seeds.getStack().getProcessor(i + 1);

@@ -70,7 +70,6 @@ public class FluxAnisotropicDiffusionFilter {
         sizeY = src.getHeight();
 
         final FloatProcessor tmpSrc = (FloatProcessor) src.duplicate();
-        ;
 
         final FloatProcessor tmpDest = new FloatProcessor(sizeX, sizeY);
 

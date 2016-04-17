@@ -153,7 +153,7 @@ public final class RedBlackTree<K extends Comparable<K>> {
 
         Node<K> y = Node.NULL;
         Node<K> x = root;
-        final Node<K> z = new Node<K>(key);
+        final Node<K> z = new Node<>(key);
 
         // Find insertion point
         while (x != Node.NULL) {
@@ -542,14 +542,12 @@ public final class RedBlackTree<K extends Comparable<K>> {
 
         @Override
         public String toString() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append("key: ");
-            builder.append(key);
-            builder.append(", size: ");
-            builder.append(size);
-            builder.append(", color: ");
-            builder.append(color == RED ? "RED" : color == BLACK ? "BLACK" : "?");
-            return builder.toString();
+            return "key: " +
+                    key +
+                    ", size: " +
+                    size +
+                    ", color: " +
+                    (color == RED ? "RED" : color == BLACK ? "BLACK" : "?");
         }
 
 

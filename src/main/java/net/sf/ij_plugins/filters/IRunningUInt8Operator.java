@@ -60,8 +60,6 @@ interface IRunningUInt8Operator {
 
     /**
      * Evaluate the operator on values it currently contains.
-     *
-     * @return
      */
     byte evaluate();
 

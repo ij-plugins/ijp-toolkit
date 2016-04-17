@@ -455,7 +455,7 @@ abstract class SRG2DBase extends DefaultProgressReporter {
 
 
     private List<Point> backgroundNeighbours(final Point point) {
-        final List<Point> backgroundPoints = new ArrayList<Point>(7);
+        final List<Point> backgroundPoints = new ArrayList<>(7);
         // 4-connected
         addIfBackground(point.x - 1, point.y, backgroundPoints);
         addIfBackground(point.x + 1, point.y, backgroundPoints);

@@ -168,8 +168,7 @@ public final class VtkEncoder {
 
         final int oldSlice = imp.getCurrentSlice();
 
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-        try {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             IJ.showProgress(0);
 
             final String header = createHeader(imp, true);
@@ -184,8 +183,6 @@ public final class VtkEncoder {
                 writeArray(pixels[z], sliceSize, writer, width);
                 IJ.showProgress((double) z / (double) depth);
             }
-        } finally {
-            writer.close();
         }
         IJ.showProgress(1);
 
@@ -215,7 +212,7 @@ public final class VtkEncoder {
     private static void writeArray(final byte[] a, final int length, final Writer writer, final int lineSize)
             throws IOException {
 
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (int i = 0; i < length; ++i) {
             buf.append(a[i] & 0xff);
             if (i > 0 && (i % lineSize) == 0) {

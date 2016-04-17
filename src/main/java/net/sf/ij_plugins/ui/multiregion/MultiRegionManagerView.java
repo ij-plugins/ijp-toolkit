@@ -51,7 +51,7 @@ public class MultiRegionManagerView extends JPanel {
     private final ValueHolder regionSelectedItemHolder = new ValueHolder();
     private final SelectionInList<Region> regionSelectionInList = new SelectionInList<>(regionListModel, regionSelectedItemHolder);
 
-    private final PresentationModel<Region> detailsModel = new PresentationModel<Region>(regionSelectionInList);
+    private final PresentationModel<Region> detailsModel = new PresentationModel<>(regionSelectionInList);
     private final ValueModel subRegionsValueModel = detailsModel.getModel(Region.PROPERTYNAME_SUB_REGIONS);
     private final ValueHolder subRegionSelectedItemHolder = new ValueHolder();
     private final SelectionInList<Region> subRegionSelectionInList = new SelectionInList<>(subRegionsValueModel, subRegionSelectedItemHolder);

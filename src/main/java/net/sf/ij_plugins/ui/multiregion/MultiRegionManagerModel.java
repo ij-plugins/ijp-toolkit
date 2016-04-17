@@ -373,7 +373,7 @@ public final class MultiRegionManagerModel extends AbstractModel {
     public void sentCurrentRegionToROIManager() {
         final Region region = getSelectedRegion();
         if (region != null) {
-            final List<Roi> rois = new ArrayList<Roi>();
+            final List<Roi> rois = new ArrayList<>();
             for (final SubRegion subRegion : region.getSubRegions()) {
                 rois.add(subRegion.getRoi());
             }

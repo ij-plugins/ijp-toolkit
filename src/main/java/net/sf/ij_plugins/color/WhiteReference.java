@@ -59,7 +59,8 @@ public enum WhiteReference {
     public final String name;
 
 
-    private WhiteReference(final String name, final double x2, final double y2, final double x10, final double y10, final double cct) {
+    WhiteReference(final String name, final double x2, final double y2,
+                   final double x10, final double y10, final double cct) {
         this.name = name;
         this.x2 = x2;
         this.y2 = y2;
