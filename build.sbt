@@ -21,7 +21,6 @@ description  := "<html>" +
 
 libraryDependencies ++= Seq(
   "com.jgoodies"      % "jgoodies-binding"  % "2.13.0",
-  "commons-beanutils" % "commons-beanutils" % "1.9.2",
   "net.imagej"        % "ij"                % "1.49v",
   // Test
   "junit"             % "junit"             % "4.12" % "test",

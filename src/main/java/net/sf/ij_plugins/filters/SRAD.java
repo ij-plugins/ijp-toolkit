@@ -52,6 +52,9 @@ public class SRAD extends AbstractAnisotropicDiffusion {
      */
     private double ro = 1d / 6d;
 
+    /**
+     * Diffusion coefficient lower threshold. When diffusion coefficient is lower than threshold it is set to 0.
+     */
     public double getCThreshold() {
         return cThreshold;
     }

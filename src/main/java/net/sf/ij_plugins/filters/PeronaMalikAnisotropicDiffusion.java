@@ -31,14 +31,14 @@ import net.sf.ij_plugins.operators.PixelIterator;
  */
 public class PeronaMalikAnisotropicDiffusion extends AbstractAnisotropicDiffusion {
     private boolean bigRegionFunction = true;
-    private float k = 10;
-    private float inv_k = 1 / k;
+    private double k = 10;
+    private double inv_k = 1 / k;
 
-    public float getK() {
+    public double getK() {
         return k;
     }
 
-    public void setK(final float k) {
+    public void setK(final double k) {
         this.k = k;
         inv_k = 1 / k;
     }

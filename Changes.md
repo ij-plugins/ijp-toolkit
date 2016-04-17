@@ -2,13 +2,12 @@ ij-plugins Toolkit Changelog
 ============================
 
 
-Version 1.10.0 - 2016-04-01
+Version 1.10.0 - 2016-04-03
 ---------------------------
 
 * Source code moved to GitHub [ij-plugins/ijp-toolkit](https://github.com/ij-plugins/ijp-toolkit)
 
-* New [SBT](http://www.scala-sbt.org/)-based build system and new packaging
-  approach.
+* New [SBT](http://www.scala-sbt.org/)-based build system and new packaging approach.
 
 * Coherence Enhancing Diffusion retired here, it was moved and significantly
   improved in [ij-plugins/ijp-toolkit2](https://github.com/ij-plugins/ijp-toolkit2).
@@ -18,6 +17,8 @@ Version 1.10.0 - 2016-04-01
 * MetaImage Reader/Writer respect `Origin` tag, mapped into calibration x.y.z origin.
 
 * MetaImage Reader - does not bread on unknown tags, just ignores them.
+
+* Removed deprecated DialogInfo and dependency in beanutil library.
 
 
 Version 1.9.1

@@ -22,15 +22,14 @@
 package net.sf.ij_plugins.filters;
 
 import ij.ImagePlus;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.DialogUtil;
 
 /**
  * @author Jarek Sacha
  */
-
 public class DirectionalCoherencePlugin implements PlugInFilter {
     private final static String TITLE = "Directional Coherence";
 
@@ -43,13 +42,19 @@ public class DirectionalCoherencePlugin implements PlugInFilter {
     public void run(final ImageProcessor ip) {
         final FloatProcessor src = (FloatProcessor) ip.convertToFloat();
 
+        // Show options dialog
         final DirectionalCoherenceFilter filter = new DirectionalCoherenceFilter();
-        if (!DialogUtil.showGenericDialog(filter, TITLE)) {
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addNumericField("Space_scale", filter.getSpaceScale(), 2, 6, "");
+        dialog.showDialog();
+
+        if (dialog.wasCanceled()) {
             return;
         }
 
+        // Filter
+        filter.setSpaceScale(dialog.getNextNumber());
         final FloatProcessor dest = filter.run(src);
-
         new ImagePlus(TITLE, dest).show();
     }
 
