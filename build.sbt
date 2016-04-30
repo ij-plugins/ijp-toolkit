@@ -28,6 +28,9 @@ libraryDependencies ++= Seq(
   "com.novocode"      % "junit-interface"   % "0.11" % "test->default"
 )
 
+// Add example directories to test compilation
+unmanagedSourceDirectories in Test += baseDirectory.value / "example/src"
+
 // fork a new JVM for 'run' and 'test:run'
 fork := true
 
