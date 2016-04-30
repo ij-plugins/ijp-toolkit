@@ -3,8 +3,7 @@ IJ Plugins Toolkit
 
 [![Build Status](https://travis-ci.org/ij-plugins/ijp-toolkit.svg?branch=develop)](https://travis-ci.org/ij-plugins/ijp-toolkit)
 
-[IJ Plugins Toolkit](http://ij-plugins.sourceforge.net/plugins/toolkit.html)
-is a set of ImageJ plugins grouped into:
+[IJ Plugins Toolkit](http://ij-plugins.sourceforge.net/plugins/toolkit.html) is a set of plugins for [ImageJ]. The plugins are grouped into:
 
 * **3D IO** - import and export of data in 3D formats.
 
@@ -23,8 +22,19 @@ is a set of ImageJ plugins grouped into:
   region growing.
 
 
-Installation
-------------
+Running from source
+-------------------
+
+You can build and run the use the plugins within ImageJ using SBT task `ijRun`
+
+```
+sbt ijRun
+```
+
+It will build the code, setup plugins directory, and the start ImageJ. `ijRun` si provided by SBT plugin [sbt-imagej].
+
+ImageJ Plugins Installation
+---------------------------
 
 1. [Download](https://sourceforge.net/projects/ij-plugins/files/ij-plugins_toolkit/)
    latest binaries for ij-plugins Toolkit. Look for version with the highest number.
@@ -36,3 +46,6 @@ Installation
    near the bottom of the displayed Properties' window.
 
 3. Restart ImageJ to load newly installed plugins.
+
+[ImageJ]: http://rsbweb.nih.gov/ij/
+[sbt-imagej]: https://github.com/jpsacha/sbt-imagej
