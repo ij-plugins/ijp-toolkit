@@ -1,8 +1,8 @@
 import java.net.URL
 
-name         := "ij-plugins_toolkit"
+name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version      := "1.10.0-SNAPSHOT" // + svnRevision.value.revision
+version      := "2.0.1-SNAPSHOT"
 
 homepage     := Some(new URL("https://ij-plugins.sf.net"))
 startYear    := Some(2002)
@@ -19,13 +19,17 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
+crossScalaVersions := Seq("2.10.6", "2.11.8")
+
 libraryDependencies ++= Seq(
-  "com.jgoodies"      % "jgoodies-binding"  % "2.13.0",
-  "net.imagej"        % "ij"                % "1.49v",
+  "org.apache.commons" % "commons-math3"    % "3.6.1",
+  "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
+  "net.imagej"         % "ij"               % "1.49v",
   // Test
-  "junit"             % "junit"             % "4.12" % "test",
+  "junit"              % "junit"            % "4.12"   % "test",
+  "org.scalatest"     %% "scalatest"        % "2.2.6"  % "test",
   // JUnit runner SBT plugin
-  "com.novocode"      % "junit-interface"   % "0.11" % "test->default"
+  "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
 
 // Add example directories to test compilation
@@ -57,10 +61,16 @@ baseDirectory in run := baseDirectory.value / "sandbox"
 //
 // Enables publishing to maven repo
 publishMavenStyle := true
-// This is a Java project, disable using the Scala version in output paths and artifacts
-crossPaths        := false
-// This forbids including Scala related libraries into the dependency
-autoScalaLibrary  := false
+
+publishTo <<= version {
+  version: String =>
+    if (version.contains("-SNAPSHOT"))
+      Some("Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
+    else
+      Some("Sonatype Nexus Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
+}
+
+
 pomExtra :=
     <scm>
       <url>https://github.com/ij-plugins/ijp-toolkit</url>
@@ -70,5 +80,6 @@ pomExtra :=
       <developer>
         <id>jpsacha</id>
         <name>Jarek Sacha</name>
+        <url>https://github.com/jpsacha</url>
       </developer>
     </developers>
