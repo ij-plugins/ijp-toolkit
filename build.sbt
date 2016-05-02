@@ -1,8 +1,10 @@
 import java.net.URL
 
+// @formatter:off
+
 name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version := "2.1.0-SNAPSHOT"
+version      := "2.1.0-SNAPSHOT"
 
 homepage     := Some(new URL("https://ij-plugins.sf.net"))
 startYear    := Some(2002)
@@ -10,15 +12,17 @@ licenses     := Seq(("LGPL-2.1", new URL("http://opensource.org/licenses/LGPL-2.
 description  := "<html>" +
     "IJ Plugins Toolkit is a set of ImageJ plugins grouped into:" +
     "<ul>" +
-    "<li>3D IO - import and export of data in 3D formats.</li>" +
-    "<li>3D Toolkit - operations on stacks interpreted as 3D images, including morphological operations.</li>" +
-    "<li>Color - color space conversion, color edge detection (color and multi-band images).</li>" +
-    "<li>Filters - fast median filters and various anisotropic diffusion filters.</li>" +
-    "<li>Graphics - Texture Synthesis - A plugin to perform texture synthesis using the image quilting algorithm of Efros and Freeman.</li>" +
-    "<li>Segmentation - image segmentation through clustering, thresholding, and region growing.</li>" +
+    "  <li>3D IO - import and export of data in 3D formats.</li>" +
+    "  <li>3D Toolkit - operations on stacks interpreted as 3D images, including morphological operations.</li>" +
+    "  <li>Color - color space conversion, color edge detection (color and multi-band images).</li>" +
+    "  <li>Filters - fast median filters and various anisotropic diffusion filters.</li>" +
+    "  <li>Graphics - Texture Synthesis - A plugin to perform texture synthesis using the image quilting algorithm of " +
+  "        Efros and Freeman.</li>" +
+    "  <li>Segmentation - image segmentation through clustering, thresholding, and region growing.</li>" +
     "</ul>" +
     "</html>"
 
+scalaVersion       := "2.11.8"
 crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.0-M4")
 
 libraryDependencies ++= Seq(
@@ -49,10 +53,10 @@ shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRe
 // Setup sbt-imagej plugin
 //
 enablePlugins(SbtImageJ)
-ijRuntimeSubDir := "sandbox"
-ijPluginsSubDir := "ij-plugins"
+ijRuntimeSubDir         := "sandbox"
+ijPluginsSubDir         := "ij-plugins"
 ijCleanBeforePrepareRun := true
-cleanFiles += ijPluginsDir.value
+cleanFiles              += ijPluginsDir.value
 
 baseDirectory in run := baseDirectory.value / "sandbox"
 
