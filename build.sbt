@@ -19,7 +19,7 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-crossScalaVersions := Seq("2.10.6", "2.11.8")
+crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.0-M4")
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
