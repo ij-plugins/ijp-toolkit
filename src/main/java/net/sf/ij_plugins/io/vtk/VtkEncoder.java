@@ -1,23 +1,23 @@
 /*
- * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
- * Author's email: jsacha at users dot sourceforge dot net
+ * IJ-Plugins
+ * Copyright (C) 2002-2016 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
 package net.sf.ij_plugins.io.vtk;
@@ -168,8 +168,7 @@ public final class VtkEncoder {
 
         final int oldSlice = imp.getCurrentSlice();
 
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-        try {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             IJ.showProgress(0);
 
             final String header = createHeader(imp, true);
@@ -184,8 +183,6 @@ public final class VtkEncoder {
                 writeArray(pixels[z], sliceSize, writer, width);
                 IJ.showProgress((double) z / (double) depth);
             }
-        } finally {
-            writer.close();
         }
         IJ.showProgress(1);
 
@@ -215,7 +212,7 @@ public final class VtkEncoder {
     private static void writeArray(final byte[] a, final int length, final Writer writer, final int lineSize)
             throws IOException {
 
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (int i = 0; i < length; ++i) {
             buf.append(a[i] & 0xff);
             if (i > 0 && (i % lineSize) == 0) {

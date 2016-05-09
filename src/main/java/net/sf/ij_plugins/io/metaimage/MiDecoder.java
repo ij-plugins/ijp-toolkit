@@ -1,23 +1,23 @@
 /*
- * Image/J Plugins
- * Copyright (C) 2002-2013 Jarek Sacha
- * Author's email: jsacha at users dot sourceforge dot net
+ * IJ-Plugins
+ * Copyright (C) 2002-2016 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at http://sourceforge.net/projects/ij-plugins/
  */
 
 package net.sf.ij_plugins.io.metaimage;
@@ -29,9 +29,9 @@ import ij.VirtualStack;
 import ij.io.FileInfo;
 import ij.io.FileOpener;
 import ij.io.RandomAccessStream;
+import ij.measure.Calibration;
 import ij.plugin.FileInfoVirtualStack;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.Validate;
 
@@ -48,6 +48,18 @@ import java.io.*;
  * @since July 31, 2002
  */
 public final class MiDecoder {
+
+    private static class HeaderInfo {
+        final FileInfo fileInfo;
+        final int elementNumberOfChannels;
+        final double[] offset;
+
+        public HeaderInfo(FileInfo fileInfo, int elementNumberOfChannels, double[] offset) {
+            this.fileInfo = fileInfo;
+            this.elementNumberOfChannels = elementNumberOfChannels;
+            this.offset = offset;
+        }
+    }
 
     // TODO Validate MetaImage tag dependency (some tags need always be present, some only if other tags are present, etc.)
 
@@ -84,9 +96,9 @@ public final class MiDecoder {
         final MiDecoder miDecoder = new MiDecoder();
 
         // Read image header
-        final Pair<FileInfo, Integer> p = miDecoder.decodeHeader(file);
-        final FileInfo fileInfo = p.getFirst();
-        final int elementNumberOfChannels = p.getSecond();
+        final HeaderInfo hi = miDecoder.decodeHeader(file);
+        final FileInfo fileInfo = hi.fileInfo;
+        final int elementNumberOfChannels = hi.elementNumberOfChannels;
         if (elementNumberOfChannels > 1) {
             // Trick FileOpener to read all channels, they will be later separated
             fileInfo.width *= elementNumberOfChannels;
@@ -112,6 +124,17 @@ public final class MiDecoder {
 
         if (imp == null) {
             throw new MiException("Unable to read image data from '" + fileInfo.fileName + "'.");
+        }
+
+        // Add offset info to calibration
+        if (hi.offset != null) {
+            Calibration cal = imp.getCalibration();
+            cal.xOrigin = hi.offset[0] / hi.fileInfo.pixelWidth;
+            cal.yOrigin = hi.offset[1] / hi.fileInfo.pixelHeight;
+            if (imp.getStackSize() > 1) {
+                cal.zOrigin = hi.offset[2] / hi.fileInfo.pixelDepth;
+            }
+            imp.setCalibration(cal);
         }
 
         if (elementNumberOfChannels > 1) {
@@ -159,6 +182,9 @@ public final class MiDecoder {
     }
 
 
+    /**
+     * Extract tag value for known tags. If tag is not recognized return {@code null}.
+     */
     private MiTagValuePair extractTagAndValue(final String line) throws MiException {
 
         Validate.argumentNotNull(line, "line");
@@ -174,7 +200,8 @@ public final class MiDecoder {
         try {
             tag.id = (MiTag) MiTag.DIM_SIZE.byName(tagName);
         } catch (final IllegalArgumentException ex) {
-            throw new MiException("'" + tagName + "' is not a valid MetaImage tag name.", ex);
+            if (IJ.debugMode) IJ.log("Ignoring unrecognized MetaImage tag: " + line);
+            return null;
         }
 
         tag.value = line.substring(position + 1, line.length()).trim();
@@ -191,9 +218,10 @@ public final class MiDecoder {
      * @return MetaImage header information converted to FileInfo format.
      * @throws MiException In case of I/O errors or incorrect header format.
      */
-    private Pair<FileInfo, Integer> decodeHeader(final File file) throws MiException {
+    private HeaderInfo decodeHeader(final File file) throws MiException {
         final FileInfo fileInfo = new FileInfo();
         int elementNumberOfChannels = 1;
+        double[] offsets = null;
         final BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(file));
@@ -212,8 +240,12 @@ public final class MiDecoder {
             for (; line != null; line = reader.readLine()) {
                 ++lineNb;
 
-                // Parse line, throw exception if tag's name is invalid.
+                // Parse line.
                 final MiTagValuePair tag = extractTagAndValue(line);
+                if (tag == null) {
+                    // Ignore unrecognized tags.
+                    continue;
+                }
 
                 // TAG: NDim
                 if (tag.id == MiTag.N_DIMS) {
@@ -289,7 +321,7 @@ public final class MiDecoder {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    final float[] elementSpacing = TextUtil.parseFloatArray(tag.value);
+                    final double[] elementSpacing = TextUtil.parseDoubleArray(tag.value);
                     if (elementSpacing.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -324,7 +356,7 @@ public final class MiDecoder {
                                 + "' yet. Header line=" + lineNb + ".");
                     }
 
-                    final float[] elementSize = TextUtil.parseFloatArray(tag.value);
+                    final double[] elementSize = TextUtil.parseDoubleArray(tag.value);
                     if (elementSize.length != nDims) {
                         throw new MiException("Number of dimensions in tag '"
                                 + MiTag.DIM_SIZE
@@ -392,6 +424,22 @@ public final class MiDecoder {
                     // ElementDataFile is always the last tag in the header.
                     break;
                 }
+                // TAG: Offset / Origin / Position
+                else if (tag.id == MiTag.OFFSET || tag.id == MiTag.ORIGIN || tag.id == MiTag.POSITION) {
+                    if (nDims == -1) {
+                        throw new MiException("Got tag '" + tag.id
+                                + "' but there was no tag '" + MiTag.N_DIMS
+                                + "' yet. Header line=" + lineNb + ".");
+                    }
+
+                    offsets = TextUtil.parseDoubleArray(tag.value);
+                    if (offsets.length != nDims) {
+                        throw new MiException("Number of offsets in tag '"
+                                + tag.id
+                                + "' does not match number of dimensions in tag '"
+                                + MiTag.N_DIMS + "'. Header line=" + lineNb + ".");
+                    }
+                }
             }
 
         } catch (final IOException ex) {
@@ -441,7 +489,7 @@ public final class MiDecoder {
             }
 
         }
-        return new Pair<>(fileInfo, elementNumberOfChannels);
+        return new HeaderInfo(fileInfo, elementNumberOfChannels, offsets);
     }
 
 
