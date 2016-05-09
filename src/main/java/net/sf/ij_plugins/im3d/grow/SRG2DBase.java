@@ -506,20 +506,6 @@ abstract class SRG2DBase extends DefaultProgressReporter {
     }
 
 
-    protected abstract static class RegionInfo {
-
-        private final int originalSeedID;
-
-
-        public RegionInfo(final int originalSeedID) {
-            this.originalSeedID = originalSeedID;
-        }
-
-
-        public abstract void addPoint(final Point point);
-    }
-
-
     final private static class Candidate implements Comparable<Candidate> {
 
         public final Point point;
