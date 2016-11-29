@@ -66,13 +66,13 @@ baseDirectory in run := baseDirectory.value / "sandbox"
 // Enables publishing to maven repo
 publishMavenStyle := true
 
-publishTo <<= version {
+publishTo := version {
   version: String =>
     if (version.contains("-SNAPSHOT"))
       Some("Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
     else
       Some("Sonatype Nexus Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-}
+}.value
 
 
 pomExtra :=
