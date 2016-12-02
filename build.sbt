@@ -28,10 +28,10 @@ crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.0-M4")
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.49v",
+  "net.imagej"         % "ij"               % "1.51f",
   // Test
   "junit"              % "junit"            % "4.12"   % "test",
-  "org.scalatest"     %% "scalatest"        % "2.2.6"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.0.1"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
