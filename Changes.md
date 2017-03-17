@@ -1,9 +1,15 @@
 ij-plugins Toolkit Changelog
 ============================
 
+Version 2.1.1
+-------------------
 
-Version 1.10.0
---------------
+* Minor API implementation correction to fix [issue #4](https://github.com/ij-plugins/ijp-toolkit/issues/4): 
+  `ProgressReporter.addProgressListener()` cannot be used in Scala 2.12.
+
+
+Version 2.0 and 2.1
+-------------------
 
 * Source code moved to GitHub [ij-plugins/ijp-toolkit](https://github.com/ij-plugins/ijp-toolkit)
 * New [SBT](http://www.scala-sbt.org/)-based build system and new packaging approach.
@@ -13,6 +19,7 @@ Version 1.10.0
 * MetaImage Reader/Writer respect `Origin` tag, mapped into calibration x.y.z origin.
 * MetaImage Reader - does not break on unknown tags, just ignores them.
 * Removed deprecated DialogInfo and dependency in beanutil library.
+* ijp-toolkit2 merged back into ijp-toolkit.
 
 
 Version 1.9.1
