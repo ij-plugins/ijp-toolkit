@@ -22,16 +22,16 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-scalaVersion       := "2.11.8"
-crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.1")
+scalaVersion       := "2.12.8"
+crossScalaVersions := Seq("2.11.12", "2.10.7", "2.12.8")
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.51f",
+  "net.imagej"         % "ij"               % "1.52k",
   // Test
   "junit"              % "junit"            % "4.12"   % "test",
-  "org.scalatest"     %% "scalatest"        % "3.0.1"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.0.6"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
@@ -44,7 +44,7 @@ fork := true
 
 // add a JVM option to use when forking a JVM for 'run'
 javaOptions ++= Seq("-Xmx2G", "-server")
-javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all", "-source",  "1.7", "-target",  "1.7")
+javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all", "-source",  "1.8", "-target",  "1.8")
 
 // Set the prompt (for this build) to include the project id.
 shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> "}
@@ -76,6 +76,7 @@ publishTo := version {
 
 
 pomExtra :=
+    <url>https://github.com/ij-plugins</url>
     <scm>
       <url>https://github.com/ij-plugins/ijp-toolkit</url>
       <connection>scm:https://github.com/ij-plugins/ijp-toolkit.git</connection>
