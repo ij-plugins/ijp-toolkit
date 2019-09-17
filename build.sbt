@@ -4,7 +4,7 @@ import java.net.URL
 
 name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version      := "2.1.2"
+version      := "2.1.3-SNAPSHOT"
 
 homepage     := Some(new URL("https://ij-plugins.sf.net"))
 startYear    := Some(2002)
