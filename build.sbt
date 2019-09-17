@@ -80,26 +80,9 @@ baseDirectory in run := baseDirectory.value / "sandbox"
 //
 // Enables publishing to maven repo
 publishMavenStyle := true
-
-publishTo := version {
-  version: String =>
-    if (version.contains("-SNAPSHOT"))
-      Some("Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
-    else
-      Some("Sonatype Nexus Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-}.value
-
-
-pomExtra :=
-    <url>https://github.com/ij-plugins</url>
-    <scm>
-      <url>https://github.com/ij-plugins/ijp-toolkit</url>
-      <connection>scm:https://github.com/ij-plugins/ijp-toolkit.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>jpsacha</id>
-        <name>Jarek Sacha</name>
-        <url>https://github.com/jpsacha</url>
-      </developer>
-    </developers>
+publishTo := sonatypePublishToBundle.value
+import xerial.sbt.Sonatype._
+sonatypeProjectHosting := Some(GitHubHosting("ij-plugins", "ijp-toolkit", "jpsacha@gmail.com"))
+developers := List(
+  Developer(id="jpsacha", name="Jarek Sacha", email="jpsacha@gmail.com", url=url("https://github.com/jpsacha"))
+)
