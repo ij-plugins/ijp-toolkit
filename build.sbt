@@ -22,8 +22,15 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-scalaVersion       := "2.12.8"
-crossScalaVersions := Seq("2.11.12", "2.10.7", "2.12.8")
+scalaVersion       := "2.13.0"
+crossScalaVersions := Seq("2.11.12", "2.10.7", "2.12.9", "2.13.0")
+
+def isScala2_13plus(scalaVersion: String): Boolean = {
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, n)) if n >= 13 => true
+    case _ => false
+  }
+}
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
@@ -31,10 +38,18 @@ libraryDependencies ++= Seq(
   "net.imagej"         % "ij"               % "1.52k",
   // Test
   "junit"              % "junit"            % "4.12"   % "test",
-  "org.scalatest"     %% "scalatest"        % "3.0.6"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.0.8"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
+
+libraryDependencies ++= (
+    if (isScala2_13plus(scalaVersion.value)) {
+      Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.2.0")
+    } else {
+      Seq.empty[ModuleID]
+    }
+  )
 
 // Add example directories to test compilation
 unmanagedSourceDirectories in Test += baseDirectory.value / "example/src"

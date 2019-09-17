@@ -31,6 +31,7 @@ import net.sf.ij_plugins.filters.CoherenceEnhancingDiffusion._
 import net.sf.ij_plugins.ui.progress.ProgressReporter
 import org.apache.commons.math3.util.FastMath
 
+import scala.collection.parallel.immutable.ParRange
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -62,8 +63,8 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   private var sizeX: Int = 0
   private var sizeY: Int = 0
   private var dumpEnabled: Boolean = false
-  private var _alpha: FloatProcessor = null
-  private var _c2: FloatProcessor = null
+  private var _alpha: FloatProcessor = _
+  private var _c2: FloatProcessor = _
 
   /**
    * Perform filtering.
@@ -166,7 +167,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
     val height = s11.getHeight
     val dest = new FloatProcessor(width, height)
 
-    for (x <- (0 until sizeX).par) {
+    for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until height) {
         val a = s11.getf(x, y) - s22.getf(x, y)
         val b = s12.getf(x, y)
@@ -198,7 +199,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   private[this] def diffusionStep(image: FloatProcessor, c: FloatProcessor, b: FloatProcessor, a: FloatProcessor, step: Double): Double = {
     //y = .5* ( (c_cop).*xop + (a_amo).*xmo - (a_amo + a_apo + c_com + c_cop).*x + (a_apo).*xpo + (c_com).*xom) ...
     //   + .25* ( -1*( (bmo+bop).*xmp + (bpo+bom).*xpm ) + (bpo+bop).*xpp + (bmo+bom).*xmm );
-    for (i <- (0 until sizeX).par) {
+    for (i <- new ParRange(0 until sizeX)) {
       for (j <- 0 until sizeY) {
         val currentValue = image.getf(i, j)
         val firstDeriv = (getPixel(i, j, c) + getPixel(i, j - 1, c)) * getPixel(i, j - 1, image) +
@@ -224,7 +225,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
     val dest = new FloatProcessor(sizeX, sizeY)
     val Cm = 7.2848
     val powerOfOne = Math.abs(config.m - 1d) < Float.MinPositiveValue
-    for (x <- (0 until sizeX).par) {
+    for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
         val a = alpha.getf(x, y)
         val h1 = (a + Eps) / lambda
@@ -239,7 +240,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
 
   private[this] def calcDD(s11: FloatProcessor, s22: FloatProcessor, alpha: FloatProcessor, c2: FloatProcessor, c1: Double): FloatProcessor = {
     val dest = new FloatProcessor(sizeX, sizeY)
-    for (x <- (0 until sizeX).par) {
+    for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
         val v = (c2.getf(x, y) - c1) * (s11.getf(x, y) - s22.getf(x, y)) / (alpha.getf(x, y) + Eps)
         dest.setf(x, y, v.toFloat)
@@ -250,7 +251,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
 
   private[this] def calcD11(dd: FloatProcessor, c2: FloatProcessor, c1: Double): FloatProcessor = {
     val dest = new FloatProcessor(sizeX, sizeY)
-    for (x <- (0 until sizeX).par) {
+    for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
         val v = 0.5 * (c1 + c2.getf(x, y) + dd.getf(x, y))
         dest.setf(x, y, v.toFloat)
@@ -261,7 +262,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
 
   private[this] def calcD12(s12: FloatProcessor, alpha: FloatProcessor, c2: FloatProcessor, c1: Double): FloatProcessor = {
     val dest = new FloatProcessor(sizeX, sizeY)
-    for (x <- (0 until sizeX).par) {
+    for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
         val v = ((c1 - c2.getf(x, y)) * s12.getf(x, y)) / (alpha.getf(x, y) + Eps)
         dest.setf(x, y, v.toFloat)
@@ -272,7 +273,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
 
   private[this] def calcD22(dd: FloatProcessor, c2: FloatProcessor, c1: Double): FloatProcessor = {
     val dest: FloatProcessor = new FloatProcessor(sizeX, sizeY)
-    for (x <- (0 until sizeX).par) {
+    for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
         val v = 0.5 * (c1 + c2.getf(x, y) - dd.getf(x, y))
         dest.setf(x, y, v.toFloat)

@@ -1,6 +1,11 @@
 ij-plugins Toolkit Changelog
 ============================
 
+Version 2.1.2
+-------------------
+
+* Support Scala 2.13
+
 Version 2.1.1
 -------------------
 
