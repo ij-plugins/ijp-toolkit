@@ -1,9 +1,4 @@
-`ijp-toolkit2` is the next generation of the [[http://ij-plugins.sourceforge.net/plugins/toolkit.html IJ-Plugins Toolkit]].
-Initial focus is on improved speed using parallel algorithms.
-The other original `IJ-Plugins Toolkit` (v.1.*) and `ijp-toolkit2` (v.2.*) can be used together.
-Only upgraded algorithms are moved from v.1 to v.2, so there should be no conflicts.
-
-The source code for `ijp-toolkit2` is hosted at [[http://github.com/ij-plugins/ijp-toolkit2 GitHub ij-plugins/ijp-toolkit2]]. 
+The source code for `ijp-toolkit` is hosted at [[http://github.com/ij-plugins/ijp-toolkit GitHub ij-plugins/ijp-toolkit]].
 
 == Package Structure ==
 
