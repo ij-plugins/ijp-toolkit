@@ -55,12 +55,12 @@ There are some examples of using IJ-Plugins Toolkit as a stand-alone library in 
 ```
 groupId   : net.sf.ij-plugins
 artifactId: ijp-toolkit
-version   : 2.1.1
+version   : 2.1.2
 ```
 For instance, for [SBT] it would be:
 
 ```
-"net.sf.ij-plugins" %% "ijp-toolkit" % "2.1.1"
+"net.sf.ij-plugins" %% "ijp-toolkit" % "2.1.2"
 ```
 
 Running from source
