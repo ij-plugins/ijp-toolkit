@@ -4,7 +4,7 @@ import java.net.URL
 
 name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version      := "2.1.1"
+version      := "2.1.2-SNAPSHOT"
 
 homepage     := Some(new URL("https://ij-plugins.sf.net"))
 startYear    := Some(2002)
@@ -22,19 +22,34 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-scalaVersion       := "2.11.8"
-crossScalaVersions := Seq("2.11.8", "2.10.6", "2.12.1")
+scalaVersion       := "2.13.0"
+crossScalaVersions := Seq("2.11.12", "2.10.7", "2.12.9", "2.13.0")
+
+def isScala2_13plus(scalaVersion: String): Boolean = {
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, n)) if n >= 13 => true
+    case _ => false
+  }
+}
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.51f",
+  "net.imagej"         % "ij"               % "1.52k",
   // Test
   "junit"              % "junit"            % "4.12"   % "test",
-  "org.scalatest"     %% "scalatest"        % "3.0.1"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.0.8"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
+
+libraryDependencies ++= (
+    if (isScala2_13plus(scalaVersion.value)) {
+      Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.2.0")
+    } else {
+      Seq.empty[ModuleID]
+    }
+  )
 
 // Add example directories to test compilation
 unmanagedSourceDirectories in Test += baseDirectory.value / "example/src"
@@ -44,7 +59,7 @@ fork := true
 
 // add a JVM option to use when forking a JVM for 'run'
 javaOptions ++= Seq("-Xmx2G", "-server")
-javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all", "-source",  "1.7", "-target",  "1.7")
+javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all", "-source",  "1.8", "-target",  "1.8")
 
 // Set the prompt (for this build) to include the project id.
 shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> "}
@@ -65,25 +80,9 @@ baseDirectory in run := baseDirectory.value / "sandbox"
 //
 // Enables publishing to maven repo
 publishMavenStyle := true
-
-publishTo := version {
-  version: String =>
-    if (version.contains("-SNAPSHOT"))
-      Some("Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
-    else
-      Some("Sonatype Nexus Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-}.value
-
-
-pomExtra :=
-    <scm>
-      <url>https://github.com/ij-plugins/ijp-toolkit</url>
-      <connection>scm:https://github.com/ij-plugins/ijp-toolkit.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>jpsacha</id>
-        <name>Jarek Sacha</name>
-        <url>https://github.com/jpsacha</url>
-      </developer>
-    </developers>
+publishTo := sonatypePublishToBundle.value
+import xerial.sbt.Sonatype._
+sonatypeProjectHosting := Some(GitHubHosting("ij-plugins", "ijp-toolkit", "jpsacha@gmail.com"))
+developers := List(
+  Developer(id="jpsacha", name="Jarek Sacha", email="jpsacha@gmail.com", url=url("https://github.com/jpsacha"))
+)
