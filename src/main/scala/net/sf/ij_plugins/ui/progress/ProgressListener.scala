@@ -31,5 +31,5 @@ trait ProgressListener {
    *
    * @param e event information.
    */
-  def progressNotification(e: ProgressEvent)
+  def progressNotification(e: ProgressEvent): Unit
 }

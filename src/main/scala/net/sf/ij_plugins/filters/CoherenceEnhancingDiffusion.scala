@@ -184,7 +184,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
 
   private def isDumpEnabled: Boolean = dumpEnabled
 
-  private def setDumpEnabled(dumpEnabled: Boolean) {
+  private def setDumpEnabled(dumpEnabled: Boolean): Unit = {
     this.dumpEnabled = dumpEnabled
   }
 
@@ -288,7 +288,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
     fp.getf(x2, y2)
   }
 
-  private[this] def dumpImage(name: String, iteration: Int, fp: FloatProcessor) {
+  private[this] def dumpImage(name: String, iteration: Int, fp: FloatProcessor): Unit = {
     if (dumpEnabled) {
       val fileName = "%s_%s_%04d.tif".format(dumpFilenamePrefix, name, iteration)
       val file = new File(fileName).getAbsoluteFile

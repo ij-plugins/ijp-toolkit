@@ -94,19 +94,19 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
     true
   }
 
-  def setNPasses(nPasses: Int) {
+  def setNPasses(nPasses: Int): Unit = {
     this.nPasses = nPasses
     this.passCount = 0
   }
 
-  def run(ip: ImageProcessor) {
+  def run(ip: ImageProcessor): Unit = {
     passCount += 1
     val statsMessage = if (nPasses > 1) TITLE + " - pass " + passCount + "/" + nPasses + ". " else TITLE
     IJ.showStatus(statsMessage)
     val src = ip.convertToFloat.asInstanceOf[FloatProcessor]
     val filter = new CoherenceEnhancingDiffusion(CONFIG)
     val progressListener = new ProgressListener {
-      def progressNotification(e: ProgressEvent) {
+      def progressNotification(e: ProgressEvent): Unit = {
         IJ.showProgress(Math.round(e.progress * 100).asInstanceOf[Int], 100)
         IJ.showStatus(statsMessage + e.message)
       }

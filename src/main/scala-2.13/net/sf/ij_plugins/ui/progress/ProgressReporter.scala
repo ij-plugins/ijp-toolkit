@@ -77,7 +77,7 @@ trait ProgressReporter {
     *
     * @param l listener to add.
     */
-  def addProgressListener(l: ProgressListener) {
+  def addProgressListener(l: ProgressListener): Unit = {
     progressListeners synchronized {
       progressListeners += l
     }
@@ -88,7 +88,7 @@ trait ProgressReporter {
     *
     * @param l listener to remove.
     */
-  def removeProgressListener(l: ProgressListener) {
+  def removeProgressListener(l: ProgressListener): Unit = {
     progressListeners synchronized {
       progressListeners -= l
     }
@@ -97,7 +97,7 @@ trait ProgressReporter {
   /**
     * Remove all progress listener.
     */
-  def removeAllProgressListener() {
+  def removeAllProgressListener(): Unit = {
     for (progressListener <- progressListeners) removeProgressListener(progressListener)
   }
 
@@ -112,7 +112,7 @@ trait ProgressReporter {
     * @see #notifyProgressListeners(double)
     * @see #notifyProgressListeners(double, String)
     */
-  private def setCurrentProgress(progress: Double) {
+  private def setCurrentProgress(progress: Double): Unit = {
     require(progress >= 0 && progress <= 1, "Argument progress cannot be less than 0 or more than 1 [" + progress + "].")
     _currentProgress = progress
   }
@@ -123,7 +123,7 @@ trait ProgressReporter {
     *
     * @see #notifyProgressListeners(double)
     */
-  protected def notifyProgressListeners() {
+  protected def notifyProgressListeners(): Unit = {
     progressListeners synchronized {
       if (progressListeners.nonEmpty) {
         val e = new ProgressEvent(this, currentProgress)
@@ -138,7 +138,7 @@ trait ProgressReporter {
     * @param progress new value of `currentProgress`. The value must be not less than 0 and not more than 1.
     * @param message  message that will be send to listeners within `ProgressEvent`
     */
-  protected def notifyProgressListeners(progress: Double, message: String) {
+  protected def notifyProgressListeners(progress: Double, message: String): Unit = {
     setCurrentProgress(progress)
     progressListeners synchronized {
       if (progressListeners.nonEmpty) {
@@ -148,7 +148,7 @@ trait ProgressReporter {
     }
   }
 
-  protected def notifyProgressListeners(progress: Double) {
+  protected def notifyProgressListeners(progress: Double): Unit = {
     notifyProgressListeners(progress, "")
   }
 
@@ -160,7 +160,7 @@ trait ProgressReporter {
     *
     * @param message message that will be send to listeners within `ProgressEvent`
     */
-  protected def notifyProgressListeners(count: Long, max: Long, message: String = "") {
+  protected def notifyProgressListeners(count: Long, max: Long, message: String = ""): Unit = {
     notifyProgressListeners(count.toDouble / max.toDouble, message)
   }
 }
