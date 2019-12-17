@@ -100,7 +100,7 @@ public final class SRG3D extends DefaultProgressReporter {
 
     private static final String NAME = "Seeded Region Growing";
 
-    private static final Point3DInt NEIGHBOUR_OFFSET[] = {
+    private static final Point3DInt[] NEIGHBOUR_OFFSET = {
             // 6-connected
             new Point3DInt(+0, +0, -1),
             new Point3DInt(-1, +0, +0),

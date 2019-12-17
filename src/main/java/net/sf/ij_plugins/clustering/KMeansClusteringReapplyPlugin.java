@@ -167,9 +167,9 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
         dialog.addMessage("Select result table containing cluster centers produced by k-means clustering plugin.");
-        dialog.addChoice("Table with cluster centers", resultTableNames.toArray(new String[resultTableNames.size()]),
+        dialog.addChoice("Table with cluster centers", resultTableNames.toArray(new String[0]),
                 resultTableNames.get(0));
-        dialog.addChoice("Image to apply clusters", imageNames.toArray(new String[imageNames.size()]),
+        dialog.addChoice("Image to apply clusters", imageNames.toArray(new String[0]),
                 imageNames.get(0));
         dialog.addCheckbox("Interpret_stack_as_3D (not supported)", CONFIG.interpretStackAs3D);
         dialog.addCheckbox("Show_clusters_as_centroid_value", CONFIG.showCentroidImage);

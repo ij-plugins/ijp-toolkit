@@ -95,11 +95,11 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         final MaximumEntropyMultiThreshold maximumEntropyMultiThreshold = new MaximumEntropyMultiThreshold();
         maximumEntropyMultiThreshold.addProgressListener(new IJProgressBarAdapter());
         final int[] thresholds = maximumEntropyMultiThreshold.maximumEntropy(hist, nbThresholds);
-        String logMsg = "Maximum Entropy Thresholds: ";
+        StringBuilder logMsg = new StringBuilder("Maximum Entropy Thresholds: ");
         for (final int threshold : thresholds) {
-            logMsg += " " + threshold;
+            logMsg.append(" ").append(threshold);
         }
-        IJ.log(logMsg);
+        IJ.log(logMsg.toString());
         encode((ByteProcessor) imageProcessor, thresholds);
     }
 
@@ -110,11 +110,11 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         for (int i = 0; i < values.length; i++) {
             values[i] = (int) Math.round(i * inc);
         }
-        String logMsg = "Levels in thresholded image: ";
+        StringBuilder logMsg = new StringBuilder("Levels in thresholded image: ");
         for (final int v : values) {
-            logMsg += " " + v;
+            logMsg.append(" ").append(v);
         }
-        IJ.log(logMsg);
+        IJ.log(logMsg.toString());
 
         final byte[] pixels = (byte[]) ip.getPixels();
         for (int i = 0; i < pixels.length; i++) {

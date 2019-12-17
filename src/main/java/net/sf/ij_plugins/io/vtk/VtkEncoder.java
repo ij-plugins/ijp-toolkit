@@ -79,6 +79,8 @@ public final class VtkEncoder {
         final String scalarName;
         switch (imp.getType()) {
             case ImagePlus.GRAY8:
+                // BEG KEESH RGB UPDATE
+            case ImagePlus.COLOR_RGB:
                 scalarName = VtkScalarType.UNSIGNED_CHAR.toString();
                 break;
             case ImagePlus.GRAY16:
@@ -86,10 +88,6 @@ public final class VtkEncoder {
                 break;
             case ImagePlus.GRAY32:
                 scalarName = VtkScalarType.FLOAT.toString();
-                break;
-            // BEG KEESH RGB UPDATE
-            case ImagePlus.COLOR_RGB:
-                scalarName = VtkScalarType.UNSIGNED_CHAR.toString();
                 break;
             // END KEESH RGB UPDATE
             default:

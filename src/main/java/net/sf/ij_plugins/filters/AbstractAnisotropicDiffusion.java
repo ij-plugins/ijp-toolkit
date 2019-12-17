@@ -50,7 +50,6 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     protected final List<ProgressListener> progressListeners = new ArrayList<>();
     private double currentProgress;
     private double lastReportedProgress;
-    private final double minProgress = 0.01;
     private final DecimalFormat decimalFormat = new DecimalFormat("0.######");
     private double time;
 
@@ -93,6 +92,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
 
     private void updateCurrentProgress(final double progress, final String message) {
         this.currentProgress = progress;
+        double minProgress = 0.01;
         if (progressListeners.size() > 0 && Math.abs(progress - lastReportedProgress) > minProgress) {
             final ProgressEvent event = new ProgressEvent(this, this.currentProgress, message);
             for (final ProgressListener progressListener : progressListeners) {
@@ -177,7 +177,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
-    private double meanSquareDifference(final float a[], final float b[]) {
+    private double meanSquareDifference(final float[] a, final float[] b) {
         assert a != null;
         assert b != null;
         assert a.length == b.length;

@@ -49,12 +49,9 @@ public class IJProgressBarAdapter implements ProgressListener {
             IJ.showProgress(e.getProgress());
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    @Override
-                    public void run() {
-                        IJ.showStatus(e.getMessage());
-                        IJ.showProgress(e.getProgress());
-                    }
+                SwingUtilities.invokeAndWait(() -> {
+                    IJ.showStatus(e.getMessage());
+                    IJ.showProgress(e.getProgress());
                 });
             } catch (final InterruptedException ex) {
                 IJ.log("InterruptedException " + ex.getMessage());

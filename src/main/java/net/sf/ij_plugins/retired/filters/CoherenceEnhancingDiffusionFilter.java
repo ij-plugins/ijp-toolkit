@@ -43,8 +43,6 @@ public class CoherenceEnhancingDiffusionFilter {
     private double integrationScale = 1;
     private double c1 = 0.001;
     private double c2 = 1;
-    private final double k = 0.01;
-    private final double beta = 4;
     private int numberOfIterations = 1;
     private double timeStep = 1;
     private final float[] gradientXKernel = {
@@ -255,10 +253,12 @@ public class CoherenceEnhancingDiffusionFilter {
 
     double g2(final double mu1, final double mu2) {
         final double dMu = mu1 - mu2;
+        double k = 0.01;
         return Math.max(c1, 1 - Math.exp(-dMu * dMu / k / k));
     }
 
     double g3(final double mu1, final double mu2) {
+        double beta = 4;
         return c1 + (1 - c1) * Math.pow((mu1 - mu2) / (mu1 + mu2), beta);
     }
 }

@@ -29,6 +29,7 @@ import net.sf.ij_plugins.util.TextUtil;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -410,7 +411,7 @@ public final class ExportAsSTL extends DefaultProgressReporter {
 
 
     private static void write(final OutputStream out, final String s) throws IOException {
-        out.write(s.getBytes("UTF-8"));
+        out.write(s.getBytes(StandardCharsets.UTF_8));
     }
 
 }

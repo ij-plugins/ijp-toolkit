@@ -548,8 +548,6 @@ public final class VtkDecoder {
         private static final byte CARRIAGE_RETURN_CHAR = 10;
 
         private final byte[] buffer;
-        private final int dataOffset;
-        private final int dataLength;
 
         private int startOfCurrentLine;
         private int startOfNextLine;
@@ -568,8 +566,6 @@ public final class VtkDecoder {
          */
         public LineExtractor(final byte[] buffer, final int offset, final int length) {
             this.buffer = buffer;
-            this.dataOffset = offset;
-            this.dataLength = length;
             this.startOfCurrentLine = offset;
         }
 

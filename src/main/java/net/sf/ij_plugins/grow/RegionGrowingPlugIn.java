@@ -29,7 +29,9 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.grow.SRG;
 import net.sf.ij_plugins.im3d.grow.SRG3D;
-import net.sf.ij_plugins.util.progress.*;
+import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
+import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.util.progress.ProgressAccumulator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,8 +93,8 @@ public final class RegionGrowingPlugIn implements PlugIn {
             return;
         }
 
-        final String[] imageTitles = imageTitleList.toArray(new String[imageTitleList.size()]);
-        final String[] seedTitles = seedTitleList.toArray(new String[seedTitleList.size()]);
+        final String[] imageTitles = imageTitleList.toArray(new String[0]);
+        final String[] seedTitles = seedTitleList.toArray(new String[0]);
         final GenericDialog gd = new GenericDialog(TITLE, IJ.getInstance());
         gd.addChoice("Image:", imageTitles, imageTitles[0]);
         gd.addChoice("Seeds:", seedTitles, seedTitles[0]);
@@ -144,11 +146,11 @@ public final class RegionGrowingPlugIn implements PlugIn {
 
     private static void run(final ImagePlus image, final ImagePlus seeds, final String stackTreatment, final boolean growHistoryEnabled) {
         if (RUN_CURRENT_SLICE.equalsIgnoreCase(stackTreatment)) {
-            run(image.getProcessor(), (ByteProcessor) seeds.getProcessor(), image.getTitle() + Integer.toString(image.getCurrentSlice()));
+            run(image.getProcessor(), (ByteProcessor) seeds.getProcessor(), image.getTitle() + image.getCurrentSlice());
         } else if (RUN_INDEPENDENT_SLICES.equalsIgnoreCase(stackTreatment)) {
             runEachSliceIndependently(image, seeds);
         } else if (RUN_3D.equalsIgnoreCase(stackTreatment)) {
-            run(image.getStack(), seeds.getStack(), image.getTitle() + Integer.toString(image.getCurrentSlice()), growHistoryEnabled);
+            run(image.getStack(), seeds.getStack(), image.getTitle() + image.getCurrentSlice(), growHistoryEnabled);
         } else {
             IJ.error(TITLE, "Not supported stack option: " + stackTreatment);
         }
@@ -245,18 +247,13 @@ public final class RegionGrowingPlugIn implements PlugIn {
 
 
         @Override
-        public ByteProcessor call() throws Exception {
+        public ByteProcessor call() {
             // Setup SRG
             final SRG srg = new SRG();
             srg.setImage(image);
             srg.setSeeds(seeds);
             // Forward progress notification
-            srg.addProgressListener(new ProgressListener() {
-                @Override
-                public void progressNotification(final ProgressEvent e) {
-                    notifyProgressListeners(e.getProgress(), e.getMessage());
-                }
-            });
+            srg.addProgressListener(e -> notifyProgressListeners(e.getProgress(), e.getMessage()));
 
             // Run segmentation
             srg.run();

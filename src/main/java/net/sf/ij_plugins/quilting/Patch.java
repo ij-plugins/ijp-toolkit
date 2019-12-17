@@ -81,7 +81,7 @@ public class Patch extends View {
      * the view.
      */
     @Override
-    public void putSample(final int x, final int y, final int values[]) {
+    public void putSample(final int x, final int y, final int[] values) {
         // TODO: optimize pixel access
         if (x >= 0 && x < width && y >= 0 && y < height) {
             super.putSample(x, y, values);

@@ -204,7 +204,7 @@ public final class MiDecoder {
             return null;
         }
 
-        tag.value = line.substring(position + 1, line.length()).trim();
+        tag.value = line.substring(position + 1).trim();
 
         return tag;
     }
@@ -460,7 +460,6 @@ public final class MiDecoder {
 
             final RandomAccessStream in;
             try {
-                //noinspection IOResourceOpenedButNotSafelyClosed
                 in = new RandomAccessStream(new BufferedInputStream(new FileInputStream(file)));
             } catch (final FileNotFoundException ex) {
                 throw new MiException("Error reading file: '" + file.getAbsolutePath() + "'. " + ex.getMessage(), ex);

@@ -22,10 +22,6 @@
 package net.sf.ij_plugins.operators;
 
 /**
- * @author Jarek Sacha
- */
-
-/**
  * Pixel numbers:
  * <pre>
  *  4 3 2

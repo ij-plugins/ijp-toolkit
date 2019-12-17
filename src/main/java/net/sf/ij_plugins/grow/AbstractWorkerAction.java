@@ -60,7 +60,7 @@ abstract class AbstractWorkerAction extends AbstractModelAction<RegionGrowingMod
             Throwable error;
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground() {
                 // Run region growing
                 try {
                     workerAction();

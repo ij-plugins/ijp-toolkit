@@ -33,8 +33,8 @@ import java.util.List;
 public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
 
     private static final double EPSILON = Double.MIN_VALUE;
-    private double histogram[];
-    private Double intervalEntropy[][];
+    private double[] histogram;
+    private Double[][] intervalEntropy;
 
 
     /**
@@ -46,7 +46,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
      * @param nbDivisions desired number of thresholds.
      * @return array containing values of maximum entropy thresholds.
      */
-    public final int[] maximumEntropy(final int hist[], final int nbDivisions) {
+    public final int[] maximumEntropy(final int[] hist, final int nbDivisions) {
 
         // FIXME: Optimize memory use using iterator over intervals instead of generation array of all possible intervals
 

@@ -60,7 +60,7 @@ public final class RedBlackTree<K extends Comparable<K>> {
     }
 
 
-    private void verify(final Node node) {
+    private void verify(final Node<K> node) {
         if (node == Node.NULL) {
             return;
         }
@@ -78,12 +78,12 @@ public final class RedBlackTree<K extends Comparable<K>> {
         }
 
         // FIXME: Rule 5
-        final List<Node> leaves = new ArrayList<>();
+        final List<Node<K>> leaves = new ArrayList<>();
         findLeaves(node, leaves);
         if (leaves.size() > 0) {
             final int blackInPath = countBlackToParent(leaves.get(0), node);
             for (int i = 0; i < leaves.size(); i++) {
-                final Node c = leaves.get(i);
+                final Node<K> c = leaves.get(i);
                 final int n = countBlackToParent(c, node);
                 if (n != blackInPath) {
                     throw new IllegalStateException("Black path mismatch in sub-tree: "
@@ -100,7 +100,7 @@ public final class RedBlackTree<K extends Comparable<K>> {
     }
 
 
-    private int countBlackToParent(final Node leaf, final Node node) {
+    private int countBlackToParent(final Node<K> leaf, final Node<K> node) {
 
         if (leaf == Node.NULL) {
             throw new IllegalArgumentException("Leaf node cannot be NULL");
@@ -116,7 +116,7 @@ public final class RedBlackTree<K extends Comparable<K>> {
     }
 
 
-    private void findLeaves(final Node node, final List<Node> leaves) {
+    private void findLeaves(final Node<K> node, final List<Node<K>> leaves) {
         if (node == Node.NULL) {
             return;
         }
