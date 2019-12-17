@@ -22,8 +22,8 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-scalaVersion       := "2.13.0"
-crossScalaVersions := Seq("2.11.12", "2.10.7", "2.12.9", "2.13.0")
+crossScalaVersions := Seq("2.13.1", "2.12.10")
+scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {

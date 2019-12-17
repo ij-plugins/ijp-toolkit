@@ -33,5 +33,5 @@ class ProgressEvent(val source: Any,
 
   def this(source: Any, progress: Double) = this(source, progress, "")
 
-  def progressPercent = progress * 100
+  def progressPercent: Double = progress * 100
 }
