@@ -56,10 +56,10 @@ object CoherenceEnhancingDiffusion {
  * "Coherence-Enhancing Diffusion Filtering", <i>International Journal of Computer Vision</i>, 1999, vol.31, p.111-127.
  */
 class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressReporter {
-  private final val Eps: Double = Math.pow(2.0, -52.0)
-  private final val Gamma: Double = 0.01
-  private final val GradientKernel: Array[Float] = Array(-0.5f, 0.0f, 0.5f)
-  private final val dumpFilenamePrefix: String = "tmp/cef"
+  private val Eps: Double = Math.pow(2.0, -52.0)
+  private val Gamma: Double = 0.01
+  private val GradientKernel: Array[Float] = Array(-0.5f, 0.0f, 0.5f)
+  private val dumpFilenamePrefix: String = "tmp/cef"
   private var sizeX: Int = 0
   private var sizeY: Int = 0
   private var dumpEnabled: Boolean = false
@@ -67,7 +67,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   private var _c2: FloatProcessor = _
 
   /**
-   * Perform filtering.
+    * Perform filtering.
     *
     * @param src source
    * @return filtered image

@@ -53,7 +53,7 @@ object CoherenceEnhancingDiffusionPlugIn {
  */
 final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with DialogListener {
 
-  private var imp: ImagePlus = null
+  private var imp: ImagePlus = _
   private var nPasses = 0
   private var passCount = 0
 
