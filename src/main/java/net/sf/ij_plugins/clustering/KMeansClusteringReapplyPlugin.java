@@ -32,6 +32,7 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.text.TextWindow;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.IJPUtils;
 import net.sf.ij_plugins.util.Pair;
 
 import java.awt.*;
@@ -166,6 +167,7 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
     private boolean showOptionsDialog(final List<String> resultTableNames, final List<String> imageNames) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, ABOUT));
         dialog.addMessage("Select result table containing cluster centers produced by k-means clustering plugin.");
         dialog.addChoice("Table with cluster centers", resultTableNames.toArray(new String[0]),
                 resultTableNames.get(0));
