@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -29,6 +29,7 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.grow.SRG;
 import net.sf.ij_plugins.im3d.grow.SRG3D;
+import net.sf.ij_plugins.util.IJPUtils;
 import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 import net.sf.ij_plugins.util.progress.ProgressAccumulator;
@@ -54,7 +55,12 @@ public final class RegionGrowingPlugIn implements PlugIn {
     private static final String RUN_INDEPENDENT_SLICES = "All slices independent";
     private static final String RUN_3D = "3D volume";
     private static final String[] STACK_TREATMENT = {RUN_CURRENT_SLICE, RUN_INDEPENDENT_SLICES, RUN_3D};
-    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/srg.html";
+    public static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Seeded-Region-Growing";
+    private static final String DESCRIPTION = "<html>" +
+            "Segments image by growing regions from seeds. <br>" +
+            "Pixels are added by smallest intensity difference. <br>" +
+            "For additional information see <a href=" + HELP_URL + ">Seeded Region Growing</a>" +
+            "</html>";
 
 
     final AtomicReference<String> stackTreatment = new AtomicReference<>(STACK_TREATMENT[0]);
@@ -96,6 +102,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
         final String[] imageTitles = imageTitleList.toArray(new String[0]);
         final String[] seedTitles = seedTitleList.toArray(new String[0]);
         final GenericDialog gd = new GenericDialog(TITLE, IJ.getInstance());
+        gd.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         gd.addChoice("Image:", imageTitles, imageTitles[0]);
         gd.addChoice("Seeds:", seedTitles, seedTitles[0]);
         gd.addChoice("Stack treatment:", STACK_TREATMENT, stackTreatment.get());
