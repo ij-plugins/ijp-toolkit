@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -35,6 +35,7 @@ public class RegionGrowingView extends JPanel {
 
     private final RunAction runAction;
     private final SeedImageAction seedImageAction;
+    private final HelpAction helpAction;
     private static final long serialVersionUID = 4217582431710992600L;
 
     /**
@@ -44,6 +45,7 @@ public class RegionGrowingView extends JPanel {
         final RegionGrowingModel model = new RegionGrowingModel(multiRegionManagerView.getModel());
         runAction = new RunAction(model, this);
         seedImageAction = new SeedImageAction(model, this);
+        helpAction = new HelpAction(model, this);
 
         initComponents();
         numberOfAnimationFramesSpinner.setModel(model.getNumberOfAnimationFramesSM());
@@ -67,6 +69,7 @@ public class RegionGrowingView extends JPanel {
         final JLabel numberOfAnimationFramesLabel = new JLabel();
         numberOfAnimationFramesSpinner = new JSpinner();
         final JButton seedImageButton = new JButton();
+        final JButton helpButton = new JButton();
 
         seedSelectionLabel.setText("Seed Selection");
 
@@ -81,6 +84,10 @@ public class RegionGrowingView extends JPanel {
         seedImageButton.setAction(seedImageAction);
         seedImageButton.setText("Seed Image");
         seedImageButton.setToolTipText("Create image of current seeds.");
+
+        helpButton.setAction(helpAction);
+        helpButton.setText("Help");
+        helpButton.setToolTipText("Open help page link in the browser.");
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -108,11 +115,15 @@ public class RegionGrowingView extends JPanel {
                                         .addGap(0, 0, Short.MAX_VALUE)
                                         .addComponent(runButton)
                                         .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(seedImageButton)))
+                                        .addComponent(seedImageButton)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(helpButton)
+                                )
+                        )
                         .addContainerGap())
         );
 
-        layout.linkSize(SwingConstants.HORIZONTAL, runButton, seedImageButton);
+        layout.linkSize(SwingConstants.HORIZONTAL, runButton, seedImageButton, helpButton);
 
         layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -136,7 +147,9 @@ public class RegionGrowingView extends JPanel {
                                         .addComponent(bottomSeparator, GroupLayout.PREFERRED_SIZE, 9, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(ComponentPlacement.RELATED)
                                         .addComponent(runButton))
-                                .addComponent(seedImageButton))
+                                .addComponent(seedImageButton)
+                                .addComponent(helpButton)
+                        )
                         .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
