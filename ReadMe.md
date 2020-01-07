@@ -7,7 +7,7 @@ IJ-Plugins Toolkit
 
 
 
-[IJ-Plugins Toolkit](http://ij-plugins.sourceforge.net/plugins/toolkit.html) is a set of plugins for [ImageJ]. The plugins are grouped into:
+**IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The plugins are grouped into:
 
 * **[3D IO]** - import and export of data in 3D formats.
 
@@ -86,4 +86,4 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 [Color]:        http://ij-plugins.sourceforge.net/plugins/color/index.html
 [Filters]:      http://ij-plugins.sourceforge.net/plugins/filters/index.html
 [Graphics]:     http://ij-plugins.sourceforge.net/plugins/texturesynthesis/index.html
-[Segmentation]: http://ij-plugins.sourceforge.net/plugins/segmentation/index.html
+[Segmentation]: https://github.com/ij-plugins/ijp-toolkit/wiki/Segmentation
