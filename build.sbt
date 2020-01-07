@@ -37,7 +37,7 @@ libraryDependencies ++= Seq(
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
   "net.imagej"         % "ij"               % "1.52s",
   // Test
-  "junit"              % "junit"            % "4.12"   % "test",
+  "junit"              % "junit"            % "4.13"   % "test",
   "org.scalatest"     %% "scalatest"        % "3.1.0"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
