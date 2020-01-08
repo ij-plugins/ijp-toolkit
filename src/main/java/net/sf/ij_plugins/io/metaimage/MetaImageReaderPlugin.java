@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -27,6 +27,7 @@ import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.io.OpenDialog;
 import ij.plugin.PlugIn;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.io.File;
 
@@ -44,6 +45,13 @@ import java.io.File;
 public final class MetaImageReaderPlugin implements PlugIn {
 
     private static final String TITLE = "MetaImage Reader";
+    private static final String DESCRIPTION = "<html>" +
+            "Read image (including stacks) in MetaImage format. <br> " +
+            "MetaImage is one of the formats supported by <a href=\"http://www.itk.org\">ITK</a>." +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO";
+
+
     private static boolean virtual = false;
 
 
@@ -58,7 +66,9 @@ public final class MetaImageReaderPlugin implements PlugIn {
 
         // Get options (only virtual stack at the moment)
         final GenericDialog optionsDialog = new GenericDialog(TITLE);
+        optionsDialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         optionsDialog.addCheckbox("Use_virtual_stack", virtual);
+        optionsDialog.addHelp(HELP_URL);
         optionsDialog.showDialog();
         if (optionsDialog.wasCanceled()) {
             return;

@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -28,6 +28,7 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.io.SaveDialog;
 import ij.plugin.PlugIn;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.io.File;
 
@@ -45,7 +46,13 @@ import java.io.File;
 public final class MetaImageWriterPlugin implements PlugIn {
 
     private static final String TITLE = "MetaImage Writer";
-    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/3d-io/index.html";
+    private static final String DESCRIPTION = "<html>" +
+            "Write current image in MetaImage format used by <a href=\"http://www.itk.org\">ITK</a>. <br>" +
+            "When <strong>Save in single file</strong> is selected the image is saved in a single file (<tt>*.mha</tt>), <br> " +
+            "when not selected the image header and the image data are saved in separate <br>" +
+            "files (<tt>*.mhd</tt> and <tt>*.raw</tt>)." +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO";
 
     private static boolean saveInSingleFile = false;
 
@@ -67,12 +74,8 @@ public final class MetaImageWriterPlugin implements PlugIn {
 
         // Should the image be single file
         final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         dialog.addCheckbox("Save_in_single_file", saveInSingleFile);
-        dialog.addMessage("" +
-                "Write current image in MetaImage format used by ITK. \n" +
-                "Option \"Save in single file\" indicates whether the image should be saved in a single \n" +
-                "file (extension *.mha) or the header and the image data should be saved in separate \n" +
-                "files (with extensions *.mhd and *.raw respectively.) ");
         dialog.addHelp(HELP_URL);
         dialog.showDialog();
 
