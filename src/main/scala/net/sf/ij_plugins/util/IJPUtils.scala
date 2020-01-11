@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -23,14 +23,15 @@
 package net.sf.ij_plugins.util
 
 import java.awt._
+import java.awt.event.{MouseAdapter, MouseEvent}
 import java.io.IOException
-import java.net.URISyntaxException
+import java.net.{URI, URISyntaxException}
 
 import ij.IJ
 import javax.swing._
 import javax.swing.border.EmptyBorder
+import javax.swing.event.HyperlinkEvent
 import javax.swing.event.HyperlinkEvent.EventType._
-import javax.swing.event.{HyperlinkEvent, HyperlinkListener}
 import javax.swing.text.html.HTMLDocument
 
 import scala.util.control.NonFatal
@@ -38,6 +39,8 @@ import scala.util.control.NonFatal
 /**
   */
 object IJPUtils {
+  private val helpURL: String = "https://github.com/ij-plugins/ijp-toolkit"
+
   /**
     * Load icon as a resource for given class without throwing exceptions.
     *
@@ -77,16 +80,9 @@ object IJPUtils {
     val font = UIManager.getFont("Label.font")
     val bodyRule = "body { font-family: " + font.getFamily + "; " + "font-size: " + font.getSize + "pt; }"
     htmlDocument.getStyleSheet.addRule(bodyRule)
-    pane.addHyperlinkListener(new HyperlinkListener() {
-      def hyperlinkUpdate(e: HyperlinkEvent): Unit = {
-        if (e.getEventType == ACTIVATED) {
-          try {
-            Desktop.getDesktop.browse(e.getURL.toURI)
-          } catch {
-            case ex@(_: IOException | _: URISyntaxException) =>
-              IJ.error(title, "Error following a link.\n" + ex.getMessage)
-          }
-        }
+    pane.addHyperlinkListener((e: HyperlinkEvent) => {
+      if (e.getEventType == ACTIVATED) {
+        openLinkInBrowser(e.getURL.toURI)
       }
     })
     pane.setText(message)
@@ -108,6 +104,12 @@ object IJPUtils {
     if (logo != null) {
       val logoLabel = new JLabel(logo, SwingConstants.CENTER)
       logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT)
+      logoLabel.addMouseListener(
+        new MouseAdapter {
+          override def mouseClicked(e: MouseEvent): Unit = {
+            openLinkInBrowser(helpURL)
+          }
+        })
       titlePanel.add(logoLabel, BorderLayout.WEST)
     }
     val titleLabel = new JLabel(title)
@@ -127,6 +129,22 @@ object IJPUtils {
     rootPanel.add(separatorPanel, BorderLayout.SOUTH)
 
     rootPanel
+  }
+
+  def openLinkInBrowser(uri: String): Unit = {
+    openLinkInBrowser(new URI(uri))
+  }
+
+  def openLinkInBrowser(uri: URI): Unit = {
+    try {
+      Desktop.getDesktop.browse(uri)
+    } catch {
+      case ex@(_: IOException | _: URISyntaxException) =>
+        IJ.error("Open Link in Browser",
+          "Error following a link.\n" +
+            "  " + uri.toString + "\n" +
+            ex.getMessage)
+    }
   }
 
 }
