@@ -83,7 +83,7 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 
 [3D IO]:        https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO
 [3D Toolkit]:   https://github.com/ij-plugins/ijp-toolkit/wiki/3D-Toolkit
-[Color]:        http://ij-plugins.sourceforge.net/plugins/color/index.html
+[Color]:        https://github.com/ij-plugins/ijp-toolkit/wiki/Color-and-Multiband-Processing
 [Filters]:      http://ij-plugins.sourceforge.net/plugins/filters/index.html
 [Graphics]:     http://ij-plugins.sourceforge.net/plugins/texturesynthesis/index.html
 [Segmentation]: https://github.com/ij-plugins/ijp-toolkit/wiki/Segmentation

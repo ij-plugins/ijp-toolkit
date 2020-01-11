@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -27,22 +27,30 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.IJPUtils;
 
 /**
  * @author Jarek Sacha
  */
 public class IntensityShiftPlugin implements PlugInFilter {
-    final private static String PLUGIN_NAME = "Intensity shift";
+    final private static String TITLE = "Intensity shift";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
             "Shifts (wraps around) GRAY8 image intensity. Shift value is assumed to be positive.";
+    final private static String DESCRIPTION = "<html>" +
+            "Shifts (wraps around) GRAY8 image intensity. <br>" +
+            "Shift value is assumed to be positive." +
+            "</html>";
+    private static final String HELP_URL =
+            "https://github.com/ij-plugins/ijp-toolkit/wiki/Color-and-Multiband-Processing";
+
 
     private static int shift = 128;
 
     @Override
     public int setup(final String arg, final ImagePlus imp) {
         if (ABOUT_COMMAND.equalsIgnoreCase(arg)) {
-            IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
+            IJ.showMessage("About " + TITLE, ABOUT_MESSAGE);
             return DONE;
         }
 
@@ -52,8 +60,11 @@ public class IntensityShiftPlugin implements PlugInFilter {
     @Override
     public void run(final ImageProcessor ip) {
 
-        final GenericDialog dialog = new GenericDialog(PLUGIN_NAME);
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         dialog.addNumericField("Intensity shift", shift, 0);
+        dialog.addHelp(HELP_URL);
+
         dialog.showDialog();
 
         if (dialog.wasCanceled()) {
