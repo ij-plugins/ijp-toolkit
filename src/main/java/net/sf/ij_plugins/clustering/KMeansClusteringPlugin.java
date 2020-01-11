@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ import java.awt.image.IndexColorModel;
  */
 public final class KMeansClusteringPlugin implements PlugIn {
 
-    public static final String RESULTS_WINDOW_TITLE = "k-means cluster centers";
+    public static final String RESULTS_WINDOW_TITLE = "k-means Cluster Centers";
     static final boolean APPLY_LUT = false;
     static final boolean AUTO_BRIGHTNESS = true;
     static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/k%E2%80%90means-Clustering";

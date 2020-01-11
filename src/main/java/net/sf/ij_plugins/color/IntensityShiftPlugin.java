@@ -33,7 +33,7 @@ import net.sf.ij_plugins.util.IJPUtils;
  * @author Jarek Sacha
  */
 public class IntensityShiftPlugin implements PlugInFilter {
-    final private static String TITLE = "Intensity shift";
+    final private static String TITLE = "Intensity Shift";
     final private static String ABOUT_COMMAND = "about";
     final private static String ABOUT_MESSAGE =
             "Shifts (wraps around) GRAY8 image intensity. Shift value is assumed to be positive.";
