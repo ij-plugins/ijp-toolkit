@@ -82,7 +82,7 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 [SBT]:        http://www.scala-sbt.org/
 
 [3D IO]:        https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO
-[3D Toolkit]:   http://ij-plugins.sourceforge.net/plugins/3d-toolkit/index.html
+[3D Toolkit]:   https://github.com/ij-plugins/ijp-toolkit/wiki/3D-Toolkit
 [Color]:        http://ij-plugins.sourceforge.net/plugins/color/index.html
 [Filters]:      http://ij-plugins.sourceforge.net/plugins/filters/index.html
 [Graphics]:     http://ij-plugins.sourceforge.net/plugins/texturesynthesis/index.html

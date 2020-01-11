@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -28,6 +28,7 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 import net.sf.ij_plugins.im3d.Point3DInt;
+import net.sf.ij_plugins.util.IJPUtils;
 
 /**
  * Performs connected region growing. User is asked to provide seedPoint point coordinates and
@@ -39,6 +40,19 @@ import net.sf.ij_plugins.im3d.Point3DInt;
  */
 
 public class ConnectedThresholdGrowerPlugin implements PlugIn {
+
+    private static final String TITLE = "Connected Threshold Grower";
+    private static final String DESCRIPTION = "<html>" +
+            "The Connected Threshold Growing plugin can be used to perform segmentation of 2D and 3D images. <br>" +
+            "The plugin accepts 8 bit and 16 bit gray images. <br>" +
+            "To perform segmentation you specify location of seed point <tt>(x,y,z)</tt>, and minimum and maximum <br>" +
+            "limits on pixel intensity. Segmented region will contain all pixels connected to the seed point <br>" +
+            "which intensity is within minimum/maximum intensity limits." +
+            "</html>";
+    private static final String HELP_URL =
+            "https://github.com/ij-plugins/ijp-toolkit/wiki/Connected-Threshold-Grower";
+
+
     private static Point3DInt seedPoint = new Point3DInt(0, 0, 0);
     private static int valueMin;
     private static int valueMax;
@@ -85,7 +99,8 @@ public class ConnectedThresholdGrowerPlugin implements PlugIn {
      *         otherwise.
      */
     private boolean showDialog() {
-        final GenericDialog gd = new GenericDialog("Grow options");
+        final GenericDialog gd = new GenericDialog(TITLE);
+        gd.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         gd.addMessage("Seed point coordinates");
         gd.addNumericField("x", seedPoint.x, 0);
         gd.addNumericField("y", seedPoint.y, 0);
@@ -93,6 +108,7 @@ public class ConnectedThresholdGrowerPlugin implements PlugIn {
         gd.addMessage("Threshold limits");
         gd.addNumericField("min", valueMin, 0);
         gd.addNumericField("max", valueMax, 0);
+        gd.addHelp(HELP_URL);
 
         gd.showDialog();
 
