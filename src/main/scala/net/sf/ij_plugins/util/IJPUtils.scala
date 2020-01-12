@@ -90,32 +90,19 @@ object IJPUtils {
   }
 
   /**
-    * Creeate simple info panel for a plugin dialog. Intended to be displayed at the top.
+    * Create simple info panel for a plugin dialog. Intended to be displayed at the top of a GenericDialog.
     *
     * @param title   title displayed in bold font larger than default.
     * @param message message that can contain HTML formatting.
     * @return a panel containing the message with a title and a default icon.
     */
   def createInfoPanel(title: String, message: String): Panel = {
-    // TODO: use icon with rounded corners
     val rootPanel = new Panel(new BorderLayout(7, 7))
     val titlePanel = new Panel(new BorderLayout(7, 7))
-    val logo = IJPUtils.loadIcon(this.getClass, "/net/sf/ij_plugins/IJP-48.png")
-    if (logo != null) {
-      val logoLabel = new JLabel(logo, SwingConstants.CENTER)
-      logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT)
-      logoLabel.addMouseListener(
-        new MouseAdapter {
-          override def mouseClicked(e: MouseEvent): Unit = {
-            openLinkInBrowser(helpURL)
-          }
-        })
-      titlePanel.add(logoLabel, BorderLayout.WEST)
-    }
-    val titleLabel = new JLabel(title)
-    val font = titleLabel.getFont
-    titleLabel.setFont(font.deriveFont(Font.BOLD, font.getSize * 2))
-    titlePanel.add(titleLabel, BorderLayout.CENTER)
+
+    createLogoLabel().foreach(label => titlePanel.add(label, BorderLayout.WEST))
+
+    titlePanel.add(createTitleLabel(title: String), BorderLayout.CENTER)
 
     rootPanel.add(titlePanel, BorderLayout.NORTH)
 
@@ -127,6 +114,29 @@ object IJPUtils {
     separatorPanel.setBorder(new EmptyBorder(7, 0, 7, 0))
     separatorPanel.add(new JSeparator(), BorderLayout.SOUTH)
     rootPanel.add(separatorPanel, BorderLayout.SOUTH)
+
+    rootPanel
+  }
+
+  /**
+    * Create simple info panel for a plugin dialog. Intended to be displayed at the top.
+    *
+    * @param title   title displayed in bold font larger than default.
+    * @param message message that can contain HTML formatting.
+    * @return a panel containing the message with a title and a default icon.
+    */
+  def createInfoJPanel(title: String, message: String): JPanel = {
+    val rootPanel = new JPanel(new BorderLayout(7, 7))
+    val titlePanel = new JPanel(new BorderLayout(7, 7))
+
+    createLogoLabel().foreach(label => titlePanel.add(label, BorderLayout.WEST))
+
+    titlePanel.add(createTitleLabel(title: String), BorderLayout.CENTER)
+
+    rootPanel.add(titlePanel, BorderLayout.NORTH)
+
+    val messageComponent = IJPUtils.createHTMLMessageComponent(message, title)
+    rootPanel.add(messageComponent, BorderLayout.CENTER)
 
     rootPanel
   }
@@ -147,4 +157,42 @@ object IJPUtils {
     }
   }
 
+  private def createLogoLabel(): Option[JLabel] = {
+    val iconPath = "/net/sf/ij_plugins/IJP-48.png"
+    Option(IJPUtils.loadIcon(this.getClass, iconPath)) map { logo =>
+      val logoLabel = new JLabel(logo, SwingConstants.CENTER)
+      logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT)
+      logoLabel.addMouseListener(
+        new MouseAdapter {
+          private var _oldCursor: Option[Cursor] = None
+
+          override def mouseClicked(e: MouseEvent): Unit = {
+            openLinkInBrowser(helpURL)
+          }
+
+          override def mouseEntered(e: MouseEvent): Unit = {
+            super.mouseEntered(e)
+            _oldCursor = Option(logoLabel.getCursor)
+            logoLabel.setCursor(new Cursor(Cursor.HAND_CURSOR))
+          }
+
+          override def mouseExited(e: MouseEvent): Unit = {
+            super.mouseExited(e)
+            val cursor = _oldCursor match {
+              case Some(c) => c
+              case None => new Cursor(Cursor.DEFAULT_CURSOR)
+            }
+            logoLabel.setCursor(cursor)
+          }
+        })
+      logoLabel
+    }
+  }
+
+  private def createTitleLabel(title: String): JLabel = {
+    val titleLabel = new JLabel(title)
+    val font = titleLabel.getFont
+    titleLabel.setFont(font.deriveFont(Font.BOLD, font.getSize * 2))
+    titleLabel
+  }
 }

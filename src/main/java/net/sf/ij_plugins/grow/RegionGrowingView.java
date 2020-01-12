@@ -22,6 +22,7 @@
 package net.sf.ij_plugins.grow;
 
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerView;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -32,6 +33,13 @@ import javax.swing.LayoutStyle.ComponentPlacement;
  * @since February 18, 2008
  */
 public class RegionGrowingView extends JPanel {
+
+    final private static String TITLE = "Seeded Region Growing";
+    final private static String DESCRIPTION = "<html>" +
+            "The algorithm grows regions from seeded provided by the user. " +
+            "Seeds are required for each region and the background. " +
+            "Growing adds pixels that are closest in intensity to current region mean intensity." +
+            "</html>";
 
     private final RunAction runAction;
     private final SeedImageAction seedImageAction;
@@ -59,6 +67,8 @@ public class RegionGrowingView extends JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
+        final JPanel infoPanel = IJPUtils.createInfoJPanel(TITLE, DESCRIPTION);
 
         final JSeparator seedSelectionSeparator = new JSeparator();
         final JLabel seedSelectionLabel = new JLabel();
@@ -95,6 +105,7 @@ public class RegionGrowingView extends JPanel {
                 .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(infoPanel, GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                                 .addComponent(multiRegionManagerView, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                                 .addGroup(layout.createSequentialGroup()
                                         .addGap(10, 10, 10)
@@ -128,12 +139,15 @@ public class RegionGrowingView extends JPanel {
         layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
+                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(infoPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(Alignment.TRAILING)
                                 .addComponent(seedSelectionLabel)
                                 .addComponent(seedSelectionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
-                        .addGap(10, 10, 10)
-                        .addComponent(multiRegionManagerView, GroupLayout.PREFERRED_SIZE, 223, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(multiRegionManagerView, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(Alignment.TRAILING)
                                 .addComponent(optionsLabel)
                                 .addComponent(optionsSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE))
@@ -143,12 +157,12 @@ public class RegionGrowingView extends JPanel {
                                         .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                                                 .addComponent(numberOfAnimationFramesLabel)
                                                 .addComponent(numberOfAnimationFramesSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, 18)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
                                         .addComponent(bottomSeparator, GroupLayout.PREFERRED_SIZE, 9, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(ComponentPlacement.RELATED)
                                         .addComponent(runButton))
                                 .addComponent(seedImageButton)
-                                .addComponent(helpButton)
+                                .addComponent(helpButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         )
                         .addContainerGap())
         );
