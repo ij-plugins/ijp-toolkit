@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.IJPUtils;
 import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 /**
@@ -34,7 +35,18 @@ import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 public class SRADPlugin implements PlugInFilter {
 
-    protected final String title = "Speckle Reducing Anisotropic Diffusion";
+    private final static String TITLE = "Speckle Reducing Anisotropic Diffusion";
+    private static final String DESCRIPTION = "<html>" +
+            "<ul>" +
+            "<li><em>Diffusion coefficient threshold</em> - When diffusion coefficient is lower than threshold it is set to 0.</li>" +
+            "<li><em>Initial coefficient of variation</em> - Speckle coefficient of variation in the observer image, <br>" +
+            "for correlated data it should be set to less than 1</li>" +
+            "<li><em>Coefficient of variation decay rate</em> - Spackle coefficient of variation decay rate: <br>" +
+            "q0(t)=q0*exp(-ro*t), ro < 1</li>" +
+            "</ul>" +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters";
+
 
     @Override
     public int setup(final String s, final ImagePlus imagePlus) {
@@ -48,15 +60,17 @@ public class SRADPlugin implements PlugInFilter {
         final SRAD filter = new SRAD();
         final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
         filter.addProgressListener(progressBarAdapter);
-        final GenericDialog dialog = new GenericDialog(title);
 
         // Show options dialog
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         dialog.addNumericField("Diffusion coefficient threshold", filter.getCThreshold(), 4, 8, "");
         dialog.addNumericField("Mean square error limit", filter.getMeanSquareError(), 4, 8, "");
         dialog.addNumericField("Max iterations", filter.getNumberOfIterations(), 0, 8, "");
         dialog.addNumericField("Initial coefficient of variation", filter.getQ0(), 4, 8, "");
         dialog.addNumericField("Coefficient of variation decay rate", filter.getRo(), 4, 8, "");
         dialog.addNumericField("Time step", filter.getTimeStep(), 4, 8, "");
+        dialog.addHelp(HELP_URL);
 
         dialog.showDialog();
         if (dialog.wasCanceled()) {
@@ -73,7 +87,7 @@ public class SRADPlugin implements PlugInFilter {
         // Filter
         try {
             final FloatProcessor dest = filter.process(src);
-            new ImagePlus(title, dest).show();
+            new ImagePlus(TITLE, dest).show();
         } finally {
             filter.removeProgressListener(progressBarAdapter);
         }

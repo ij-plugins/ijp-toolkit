@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ import net.sf.ij_plugins.operators.PixelIterator;
  * @author Jarek Sacha
  */
 public class DirectionalCoherenceFilter {
+
     private double spaceScale = 0.5;
 
     public double getSpaceScale() {

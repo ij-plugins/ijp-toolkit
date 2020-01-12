@@ -44,13 +44,13 @@ import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
  */
 public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
 
+    private static final String TITLE = "Maximum Entropy Multi-Threshold";
     private static final String DESCRIPTION = "<html>" +
             "Automatic multiple thresholding technique, generalization of a single maximum <br>" +
             "entropy thresholding of Kapur, Sahoo, and Wond: <br>" +
             "J.N. Kapur, P.K. Sahoo and A.K.C. Wong, \"A New Method for Gray-Level Picture <br>" +
             "Thresholding Using the Entropy of the Histogram\", <em>CVGIP</em>, (29), pp.273-285, 1985." +
             "</html>";
-    private static final String TITLE = "Maximum Entropy Multi-Threshold";
     private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Maximum-Entropy-Threshold";
 
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
@@ -76,9 +76,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         dialog.addNumericField("Number of thresholds:", 2, 0);
         dialog.addHelp(HELP_URL);
 
-
         dialog.showDialog();
-
         if (dialog.wasCanceled()) {
             return;
         }
