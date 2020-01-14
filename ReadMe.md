@@ -19,7 +19,7 @@ IJ-Plugins Toolkit
 
 * **[Filters]** - fast median filters, coherence enhancing diffusion, and various anisotropic diffusion filters.
 
-* **[Graphics]** - Texture Synthesis - A plugin to perform texture synthesis
+* **Graphics** > **[Image Quilter]** - A plugin to perform texture synthesis
   using the image quilting algorithm of Efros and Freeman.
 
 * **[Segmentation]** - image segmentation through clustering, thresholding, and
@@ -85,5 +85,5 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 [3D Toolkit]:   https://github.com/ij-plugins/ijp-toolkit/wiki/3D-Toolkit
 [Color]:        https://github.com/ij-plugins/ijp-toolkit/wiki/Color-and-Multiband-Processing
 [Filters]:      https://github.com/ij-plugins/ijp-toolkit/wiki/Filters
-[Graphics]:     http://ij-plugins.sourceforge.net/plugins/texturesynthesis/index.html
+[Image Quilter]:     https://github.com/ij-plugins/ijp-toolkit/wiki/Image-Quilter
 [Segmentation]: https://github.com/ij-plugins/ijp-toolkit/wiki/Segmentation

@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -28,6 +28,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsRuntimeException;
 import net.sf.ij_plugins.io.IOUtils;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.io.IOException;
 
@@ -39,7 +40,7 @@ public class ImageQuilterPlugin implements PlugInFilter {
     private static final String ENABLE_HORIZ_PATHS_LABEL = "Allow horizontal paths";
     private static final String PATCH_COST_WEIGHT_LABEL = "Patch cost weight";
 
-    private static final String PLUGIN_NAME = "Image Quilter";
+    private static final String TITLE = "Image Quilter";
     private static final String ABOUT_COMMAND = "about";
     private static final String ABOUT_MESSAGE =
             "Image Quilter plugin performs texture synthesis using image quilting\n"
@@ -58,7 +59,12 @@ public class ImageQuilterPlugin implements PlugInFilter {
                     "  \n" +
                     "The code of this plugin was originally developed by by Nick Vavra.\n" +
                     "Original code and description is available at: http://www.cs.wisc.edu/~vavra/cs766/.\n" +
-                    "ImageJ port and info is available at: http://ij-plugins.sf.net/plugins/texturesynthesis/.";
+                    "ImageJ port and info is available at: https://github.com/ij-plugins/ijp-toolkit/wiki/Image-Quilter.";
+    private static final String DESCRIPTION = "<html>" +
+            "Performs texture synthesis using " +
+            "<a href=\"http://www.cs.berkeley.edu/~efros/research/quilting.html\">image quilting</a> <br>" +
+            "algorithms of Efros and Freeman";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Image-Quilter";
 
     private static final Config CONFIG = new Config();
 
@@ -91,7 +97,7 @@ public class ImageQuilterPlugin implements PlugInFilter {
         }
 
         if (ABOUT_COMMAND.equalsIgnoreCase(s)) {
-            IJ.showMessage("About " + PLUGIN_NAME, ABOUT_MESSAGE);
+            IJ.showMessage("About " + TITLE, ABOUT_MESSAGE);
             return DONE;
         } else {
             return DOES_8G | DOES_16 | DOES_32 | DOES_RGB | NO_CHANGES;
@@ -102,7 +108,8 @@ public class ImageQuilterPlugin implements PlugInFilter {
     @Override
     public void run(final ImageProcessor input) {
 
-        final GenericDialog dialog = new GenericDialog(PLUGIN_NAME + " options");
+        final GenericDialog dialog = new GenericDialog(TITLE + " options");
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         synchronized (CONFIG) {
             dialog.addNumericField(DEST_WIDTH_LABEL, CONFIG.width, 0);
             dialog.addNumericField(DEST_HEIGHT_LABEL, CONFIG.height, 0);
@@ -111,6 +118,7 @@ public class ImageQuilterPlugin implements PlugInFilter {
             dialog.addCheckbox(ENABLE_HORIZ_PATHS_LABEL, CONFIG.allowHorizontalPaths);
             dialog.addNumericField(PATCH_COST_WEIGHT_LABEL, CONFIG.pathCostWeight, 4);
         }
+        dialog.addHelp(HELP_URL);
 
         dialog.showDialog();
         if (dialog.wasCanceled()) {

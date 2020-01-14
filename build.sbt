@@ -6,7 +6,7 @@ name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
 version      := "2.1.3-SNAPSHOT"
 
-homepage     := Some(new URL("https://ij-plugins.sf.net"))
+homepage     := Some(new URL("https://github.com/ij-plugins/ijp-toolkit"))
 startYear    := Some(2002)
 licenses     := Seq(("LGPL-2.1", new URL("http://opensource.org/licenses/LGPL-2.1")))
 description  := "<html>" +
