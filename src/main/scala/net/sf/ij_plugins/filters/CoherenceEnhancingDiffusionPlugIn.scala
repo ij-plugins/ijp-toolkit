@@ -32,6 +32,7 @@ import ij.process.{Blitter, FloatProcessor, ImageProcessor}
 import ij.{IJ, ImagePlus}
 import net.sf.ij_plugins.filters.CoherenceEnhancingDiffusionPlugIn._
 import net.sf.ij_plugins.ui.progress.{ProgressEvent, ProgressListener}
+import net.sf.ij_plugins.util.IJPUtils
 
 
 object CoherenceEnhancingDiffusionPlugIn {
@@ -44,7 +45,10 @@ object CoherenceEnhancingDiffusionPlugIn {
 
   private val CONFIG = CoherenceEnhancingDiffusion.Config()
   private val debugMode = new AtomicBoolean(false)
-  private val TITLE = "Coherence Enhancing Diffusion (ijp-toolkit2)"
+  private val TITLE = "Coherence Enhancing Diffusion"
+  private val DESCRIPTION = ""
+  private val HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters"
+
 }
 
 
@@ -64,6 +68,7 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
 
   def showDialog(imp: ImagePlus, command: String, pfr: PlugInFilterRunner): Int = {
     val dialog = new GenericDialog(TITLE) {
+      addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION))
       addNumericField("Lambda (>0), limit of diffusion", CONFIG.lambda, 6, 8, "")
       addNumericField("Sigma (>0), smooth for first derivative", CONFIG.sigma, 6, 8, "")
       addNumericField("Rho (>0), smooth for second derivative", CONFIG.rho, 6, 8, "")
@@ -71,7 +76,7 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
       addNumericField("m (>1), best keep it equal to 1", CONFIG.m, 6, 8, "")
       addNumericField("Number_of_steps", CONFIG.numberOfSteps, 0)
       addCheckbox("Show_debug_data", debugMode.get)
-      addHelp("https://github.com/ij-plugins/ijp-toolkit/wiki/Filters")
+      addHelp(HELP_URL)
       addPreviewCheckbox(pfr)
     }
     dialog.addDialogListener(this)
