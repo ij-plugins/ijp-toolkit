@@ -36,7 +36,7 @@ http://sites.imagej.net/IJ-Plugins/
 
 ### Manual Installation
 
-1. [Download](https://sourceforge.net/projects/ij-plugins/files/ij-plugins_toolkit/)
+1. [Download](https://github.com/ij-plugins/ijp-toolkit/releases)
    latest binaries for IJ-Plugins Toolkit. Look for version with the highest number.
    Plugin binaries will be in file named: `ij-plugins_toolkit_bin_*.zip`.
 
