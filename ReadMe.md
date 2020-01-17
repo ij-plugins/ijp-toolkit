@@ -7,7 +7,7 @@ IJ-Plugins Toolkit
 
 
 
-**IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The plugins are grouped into:
+![logo](src/main/resources/net/sf/ij_plugins/IJP-48.png) **IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The plugins are grouped into:
 
 * **[3D IO]** - import and export of data in 3D formats.
 
