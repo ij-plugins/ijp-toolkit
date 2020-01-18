@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2016 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
 package net.sf.ij_plugins.concurrent;
@@ -26,7 +26,9 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.*;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.ui.progress.ProgressAccumulator;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ public final class ParallelSliceProcessingExample {
         final ProgressAccumulator accumulator = new ProgressAccumulator();
         accumulator.addProgressListener(progressBarAdapter);
         final ImageStack stack = new ImageStack(imp1.getWidth(), imp1.getHeight());
-        final List<Future<ImageProcessor>> futures = new ArrayList<Future<ImageProcessor>>(imp1.getNSlices());
+        final List<Future<ImageProcessor>> futures = new ArrayList<>(imp1.getNSlices());
         for (final BlitterSP producer : producers) {
             final PCallable worker = new PCallable(producer);
             accumulator.addProgressReporter(worker);
@@ -74,9 +76,7 @@ public final class ParallelSliceProcessingExample {
             final String sliceLabel = imp1.getStack().getSliceLabel(i + 1);
             try {
                 stack.addSlice(sliceLabel, worker.get());
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            } catch (final ExecutionException e) {
+            } catch (final InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
@@ -85,7 +85,7 @@ public final class ParallelSliceProcessingExample {
     }
 
 
-    private static class PCallable extends DefaultProgressReporter implements Callable<ImageProcessor> {
+    private static class PCallable extends ProgressReporter4J implements Callable<ImageProcessor> {
 
         final SliceProducer producer;
 
@@ -97,11 +97,7 @@ public final class ParallelSliceProcessingExample {
 
         final public ImageProcessor call() throws Exception {
             // Forward progress notification is using algorithm that supports it.
-            producer.addProgressListener(new ProgressListener() {
-                public void progressNotification(final ProgressEvent e) {
-                    notifyProgressListeners(e.getProgress(), e.getMessage());
-                }
-            });
+            producer.addProgressListener(e -> notifyProgressListeners(e.progress(), e.message()));
 
             notifyProgressListeners(0);
             ImageProcessor result = producer.produce();

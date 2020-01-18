@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -23,15 +23,22 @@
 package net.sf.ij_plugins.ui.progress
 
 /**
- * Event used to notify listeners about current value of progress. Allowed `progress` values are between 0.0 and 1.0.
- * 0.31 means 31% progress.
- */
-class ProgressEvent(val source: Any,
+  * Event used to notify listeners about current value of progress.
+  *
+  * Allowed `progress` values are between 0.0 and 1.0. 0.31 means 31% progress.
+  */
+class ProgressEvent(val source: Option[ProgressReporter],
                     val progress: Double,
                     val message: String) {
   require(0 <= progress && progress <= 1, s"Progress=$progress must be in between 0 and 1.")
 
-  def this(source: Any, progress: Double) = this(source, progress, "")
+  def this(source: ProgressReporter, progress: Double, message: String) = this(Option(source), progress, message)
 
-  def progressPercent = progress * 100
+  def this(source: ProgressReporter, progress: Double) = this(Option(source), progress, "")
+
+  def this(progress: Double) = this(None, progress, "")
+
+  def this(progress: Double, message: String) = this(None, progress, message)
+
+  def progressPercent: Double = progress * 100
 }

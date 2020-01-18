@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -38,6 +38,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SetPixelsPlugin implements PlugInFilter {
 
     final private static String TITLE = "Set Pixels";
+    private static final String DESCRIPTION = "<html>" +
+            "Helper plugin for creation of seed images while performing <br>" +
+            "<a href=\"https://github.com/ij-plugins/ijp-toolkit/wiki/Seeded-Region-Growing\">" +
+            "Seeded Region Growing</a>." +
+            "</html>";
     final private static AtomicInteger value = new AtomicInteger(1);
     final private static int flags = DOES_8G + ROI_REQUIRED + SUPPORTS_MASKING;
 
@@ -50,6 +55,7 @@ public final class SetPixelsPlugin implements PlugInFilter {
     public void run(final ImageProcessor ip) {
 
         final GenericDialog gd = new GenericDialog(TITLE);
+        gd.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         gd.addMessage("Set pixels in current ROI to a specified value [0 to 255].");
         gd.addNumericField("Value:", value.get(), 0);
 

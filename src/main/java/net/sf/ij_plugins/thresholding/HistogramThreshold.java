@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
  */
 package net.sf.ij_plugins.thresholding;
 
-import net.sf.ij_plugins.util.progress.ProgressEvent;
-import net.sf.ij_plugins.util.progress.ProgressListener;
+import net.sf.ij_plugins.ui.progress.ProgressEvent;
+import net.sf.ij_plugins.ui.progress.ProgressListener;
 
 /**
  * Histogram based thresholding.
@@ -43,7 +43,7 @@ public final class HistogramThreshold {
      *
      * @param hist histogram to be thresholded.
      * @return index of the maximum entropy split.
-     * @see #maximumEntropy(int[], net.sf.ij_plugins.util.progress.ProgressListener)
+     * @see #maximumEntropy(int[], net.sf.ij_plugins.ui.progress.ProgressListener)
      */
     public static int maximumEntropy(final int[] hist) {
         return maximumEntropy(hist, null);
@@ -109,7 +109,7 @@ public final class HistogramThreshold {
         final String progressMessage = "Maximum entropy threshold...";
         final Object progressSource = HistogramThreshold.class;
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(progressSource, 0.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(0.0, progressMessage));
         }
 
         // Normalize histogram, that is makes the sum of all bins equal to 1.
@@ -158,7 +158,7 @@ public final class HistogramThreshold {
             }
 
             if ((progressListener != null) && (t % progressStep == 0)) {
-                progressListener.progressNotification(new ProgressEvent(progressSource, t / (double) hist.length, progressMessage));
+                progressListener.progressNotification(new ProgressEvent(t / (double) hist.length, progressMessage));
             }
 
         }

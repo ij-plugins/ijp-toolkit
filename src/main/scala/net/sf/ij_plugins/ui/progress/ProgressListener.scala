@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -27,9 +27,9 @@ package net.sf.ij_plugins.ui.progress
  */
 trait ProgressListener {
   /**
-   * Process new progress event.
-   *
-   * @param e event information.
-   */
+    * Process new progress event - sent to this listener new progress event.
+    *
+    * @param e event information.
+    */
   def progressNotification(e: ProgressEvent): Unit
 }

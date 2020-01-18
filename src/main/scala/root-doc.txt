@@ -1,6 +1,0 @@
-The source code for `ijp-toolkit` is hosted at [[http://github.com/ij-plugins/ijp-toolkit GitHub ij-plugins/ijp-toolkit]].
-
-== Package Structure ==
-
-  - [[net.sf.ij_plugins.filters `net.sf.ij_plugins.filters`]]  - Image filters
-  - [[net.sf.ij_plugins.ui.progress `net.sf.ij_plugins.ui.progress`]] - Tools for reporting progress of computations

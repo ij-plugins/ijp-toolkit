@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ import ij.plugin.filter.ExtendedPlugInFilter;
 import ij.plugin.filter.PlugInFilterRunner;
 import ij.process.Blitter;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.awt.*;
 
@@ -39,8 +40,16 @@ import java.awt.*;
 
 public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
 
-    private static final int FLAGS = DOES_8G | DOES_16 | DOES_32 | DOES_RGB | KEEP_PREVIEW | PARALLELIZE_STACKS;
     private static final String TITLE = "Fast Median Filter";
+    private static final String DESCRIPTION = "<html>" +
+            "Very fast implementation of a median filter, <br>" +
+            "especially optimized for 8-bit gray level and color images, <br>" +
+            "also works on 16-bit gray level and floating point." +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters";
+
+    private static final int FLAGS = DOES_8G | DOES_16 | DOES_32 | DOES_RGB | KEEP_PREVIEW | PARALLELIZE_STACKS;
+
     private static final String PREFERENCES_PREFIX = FastMedianPlugin.class.getName();
     private static final String PROPERTYNAME_FILTER_SIZE = "filterSize";
 
@@ -70,8 +79,10 @@ public class FastMedianPlugin implements ExtendedPlugInFilter, DialogListener {
         loadFromIJPref();
 
         final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         dialog.addNumericField("Filter size (n x n)", filterSize, 0, 3, "pixels");
         dialog.addPreviewCheckbox(pfr);
+        dialog.addHelp(HELP_URL);
         dialog.addDialogListener(this);
 
         dialog.showDialog();

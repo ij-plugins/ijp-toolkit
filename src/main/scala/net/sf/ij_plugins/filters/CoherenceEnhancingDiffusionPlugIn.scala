@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -31,7 +31,8 @@ import ij.plugin.filter.{ExtendedPlugInFilter, PlugInFilterRunner}
 import ij.process.{Blitter, FloatProcessor, ImageProcessor}
 import ij.{IJ, ImagePlus}
 import net.sf.ij_plugins.filters.CoherenceEnhancingDiffusionPlugIn._
-import net.sf.ij_plugins.ui.progress.{ProgressEvent, ProgressListener}
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter
+import net.sf.ij_plugins.util.IJPUtils
 
 
 object CoherenceEnhancingDiffusionPlugIn {
@@ -44,16 +45,19 @@ object CoherenceEnhancingDiffusionPlugIn {
 
   private val CONFIG = CoherenceEnhancingDiffusion.Config()
   private val debugMode = new AtomicBoolean(false)
-  private val TITLE = "Coherence Enhancing Diffusion (ijp-toolkit2)"
+  private val TITLE = "Coherence Enhancing Diffusion"
+  private val DESCRIPTION = ""
+  private val HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters"
+
 }
 
 
 /**
- * ImageJ plugin that runs `CoherenceEnhancingDiffusion` filter.
- */
+  * ImageJ plugin that runs `CoherenceEnhancingDiffusion` filter.
+  */
 final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with DialogListener {
 
-  private var imp: ImagePlus = null
+  private var imp: ImagePlus = _
   private var nPasses = 0
   private var passCount = 0
 
@@ -64,6 +68,7 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
 
   def showDialog(imp: ImagePlus, command: String, pfr: PlugInFilterRunner): Int = {
     val dialog = new GenericDialog(TITLE) {
+      addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION))
       addNumericField("Lambda (>0), limit of diffusion", CONFIG.lambda, 6, 8, "")
       addNumericField("Sigma (>0), smooth for first derivative", CONFIG.sigma, 6, 8, "")
       addNumericField("Rho (>0), smooth for second derivative", CONFIG.rho, 6, 8, "")
@@ -71,7 +76,7 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
       addNumericField("m (>1), best keep it equal to 1", CONFIG.m, 6, 8, "")
       addNumericField("Number_of_steps", CONFIG.numberOfSteps, 0)
       addCheckbox("Show_debug_data", debugMode.get)
-      addHelp("http://ij-plugins.sourceforge.net/plugins/filters/index.html")
+      addHelp(HELP_URL)
       addPreviewCheckbox(pfr)
     }
     dialog.addDialogListener(this)
@@ -105,15 +110,11 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
     IJ.showStatus(statsMessage)
     val src = ip.convertToFloat.asInstanceOf[FloatProcessor]
     val filter = new CoherenceEnhancingDiffusion(CONFIG)
-    val progressListener = new ProgressListener {
-      def progressNotification(e: ProgressEvent): Unit = {
-        IJ.showProgress(Math.round(e.progress * 100).asInstanceOf[Int], 100)
-        IJ.showStatus(statsMessage + e.message)
-      }
-    }
+    val progressListener = new IJProgressBarAdapter()
     filter.addProgressListener(progressListener)
-    val dest = filter.run(src)
-    filter.removeProgressListener(progressListener)
+    val dest =
+      try filter.run(src)
+      finally filter.removeProgressListener(progressListener)
     if (debugMode.get) {
       filter.alpha.resetMinAndMax()
       new ImagePlus("alpha", filter.alpha).show()

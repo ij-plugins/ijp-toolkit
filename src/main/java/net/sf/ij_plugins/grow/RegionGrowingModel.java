@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
+import ij.plugin.BrowserLauncher;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
@@ -37,12 +38,13 @@ import net.sf.ij_plugins.ui.UIUtils;
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerModel;
 import net.sf.ij_plugins.ui.multiregion.Region;
 import net.sf.ij_plugins.ui.multiregion.SubRegion;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
 import net.sf.ij_plugins.util.IJUtils;
 import net.sf.ij_plugins.util.TextUtil;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,6 +122,19 @@ final class RegionGrowingModel extends AbstractModel {
 
         seeds.setMinAndMax(0, regions.size());
         new ImagePlus("Seeds", seeds).show();
+    }
+
+    public void actionHelp() {
+        final String helpLink = RegionGrowingPlugIn.HELP_URL;
+        try {
+            BrowserLauncher.openURL(helpLink);
+        } catch (IOException e) {
+            e.printStackTrace();
+            IJ.error(CAPTION,
+                    "Error opening help link: " + helpLink + "\n" +
+                            e.getMessage()
+            );
+        }
     }
 
     private ByteProcessor createSeedImage(final List<Region> regions, final int width, final int height) {

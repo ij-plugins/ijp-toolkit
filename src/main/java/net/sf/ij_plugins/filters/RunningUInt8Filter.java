@@ -77,11 +77,10 @@ class RunningUInt8Filter implements IRunningUInt8Filter {
             operator.clear();
             final int yyMin = Math.max(y - yr, yMin);
             final int yyMax = Math.min(y + yr + 1, yMax);
-            final int xxMin = xMin;
             final int xxMax = Math.min(xMin + xr, xMax);
             for (int yy = yyMin; yy < yyMax; ++yy) {
                 final int yyOfset = yy * width;
-                for (int xx = xxMin; xx < xxMax; ++xx) {
+                for (int xx = xMin; xx < xxMax; ++xx) {
                     operator.add(srcPixels[xx + yyOfset]);
                 }
             }

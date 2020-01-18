@@ -28,7 +28,6 @@ import net.sf.ij_plugins.util.Validate;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-import java.util.Comparator;
 
 
 /**
@@ -165,16 +164,12 @@ public class PiecewiseFunction implements IFunction, Cloneable {
             throw new IllegalArgumentException("Argument 'controlPoints' cannot be null.");
         }
 
-        Arrays.sort(controlPoints, new Comparator<Point2D>() {
-            public int compare(final Point2D p1, final Point2D p2) {
-                if (p1.equals(p2)) {
-                    return 0;
-                }
-
-                return p1.getX() < p2.getX()
-                        ? -1
-                        : (p1.getX() > p2.getX() ? 1 : 0);
+        Arrays.sort(controlPoints, (p1, p2) -> {
+            if (p1.equals(p2)) {
+                return 0;
             }
+
+            return Double.compare(p1.getX(), p2.getX());
         });
 
     }

@@ -121,7 +121,7 @@ public class ImageQuilter {
 
         // loop over the rows of output patches
         int currow = 0;
-        final double dists[][] = new double[input.getHeight() - patchsize + 1]
+        final double[][] dists = new double[input.getHeight() - patchsize + 1]
                 [input.getWidth() - patchsize + 1];
         double progress = 0;
         do {
@@ -214,8 +214,8 @@ public class ImageQuilter {
             do {
 
                 double sum = 0.0;
-                double leftoverlap[][] = null;
-                double topoverlap[][] = null;
+                double[][] leftoverlap = null;
+                double[][] topoverlap = null;
                 int count = 0;
 
                 // handle the left overlap part
@@ -334,7 +334,7 @@ public class ImageQuilter {
      */
     private double[][] getLeftOverlapDists(final Patch outPatch, final Patch inPatch) {
         final int rowcnt = outPatch.getHeight();
-        final double dists[][] = new double[rowcnt][overlapsize];
+        final double[][] dists = new double[rowcnt][overlapsize];
 
         // Calculate using blitting
         final ImageProcessor outIP = outPatch.getImage();
@@ -396,7 +396,7 @@ public class ImageQuilter {
     private double[][] getTopOverlapDists(final Patch outPatch, final Patch inPatch) {
         // so arrayr = patchwidth-1-patchx  and arrayc = patchy
         final int rowcnt = outPatch.getWidth();
-        final double dists[][] = new double[rowcnt][overlapsize];
+        final double[][] dists = new double[rowcnt][overlapsize];
 
         // Calculate using blitting
         final ImageProcessor outIP = outPatch.getImage();
@@ -551,7 +551,7 @@ public class ImageQuilter {
             // fill in the corner
 
             // first figure out where to take each pixel from
-            final boolean where[][] = new boolean[overlapsize][overlapsize];
+            final boolean[][] where = new boolean[overlapsize][overlapsize];
 
             // figure out where the left overlap says to take each pixel from
             while (leftloc.getRow() < overlapsize) {

@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -26,7 +26,8 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.util.IJPUtils;
 
 /**
  * @author Jarek Sacha
@@ -34,7 +35,10 @@ import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 public class PeronaMalikAnisotropicDiffusionPlugin implements PlugInFilter {
 
-    protected final String title = "Peron-Malik Anisotropic Diffusion";
+    private final static String TITLE = "Peron-Malik Anisotropic Diffusion";
+    private static final String DESCRIPTION = "The classic anisotropic diffusion filter.";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters";
+
 
     @Override
     public int setup(final String s, final ImagePlus imagePlus) {
@@ -48,12 +52,14 @@ public class PeronaMalikAnisotropicDiffusionPlugin implements PlugInFilter {
         final PeronaMalikAnisotropicDiffusion filter = new PeronaMalikAnisotropicDiffusion();
 
         // Show options dialog
-        final GenericDialog dialog = new GenericDialog(title);
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         dialog.addNumericField("k", filter.getK(), 2, 6, "");
         dialog.addNumericField("Mean_square_error", filter.getMeanSquareError(), 2, 8, "");
         dialog.addNumericField("Number_of_iterations", filter.getNumberOfIterations(), 0, 8, "");
         dialog.addNumericField("Time_step", filter.getTimeStep(), 2, 8, "");
         dialog.addCheckbox("Use_big_region_function", filter.isBigRegionFunction());
+        dialog.addHelp(HELP_URL);
 
         dialog.showDialog();
 
@@ -72,7 +78,7 @@ public class PeronaMalikAnisotropicDiffusionPlugin implements PlugInFilter {
         filter.addProgressListener(progressBarAdapter);
         try {
             final FloatProcessor dest = filter.process(src);
-            new ImagePlus(title, dest).show();
+            new ImagePlus(TITLE, dest).show();
         } finally {
             filter.removeProgressListener(progressBarAdapter);
         }

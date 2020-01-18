@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -22,14 +22,10 @@
 package net.sf.ij_plugins.filters;
 
 import ij.process.FloatProcessor;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 import net.sf.ij_plugins.util.IJDebug;
-import net.sf.ij_plugins.util.progress.ProgressEvent;
-import net.sf.ij_plugins.util.progress.ProgressListener;
-import net.sf.ij_plugins.util.progress.ProgressReporter;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -39,7 +35,7 @@ import java.util.List;
  *
  * @author Jarek Sacha
  */
-public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
+public abstract class AbstractAnisotropicDiffusion extends ProgressReporter4J {
 
     // Properties
     private int numberOfIterations = 100;
@@ -47,10 +43,6 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     private double meanSquareError = 0.01;
 
     // Internal variables
-    protected final List<ProgressListener> progressListeners = new ArrayList<>();
-    private double currentProgress;
-    private double lastReportedProgress;
-    private final double minProgress = 0.01;
     private final DecimalFormat decimalFormat = new DecimalFormat("0.######");
     private double time;
 
@@ -85,44 +77,6 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
-    @Override
-    public double currentProgress() {
-        return currentProgress;
-    }
-
-
-    private void updateCurrentProgress(final double progress, final String message) {
-        this.currentProgress = progress;
-        if (progressListeners.size() > 0 && Math.abs(progress - lastReportedProgress) > minProgress) {
-            final ProgressEvent event = new ProgressEvent(this, this.currentProgress, message);
-            for (final ProgressListener progressListener : progressListeners) {
-                progressListener.progressNotification(event);
-            }
-            lastReportedProgress = currentProgress;
-        }
-    }
-
-
-    @Override
-    public void addProgressListener(final ProgressListener l) {
-        if (!progressListeners.contains(l)) {
-            progressListeners.add(l);
-        }
-    }
-
-
-    @Override
-    public void removeProgressListener(final ProgressListener l) {
-        progressListeners.remove(l);
-    }
-
-
-    @Override
-    public void removeAllProgressListener() {
-        progressListeners.clear();
-    }
-
-
     /**
      * Performs anisotropic diffusion. Makes <code>numberOfIterations</code> calls to {@link
      * #diffuse(ij.process.FloatProcessor, ij.process.FloatProcessor)}, updating value of
@@ -132,7 +86,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
      * @return result of anisotropic diffusion filtering.
      */
     public FloatProcessor process(final FloatProcessor src) {
-        updateCurrentProgress(0, "");
+        notifyProgressListeners(0, "");
 
         FloatProcessor fp1 = (FloatProcessor) src.duplicate();
         FloatProcessor fp2 = (FloatProcessor) src.duplicate();
@@ -149,14 +103,14 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
             // test change in images
             final double mse = meanSquareDifference((float[]) fp1.getPixels(), (float[]) fp2.getPixels());
             final String msg = "Iteration: " + i + ", mean square error: " + decimalFormat.format(mse);
-            updateCurrentProgress((double) (i + 1) / (double) numberOfIterations, msg);
+            notifyProgressListeners((double) (i + 1) / (double) numberOfIterations, msg);
             IJDebug.log(msg);
             if (mse <= meanSquareError) {
                 break;
             }
         }
 
-        updateCurrentProgress(1, "");
+        notifyProgressListeners(1, "");
 
         return fp1;
     }
@@ -177,7 +131,7 @@ public abstract class AbstractAnisotropicDiffusion implements ProgressReporter {
     }
 
 
-    private double meanSquareDifference(final float a[], final float b[]) {
+    private double meanSquareDifference(final float[] a, final float[] b) {
         assert a != null;
         assert b != null;
         assert a.length == b.length;

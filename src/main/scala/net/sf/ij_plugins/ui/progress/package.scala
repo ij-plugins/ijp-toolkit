@@ -23,19 +23,19 @@
 package net.sf.ij_plugins.ui
 
 /**
- * Package `progress` contains tools for reporting progress of computations.
- * Classes can report progress extending trait [[net.sf.ij_plugins.ui.progress.ProgressReporter]].
- * Progress can be observed extendfing trait [[net.sf.ij_plugins.ui.progress.ProgressListener]].
- *
- *
- * Example usage:
- *
- * {{{
- * class CounterWithProgress(marker: Char) extends ProgressReporter {
- *   def count(max: Int) {
- *     val progressIncrement = Math.max(max / 10, 1)
- *
- *     println("Counting " + max + " '" + marker + "'.")
+  * Package `progress` contains tools for reporting progress of computations.
+  * Classes can report progress extending trait [[net.sf.ij_plugins.ui.progress.ProgressReporter]].
+  * Progress can be observed extending trait [[net.sf.ij_plugins.ui.progress.ProgressListener]].
+  *
+  *
+  * Example usage:
+  *
+  * {{{
+  * class CounterWithProgress(marker: Char) extends ProgressReporter {
+  *   def count(max: Int) {
+  *     val progressIncrement = Math.max(max / 10, 1)
+  *
+  *     println("Counting " + max + " '" + marker + "'.")
  *
  *     for (i <- 1 to max) {
  *       print(marker)

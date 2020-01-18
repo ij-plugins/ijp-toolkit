@@ -2,12 +2,12 @@ IJ-Plugins Toolkit
 ==================
 
 [![Build Status](https://travis-ci.org/ij-plugins/ijp-toolkit.svg?branch=develop)](https://travis-ci.org/ij-plugins/ijp-toolkit)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.11) 
-[![Scaladoc](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.11.svg?label=scaladoc)](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.11) 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13) 
+[![Scaladoc](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.13.svg?label=scaladoc)](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.13) 
 
 
 
-[IJ-Plugins Toolkit](http://ij-plugins.sourceforge.net/plugins/toolkit.html) is a set of plugins for [ImageJ]. The plugins are grouped into:
+![logo](src/main/resources/net/sf/ij_plugins/IJP-48.png) **IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The plugins are grouped into:
 
 * **[3D IO]** - import and export of data in 3D formats.
 
@@ -19,7 +19,7 @@ IJ-Plugins Toolkit
 
 * **[Filters]** - fast median filters, coherence enhancing diffusion, and various anisotropic diffusion filters.
 
-* **[Graphics]** - Texture Synthesis - A plugin to perform texture synthesis
+* **Graphics** > **[Image Quilter]** - A plugin to perform texture synthesis
   using the image quilting algorithm of Efros and Freeman.
 
 * **[Segmentation]** - image segmentation through clustering, thresholding, and
@@ -30,22 +30,11 @@ ImageJ Plugins Installation
 
 ### Automatic Installation Through Update Center
 
-For [ImageJ 2] or [Fiji] you can install IJ-Plugins Toolkit using update center:
-
-http://sites.imagej.net/IJ-Plugins/
+For [ImageJ 2] or [Fiji] you can install IJ-Plugins Toolkit using the update center. See [Fiji Managed Installation] for more details.
 
 ### Manual Installation
 
-1. [Download](https://sourceforge.net/projects/ij-plugins/files/ij-plugins_toolkit/)
-   latest binaries for IJ-Plugins Toolkit. Look for version with the highest number.
-   Plugin binaries will be in file named: `ij-plugins_toolkit_bin_*.zip`.
-
-2. Uncompress content of `ij-plugins_toolkit_bin_*.zip` to ImageJ's `plugins` directory.
-   You can find location of ImageJ plugins directory by selecting in ImageJ
-   "Plugins"/"Utilities"/"ImageJ Properties", look for value of tag "plugins dir"
-   near the bottom of the displayed Properties' window.
-
-3. Restart ImageJ to load newly installed plugins.
+Plugins can be installed in ImageJ manually using binaries on the [Release] page. See [Manual Installation] for details.
 
 Using as a Stand-alone Library
 ------------------------------
@@ -55,13 +44,16 @@ There are some examples of using IJ-Plugins Toolkit as a stand-alone library in 
 ```
 groupId   : net.sf.ij-plugins
 artifactId: ijp-toolkit
-version   : 2.1.2
+version   : <current version>
 ```
 For instance, for [SBT] it would be:
 
 ```
-"net.sf.ij-plugins" %% "ijp-toolkit" % "2.1.2"
+"net.sf.ij-plugins" %% "ijp-toolkit" % "<current version>"
 ```
+
+Current published version is: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13) 
+
 
 Running from source
 -------------------
@@ -81,9 +73,13 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 [sbt-imagej]: https://github.com/jpsacha/sbt-imagej
 [SBT]:        http://www.scala-sbt.org/
 
-[3D IO]:        http://ij-plugins.sourceforge.net/plugins/3d-io/index.html
-[3D Toolkit]:   http://ij-plugins.sourceforge.net/plugins/3d-toolkit/index.html
-[Color]:        http://ij-plugins.sourceforge.net/plugins/color/index.html
-[Filters]:      http://ij-plugins.sourceforge.net/plugins/filters/index.html
-[Graphics]:     http://ij-plugins.sourceforge.net/plugins/texturesynthesis/index.html
-[Segmentation]: http://ij-plugins.sourceforge.net/plugins/segmentation/index.html
+[Release]:                   https://github.com/ij-plugins/ijp-toolkit/releases
+[Fiji Managed Installation]: https://github.com/ij-plugins/ijp-toolkit/wiki/Fiji-Managed-Installation
+[Manual Installation]:       https://github.com/ij-plugins/ijp-toolkit/wiki/Manual-Installation
+
+[3D IO]:         https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO
+[3D Toolkit]:    https://github.com/ij-plugins/ijp-toolkit/wiki/3D-Toolkit
+[Color]:         https://github.com/ij-plugins/ijp-toolkit/wiki/Color-and-Multiband-Processing
+[Filters]:       https://github.com/ij-plugins/ijp-toolkit/wiki/Filters
+[Image Quilter]: https://github.com/ij-plugins/ijp-toolkit/wiki/Image-Quilter
+[Segmentation]:  https://github.com/ij-plugins/ijp-toolkit/wiki/Segmentation

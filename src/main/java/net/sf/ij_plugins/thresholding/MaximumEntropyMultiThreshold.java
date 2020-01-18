@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
  */
 package net.sf.ij_plugins.thresholding;
 
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 import net.sf.ij_plugins.util.IJDebug;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,11 @@ import java.util.List;
 /**
  * @author Jarek Sacha
  */
-public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
+public class MaximumEntropyMultiThreshold extends ProgressReporter4J {
 
     private static final double EPSILON = Double.MIN_VALUE;
-    private double histogram[];
-    private Double intervalEntropy[][];
+    private double[] histogram;
+    private Double[][] intervalEntropy;
 
 
     /**
@@ -46,7 +46,7 @@ public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
      * @param nbDivisions desired number of thresholds.
      * @return array containing values of maximum entropy thresholds.
      */
-    public final int[] maximumEntropy(final int hist[], final int nbDivisions) {
+    public final int[] maximumEntropy(final int[] hist, final int nbDivisions) {
 
         // FIXME: Optimize memory use using iterator over intervals instead of generation array of all possible intervals
 

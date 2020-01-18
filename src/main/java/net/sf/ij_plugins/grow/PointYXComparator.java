@@ -41,7 +41,7 @@ public final class PointYXComparator implements Comparator<Point>, Serializable 
         } else if (p1.y > p2.y) {
             return 1;
         } else {
-            return p1.x < p2.x ? -1 : (p1.x > p2.x ? 1 : 0);
+            return Integer.compare(p1.x, p2.x);
         }
     }
 }

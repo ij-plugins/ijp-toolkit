@@ -42,7 +42,7 @@ public class IJDebug {
     public static void log(final String message) {
         if (IJ.debugMode) {
             final long t = System.currentTimeMillis();
-            String stringBuilder = String.valueOf(t) +
+            String stringBuilder = t +
                     " - " +
                     message;
             IJ.log(stringBuilder);

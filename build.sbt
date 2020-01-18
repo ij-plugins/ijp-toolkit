@@ -4,9 +4,9 @@ import java.net.URL
 
 name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version      := "2.1.2"
+version      := "2.1.3-SNAPSHOT"
 
-homepage     := Some(new URL("https://ij-plugins.sf.net"))
+homepage     := Some(new URL("https://github.com/ij-plugins/ijp-toolkit"))
 startYear    := Some(2002)
 licenses     := Seq(("LGPL-2.1", new URL("http://opensource.org/licenses/LGPL-2.1")))
 description  := "<html>" +
@@ -22,8 +22,8 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-scalaVersion       := "2.13.0"
-crossScalaVersions := Seq("2.11.12", "2.10.7", "2.12.9", "2.13.0")
+crossScalaVersions := Seq("2.13.1", "2.12.10")
+scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
@@ -35,10 +35,10 @@ def isScala2_13plus(scalaVersion: String): Boolean = {
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.52k",
+  "net.imagej"         % "ij"               % "1.52s",
   // Test
-  "junit"              % "junit"            % "4.12"   % "test",
-  "org.scalatest"     %% "scalatest"        % "3.0.8"  % "test",
+  "junit"              % "junit"            % "4.13"   % "test",
+  "org.scalatest"     %% "scalatest"        % "3.1.0"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
@@ -52,7 +52,17 @@ libraryDependencies ++= (
   )
 
 // Add example directories to test compilation
-unmanagedSourceDirectories in Test += baseDirectory.value / "example/src"
+unmanagedSourceDirectories in Test += baseDirectory.value / "examples/scala"
+unmanagedSourceDirectories in Test += baseDirectory.value / "examples/java"
+
+scalacOptions in(Compile, doc) ++= Seq(
+  "-doc-title",        "IJ-Plugins Toolkit",
+  "-doc-version",      version.value,
+  "-doc-root-content", baseDirectory.value + "/src/main/scala/overview.txt",
+  "-doc-footer",       s"IJ-Plugins Toolkit API v.${version.value}"
+)
+
+
 
 // fork a new JVM for 'run' and 'test:run'
 fork := true

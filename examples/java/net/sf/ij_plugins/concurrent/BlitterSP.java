@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2016 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -17,21 +17,21 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
 package net.sf.ij_plugins.concurrent;
 
 import ij.process.Blitter;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 
 
 /**
  * @author Jarek Sacha
  * @since 3/8/11 9:46 PM
  */
-class BlitterSP extends DefaultProgressReporter implements SliceProducer {
+class BlitterSP extends ProgressReporter4J implements SliceProducer {
 
     final ImageProcessor ip1;
     final ImageProcessor ip2;

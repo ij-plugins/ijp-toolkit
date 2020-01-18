@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -32,6 +32,7 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.process.ImageConverter;
 import ij.process.StackConverter;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
@@ -45,10 +46,10 @@ import java.awt.image.IndexColorModel;
  */
 public final class KMeansClusteringPlugin implements PlugIn {
 
-    public static final String RESULTS_WINDOW_TITLE = "k-means cluster centers";
+    public static final String RESULTS_WINDOW_TITLE = "k-means Cluster Centers";
     static final boolean APPLY_LUT = false;
     static final boolean AUTO_BRIGHTNESS = true;
-    static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/k-means.html";
+    static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/k%E2%80%90means-Clustering";
     private static final KMeansConfig CONFIG = new KMeansConfig();
     private static final String TITLE = "k-means Clustering";
     private static final String ABOUT = "" +
@@ -67,6 +68,13 @@ public final class KMeansClusteringPlugin implements PlugIn {
             "Anil K. Jain and Richard C. Dubes, \"Algorithms for Clustering Data\",\n" +
             "Prentice Hall, 1988.\n" +
             "http://homepages.inf.ed.ac.uk/rbf/BOOKS/JAIN/Clustering_Jain_Dubes.pdf\n";
+    private static final String SHORT_DESCRIPTION = "" +
+            "k-means Clustering performs pixel-based segmentation of multi-band <br>" +
+            "images. An image stack is interpreted as a set of bands corresponding to <br>" +
+            "the same image. For instance, an RGB color images has three bands: red, <br>" +
+            "green, and blue. Each pixels is represented by an n-valued vector , where <br>" +
+            "n is a number of bands, for instance, a 3-value vector [r,g,b] in case of <br>" +
+            "a color image.";
     private static boolean showCentroidImage;
     private static boolean sendToResultTable;
     private static boolean interpretStackAs3D;
@@ -151,7 +159,8 @@ public final class KMeansClusteringPlugin implements PlugIn {
         }
 
         // Create configuration dialog
-        final GenericDialog dialog = new GenericDialog("K-means Configuration");
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, SHORT_DESCRIPTION));
         dialog.addNumericField("Number_of_clusters", CONFIG.getNumberOfClusters(), 0);
         dialog.addNumericField("Cluster_center_tolerance", CONFIG.getTolerance(), 8);
         dialog.addCheckbox("Interpret_stack_as_3D", interpretStackAs3D);

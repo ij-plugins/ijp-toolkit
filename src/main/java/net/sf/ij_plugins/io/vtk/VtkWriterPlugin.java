@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -25,8 +25,10 @@ package net.sf.ij_plugins.io.vtk;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.GenericDialog;
 import ij.io.SaveDialog;
 import ij.plugin.PlugIn;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.io.File;
 
@@ -42,36 +44,48 @@ import java.io.File;
 
 public final class VtkWriterPlugin implements PlugIn {
 
-    private static final String DIALOG_CAPTION = "VTK Writer";
+    private static final String TITLE = "VTK Writer";
+    private static final String DESCRIPTION = "<html>" +
+            "Writes a 2D image or a 3D stack in format used by <a href=\"http://www.vtk.org\">VTK</a>. <br>" +
+            "When <strong>Save as ASCII </strong> is selected the image is saved in text format, <br> " +
+            "when not selected the image is saved in binary format (MSB)." +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO";
+    private static boolean saveAsAscii = false;
 
 
-    /**
-     * Main processing method for the VtkEncoder plugin
-     *
-     * @param arg If equal "ASCII" file will be saved in text format otherwise in binary format
-     *            (MSB).
-     */
     @Override
     public void run(final String arg) {
 
         final ImagePlus imp = WindowManager.getCurrentImage();
         if (imp == null) {
-            IJ.showMessage(DIALOG_CAPTION, "No image to save.");
+            IJ.showMessage(TITLE, "No image to save.");
             return;
         }
 
         final SaveDialog saveDialog = new SaveDialog("Save as VTK", imp.getTitle(), ".vtk");
-
         if (saveDialog.getFileName() == null) {
             return;
         }
+
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
+        dialog.addCheckbox("Save_as_ASCII", saveAsAscii);
+        dialog.addHelp(HELP_URL);
+        dialog.showDialog();
+
+        if (dialog.wasCanceled()) {
+            return;
+        }
+
+        saveAsAscii = dialog.getNextBoolean();
 
         IJ.showStatus("Saving current image as '" + saveDialog.getFileName() + "'...");
         final String fileName = saveDialog.getDirectory() + File.separator + saveDialog.getFileName();
 
         try {
             final long tStart = System.currentTimeMillis();
-            VtkEncoder.save(fileName, imp, "ASCII".compareToIgnoreCase(arg) == 0);
+            VtkEncoder.save(fileName, imp, saveAsAscii);
             final long tStop = System.currentTimeMillis();
             IJ.showStatus("Saving of '" + saveDialog.getFileName() + "' completed in " + (tStop - tStart) + " ms.");
         } catch (final Exception ex) {
@@ -83,7 +97,7 @@ public final class VtkWriterPlugin implements PlugIn {
                 msg = "\n" + msg;
             }
 
-            IJ.showMessage(DIALOG_CAPTION, "Error writing file '" + fileName + "'." + msg);
+            IJ.showMessage(TITLE, "Error writing file '" + fileName + "'." + msg);
         }
     }
 

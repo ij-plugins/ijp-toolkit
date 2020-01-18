@@ -21,6 +21,8 @@
  */
 package net.sf.ij_plugins.filters;
 
+import java.util.Arrays;
+
 /**
  * Computes running median of 8 bit unsigned integer values.
  *
@@ -70,9 +72,7 @@ class RunningMedianUInt8Operator implements IRunningUInt8Operator {
 
     @Override
     public void clear() {
-        for (int i = 0; i < histogram.length; i++) {
-            histogram[i] = 0;
-        }
+        Arrays.fill(histogram, 0);
         median = 0;
         smallerCount = 0;
         largerCount = 0;

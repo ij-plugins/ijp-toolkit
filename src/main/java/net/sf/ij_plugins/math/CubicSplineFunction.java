@@ -35,7 +35,7 @@ public class CubicSplineFunction extends PiecewiseFunction {
 
     private final double derivativeAtFirst;
     private final double derivativeAtLast;
-    private double y2a[];
+    private double[] y2a;
 
     public CubicSplineFunction(final double[] x, final double[] y) {
         super(x, y);

@@ -35,11 +35,7 @@ public class FluxAnisotropicDiffusionFilter {
     private FloatProcessor smoothedImage;
     private double sigma = 1;
     private double beta = 0.05;
-    private final double k = 10;
     private int numberOfIterations = 1;
-    private final double tangCoeff = 1.0;
-    private final double epsilon = 1E-2;
-    private final boolean smoothedParam = false;
 
     public int getNumberOfIterations() {
         return numberOfIterations;
@@ -163,6 +159,7 @@ public class FluxAnisotropicDiffusionFilter {
 
                 double phi0_param;
 
+                boolean smoothedParam = false;
                 if (smoothedParam) {
                     phi0_param = norm;
                 } else {
@@ -258,6 +255,7 @@ public class FluxAnisotropicDiffusionFilter {
                 _gamma_y[x] = gamma1_y;
                 _gamma_x = gamma1_x;
 
+                double epsilon = 1E-2;
                 if (Math.abs(val1 - val0) > epsilon) {
                     nbUnstabilePoints++;
                 }
@@ -280,11 +278,12 @@ public class FluxAnisotropicDiffusionFilter {
     }
 
     private double phi0(final double x) {
+        double k = 10;
         return Math.exp(-0.5 * (((x) * (x)) / k / k));
     }
 
     private double phi1(final double x) {
-        return tangCoeff;
+        return 1.0;
     }
 
     private static class Point2D {

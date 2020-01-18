@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -26,9 +26,9 @@ import ij.IJ;
 import ij.process.ByteProcessor;
 import ij.process.ColorProcessor;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.ui.progress.ProgressEvent;
+import net.sf.ij_plugins.ui.progress.ProgressListener;
 import net.sf.ij_plugins.util.Validate;
-import net.sf.ij_plugins.util.progress.ProgressEvent;
-import net.sf.ij_plugins.util.progress.ProgressListener;
 
 
 /**
@@ -503,7 +503,7 @@ public final class ColorSpaceConversion {
 
         final String progressMessage = "Converting RGB to YCbCr...";
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(src, 0.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(0.0, progressMessage));
         }
 
         final int width = src.getWidth();
@@ -535,12 +535,12 @@ public final class ColorSpaceConversion {
             crPixels[i] = ybr[2];
 
             if ((progressListener != null) && (i % progressStep == 0)) {
-                progressListener.progressNotification(new ProgressEvent(src, i / (double) nbPixels, progressMessage));
+                progressListener.progressNotification(new ProgressEvent(i / (double) nbPixels, progressMessage));
             }
         }
 
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(src, 1.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(1.0, progressMessage));
         }
 
         return new ByteProcessor[]{
@@ -558,7 +558,7 @@ public final class ColorSpaceConversion {
      *
      * @param rgb input image in sRGB color space.
      * @return array of ByteProcessor representing color planes: Y, Cb, and Cr.
-     * @see #rgbToYCbCr(ij.process.ColorProcessor, net.sf.ij_plugins.util.progress.ProgressListener)
+     * @see #rgbToYCbCr(ij.process.ColorProcessor, net.sf.ij_plugins.ui.progress.ProgressListener)
      */
     public static ByteProcessor[] rgbToYCbCr(final ColorProcessor rgb) {
         return rgbToYCbCr(rgb, null);
@@ -625,7 +625,7 @@ public final class ColorSpaceConversion {
 
         final String progressMessage = "Converting YCbCr to RGB...";
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(ybr, 0.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(0.0, progressMessage));
         }
 
         final int width = ybr[0].getWidth();
@@ -657,7 +657,7 @@ public final class ColorSpaceConversion {
             bPixels[i] = (byte) (0xff & Math.min(Math.max(Math.round(b), 0), 255));
 
             if ((progressListener != null) && (i % progressStep == 0)) {
-                progressListener.progressNotification(new ProgressEvent(ybr, i / (double) nbPixels, progressMessage));
+                progressListener.progressNotification(new ProgressEvent(i / (double) nbPixels, progressMessage));
             }
         }
 
@@ -665,7 +665,7 @@ public final class ColorSpaceConversion {
         dest.setRGB(rPixels, gPixels, bPixels);
 
         if (progressListener != null) {
-            progressListener.progressNotification(new ProgressEvent(ybr, 1.0, progressMessage));
+            progressListener.progressNotification(new ProgressEvent(1.0, progressMessage));
         }
 
         return dest;
@@ -678,7 +678,7 @@ public final class ColorSpaceConversion {
      *
      * @param ybr array of ByteProcessor representing color planes: Y, Cb, and Cr.
      * @return ColorProcessor representing image in sRGB color space.
-     * @see #ycbcrToRGB(ij.process.ByteProcessor[], net.sf.ij_plugins.util.progress.ProgressListener)
+     * @see #ycbcrToRGB(ij.process.ByteProcessor[], net.sf.ij_plugins.ui.progress.ProgressListener)
      */
     public static ColorProcessor ycbcrToRGB(final ByteProcessor[] ybr) {
         return ycbcrToRGB(ybr, null);

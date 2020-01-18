@@ -88,9 +88,8 @@ public class RunningFilter {
             operator.clear();
             final int yyMin = Math.max(y - yr, yMin);
             final int yyMax = Math.min(y + yr, yMax);
-            final int xxMin = xMin;
             final int xxMax = Math.min(xMin + xr, xMax);
-            for (int xx = xxMin; xx < xxMax; ++xx) {
+            for (int xx = xMin; xx < xxMax; ++xx) {
                 for (int yy = yyMin; yy < yyMax; ++yy) {
                     packet[yy - yyMin] = srcPixels[xx + yy * width];
                 }

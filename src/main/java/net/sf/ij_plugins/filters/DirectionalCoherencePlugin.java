@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -26,12 +26,15 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.util.IJPUtils;
 
 /**
  * @author Jarek Sacha
  */
 public class DirectionalCoherencePlugin implements PlugInFilter {
     private final static String TITLE = "Directional Coherence";
+    private static final String DESCRIPTION = "";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters";
 
     @Override
     public int setup(final String s, final ImagePlus imagePlus) {
@@ -44,10 +47,13 @@ public class DirectionalCoherencePlugin implements PlugInFilter {
 
         // Show options dialog
         final DirectionalCoherenceFilter filter = new DirectionalCoherenceFilter();
-        final GenericDialog dialog = new GenericDialog(TITLE);
-        dialog.addNumericField("Space_scale", filter.getSpaceScale(), 2, 6, "");
-        dialog.showDialog();
 
+        final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
+        dialog.addNumericField("Space_scale", filter.getSpaceScale(), 2, 6, "");
+        dialog.addHelp(HELP_URL);
+
+        dialog.showDialog();
         if (dialog.wasCanceled()) {
             return;
         }

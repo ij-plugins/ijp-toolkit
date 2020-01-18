@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2016 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  Latest release available at http://sourceforge.net/projects/ij-plugins/
+ *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
 package net.sf.ij_plugins.ui.progress
@@ -28,7 +28,7 @@ package net.sf.ij_plugins.ui.progress
 object ProgressReporterExample extends App {
 
   // Create counter
-  val counter = new CounterWithProgress('+')
+  val counter = new CounterWithProgress4J('+')
 
   // Add progress listener
   counter.addProgressListener((e: ProgressEvent) => println(f"\nProgress notification: ${e.progressPercent}%3.0f%%"))
@@ -38,9 +38,9 @@ object ProgressReporterExample extends App {
 }
 
 /**
- * Example of using `ProgressReporter`
- */
-class CounterWithProgress(marker: Char) extends ProgressReporter {
+  * Example of using `ProgressReporter`
+  */
+class CounterWithProgress(marker: Char) extends ProgressReporter4J {
 
   def count(max: Int) {
     val progressIncrement = Math.max(max / 10, 1)

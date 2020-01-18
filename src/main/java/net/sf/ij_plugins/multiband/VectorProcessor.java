@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -47,7 +47,7 @@ public class VectorProcessor {
     private final int numberOfValues;
     private final float[][] pixels;
     private Rectangle roi;
-    // TODO: use net.sf.ij_plugins.util.progress instead of ij.gui.ProgressBar for more flexibility.
+    // TODO: use net.sf.ij_plugins.ui.progress instead of ij.gui.ProgressBar for more flexibility.
     private ProgressBar progressBar;
 
 

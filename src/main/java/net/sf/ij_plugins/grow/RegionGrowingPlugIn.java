@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -29,7 +29,10 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.grow.SRG;
 import net.sf.ij_plugins.im3d.grow.SRG3D;
-import net.sf.ij_plugins.util.progress.*;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.ui.progress.ProgressAccumulator;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
+import net.sf.ij_plugins.util.IJPUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +55,12 @@ public final class RegionGrowingPlugIn implements PlugIn {
     private static final String RUN_INDEPENDENT_SLICES = "All slices independent";
     private static final String RUN_3D = "3D volume";
     private static final String[] STACK_TREATMENT = {RUN_CURRENT_SLICE, RUN_INDEPENDENT_SLICES, RUN_3D};
-    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/srg.html";
+    public static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Seeded-Region-Growing";
+    private static final String DESCRIPTION = "<html>" +
+            "Segments image by growing regions from seeds. <br>" +
+            "Pixels are added by smallest intensity difference. <br>" +
+            "For additional information see <a href=" + HELP_URL + ">Seeded Region Growing</a>" +
+            "</html>";
 
 
     final AtomicReference<String> stackTreatment = new AtomicReference<>(STACK_TREATMENT[0]);
@@ -91,9 +99,10 @@ public final class RegionGrowingPlugIn implements PlugIn {
             return;
         }
 
-        final String[] imageTitles = imageTitleList.toArray(new String[imageTitleList.size()]);
-        final String[] seedTitles = seedTitleList.toArray(new String[seedTitleList.size()]);
+        final String[] imageTitles = imageTitleList.toArray(new String[0]);
+        final String[] seedTitles = seedTitleList.toArray(new String[0]);
         final GenericDialog gd = new GenericDialog(TITLE, IJ.getInstance());
+        gd.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         gd.addChoice("Image:", imageTitles, imageTitles[0]);
         gd.addChoice("Seeds:", seedTitles, seedTitles[0]);
         gd.addChoice("Stack treatment:", STACK_TREATMENT, stackTreatment.get());
@@ -144,11 +153,11 @@ public final class RegionGrowingPlugIn implements PlugIn {
 
     private static void run(final ImagePlus image, final ImagePlus seeds, final String stackTreatment, final boolean growHistoryEnabled) {
         if (RUN_CURRENT_SLICE.equalsIgnoreCase(stackTreatment)) {
-            run(image.getProcessor(), (ByteProcessor) seeds.getProcessor(), image.getTitle() + Integer.toString(image.getCurrentSlice()));
+            run(image.getProcessor(), (ByteProcessor) seeds.getProcessor(), image.getTitle() + image.getCurrentSlice());
         } else if (RUN_INDEPENDENT_SLICES.equalsIgnoreCase(stackTreatment)) {
             runEachSliceIndependently(image, seeds);
         } else if (RUN_3D.equalsIgnoreCase(stackTreatment)) {
-            run(image.getStack(), seeds.getStack(), image.getTitle() + Integer.toString(image.getCurrentSlice()), growHistoryEnabled);
+            run(image.getStack(), seeds.getStack(), image.getTitle() + image.getCurrentSlice(), growHistoryEnabled);
         } else {
             IJ.error(TITLE, "Not supported stack option: " + stackTreatment);
         }
@@ -232,7 +241,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
     }
 
 
-    private static class SRGCallable extends DefaultProgressReporter implements Callable<ByteProcessor> {
+    private static class SRGCallable extends ProgressReporter4J implements Callable<ByteProcessor> {
 
         final ByteProcessor image;
         final ByteProcessor seeds;
@@ -245,18 +254,13 @@ public final class RegionGrowingPlugIn implements PlugIn {
 
 
         @Override
-        public ByteProcessor call() throws Exception {
+        public ByteProcessor call() {
             // Setup SRG
             final SRG srg = new SRG();
             srg.setImage(image);
             srg.setSeeds(seeds);
             // Forward progress notification
-            srg.addProgressListener(new ProgressListener() {
-                @Override
-                public void progressNotification(final ProgressEvent e) {
-                    notifyProgressListeners(e.getProgress(), e.getMessage());
-                }
-            });
+            srg.addProgressListener(e -> notifyProgressListeners(e.progress(), e.message()));
 
             // Run segmentation
             srg.run();

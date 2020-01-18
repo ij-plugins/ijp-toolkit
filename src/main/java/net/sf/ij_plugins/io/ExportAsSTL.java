@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -25,10 +25,11 @@ package net.sf.ij_plugins.io;
 import ij.IJ;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsException;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 import net.sf.ij_plugins.util.TextUtil;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -38,7 +39,7 @@ import java.io.*;
  * @author Jarek Sacha
  * @since 11/29/10 10:49 PM
  */
-public final class ExportAsSTL extends DefaultProgressReporter {
+public final class ExportAsSTL extends ProgressReporter4J {
 
     enum FileType {ASCII, BINARY}
 
@@ -410,7 +411,7 @@ public final class ExportAsSTL extends DefaultProgressReporter {
 
 
     private static void write(final OutputStream out, final String s) throws IOException {
-        out.write(s.getBytes("UTF-8"));
+        out.write(s.getBytes(StandardCharsets.UTF_8));
     }
 
 }

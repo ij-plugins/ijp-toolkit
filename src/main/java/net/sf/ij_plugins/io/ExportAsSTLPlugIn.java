@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -31,8 +31,9 @@ import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsException;
 import net.sf.ij_plugins.io.ExportAsSTL.FileType;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.util.IJPUtils;
 import net.sf.ij_plugins.util.TextUtil;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import java.io.File;
 
@@ -44,7 +45,15 @@ import java.io.File;
 public final class ExportAsSTLPlugIn implements PlugIn {
 
     private static final String TITLE = "Export as STL";
-    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/3d-io/index.html";
+    private static final String DESCRIPTION = "<html>" +
+            "Interprets intensity in 2D image as a surface height and writes result in " +
+            "<a href=\"https://en.wikipedia.org/wiki/STL_(file_format)\">STL format</a>." +
+            "<ul>" +
+            "  <li>Data can be saved either in <em>binary</em> or <em>ascii</em> (text) format</li>" +
+            "  <li>Option <em>Save sides</em> enables generation of the mesh for sides and the bottom</li>" +
+            "</ul>" +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO";
 
     private static FileType fileType = FileType.BINARY;
     private static boolean saveSides = true;
@@ -60,6 +69,7 @@ public final class ExportAsSTLPlugIn implements PlugIn {
 
         // Ask for options
         final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         final FileType[] fileTypes = FileType.values();
         final String[] fileTypeStrings = new String[fileTypes.length];
         for (int i = 0; i < fileTypes.length; i++) {

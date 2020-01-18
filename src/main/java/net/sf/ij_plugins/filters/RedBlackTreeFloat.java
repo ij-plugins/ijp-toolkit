@@ -182,14 +182,13 @@ public final class RedBlackTreeFloat {
 
 
     private boolean remove(final Node node) {
-        final Node z = node;
-        if (z == Node.NULL) {
+        if (node == Node.NULL) {
             return false;
         }
 
-        final Node y = z.left == Node.NULL || z.right == Node.NULL
-                ? z
-                : successor(z);
+        final Node y = node.left == Node.NULL || node.right == Node.NULL
+                ? node
+                : successor(node);
 
         final Node x = y.left != Node.NULL
                 ? y.left
@@ -209,8 +208,8 @@ public final class RedBlackTreeFloat {
             }
         }
 
-        if (y != z) {
-            z.key = y.key;
+        if (y != node) {
+            node.key = y.key;
         }
 
         // Update count

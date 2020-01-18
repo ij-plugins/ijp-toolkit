@@ -59,7 +59,7 @@ public class SynthAide {
         final double stddev = length / 4.9;
 
         // make a 1d gaussian kernel
-        final double oned[] = new double[length];
+        final double[] oned = new double[length];
         for (int i = 0; i < length; i++) {
             final int x = i - length / 2;
             final double exponent = x * x / (-2 * stddev * stddev);
@@ -67,7 +67,7 @@ public class SynthAide {
         }
 
         // make the 2d version based on the 1d
-        final double twod[][] = new double[length][length];
+        final double[][] twod = new double[length][length];
         double sum = 0.0;
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
@@ -132,8 +132,8 @@ public class SynthAide {
      */
     public static int ssd(final View view1, final View view2, final int x, final int y) {
 
-        final int vals[] = view1.getSample(x, y, null);
-        final int vals2[] = view2.getSample(x, y, null);
+        final int[] vals = view1.getSample(x, y, null);
+        final int[] vals2 = view2.getSample(x, y, null);
 
         int diff = vals[0] - vals2[0];
         int sum = diff * diff;

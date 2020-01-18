@@ -32,6 +32,7 @@ import ij.plugin.PlugIn;
 import ij.process.ByteProcessor;
 import ij.text.TextWindow;
 import net.sf.ij_plugins.multiband.VectorProcessor;
+import net.sf.ij_plugins.util.IJPUtils;
 import net.sf.ij_plugins.util.Pair;
 
 import java.awt.*;
@@ -166,10 +167,11 @@ public final class KMeansClusteringReapplyPlugin implements PlugIn {
     private boolean showOptionsDialog(final List<String> resultTableNames, final List<String> imageNames) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, ABOUT));
         dialog.addMessage("Select result table containing cluster centers produced by k-means clustering plugin.");
-        dialog.addChoice("Table with cluster centers", resultTableNames.toArray(new String[resultTableNames.size()]),
+        dialog.addChoice("Table with cluster centers", resultTableNames.toArray(new String[0]),
                 resultTableNames.get(0));
-        dialog.addChoice("Image to apply clusters", imageNames.toArray(new String[imageNames.size()]),
+        dialog.addChoice("Image to apply clusters", imageNames.toArray(new String[0]),
                 imageNames.get(0));
         dialog.addCheckbox("Interpret_stack_as_3D (not supported)", CONFIG.interpretStackAs3D);
         dialog.addCheckbox("Show_clusters_as_centroid_value", CONFIG.showCentroidImage);

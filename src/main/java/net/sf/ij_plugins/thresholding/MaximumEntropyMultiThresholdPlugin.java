@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -29,7 +29,8 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.util.IJPUtils;
 
 
 /**
@@ -43,14 +44,14 @@ import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
  */
 public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
 
-    private static final String ABOUT_MESSAGE =
-            "Automatic multiple thresholding technique, generalization of a single maximum\n" +
-                    "entropy thresholding of Kapur, Sahoo, and Wond:\n" +
-                    "J.N. Kapur, P.K. Sahoo and A.K.C. Wong,A New Method for Gray-Level Picture\n" +
-                    "\"Thresholding Using the Entropy of the Histogram\"CVGIP, (29), pp.273-285,\n" +
-                    "1985.";
     private static final String TITLE = "Maximum Entropy Multi-Threshold";
-    private static final String HELP_URL = "http://ij-plugins.sourceforge.net/plugins/segmentation/maximum_entropy_threshold.html";
+    private static final String DESCRIPTION = "<html>" +
+            "Automatic multiple thresholding technique, generalization of a single maximum <br>" +
+            "entropy thresholding of Kapur, Sahoo, and Wond: <br>" +
+            "J.N. Kapur, P.K. Sahoo and A.K.C. Wong, \"A New Method for Gray-Level Picture <br>" +
+            "Thresholding Using the Entropy of the Histogram\", <em>CVGIP</em>, (29), pp.273-285, 1985." +
+            "</html>";
+    private static final String HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Maximum-Entropy-Threshold";
 
     // TODO: Add to CVS and make this plugin available for 2D, 3D, and stacks
 
@@ -59,7 +60,7 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
     public int setup(final String s, final ImagePlus imagePlus) {
 
         if ("about".equalsIgnoreCase(s)) {
-            IJ.showMessage(TITLE, ABOUT_MESSAGE);
+            IJ.showMessage(TITLE, DESCRIPTION);
             return PlugInFilter.DONE;
         }
 
@@ -71,12 +72,11 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
     public void run(final ImageProcessor imageProcessor) {
 
         final GenericDialog dialog = new GenericDialog(TITLE);
+        dialog.addPanel(IJPUtils.createInfoPanel(TITLE, DESCRIPTION));
         dialog.addNumericField("Number of thresholds:", 2, 0);
         dialog.addHelp(HELP_URL);
 
-
         dialog.showDialog();
-
         if (dialog.wasCanceled()) {
             return;
         }
@@ -95,11 +95,11 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         final MaximumEntropyMultiThreshold maximumEntropyMultiThreshold = new MaximumEntropyMultiThreshold();
         maximumEntropyMultiThreshold.addProgressListener(new IJProgressBarAdapter());
         final int[] thresholds = maximumEntropyMultiThreshold.maximumEntropy(hist, nbThresholds);
-        String logMsg = "Maximum Entropy Thresholds: ";
+        StringBuilder logMsg = new StringBuilder("Maximum Entropy Thresholds: ");
         for (final int threshold : thresholds) {
-            logMsg += " " + threshold;
+            logMsg.append(" ").append(threshold);
         }
-        IJ.log(logMsg);
+        IJ.log(logMsg.toString());
         encode((ByteProcessor) imageProcessor, thresholds);
     }
 
@@ -110,11 +110,11 @@ public final class MaximumEntropyMultiThresholdPlugin implements PlugInFilter {
         for (int i = 0; i < values.length; i++) {
             values[i] = (int) Math.round(i * inc);
         }
-        String logMsg = "Levels in thresholded image: ";
+        StringBuilder logMsg = new StringBuilder("Levels in thresholded image: ");
         for (final int v : values) {
-            logMsg += " " + v;
+            logMsg.append(" ").append(v);
         }
-        IJ.log(logMsg);
+        IJ.log(logMsg.toString());
 
         final byte[] pixels = (byte[]) ip.getPixels();
         for (int i = 0; i < pixels.length; i++) {
