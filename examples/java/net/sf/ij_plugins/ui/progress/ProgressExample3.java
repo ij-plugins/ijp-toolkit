@@ -20,7 +20,7 @@
  *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
-package net.sf.ij_plugins.util.progress;
+package net.sf.ij_plugins.ui.progress;
 
 /**
  * Example of using {@link ProgressAccumulator}.
@@ -31,13 +31,15 @@ final public class ProgressExample3 {
     public static void main(String[] args) {
 
         // Create counters
-        CounterWithProgress counter1 = new CounterWithProgress('+');
-        CounterWithProgress counter2 = new CounterWithProgress('*');
+        CounterWithProgress4J counter1 = new CounterWithProgress4J('+');
+        CounterWithProgress4J counter2 = new CounterWithProgress4J('*');
 
         // Create accumulator that will observer progress of both counters
         ProgressAccumulator accumulator = new ProgressAccumulator();
         // Register counters as progress reporters, use different weight for each
+        System.out.println("Counter 1, weight 3, mark: " + counter1.getMarker());
         accumulator.addProgressReporter(counter1, 3, " + ");
+        System.out.println("Counter 2, weight 1, mark: " + counter1.getMarker());
         accumulator.addProgressReporter(counter2, 1, " * ");
 
         // Request that only progress changes above minimum be reported
@@ -46,8 +48,8 @@ final public class ProgressExample3 {
         // Add progress listener
         accumulator.addProgressListener(new ProgressListener() {
             public void progressNotification(ProgressEvent e) {
-                System.out.println("\nProgress listener: " + Math.round(e.getProgress() * 100) + "% "
-                        + e.getMessage());
+                System.out.println("\nProgress listener: " + Math.round(e.progress() * 100) + "% "
+                        + e.message());
             }
         });
 

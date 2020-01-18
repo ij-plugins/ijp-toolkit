@@ -20,31 +20,19 @@
  *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
-package net.sf.ij_plugins.util.progress;
+package net.sf.ij_plugins.ui.progress;
 
 /**
- * Simple example of creating and listening to {@link net.sf.ij_plugins.util.progress.ProgressEvent}'s.
+ * Example counter that does not use progress reporting.
  *
  * @author Jarek Sacha
  */
-final public class ProgressExample2 {
-    public static void main(String[] args) {
-
-        // Create counter
-        final CounterWithProgress counter = new CounterWithProgress('+');
-
-        // Add progress listener
-        counter.addProgressListener(new ProgressListener() {
-            public void progressNotification(ProgressEvent e) {
-                System.out.println("\nProgress listener: " + Math.round(e.getProgress() * 100) + "%");
-            }
-        });
-
-        // Count
-        counter.count(100);
+public class Counter {
+    public void count(final int max) {
+        System.out.println("Counting to " + max);
+        for (int i = 0; i < max; i++) {
+            System.out.print("+");
+        }
+        System.out.println("\nCounting done.");
     }
-
 }
-
-
-

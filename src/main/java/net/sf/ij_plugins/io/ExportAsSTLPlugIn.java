@@ -31,9 +31,9 @@ import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.IJPluginsException;
 import net.sf.ij_plugins.io.ExportAsSTL.FileType;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
 import net.sf.ij_plugins.util.IJPUtils;
 import net.sf.ij_plugins.util.TextUtil;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import java.io.File;
 

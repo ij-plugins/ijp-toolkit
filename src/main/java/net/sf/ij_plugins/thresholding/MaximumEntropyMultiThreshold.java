@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
  */
 package net.sf.ij_plugins.thresholding;
 
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 import net.sf.ij_plugins.util.IJDebug;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author Jarek Sacha
  */
-public class MaximumEntropyMultiThreshold extends DefaultProgressReporter {
+public class MaximumEntropyMultiThreshold extends ProgressReporter4J {
 
     private static final double EPSILON = Double.MIN_VALUE;
     private double[] histogram;

@@ -29,8 +29,8 @@ import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
 import net.sf.ij_plugins.util.IJPUtils;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 
 /**

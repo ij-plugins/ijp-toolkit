@@ -38,9 +38,9 @@ import net.sf.ij_plugins.ui.UIUtils;
 import net.sf.ij_plugins.ui.multiregion.MultiRegionManagerModel;
 import net.sf.ij_plugins.ui.multiregion.Region;
 import net.sf.ij_plugins.ui.multiregion.SubRegion;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
 import net.sf.ij_plugins.util.IJUtils;
 import net.sf.ij_plugins.util.TextUtil;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
 
 import javax.swing.*;
 import java.awt.*;

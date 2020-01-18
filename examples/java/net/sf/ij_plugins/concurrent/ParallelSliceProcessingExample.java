@@ -26,7 +26,9 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.*;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.ui.progress.ProgressAccumulator;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ public final class ParallelSliceProcessingExample {
         final ProgressAccumulator accumulator = new ProgressAccumulator();
         accumulator.addProgressListener(progressBarAdapter);
         final ImageStack stack = new ImageStack(imp1.getWidth(), imp1.getHeight());
-        final List<Future<ImageProcessor>> futures = new ArrayList<Future<ImageProcessor>>(imp1.getNSlices());
+        final List<Future<ImageProcessor>> futures = new ArrayList<>(imp1.getNSlices());
         for (final BlitterSP producer : producers) {
             final PCallable worker = new PCallable(producer);
             accumulator.addProgressReporter(worker);
@@ -74,9 +76,7 @@ public final class ParallelSliceProcessingExample {
             final String sliceLabel = imp1.getStack().getSliceLabel(i + 1);
             try {
                 stack.addSlice(sliceLabel, worker.get());
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            } catch (final ExecutionException e) {
+            } catch (final InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
@@ -85,7 +85,7 @@ public final class ParallelSliceProcessingExample {
     }
 
 
-    private static class PCallable extends DefaultProgressReporter implements Callable<ImageProcessor> {
+    private static class PCallable extends ProgressReporter4J implements Callable<ImageProcessor> {
 
         final SliceProducer producer;
 
@@ -97,11 +97,7 @@ public final class ParallelSliceProcessingExample {
 
         final public ImageProcessor call() throws Exception {
             // Forward progress notification is using algorithm that supports it.
-            producer.addProgressListener(new ProgressListener() {
-                public void progressNotification(final ProgressEvent e) {
-                    notifyProgressListeners(e.getProgress(), e.getMessage());
-                }
-            });
+            producer.addProgressListener(e -> notifyProgressListeners(e.progress(), e.message()));
 
             notifyProgressListeners(0);
             ImageProcessor result = producer.produce();

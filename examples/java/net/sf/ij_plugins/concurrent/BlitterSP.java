@@ -24,14 +24,14 @@ package net.sf.ij_plugins.concurrent;
 
 import ij.process.Blitter;
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 
 
 /**
  * @author Jarek Sacha
  * @since 3/8/11 9:46 PM
  */
-class BlitterSP extends DefaultProgressReporter implements SliceProducer {
+class BlitterSP extends ProgressReporter4J implements SliceProducer {
 
     final ImageProcessor ip1;
     final ImageProcessor ip2;

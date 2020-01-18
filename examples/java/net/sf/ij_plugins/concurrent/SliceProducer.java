@@ -23,7 +23,7 @@
 package net.sf.ij_plugins.concurrent;
 
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.ProgressReporter;
+import net.sf.ij_plugins.ui.progress.ProgressReporter;
 
 
 /**

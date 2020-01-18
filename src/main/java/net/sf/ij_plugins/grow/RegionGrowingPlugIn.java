@@ -29,10 +29,10 @@ import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.grow.SRG;
 import net.sf.ij_plugins.im3d.grow.SRG3D;
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter;
+import net.sf.ij_plugins.ui.progress.ProgressAccumulator;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 import net.sf.ij_plugins.util.IJPUtils;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
-import net.sf.ij_plugins.util.progress.IJProgressBarAdapter;
-import net.sf.ij_plugins.util.progress.ProgressAccumulator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -241,7 +241,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
     }
 
 
-    private static class SRGCallable extends DefaultProgressReporter implements Callable<ByteProcessor> {
+    private static class SRGCallable extends ProgressReporter4J implements Callable<ByteProcessor> {
 
         final ByteProcessor image;
         final ByteProcessor seeds;
@@ -260,7 +260,7 @@ public final class RegionGrowingPlugIn implements PlugIn {
             srg.setImage(image);
             srg.setSeeds(seeds);
             // Forward progress notification
-            srg.addProgressListener(e -> notifyProgressListeners(e.getProgress(), e.getMessage()));
+            srg.addProgressListener(e -> notifyProgressListeners(e.progress(), e.message()));
 
             // Run segmentation
             srg.run();

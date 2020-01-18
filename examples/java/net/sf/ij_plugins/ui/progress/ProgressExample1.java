@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -19,36 +19,27 @@
  *
  *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
-package net.sf.ij_plugins.util.progress;
 
-import java.util.EventObject;
-
+package net.sf.ij_plugins.ui.progress;
 
 /**
- * Event used to notify listeners about current value of progress.
+ * Baseline example of counting without 'progress'.
  *
  * @author Jarek Sacha
+ * @see ProgressExample2
+ * @see ProgressExample3
  */
-public class ProgressEvent extends EventObject {
-    private static final long serialVersionUID = 1L;
-    private final double progress;
-    private final String message;
+public class ProgressExample1 {
+    public static void main(String[] args) {
 
-    public ProgressEvent(final Object source, final double progress) {
-        this(source, progress, "");
+        // Create counter
+        Counter counter = new Counter();
+
+        // Count
+        counter.count(100);
     }
 
-    public ProgressEvent(final Object source, final double progress, final String message) {
-        super(source);
-        this.progress = progress;
-        this.message = message;
-    }
-
-    public double getProgress() {
-        return progress;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }
+
+
+

@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -27,6 +27,10 @@ import scala.collection.mutable
 /**
   * Reports progress of an operation to its listeners. Progress starts at 0.0 and finishes at 1.0,
   * so 0.3 means 30% progress.
+  *
+  * If you want to use it from Java code, use
+  * [[net.sf.ij_plugins.ui.progress.ProgressReporter4J ProgressReporter4J]] wrapper
+  * to avoid compilation errors about missing implementations of private variables.
   *
   * Example usage:
   *
@@ -112,7 +116,7 @@ trait ProgressReporter {
     * @see #notifyProgressListeners(double)
     * @see #notifyProgressListeners(double, String)
     */
-  private def setCurrentProgress(progress: Double): Unit = {
+  protected def setCurrentProgress(progress: Double): Unit = {
     require(progress >= 0 && progress <= 1, "Argument progress cannot be less than 0 or more than 1 [" + progress + "].")
     _currentProgress = progress
   }
@@ -142,7 +146,7 @@ trait ProgressReporter {
     setCurrentProgress(progress)
     progressListeners synchronized {
       if (progressListeners.nonEmpty) {
-        val e = new ProgressEvent(ProgressReporter.this, currentProgress, message)
+        val e = new ProgressEvent(Option(ProgressReporter.this), currentProgress, message)
         progressListeners.foreach(_.progressNotification(e))
       }
     }

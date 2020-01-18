@@ -20,18 +20,22 @@
  *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
-package net.sf.ij_plugins.util.progress;
+package net.sf.ij_plugins.ui.progress;
 
 /**
- * Example of {@link DefaultProgressReporter}
+ * Example of {@link ProgressReporter4J}
  *
  * @author Jarek Sacha
  */
-public class CounterWithProgress extends DefaultProgressReporter {
+public class CounterWithProgress4J extends ProgressReporter4J {
     private final char marker;
 
-    public CounterWithProgress(char marker) {
+    public CounterWithProgress4J(char marker) {
         this.marker = marker;
+    }
+
+    public char getMarker() {
+        return marker;
     }
 
     public void count(final int max) {
@@ -42,6 +46,11 @@ public class CounterWithProgress extends DefaultProgressReporter {
         System.out.println("Counting " + max + " '" + marker + "'.");
         for (int i = 0; i < max; i++) {
             System.out.print(marker);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (i % progressIncrement == 0) {
                 this.notifyProgressListeners(i / (double) max);
             }

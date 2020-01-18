@@ -23,7 +23,7 @@
 package net.sf.ij_plugins.concurrent;
 
 import ij.process.ImageProcessor;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 
 import java.util.concurrent.Callable;
 
@@ -32,9 +32,9 @@ import java.util.concurrent.Callable;
  * @author Jarek Sacha
  * @since 3/8/11 3:18 PM
  */
-public final class ProcessSlicesInParallel extends DefaultProgressReporter {
+public final class ProcessSlicesInParallel extends ProgressReporter4J {
 
-    public static abstract class PCallable extends DefaultProgressReporter implements Callable<ImageProcessor> {
+    public static abstract class PCallable extends ProgressReporter4J implements Callable<ImageProcessor> {
 
         abstract ImageProcessor process() throws Exception;
 

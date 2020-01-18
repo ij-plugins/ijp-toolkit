@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -29,10 +29,10 @@ import ij.process.ByteStatistics;
 import ij.process.ImageProcessor;
 import net.sf.ij_plugins.im3d.Point3DInt;
 import net.sf.ij_plugins.io.IOUtils;
+import net.sf.ij_plugins.ui.progress.ProgressReporter4J;
 import net.sf.ij_plugins.util.IJDebug;
 import net.sf.ij_plugins.util.Pair;
 import net.sf.ij_plugins.util.Validate;
-import net.sf.ij_plugins.util.progress.DefaultProgressReporter;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +96,7 @@ import java.util.TreeSet;
  *
  * @author Jarek Sacha
  */
-public final class SRG3D extends DefaultProgressReporter {
+public final class SRG3D extends ProgressReporter4J {
 
     private static final String NAME = "Seeded Region Growing";
 

@@ -31,7 +31,7 @@ import ij.plugin.filter.{ExtendedPlugInFilter, PlugInFilterRunner}
 import ij.process.{Blitter, FloatProcessor, ImageProcessor}
 import ij.{IJ, ImagePlus}
 import net.sf.ij_plugins.filters.CoherenceEnhancingDiffusionPlugIn._
-import net.sf.ij_plugins.ui.progress.{ProgressEvent, ProgressListener}
+import net.sf.ij_plugins.ui.progress.IJProgressBarAdapter
 import net.sf.ij_plugins.util.IJPUtils
 
 
@@ -53,8 +53,8 @@ object CoherenceEnhancingDiffusionPlugIn {
 
 
 /**
- * ImageJ plugin that runs `CoherenceEnhancingDiffusion` filter.
- */
+  * ImageJ plugin that runs `CoherenceEnhancingDiffusion` filter.
+  */
 final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with DialogListener {
 
   private var imp: ImagePlus = _
@@ -110,15 +110,11 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
     IJ.showStatus(statsMessage)
     val src = ip.convertToFloat.asInstanceOf[FloatProcessor]
     val filter = new CoherenceEnhancingDiffusion(CONFIG)
-    val progressListener = new ProgressListener {
-      def progressNotification(e: ProgressEvent): Unit = {
-        IJ.showProgress(Math.round(e.progress * 100).asInstanceOf[Int], 100)
-        IJ.showStatus(statsMessage + e.message)
-      }
-    }
+    val progressListener = new IJProgressBarAdapter()
     filter.addProgressListener(progressListener)
-    val dest = filter.run(src)
-    filter.removeProgressListener(progressListener)
+    val dest =
+      try filter.run(src)
+      finally filter.removeProgressListener(progressListener)
     if (debugMode.get) {
       filter.alpha.resetMinAndMax()
       new ImagePlus("alpha", filter.alpha).show()

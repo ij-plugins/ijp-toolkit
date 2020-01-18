@@ -52,7 +52,17 @@ libraryDependencies ++= (
   )
 
 // Add example directories to test compilation
-unmanagedSourceDirectories in Test += baseDirectory.value / "example/src"
+unmanagedSourceDirectories in Test += baseDirectory.value / "examples/scala"
+unmanagedSourceDirectories in Test += baseDirectory.value / "examples/java"
+
+scalacOptions in(Compile, doc) ++= Seq(
+  "-doc-title",        "IJ-Plugins Toolkit",
+  "-doc-version",      version.value,
+  "-doc-root-content", baseDirectory.value + "/src/main/scala/overview.txt",
+  "-doc-footer",       s"IJ-Plugins Toolkit API v.${version.value}"
+)
+
+
 
 // fork a new JVM for 'run' and 'test:run'
 fork := true

@@ -1,6 +1,6 @@
 /*
  * IJ-Plugins
- * Copyright (C) 2002-2019 Jarek Sacha
+ * Copyright (C) 2002-2020 Jarek Sacha
  * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
@@ -19,18 +19,13 @@
  *
  *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
-package net.sf.ij_plugins.util.progress;
+
+package net.sf.ij_plugins.ui.progress
 
 /**
- * Interface of a {@link  ProgressEvent} listener, used by {@link ProgressReporter}s.
- *
- * @author Jarek Sacha
- */
-public interface ProgressListener {
-    /**
-     * sent to this listener new progress event.
-     *
-     * @param e event information.
-     */
-    void progressNotification(ProgressEvent e);
-}
+  * A compatibility wrapper intended to make `ProgressReporter` usable from Java.
+  *
+  * See [[https://alvinalexander.com/scala/how-to-wrap-scala-traits-used-accessed-java-classes-methods How to wrap Scala traits so they can be used from Java code]].
+  *
+  */
+class ProgressReporter4J extends ProgressReporter

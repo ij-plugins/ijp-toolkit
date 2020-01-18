@@ -28,7 +28,7 @@ package net.sf.ij_plugins.ui.progress
 object ProgressReporterExample extends App {
 
   // Create counter
-  val counter = new CounterWithProgress('+')
+  val counter = new CounterWithProgress4J('+')
 
   // Add progress listener
   counter.addProgressListener((e: ProgressEvent) => println(f"\nProgress notification: ${e.progressPercent}%3.0f%%"))
@@ -38,9 +38,9 @@ object ProgressReporterExample extends App {
 }
 
 /**
- * Example of using `ProgressReporter`
- */
-class CounterWithProgress(marker: Char) extends ProgressReporter {
+  * Example of using `ProgressReporter`
+  */
+class CounterWithProgress(marker: Char) extends ProgressReporter4J {
 
   def count(max: Int) {
     val progressIncrement = Math.max(max / 10, 1)
