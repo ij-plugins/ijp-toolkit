@@ -1,6 +1,42 @@
 ij-plugins Toolkit Changelog
 ============================
 
+Version 2.2.0
+-------------
+
+### Plugin User Visible
+
+* Add branding to plugin dialogs enhancement [#6]
+* Add help button to SRG Tool dialog [#8]
+* "Auto Clip 3D" ClassNotFoundException [#10]
+* Prefix all plugins added to "Help > About Plugins" with "About: " [#11]
+* Constant capitalization of plugin names bug [#12]
+
+
+### API Changes
+* Remove duplicate implementation of Progress classes: in `net.sf.ij_plugins.util.progress` and `net.sf.ij_plugins.ui.progress` [#16]
+* Use 'master" branch for development and 'release' branch for stable releases [#9] 
+
+### Documentation Enhancements
+
+* Move plugin Help from old website to wiki in this project  [#5]
+* Update ReadMe with links to Wiki instead the old web page [#7]
+* Redirect old website to this Wiki [#13]
+* Remove deprecated references to old SourceForge project [#15]
+
+[#5]: https://github.com/ij-plugins/ijp-toolkit/issues/5
+[#6]: https://github.com/ij-plugins/ijp-toolkit/issues/6
+[#7]: https://github.com/ij-plugins/ijp-toolkit/issues/7
+[#8]: https://github.com/ij-plugins/ijp-toolkit/issues/8
+[#9]: https://github.com/ij-plugins/ijp-toolkit/issues/9
+[#10]: https://github.com/ij-plugins/ijp-toolkit/issues/10
+[#11]: https://github.com/ij-plugins/ijp-toolkit/issues/11
+[#12]: https://github.com/ij-plugins/ijp-toolkit/issues/12
+[#13]: https://github.com/ij-plugins/ijp-toolkit/issues/13
+[#15]: https://github.com/ij-plugins/ijp-toolkit/issues/15
+[#16]: https://github.com/ij-plugins/ijp-toolkit/issues/16
+
+
 Version 2.1.2
 -------------------
 
