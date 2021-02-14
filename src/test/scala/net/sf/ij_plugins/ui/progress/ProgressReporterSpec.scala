@@ -22,12 +22,13 @@
 
 package net.sf.ij_plugins.ui.progress
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should
 
 /**
   * @author Jarek Sacha 
   */
-class ProgressReporterSpec extends FlatSpec with Matchers {
+class ProgressReporterSpec extends AnyFlatSpec with should.Matchers {
 
   private class CounterWithProgress extends ProgressReporter {
     def count(max: Int) {
