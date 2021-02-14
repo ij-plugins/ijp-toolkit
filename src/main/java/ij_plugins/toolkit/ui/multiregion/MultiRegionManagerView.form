@@ -1,0 +1,330 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+
+<!--
+  ~ Image/J Plugins
+  ~  Copyright (C) 2002-2020 Jarek Sacha
+  ~  Author's email: jpsacha at gmail dot com
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  ~
+  ~ Latest release available at https://github.com/ij-plugins/ijp-toolkit/
+  -->
+
+<Form version="1.5" maxVersion="1.5" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+    <NonVisualComponents>
+        <Container class="javax.swing.JPopupMenu" name="regionPopupMenu">
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+            </AuxValues>
+
+            <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+                <Property name="useNullLayout" type="boolean" value="true"/>
+            </Layout>
+            <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="toROIManagerMenuItem">
+                    <Properties>
+                        <Property name="text" type="java.lang.String" value="Send to ROI Manager"/>
+                        <Property name="toolTipText" type="java.lang.String"
+                                  value="Send all ROIs in this region to ROI Manager"/>
+                    </Properties>
+                    <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener"
+                                      parameters="java.awt.event.ActionEvent"
+                                      handler="toROIManagerMenuItemActionPerformed"/>
+                    </Events>
+                    <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+                    </AuxValues>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="fromROIManagerMenuItem">
+                    <Properties>
+                        <Property name="text" type="java.lang.String" value="Load from ROI Manager"/>
+                        <Property name="toolTipText" type="java.lang.String"
+                                  value="Load ROIs in this region from ROI Manager"/>
+                    </Properties>
+                    <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener"
+                                      parameters="java.awt.event.ActionEvent"
+                                      handler="fromROIManagerMenuItemActionPerformed"/>
+                    </Events>
+                </MenuItem>
+            </SubComponents>
+        </Container>
+    </NonVisualComponents>
+    <AuxValues>
+        <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+        <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+        <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="false"/>
+        <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+        <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+        <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+        <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+        <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="0"/>
+    </AuxValues>
+
+    <Layout>
+        <DimensionLayout dim="0">
+            <Group type="103" groupAlignment="0" attributes="0">
+                <Group type="102" attributes="0">
+                    <EmptySpace min="-2" max="-2" attributes="0"/>
+                    <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                        <Component id="roiLabel" max="32767" attributes="1"/>
+                        <Component id="regionLabel" alignment="0" max="32767" attributes="1"/>
+                    </Group>
+                    <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                    <Group type="103" groupAlignment="1" attributes="0">
+                        <Component id="regionScrollPane" pref="192" max="32767" attributes="2"/>
+                        <Component id="subRegionScrollPane" alignment="1" pref="192" max="32767" attributes="2"/>
+                    </Group>
+                    <EmptySpace type="separate" max="-2" attributes="0"/>
+                    <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="103" groupAlignment="0" attributes="0">
+                            <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                                <Component id="addRegionButton" linkSize="1" alignment="1" min="-2" pref="133" max="-2"
+                                           attributes="1"/>
+                                <Component id="removeRegionButton" linkSize="1" alignment="1" min="-2" pref="133"
+                                           max="-2" attributes="1"/>
+                                <Component id="redrawOverlaysButton" linkSize="1" alignment="1" min="-2" max="-2"
+                                           attributes="1"/>
+                                <Component id="removeOverlayButton" linkSize="1" alignment="1" min="-2" max="-2"
+                                           attributes="1"/>
+                            </Group>
+                            <Component id="jSeparator1" linkSize="1" alignment="1" min="-2" pref="133" max="-2"
+                                       attributes="1"/>
+                        </Group>
+                        <Group type="103" groupAlignment="0" attributes="0">
+                            <Component id="addROIButton" linkSize="1" alignment="1" min="-2" max="-2" attributes="1"/>
+                            <Component id="removeROIButton" linkSize="1" alignment="1" min="-2" pref="133" max="-2"
+                                       attributes="1"/>
+                        </Group>
+                    </Group>
+                    <EmptySpace min="-2" max="-2" attributes="0"/>
+                </Group>
+            </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+            <Group type="103" groupAlignment="0" attributes="0">
+                <Group type="102" alignment="1" attributes="0">
+                    <EmptySpace max="-2" attributes="0"/>
+                    <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" attributes="0">
+                            <Group type="103" groupAlignment="0" attributes="0">
+                                <Component id="regionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                <Component id="regionScrollPane" pref="123" max="32767" attributes="0"/>
+                            </Group>
+                            <EmptySpace min="-2" max="-2" attributes="0"/>
+                        </Group>
+                        <Group type="102" alignment="0" attributes="0">
+                            <Component id="addRegionButton" min="-2" max="-2" attributes="0"/>
+                            <EmptySpace max="-2" attributes="0"/>
+                            <Component id="removeRegionButton" min="-2" max="-2" attributes="0"/>
+                            <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+                        </Group>
+                    </Group>
+                    <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" alignment="1" attributes="0">
+                            <Component id="addROIButton" min="-2" max="-2" attributes="0"/>
+                            <EmptySpace max="-2" attributes="0"/>
+                            <Component id="removeROIButton" min="-2" pref="25" max="-2" attributes="0"/>
+                            <EmptySpace pref="9" max="32767" attributes="0"/>
+                            <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
+                            <EmptySpace max="-2" attributes="0"/>
+                            <Component id="redrawOverlaysButton" min="-2" max="-2" attributes="0"/>
+                            <EmptySpace max="-2" attributes="0"/>
+                            <Component id="removeOverlayButton" min="-2" max="-2" attributes="0"/>
+                        </Group>
+                        <Component id="subRegionScrollPane" alignment="0" pref="137" max="32767" attributes="0"/>
+                        <Component id="roiLabel" min="-2" max="-2" attributes="0"/>
+                    </Group>
+                    <EmptySpace max="-2" attributes="0"/>
+                </Group>
+            </Group>
+        </DimensionLayout>
+    </Layout>
+    <SubComponents>
+        <Container class="javax.swing.JScrollPane" name="regionScrollPane">
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+            </AuxValues>
+
+            <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+            <SubComponents>
+                <Component class="javax.swing.JList" name="regionList">
+                    <Properties>
+                        <Property name="model" type="javax.swing.ListModel"
+                                  editor="org.netbeans.modules.form.editors2.ListModelEditor">
+                            <StringArray count="0"/>
+                        </Property>
+                        <Property name="selectionMode" type="int" value="0"/>
+                        <Property name="selectedIndex" type="int" value="0"/>
+                    </Properties>
+                    <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener"
+                                      parameters="java.awt.event.MouseEvent" handler="regionListMouseClicked"/>
+                    </Events>
+                    <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                                  value="BasicComponentFactory.createList(regionSelectionInList)"/>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+                    </AuxValues>
+                </Component>
+            </SubComponents>
+        </Container>
+        <Container class="javax.swing.JScrollPane" name="subRegionScrollPane">
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+            </AuxValues>
+
+            <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+            <SubComponents>
+                <Component class="javax.swing.JList" name="subRegionList">
+                    <Properties>
+                        <Property name="model" type="javax.swing.ListModel"
+                                  editor="org.netbeans.modules.form.editors2.ListModelEditor">
+                            <StringArray count="0"/>
+                        </Property>
+                        <Property name="selectionMode" type="int" value="0"/>
+                    </Properties>
+                    <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                                  value="BasicComponentFactory.createList(subRegionSelectionInList)"/>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="18"/>
+                    </AuxValues>
+                </Component>
+            </SubComponents>
+        </Container>
+        <Component class="javax.swing.JButton" name="addRegionButton">
+            <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                    <Image iconType="3" name="/ij_plugins.toolkit/ui/multiregion/edit_add.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Add Region"/>
+                <Property name="toolTipText" type="java.lang.String" value="Add new region (a collection of ROIs)."/>
+                <Property name="horizontalAlignment" type="int" value="10"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                          value="new javax.swing.JButton(model.createNewRegionAction())"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="addROIButton">
+            <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                    <Image iconType="3" name="/ij_plugins.toolkit/ui/multiregion/edit_add.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Add Current ROI"/>
+                <Property name="toolTipText" type="java.lang.String"
+                          value="Add ROI from current image to selected region."/>
+                <Property name="horizontalAlignment" type="int" value="10"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                          value="new javax.swing.JButton(model.createAddCurrentROIAction())"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="removeRegionButton">
+            <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                    <Image iconType="3" name="/ij_plugins.toolkit/ui/multiregion/edit_remove.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Remove Region"/>
+                <Property name="toolTipText" type="java.lang.String" value="Remove region selected in the list."/>
+                <Property name="horizontalAlignment" type="int" value="10"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                          value="new javax.swing.JButton(model.createRemoveRegionAction())"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="removeROIButton">
+            <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                    <Image iconType="3" name="/ij_plugins.toolkit/ui/multiregion/edit_remove.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Remove ROI"/>
+                <Property name="toolTipText" type="java.lang.String" value="Remove ROI selected in the list."/>
+                <Property name="horizontalAlignment" type="int" value="10"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                          value="new javax.swing.JButton(model.createRemoveSubRegionAction())"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="regionLabel">
+            <Properties>
+                <Property name="text" type="java.lang.String" value="Regions"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="roiLabel">
+            <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="text" type="java.lang.String" value="ROIs"/>
+                <Property name="horizontalTextPosition" type="int" value="4"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="redrawOverlaysButton">
+            <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                    <Image iconType="3" name="/ij_plugins.toolkit/ui/multiregion/reload.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Redraw Overlays"/>
+                <Property name="toolTipText" type="java.lang.String" value="Draw ROIs overlay on current image"/>
+                <Property name="horizontalAlignment" type="int" value="10"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                          value="new javax.swing.JButton(model.createRedrawOverlaysAction())"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="removeOverlayButton">
+            <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                    <Image iconType="3" name="/ij_plugins.toolkit/ui/multiregion/delete.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Remove Overlays"/>
+                <Property name="toolTipText" type="java.lang.String"
+                          value="Remove overlays from the current image, if any."/>
+                <Property name="horizontalAlignment" type="int" value="10"/>
+            </Properties>
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String"
+                          value="new javax.swing.JButton(model.createRemoveOverlaysAction())"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+        <Component class="javax.swing.JSeparator" name="jSeparator1">
+            <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="16"/>
+            </AuxValues>
+        </Component>
+    </SubComponents>
+</Form>

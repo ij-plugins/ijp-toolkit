@@ -2,12 +2,11 @@ IJ-Plugins Toolkit
 ==================
 
 [![Build Status](https://travis-ci.org/ij-plugins/ijp-toolkit.svg?branch=develop)](https://travis-ci.org/ij-plugins/ijp-toolkit)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13) 
-[![Scaladoc](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.13.svg?label=scaladoc)](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.13) 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13)
+[![Scaladoc](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.13.svg?label=scaladoc)](http://javadoc-badge.appspot.com/net.sf.ij-plugins/ijp-toolkit_2.13)
 
-
-
-![logo](src/main/resources/net/sf/ij_plugins/IJP-48.png) **IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The plugins are grouped into:
+![logo](src/main/resources/ij_plugins/toolkit/IJP-48.png) **IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The
+plugins are grouped into:
 
 * **[3D IO]** - import and export of data in 3D formats.
 

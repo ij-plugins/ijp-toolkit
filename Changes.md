@@ -14,8 +14,9 @@ Version 2.2.0
 
 
 ### API Changes
-* Remove duplicate implementation of Progress classes: in `net.sf.ij_plugins.util.progress` and `net.sf.ij_plugins.ui.progress` [#16]
-* Use 'master" branch for development and 'release' branch for stable releases [#9] 
+* Remove duplicate implementation of Progress classes: in `ij_plugins.toolkit.util.progress`
+  and `ij_plugins.toolkit.ui.progress` [#16]
+* Use 'master" branch for development and 'release' branch for stable releases [#9]
 
 ### Documentation Enhancements
 
@@ -170,10 +171,9 @@ Improvements:
 * Rename AutoClipVolume to AutoCropVolume.
 
 Developer visible:
-* SRG Tools is now using standard overlays provided in newer versions of
-  ImageJ.
-* Signature of net.sf.ij_plugins.io.metaimage.MiDecoder.open changed to support
-  multi-channel MetaImage files.
+
+* SRG Tools is now using standard overlays provided in newer versions of ImageJ.
+* Signature of MiDecoder.open changed to support multi-channel MetaImage files.
 * Improvements to JavaDoc.
 * Separate distribution building Ant script into separate file for simpler
   dependency.
