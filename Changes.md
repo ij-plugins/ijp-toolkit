@@ -1,6 +1,13 @@
 ij-plugins Toolkit Changelog
 ============================
 
+Version 2.3.0
+-------------
+
+This release contains mostly change to API:
+
+* Root package renamed from `net.sf.ij_plugins` to `ij_plugins.toolkit` [#14]
+
 Version 2.2.0
 -------------
 
@@ -14,8 +21,9 @@ Version 2.2.0
 
 
 ### API Changes
-* Remove duplicate implementation of Progress classes: in `ij_plugins.toolkit.util.progress`
-  and `ij_plugins.toolkit.ui.progress` [#16]
+
+* Remove duplicate implementation of Progress classes: in `net.sf.ij_plugins.util.progress`
+  and `net.sf.ij_plugins.ui.progress` [#16]
 * Use 'master" branch for development and 'release' branch for stable releases [#9]
 
 ### Documentation Enhancements
@@ -33,7 +41,11 @@ Version 2.2.0
 [#10]: https://github.com/ij-plugins/ijp-toolkit/issues/10
 [#11]: https://github.com/ij-plugins/ijp-toolkit/issues/11
 [#12]: https://github.com/ij-plugins/ijp-toolkit/issues/12
+
 [#13]: https://github.com/ij-plugins/ijp-toolkit/issues/13
+
+[#15]: https://github.com/ij-plugins/ijp-toolkit/issues/14
+
 [#15]: https://github.com/ij-plugins/ijp-toolkit/issues/15
 [#16]: https://github.com/ij-plugins/ijp-toolkit/issues/16
 
