@@ -1,5 +1,5 @@
 <b>IJ-Plugins Toolkit</b> is a set of libraries and plugins for [[http://rsbweb.nih.gov/ij/ ImageJ]].
 
-The root directory the API is: [[net.sf.ij_plugins `net.sf.ij_plugins`]].
+The root directory the API is: [[ij_plugins.toolkit `ij_plugins.toolkit`]].
 
 Additional information available at project home page: [[https://github.com/ij-plugins/ijp-toolkit ij-plugins/ijp-toolkit]]

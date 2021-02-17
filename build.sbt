@@ -4,7 +4,7 @@ import java.net.URL
 
 name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version      := "2.2.0"
+version      := "2.2.1-SNAPSHOT"
 
 homepage     := Some(new URL("https://github.com/ij-plugins/ijp-toolkit"))
 startYear    := Some(2002)
@@ -22,7 +22,7 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-crossScalaVersions := Seq("2.13.1", "2.12.10")
+crossScalaVersions := Seq("2.13.4", "2.12.13")
 scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
@@ -35,10 +35,10 @@ def isScala2_13plus(scalaVersion: String): Boolean = {
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.52s",
+  "net.imagej"         % "ij"               % "1.53g",
   // Test
-  "junit"              % "junit"            % "4.13"   % "test",
-  "org.scalatest"     %% "scalatest"        % "3.1.0"  % "test",
+  "junit"              % "junit"            % "4.13.2" % "test",
+  "org.scalatest"     %% "scalatest"        % "3.2.3"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
