@@ -1,7 +1,7 @@
 /*
- *  IJ-Plugins
- *  Copyright (C) 2002-2021 Jarek Sacha
- *  Author's email: jpsacha at gmail dot com
+ * IJ-Plugins
+ * Copyright (C) 2002-2021 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@ object ProgressReporterExample extends App {
   */
 class CounterWithProgress(marker: Char) extends ProgressReporter4J {
 
-  def count(max: Int) {
+  def count(max: Int): Unit = {
     val progressIncrement = Math.max(max / 10, 1)
 
     println("Counting " + max + " '" + marker + "'.")
