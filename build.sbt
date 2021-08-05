@@ -4,7 +4,7 @@ import java.net.URL
 
 name         := "ijp-toolkit"
 organization := "net.sf.ij-plugins"
-version      := "2.3.0"
+version      := "2.3.0.1-SNAPSHOT"
 
 homepage     := Some(new URL("https://github.com/ij-plugins/ijp-toolkit"))
 startYear    := Some(2002)
@@ -22,12 +22,12 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-crossScalaVersions := Seq("2.13.4", "2.12.13")
+crossScalaVersions := Seq("2.13.6", "3.0.1", "2.12.14")
 scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, n)) if n >= 13 => true
+    case Some((major, minor)) if major > 2 || (major == 2 && minor >= 13) => true
     case _ => false
   }
 }
@@ -35,27 +35,49 @@ def isScala2_13plus(scalaVersion: String): Boolean = {
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.53g",
+  "net.imagej"         % "ij"               % "1.53j",
   // Test
   "junit"              % "junit"            % "4.13.2" % "test",
-  "org.scalatest"     %% "scalatest"        % "3.2.3"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.2.9"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
 
 libraryDependencies ++= (
     if (isScala2_13plus(scalaVersion.value)) {
-      Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "0.2.0")
+      Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.3")
     } else {
       Seq.empty[ModuleID]
     }
   )
 
 // Add example directories to test compilation
-unmanagedSourceDirectories in Test += baseDirectory.value / "examples/scala"
-unmanagedSourceDirectories in Test += baseDirectory.value / "examples/java"
+Test / unmanagedSourceDirectories += baseDirectory.value / "examples/scala"
+Test / unmanagedSourceDirectories += baseDirectory.value / "examples/java"
 
-scalacOptions in(Compile, doc) ++= Seq(
+scalacOptions ++= {
+  Seq(
+    "-encoding", "UTF-8",
+    "-feature",
+    "-language:implicitConversions",
+    // disabled during the migration
+    // "-Xfatal-warnings"
+  ) ++
+    (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((3, _)) => Seq(
+        "-unchecked"
+      )
+      case _ => Seq(
+        "-deprecation",
+//        "-Xfatal-warnings",
+//        "-Wunused:imports,privates,locals",
+//        "-Wvalue-discard"
+      )
+    })
+}
+
+// Options for ScalaDoc
+Compile / doc / scalacOptions ++= Seq(
   "-doc-title",        "IJ-Plugins Toolkit",
   "-doc-version",      version.value,
   "-doc-root-content", baseDirectory.value + "/src/main/scala/overview.txt",
@@ -63,16 +85,14 @@ scalacOptions in(Compile, doc) ++= Seq(
 )
 
 
-
 // fork a new JVM for 'run' and 'test:run'
 fork := true
 
 // add a JVM option to use when forking a JVM for 'run'
 javaOptions ++= Seq("-Xmx2G", "-server")
-javacOptions in(Compile, compile) ++= Seq("-deprecation", "-Xlint:all", "-source",  "1.8", "-target",  "1.8")
-
-// Set the prompt (for this build) to include the project id.
-shellPrompt in ThisBuild := { state => "sbt:" + Project.extract(state).currentRef.project + "> "}
+Compile / compile / javacOptions ++= Seq(
+//  "-deprecation", "-Xlint:all",
+  "-source",  "1.8", "-target",  "1.8")
 
 //
 // Setup sbt-imagej plugin
@@ -83,7 +103,7 @@ ijPluginsSubDir         := "ij-plugins"
 ijCleanBeforePrepareRun := true
 cleanFiles              += ijPluginsDir.value
 
-baseDirectory in run := baseDirectory.value / "sandbox"
+run / baseDirectory := baseDirectory.value / "sandbox"
 
 //
 // Customize Java style publishing
