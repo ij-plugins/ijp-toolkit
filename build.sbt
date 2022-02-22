@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "net.imagej"         % "ij"               % "1.53j",
   // Test
   "junit"              % "junit"            % "4.13.2" % "test",
-  "org.scalatest"     %% "scalatest"        % "3.2.9"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.2.11"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
