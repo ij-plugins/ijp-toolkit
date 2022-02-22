@@ -3,3 +3,4 @@ sandbox/
 **/target/
 **/tmp/
 /.bsp/
+/null/
