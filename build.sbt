@@ -22,7 +22,7 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-crossScalaVersions := Seq("2.13.6", "3.0.1", "2.12.14")
+crossScalaVersions := Seq("2.13.8", "3.0.2", "2.12.15")
 scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
@@ -92,7 +92,7 @@ fork := true
 javaOptions ++= Seq("-Xmx2G", "-server")
 Compile / compile / javacOptions ++= Seq(
 //  "-deprecation", "-Xlint:all",
-  "-source",  "1.8", "-target",  "1.8")
+  "--release",  "8")
 
 //
 // Setup sbt-imagej plugin
