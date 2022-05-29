@@ -35,7 +35,7 @@ def isScala2_13plus(scalaVersion: String): Boolean = {
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.53j",
+  "net.imagej"         % "ij"               % "1.53s",
   // Test
   "junit"              % "junit"            % "4.13.2" % "test",
   "org.scalatest"     %% "scalatest"        % "3.2.11"  % "test",
