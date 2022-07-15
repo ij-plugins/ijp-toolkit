@@ -22,7 +22,7 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-crossScalaVersions := Seq("2.13.8", "3.0.2", "2.12.15")
+crossScalaVersions := Seq("2.13.8", "3.0.2", "2.12.16")
 scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= (
     if (isScala2_13plus(scalaVersion.value)) {
-      Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.3")
+      Seq("org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4")
     } else {
       Seq.empty[ModuleID]
     }
