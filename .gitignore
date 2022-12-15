@@ -4,3 +4,4 @@ sandbox/
 **/tmp/
 /.bsp/
 /null/
+.DS_Store
