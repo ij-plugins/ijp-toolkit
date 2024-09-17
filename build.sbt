@@ -22,7 +22,7 @@ description  := "<html>" +
     "</ul>" +
     "</html>"
 
-crossScalaVersions := Seq("2.13.8", "3.0.2", "2.12.16")
+crossScalaVersions := Seq("3.3.3", "2.13.14", "2.12.20")
 scalaVersion       := crossScalaVersions.value.head
 
 def isScala2_13plus(scalaVersion: String): Boolean = {
@@ -35,10 +35,10 @@ def isScala2_13plus(scalaVersion: String): Boolean = {
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-math3"    % "3.6.1",
   "com.jgoodies"       % "jgoodies-binding" % "2.13.0",
-  "net.imagej"         % "ij"               % "1.53s",
+  "net.imagej"         % "ij"               % "1.54k",
   // Test
   "junit"              % "junit"            % "4.13.2" % "test",
-  "org.scalatest"     %% "scalatest"        % "3.2.11"  % "test",
+  "org.scalatest"     %% "scalatest"        % "3.2.19"  % "test",
   // JUnit runner SBT plugin
   "com.novocode"       % "junit-interface"  % "0.11"   % "test->default"
 )
