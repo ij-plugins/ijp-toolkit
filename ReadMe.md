@@ -2,8 +2,8 @@ IJ-Plugins Toolkit
 ==================
 
 [![Scala CI](https://github.com/ij-plugins/ijp-toolkit/actions/workflows/scala.yml/badge.svg)](https://github.com/ij-plugins/ijp-toolkit/actions/workflows/scala.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13)
-[![Scaladoc](https://javadoc.io/badge2/net.sf.ij-plugins/ijp-toolkit_2.13/scaladoc.svg)](https://javadoc.io/doc/net.sf.ij-plugins/ijp-toolkit_2.13)
+[![Maven Central](https://img.shields.io/maven-central/v/net.sf.ij-plugins/ijp-toolkit_3)](https://central.sonatype.com/artifact/net.sf.ij-plugins/ijp-toolkit_3)
+[![Scaladoc](https://javadoc.io/badge2/net.sf.ij-plugins/ijp-toolkit_3/scaladoc.svg)](https://javadoc.io/doc/net.sf.ij-plugins/ijp-toolkit_3)
 
 ![logo](src/main/resources/ij_plugins/toolkit/IJP-48.png) **IJ-Plugins Toolkit** is a set of plugins for [ImageJ]. The
 plugins are grouped into:
