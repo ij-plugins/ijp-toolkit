@@ -22,7 +22,7 @@ plugins are grouped into:
 
 * **[Segmentation]** - image segmentation through clustering, thresholding, and region growing.
 
-See the the [Wiki] for mode details on the plugins.
+See the [Wiki] for mode details on the plugins.
 
 ImageJ Plugins Installation
 ---------------------------
@@ -40,20 +40,23 @@ Using as a Stand-alone Library
 ------------------------------
 
 There are some examples of using IJ-Plugins Toolkit as a stand-alone library in the [examples](examples) folder. You
-will need to add dependency on:
+will need to add a dependency on:
 
 ```
 groupId   : net.sf.ij-plugins
 artifactId: ijp-toolkit
 version   : <current version>
 ```
+
 For instance, for [SBT] it would be:
 
 ```
 "net.sf.ij-plugins" %% "ijp-toolkit" % "<current version>"
 ```
 
-Current published version is: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sf.ij-plugins/ijp-toolkit_2.13) 
+The current published version is:
+[![Maven Central](https://img.shields.io/maven-central/v/net.sf.ij-plugins/ijp-toolkit_3)](https://central.sonatype.com/artifact/net.sf.ij-plugins/ijp-toolkit_3)
+
 
 
 Running from source
@@ -69,8 +72,11 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 
 
 [ImageJ]:     http://rsbweb.nih.gov/ij/
+
 [ImageJ 2]:   http://imagej.net
+
 [Fiji]:       http://imagej.net/Fiji
+
 [sbt-imagej]: https://github.com/jpsacha/sbt-imagej
 
 [SBT]:        http://www.scala-sbt.org/
@@ -78,12 +84,19 @@ It will build the code, setup plugins directory, and the start ImageJ. `ijRun` i
 [Wiki]:                      https://github.com/ij-plugins/ijp-toolkit/wiki
 
 [Release]:                   https://github.com/ij-plugins/ijp-toolkit/releases
+
 [Fiji Managed Installation]: https://github.com/ij-plugins/ijp-toolkit/wiki/Fiji-Managed-Installation
+
 [Manual Installation]:       https://github.com/ij-plugins/ijp-toolkit/wiki/Manual-Installation
 
 [3D IO]:         https://github.com/ij-plugins/ijp-toolkit/wiki/3D-IO
+
 [3D Toolkit]:    https://github.com/ij-plugins/ijp-toolkit/wiki/3D-Toolkit
+
 [Color]:         https://github.com/ij-plugins/ijp-toolkit/wiki/Color-and-Multiband-Processing
+
 [Filters]:       https://github.com/ij-plugins/ijp-toolkit/wiki/Filters
+
 [Image Quilter]: https://github.com/ij-plugins/ijp-toolkit/wiki/Image-Quilter
+
 [Segmentation]:  https://github.com/ij-plugins/ijp-toolkit/wiki/Segmentation
