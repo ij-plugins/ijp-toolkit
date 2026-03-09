@@ -38,15 +38,14 @@ object CoherenceEnhancingDiffusionBenchmark extends App {
 
   val ip = imp.getProcessor.convertToFloat().asInstanceOf[FloatProcessor]
 
-
-  val n = 10
+  val n   = 10
   var min = Long.MaxValue
-  for (i <- 0 until n) {
+  for (_ <- 0 until n) {
     val start = System.currentTimeMillis()
-    val ced = new CoherenceEnhancingDiffusion()
+    val ced   = new CoherenceEnhancingDiffusion()
     ced.run(ip)
     val end = System.currentTimeMillis()
-    val t = end - start
+    val t   = end - start
     println("Time: " + t)
     min = math.min(min, t)
   }

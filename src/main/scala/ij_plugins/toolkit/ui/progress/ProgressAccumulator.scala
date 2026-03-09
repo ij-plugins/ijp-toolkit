@@ -26,13 +26,12 @@ import ij_plugins.toolkit.util.Validate
 
 import scala.collection.mutable
 
-
 /**
-  * Utility for aggregating progress events from multiple
-  * [[ProgressListener ProgressReporter]]'s
-  *
-  * @author Jarek Sacha
-  */
+ * Utility for aggregating progress events from multiple
+ * [[ProgressListener ProgressReporter]]'s
+ *
+ * @author Jarek Sacha
+ */
 object ProgressAccumulator {
 
   private case class Data(weight: Double, message: String)
@@ -40,15 +39,17 @@ object ProgressAccumulator {
 }
 
 class ProgressAccumulator extends ProgressReporter with ProgressListener {
-  private val _reporters = new mutable.LinkedHashMap[ProgressReporter, ProgressAccumulator.Data]
-  private var _minimumChange: Double = 0.01
+  private val _reporters                    = new mutable.LinkedHashMap[ProgressReporter, ProgressAccumulator.Data]
+  private var _minimumChange: Double        = 0.01
   private var _lastReportedProgress: Double = -1
 
   def minimumChange: Double = _minimumChange
 
   def minimumChange_=(minimumChange: Double): Unit = {
-    require(0 <= minimumChange && minimumChange <= 1,
-      s"Argument 'minimumChange' cannot be less than 0 or more than 1 $minimumChange].")
+    require(
+      0 <= minimumChange && minimumChange <= 1,
+      s"Argument 'minimumChange' cannot be less than 0 or more than 1 $minimumChange]."
+    )
     this._minimumChange = minimumChange
   }
 
@@ -58,35 +59,35 @@ class ProgressAccumulator extends ProgressReporter with ProgressListener {
   }
 
   /**
-    * Add progress reporter with default weight of `1`. If reporter already exists its
-    * weight will be changed to `1`.
-    *
-    * @param reporter reporter
-    */
+   * Add a progress reporter with a default weight of `1`. If a reporter already exists its
+   * weight will be changed to `1`.
+   *
+   * @param reporter reporter
+   */
   def addProgressReporter(reporter: ProgressReporter): Unit = {
     addProgressReporter(reporter, 1)
   }
 
   /**
-    * Add progress `reporter` with given `weight`. If reporter already exists
-    * its `weight` and `message` will be updated.
-    *
-    * @param reporter reporter
-    * @param weight   weight
-    */
+   * Add a progress `reporter` with given `weight`. If a reporter already exists
+   * its `weight` and `message` will be updated.
+   *
+   * @param reporter reporter
+   * @param weight   weight
+   */
   def addProgressReporter(reporter: ProgressReporter, weight: Double): Unit = {
     addProgressReporter(reporter, weight, null)
   }
 
   /**
-    * Add progress `reporter` with given `weight`. If reporter already exists
-    * its `weight` and `message` will be updated.
-    *
-    * @param reporter reporter
-    * @param weight   weight
-    * @param message  message that will be reported when this reporter send progress event. If
-    *                 `null` the original message send by reporter will be used.
-    */
+   * Add a progress `reporter` with given `weight`. If a reporter already exists, 
+   * its `weight` and `message` will be updated.
+   *
+   * @param reporter reporter
+   * @param weight   weight
+   * @param message  message that will be reported when this reporter sends a progress event. 
+    *                 If a message is `null, the original message sent by the` reporter will be used.
+   */
   def addProgressReporter(reporter: ProgressReporter, weight: Double, message: String): Unit = {
     if (reporter == null) return
     _reporters.synchronized {
@@ -118,7 +119,7 @@ class ProgressAccumulator extends ProgressReporter with ProgressListener {
 
     val source = event.source match {
       case Some(s) => s
-      case None =>
+      case None    =>
         throw new IllegalArgumentException("Event source cannot be empty.")
     }
 
@@ -126,7 +127,7 @@ class ProgressAccumulator extends ProgressReporter with ProgressListener {
       throw new RuntimeException("Received notification from unregistered reporter: " + source)
 
     // Sum all weight
-    var weightSum: Double = 0
+    var weightSum: Double   = 0
     var progressSum: Double = 0
     for ((reporter, data) <- _reporters) {
       weightSum += data.weight
@@ -137,8 +138,8 @@ class ProgressAccumulator extends ProgressReporter with ProgressListener {
     assert(weightSum > 0)
 
     val progress = progressSum / weightSum
-    val data = _reporters(source)
-    val message = Option(data.message).getOrElse(event.message)
+    val data     = _reporters(source)
+    val message  = Option(data.message).getOrElse(event.message)
 
     if ((progress - _lastReportedProgress) > minimumChange) {
       _lastReportedProgress = progress
@@ -148,4 +149,3 @@ class ProgressAccumulator extends ProgressReporter with ProgressListener {
     }
   }
 }
-

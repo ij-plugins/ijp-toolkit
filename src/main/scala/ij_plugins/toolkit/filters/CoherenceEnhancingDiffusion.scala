@@ -1,22 +1,22 @@
 /*
- *  IJ-Plugins
- *  Copyright (C) 2002-2021 Jarek Sacha
- *  Author's email: jpsacha at gmail dot com
- *
+ * IJ-Plugins
+ * Copyright (C) 2002-2026 Jarek Sacha
+ * Author's email: jpsacha at gmail dot com
+ *  
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
  *  License as published by the Free Software Foundation; either
  *  version 2.1 of the License, or (at your option) any later version.
- *
+ *  
  *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *  Lesser General Public License for more details.
- *
+ *  
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
+ *  
  *  Latest release available at https://github.com/ij-plugins/ijp-toolkit/
  */
 
@@ -25,7 +25,7 @@ package ij_plugins.toolkit.filters
 import ij.plugin.filter.GaussianBlur
 import ij.process.{Blitter, FloatBlitter, FloatProcessor}
 import ij.{IJ, ImagePlus}
-import ij_plugins.toolkit.filters.CoherenceEnhancingDiffusion._
+import ij_plugins.toolkit.filters.CoherenceEnhancingDiffusion.*
 import ij_plugins.toolkit.ui.progress.ProgressReporter
 import org.apache.commons.math3.util.FastMath
 
@@ -35,40 +35,41 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-
 object CoherenceEnhancingDiffusion {
 
-  case class Config(var lambda: Double = 1,
-                    var sigma: Double = 3,
-                    var rho: Double = 5,
-                    var stepSize: Double = 0.24,
-                    var m: Double = 1d,
-                    var numberOfSteps: Int = 25)
+  case class Config(
+    var lambda: Double = 1,
+    var sigma: Double = 3,
+    var rho: Double = 5,
+    var stepSize: Double = 0.24,
+    var m: Double = 1d,
+    var numberOfSteps: Int = 25
+  )
 
-  def run(src: FloatProcessor, config:Config ): FloatProcessor = {
+  def run(src: FloatProcessor, config: Config): FloatProcessor = {
     new CoherenceEnhancingDiffusion(config).run(src)
   }
 }
 
 /**
- * Coherence enhancing diffusion filter based on filter described in J. Weickert,
+ * Coherence enhancing diffusion filter based on the filter described in J. Weickert,
  * "Coherence-Enhancing Diffusion Filtering", <i>International Journal of Computer Vision</i>, 1999, vol.31, p.111-127.
  */
 class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressReporter {
-  private val Eps: Double = Math.pow(2.0, -52.0)
-  private val Gamma: Double = 0.01
+  private val Eps: Double                  = Math.pow(2.0, -52.0)
+  private val Gamma: Double                = 0.01
   private val GradientKernel: Array[Float] = Array(-0.5f, 0.0f, 0.5f)
-  private val dumpFilenamePrefix: String = "tmp/cef"
-  private var sizeX: Int = 0
-  private var sizeY: Int = 0
-  private var dumpEnabled: Boolean = false
-  private var _alpha: FloatProcessor = _
-  private var _c2: FloatProcessor = _
+  private val dumpFilenamePrefix: String   = "tmp/cef"
+  private var sizeX: Int                   = 0
+  private var sizeY: Int                   = 0
+  private val dumpEnabled: Boolean         = false
+  private var _alpha: FloatProcessor       = _
+  private var _c2: FloatProcessor          = _
 
   /**
-    * Perform filtering.
-    *
-    * @param src source
+   * Perform filtering.
+   *
+   * @param src source
    * @return filtered image
    */
   def run(src: FloatProcessor): FloatProcessor = {
@@ -85,7 +86,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
       // `vF = ... ` variables are created to start parallel computations as early as possible
       // `v <- vF` values from features are extracted only when needed, since `<-` blocks
       val f = for {
-      // Gaussian smoothing (sigma)
+        // Gaussian smoothing (sigma)
         filtImage <- Future(gaussian(dest, config.sigma))
 
         // Gradient in x and y direction
@@ -102,10 +103,10 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
         s22 <- s22F
 
         alpha = calcAlpha(s11, s12, s22)
-        c2 = calcC2(alpha, config.lambda)
-        c1 = Gamma
+        c2    = calcC2(alpha, config.lambda)
+        c1    = Gamma
 
-        ddF = Future(calcDD(s11, s22, alpha, c2, c1))
+        ddF  = Future(calcDD(s11, s22, alpha, c2, c1))
         d12F = Future(calcD12(s12, alpha, c2, c1))
         dd <- ddF
         d11F = Future(calcD11(dd, c2, c1))
@@ -154,7 +155,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   }
 
   private[this] def gaussian(src: FloatProcessor, sigma: Double): FloatProcessor = {
-    val dest = src.duplicate.asInstanceOf[FloatProcessor]
+    val dest         = src.duplicate.asInstanceOf[FloatProcessor]
     val gaussianBlur = new GaussianBlur()
     gaussianBlur.showProgress(false)
     gaussianBlur.blurGaussian(dest, sigma, sigma, 0.0001)
@@ -162,9 +163,9 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   }
 
   private[this] def calcAlpha(s11: FloatProcessor, s12: FloatProcessor, s22: FloatProcessor): FloatProcessor = {
-    val width = s11.getWidth
+    val width  = s11.getWidth
     val height = s11.getHeight
-    val dest = new FloatProcessor(width, height)
+    val dest   = new FloatProcessor(width, height)
 
     for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until height) {
@@ -181,38 +182,45 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
 
   def c2: FloatProcessor = _c2
 
-  private def isDumpEnabled: Boolean = dumpEnabled
-
-  private def setDumpEnabled(dumpEnabled: Boolean): Unit = {
-    this.dumpEnabled = dumpEnabled
-  }
+//  private def isDumpEnabled: Boolean = dumpEnabled
+//
+//  private def setDumpEnabled(dumpEnabled: Boolean): Unit = {
+//    this.dumpEnabled = dumpEnabled
+//  }
 
   private[this] def multiplyAndSmooth(ip1: FloatProcessor, fp2: FloatProcessor, sigma: Double): FloatProcessor = {
-    val dest = ip1.duplicate.asInstanceOf[FloatProcessor]
+    val dest    = ip1.duplicate.asInstanceOf[FloatProcessor]
     val blitter = new FloatBlitter(dest)
     blitter.copyBits(fp2, 0, 0, Blitter.MULTIPLY)
     gaussian(dest, sigma)
   }
 
-
-  private[this] def diffusionStep(image: FloatProcessor, c: FloatProcessor, b: FloatProcessor, a: FloatProcessor, step: Double): Double = {
-    //y = .5* ( (c_cop).*xop + (a_amo).*xmo - (a_amo + a_apo + c_com + c_cop).*x + (a_apo).*xpo + (c_com).*xom) ...
+  private[this] def diffusionStep(
+    image: FloatProcessor,
+    c: FloatProcessor,
+    b: FloatProcessor,
+    a: FloatProcessor,
+    step: Double
+  ): Double = {
+    // y = .5* ( (c_cop).*xop + (a_amo).*xmo - (a_amo + a_apo + c_com + c_cop).*x + (a_apo).*xpo + (c_com).*xom) ...
     //   + .25* ( -1*( (bmo+bop).*xmp + (bpo+bom).*xpm ) + (bpo+bop).*xpp + (bmo+bom).*xmm );
     for (i <- new ParRange(0 until sizeX)) {
       for (j <- 0 until sizeY) {
         val currentValue = image.getf(i, j)
-        val firstDeriv = (getPixel(i, j, c) + getPixel(i, j - 1, c)) * getPixel(i, j - 1, image) +
-          (getPixel(i + 1, j, a) + getPixel(i, j, a)) * getPixel(i + 1, j, image) -
-          (getPixel(i - 1, j, a) + getPixel(i + 1, j, a) + 2.0 * getPixel(i, j, a)) * getPixel(i, j, image) -
-          (getPixel(i, j - 1, c) + getPixel(i, j + 1, c) + 2.0 * getPixel(i, j, c)) * getPixel(i, j, image) +
-          (getPixel(i - 1, j, a) + getPixel(i, j, a)) * getPixel(i - 1, j, image) +
-          (getPixel(i, j, c) + getPixel(i, j + 1, c)) * getPixel(i, j + 1, image)
-        val secondDeriv = (getPixel(i - 1, j, b) + getPixel(i, j - 1, b)) * getPixel(i - 1, j - 1, image) +
-          (getPixel(i + 1, j, b) + getPixel(i, j + 1, b)) * getPixel(i + 1, j + 1, image) -
-          (getPixel(i + 1, j, b) + getPixel(i, j - 1, b)) * getPixel(i + 1, j - 1, image) -
-          (getPixel(i - 1, j, b) + getPixel(i, j + 1, b)) * getPixel(i - 1, j + 1, image)
+        val firstDeriv   =
+          (getPixel(i, j, c) + getPixel(i, j - 1, c)) * getPixel(i, j - 1, image) +
+            (getPixel(i + 1, j, a) + getPixel(i, j, a)) * getPixel(i + 1, j, image) -
+            (getPixel(i - 1, j, a) + getPixel(i + 1, j, a) + 2.0 * getPixel(i, j, a)) * getPixel(i, j, image) -
+            (getPixel(i, j - 1, c) + getPixel(i, j + 1, c) + 2.0 * getPixel(i, j, c)) * getPixel(i, j, image) +
+            (getPixel(i - 1, j, a) + getPixel(i, j, a)) * getPixel(i - 1, j, image) +
+            (getPixel(i, j, c) + getPixel(i, j + 1, c)) * getPixel(i, j + 1, image)
+        val secondDeriv =
+          (getPixel(i - 1, j, b) + getPixel(i, j - 1, b)) * getPixel(i - 1, j - 1, image) +
+            (getPixel(i + 1, j, b) + getPixel(i, j + 1, b)) * getPixel(i + 1, j + 1, image) -
+            (getPixel(i + 1, j, b) + getPixel(i, j - 1, b)) * getPixel(i + 1, j - 1, image) -
+            (getPixel(i - 1, j, b) + getPixel(i, j + 1, b)) * getPixel(i - 1, j + 1, image)
         val adder = step * (firstDeriv / 2 + secondDeriv / 4)
-        val v = currentValue + adder
+        val v     = currentValue + adder
         image.setf(i, j, v.toFloat)
       }
     }
@@ -221,23 +229,29 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   }
 
   private[this] def calcC2(alpha: FloatProcessor, lambda: Double): FloatProcessor = {
-    val dest = new FloatProcessor(sizeX, sizeY)
-    val Cm = 7.2848
+    val dest       = new FloatProcessor(sizeX, sizeY)
+    val Cm         = 7.2848
     val powerOfOne = Math.abs(config.m - 1d) < Float.MinPositiveValue
     for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
-        val a = alpha.getf(x, y)
+        val a  = alpha.getf(x, y)
         val h1 = (a + Eps) / lambda
         val h2 = if (powerOfOne) h1 else FastMath.pow(h1, config.m)
         val h3 = FastMath.exp(-Cm / h2)
-        val v = Gamma + (1 - Gamma) * h3
+        val v  = Gamma + (1 - Gamma) * h3
         dest.setf(x, y, v.toFloat)
       }
     }
     dest
   }
 
-  private[this] def calcDD(s11: FloatProcessor, s22: FloatProcessor, alpha: FloatProcessor, c2: FloatProcessor, c1: Double): FloatProcessor = {
+  private[this] def calcDD(
+    s11: FloatProcessor,
+    s22: FloatProcessor,
+    alpha: FloatProcessor,
+    c2: FloatProcessor,
+    c1: Double
+  ): FloatProcessor = {
     val dest = new FloatProcessor(sizeX, sizeY)
     for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
@@ -259,7 +273,12 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
     dest
   }
 
-  private[this] def calcD12(s12: FloatProcessor, alpha: FloatProcessor, c2: FloatProcessor, c1: Double): FloatProcessor = {
+  private[this] def calcD12(
+    s12: FloatProcessor,
+    alpha: FloatProcessor,
+    c2: FloatProcessor,
+    c1: Double
+  ): FloatProcessor = {
     val dest = new FloatProcessor(sizeX, sizeY)
     for (x <- new ParRange(0 until sizeX)) {
       for (y <- 0 until sizeY) {
@@ -290,7 +309,7 @@ class CoherenceEnhancingDiffusion(config: Config = Config()) extends ProgressRep
   private[this] def dumpImage(name: String, iteration: Int, fp: FloatProcessor): Unit = {
     if (dumpEnabled) {
       val fileName = "%s_%s_%04d.tif".format(dumpFilenamePrefix, name, iteration)
-      val file = new File(fileName).getAbsoluteFile
+      val file     = new File(fileName).getAbsoluteFile
       file.getParentFile.mkdirs()
       IJ.log("Saving " + file)
       IJ.saveAsTiff(new ImagePlus("", fp), file.getPath)

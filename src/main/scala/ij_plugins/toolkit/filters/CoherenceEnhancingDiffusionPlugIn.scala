@@ -23,17 +23,16 @@
 package ij_plugins.toolkit.filters
 
 import ij.gui.{DialogListener, GenericDialog}
-import ij.plugin.filter.PlugInFilter._
+import ij.plugin.filter.PlugInFilter.*
 import ij.plugin.filter.{ExtendedPlugInFilter, PlugInFilterRunner}
 import ij.process.{Blitter, FloatProcessor, ImageProcessor}
 import ij.{IJ, ImagePlus}
-import ij_plugins.toolkit.filters.CoherenceEnhancingDiffusionPlugIn._
+import ij_plugins.toolkit.filters.CoherenceEnhancingDiffusionPlugIn.*
 import ij_plugins.toolkit.ui.progress.IJProgressBarAdapter
 import ij_plugins.toolkit.util.IJPUtils
 
 import java.awt.AWTEvent
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 object CoherenceEnhancingDiffusionPlugIn {
   val FLAGS: Int =
@@ -43,23 +42,22 @@ object CoherenceEnhancingDiffusionPlugIn {
       PARALLELIZE_STACKS |
       ExtendedPlugInFilter.KEEP_PREVIEW
 
-  private val CONFIG = CoherenceEnhancingDiffusion.Config()
-  private val debugMode = new AtomicBoolean(false)
-  private val TITLE = "Coherence Enhancing Diffusion"
+  private val CONFIG      = CoherenceEnhancingDiffusion.Config()
+  private val debugMode   = new AtomicBoolean(false)
+  private val TITLE       = "Coherence Enhancing Diffusion"
   private val DESCRIPTION = ""
-  private val HELP_URL = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters"
+  private val HELP_URL    = "https://github.com/ij-plugins/ijp-toolkit/wiki/Filters"
 
 }
 
-
 /**
-  * ImageJ plugin that runs `CoherenceEnhancingDiffusion` filter.
-  */
+ * ImageJ plugin that runs `CoherenceEnhancingDiffusion` filter.
+ */
 final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with DialogListener {
 
   private var imp: ImagePlus = _
-  private var nPasses = 0
-  private var passCount = 0
+  private var nPasses        = 0
+  private var passCount      = 0
 
   def setup(arg: String, imp: ImagePlus): Int = {
     this.imp = imp
@@ -108,8 +106,8 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
     passCount += 1
     val statsMessage = if (nPasses > 1) TITLE + " - pass " + passCount + "/" + nPasses + ". " else TITLE
     IJ.showStatus(statsMessage)
-    val src = ip.convertToFloat.asInstanceOf[FloatProcessor]
-    val filter = new CoherenceEnhancingDiffusion(CONFIG)
+    val src              = ip.convertToFloat.asInstanceOf[FloatProcessor]
+    val filter           = new CoherenceEnhancingDiffusion(CONFIG)
     val progressListener = new IJProgressBarAdapter()
     filter.addProgressListener(progressListener)
     val dest =
@@ -125,4 +123,3 @@ final class CoherenceEnhancingDiffusionPlugIn extends ExtendedPlugInFilter with 
   }
 
 }
-

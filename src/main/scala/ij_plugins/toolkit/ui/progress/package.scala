@@ -23,19 +23,18 @@
 package ij_plugins.toolkit.ui
 
 /**
-  * Package `progress` contains tools for reporting progress of computations.
-  * Classes can report progress extending trait [[ProgressReporter]].
-  * Progress can be observed extending trait [[ProgressListener]].
-  *
-  *
-  * Example usage:
-  *
-  * {{{
-  * class CounterWithProgress(marker: Char) extends ProgressReporter {
-  *   def count(max: Int) {
-  *     val progressIncrement = Math.max(max / 10, 1)
-  *
-  *     println("Counting " + max + " '" + marker + "'.")
+ * Package `progress` contains tools for reporting the progress of computations.
+ * Classes can report progress extending trait [[ProgressReporter]].
+ * Progress can be observed extending trait [[ProgressListener]].
+ *
+ * Example usage:
+ *
+ * {{{
+ * class CounterWithProgress(marker: Char) extends ProgressReporter {
+ *   def count(max: Int) {
+ *     val progressIncrement = Math.max(max / 10, 1)
+ *
+ *     println("Counting " + max + " '" + marker + "'.")
  *
  *     for (i <- 1 to max) {
  *       print(marker)
@@ -58,6 +57,4 @@ package ij_plugins.toolkit.ui
  * }
  * }}}
  */
-package object progress {
-
-}
+package object progress {}
