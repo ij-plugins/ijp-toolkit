@@ -25,24 +25,23 @@ package ij_plugins.toolkit.ui.progress
 import ij.IJ
 
 import java.lang.reflect.InvocationTargetException
-import javax.swing._
-
+import javax.swing.*
 
 /**
-  * Simple adapter for attaching a [[ProgressListener ProgressReporter]] to ImageJ's progress bar.
-  *
-  * Example use (in Java syntax):
-  * {{{
-  *   final ProgressReporter r = ...;
-  *   final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
-  *   r.addProgressListener(progressBarAdapter);
-  *   ...
-  *   r.removeProgressListener(progressBarAdapter);
-  * }}}
-  * Always remember to remove listeners when processing is done to avoid memory leaks.
-  *
-  * @author Jarek Sacha
-  */
+ * Simple adapter for attaching a [[ProgressListener ProgressReporter]] to ImageJ's progress bar.
+ *
+ * Example use (in Java syntax):
+ * {{{
+ *   final ProgressReporter r = ...;
+ *   final IJProgressBarAdapter progressBarAdapter = new IJProgressBarAdapter();
+ *   r.addProgressListener(progressBarAdapter);
+ *   ...
+ *   r.removeProgressListener(progressBarAdapter);
+ * }}}
+ * Always remember to remove listeners when processing is done to avoid memory leaks.
+ *
+ * @author Jarek Sacha
+ */
 class IJProgressBarAdapter extends ProgressListener {
 
   override def progressNotification(e: ProgressEvent): Unit = {
@@ -51,9 +50,8 @@ class IJProgressBarAdapter extends ProgressListener {
     } else {
       try {
         SwingUtilities.invokeAndWait(() => showProgress(e))
-      }
-      catch {
-        case ex: InterruptedException => IJ.log("InterruptedException " + ex.getMessage)
+      } catch {
+        case ex: InterruptedException      => IJ.log("InterruptedException " + ex.getMessage)
         case ex: InvocationTargetException => IJ.log("InvocationTargetException" + ex.getMessage)
       }
     }
@@ -64,4 +62,3 @@ class IJProgressBarAdapter extends ProgressListener {
     IJ.showProgress(e.progress)
   }
 }
-

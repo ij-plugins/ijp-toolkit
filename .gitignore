@@ -3,3 +3,5 @@ sandbox/
 **/target/
 **/tmp/
 /.bsp/
+/null/
+.DS_Store

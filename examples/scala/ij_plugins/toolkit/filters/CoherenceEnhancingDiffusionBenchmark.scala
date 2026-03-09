@@ -29,25 +29,26 @@ import java.io.File
 
 object CoherenceEnhancingDiffusionBenchmark extends App {
 
-  val file = new File("data/fingerprint.png")
+  val file = new File("data/fingerprint_x2.png")
   assert(file.exists(), "File exists: " + file.getAbsolutePath)
   val imp = IJ.openImage(file.getAbsolutePath)
   assert(imp != null)
 
+  println(s"Processing image: ${imp.getWidth}x${imp.getHeight}")
+
   val ip = imp.getProcessor.convertToFloat().asInstanceOf[FloatProcessor]
 
-
-  val n = 10
+  val n   = 10
   var min = Long.MaxValue
-  for (i <- 0 until n) {
+  for (_ <- 0 until n) {
     val start = System.currentTimeMillis()
-    val ced = new CoherenceEnhancingDiffusion()
+    val ced   = new CoherenceEnhancingDiffusion()
     ced.run(ip)
     val end = System.currentTimeMillis()
-    val t = end - start
+    val t   = end - start
     println("Time: " + t)
     min = math.min(min, t)
   }
   println("Min Time: " + min)
-
+  System.exit(0)
 }

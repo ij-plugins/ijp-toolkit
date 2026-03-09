@@ -24,29 +24,29 @@ package ij_plugins.toolkit.util
 
 import ij.IJ
 
-import java.awt._
+import java.awt.*
 import java.awt.event.{MouseAdapter, MouseEvent}
 import java.io.IOException
 import java.net.{URI, URISyntaxException}
-import javax.swing._
+import javax.swing.*
 import javax.swing.border.EmptyBorder
 import javax.swing.event.HyperlinkEvent
-import javax.swing.event.HyperlinkEvent.EventType._
+import javax.swing.event.HyperlinkEvent.EventType.*
 import javax.swing.text.html.HTMLDocument
 import scala.util.control.NonFatal
 
 /**
-  */
+ */
 object IJPUtils {
   private val helpURL: String = "https://github.com/ij-plugins/ijp-toolkit"
 
   /**
-    * Load icon as a resource for given class without throwing exceptions.
-    *
-    * @param aClass Class requesting resource.
-    * @param path   Icon file path.
-    * @return Icon or null if loading failed.
-    */
+   * Load icon as a resource for a given class without throwing exceptions.
+   *
+   * @param aClass Class requesting resource.
+   * @param path   Icon file path.
+   * @return Icon or null if loading failed.
+   */
   def loadIcon(aClass: Class[_], path: String): ImageIcon = {
     try {
       val url = aClass.getResource(path)
@@ -63,12 +63,12 @@ object IJPUtils {
   }
 
   /**
-    * Create pane for displaying a message that may contain HTLM formatting, including links.
-    *
-    * @param message the message.
-    * @param  title  used in error dialogs.
-    * @return component containg the message.
-    */
+   * Create a pane for displaying a message that may contain HTLM formatting, including links.
+   *
+   * @param message the message.
+   * @param  title  used in error dialogs.
+   * @return a component containing the message.
+   */
   def createHTMLMessageComponent(message: String, title: String): JComponent = {
     val pane = new JEditorPane()
     pane.setContentType("text/html")
@@ -76,8 +76,8 @@ object IJPUtils {
     pane.setOpaque(false)
     pane.setBorder(null)
     val htmlDocument = pane.getDocument.asInstanceOf[HTMLDocument]
-    val font = UIManager.getFont("Label.font")
-    val bodyRule = "body { font-family: " + font.getFamily + "; " + "font-size: " + font.getSize + "pt; }"
+    val font         = UIManager.getFont("Label.font")
+    val bodyRule     = "body { font-family: " + font.getFamily + "; " + "font-size: " + font.getSize + "pt; }"
     htmlDocument.getStyleSheet.addRule(bodyRule)
     pane.addHyperlinkListener((e: HyperlinkEvent) => {
       if (e.getEventType == ACTIVATED) {
@@ -89,14 +89,14 @@ object IJPUtils {
   }
 
   /**
-    * Create simple info panel for a plugin dialog. Intended to be displayed at the top of a GenericDialog.
-    *
-    * @param title   title displayed in bold font larger than default.
-    * @param message message that can contain HTML formatting.
-    * @return a panel containing the message with a title and a default icon.
-    */
+   * Create a simple info panel for a plugin dialog. Intended to be displayed at the top of a GenericDialog.
+   *
+   * @param title   title displayed in bold font larger than default.
+   * @param message message that can contain HTML formatting.
+   * @return a panel containing the message with a title and a default icon.
+   */
   def createInfoPanel(title: String, message: String): Panel = {
-    val rootPanel = new Panel(new BorderLayout(7, 7))
+    val rootPanel  = new Panel(new BorderLayout(7, 7))
     val titlePanel = new Panel(new BorderLayout(7, 7))
 
     createLogoLabel().foreach(label => titlePanel.add(label, BorderLayout.WEST))
@@ -118,14 +118,14 @@ object IJPUtils {
   }
 
   /**
-    * Create simple info panel for a plugin dialog. Intended to be displayed at the top.
-    *
-    * @param title   title displayed in bold font larger than default.
-    * @param message message that can contain HTML formatting.
-    * @return a panel containing the message with a title and a default icon.
-    */
+   * Create a simple info panel for a plugin dialog. Intended to be displayed at the top.
+   *
+   * @param title   title displayed in bold font larger than default.
+   * @param message message that can contain HTML formatting.
+   * @return a panel containing the message with a title and a default icon.
+   */
   def createInfoJPanel(title: String, message: String): JPanel = {
-    val rootPanel = new JPanel(new BorderLayout(7, 7))
+    val rootPanel  = new JPanel(new BorderLayout(7, 7))
     val titlePanel = new JPanel(new BorderLayout(7, 7))
 
     createLogoLabel().foreach(label => titlePanel.add(label, BorderLayout.WEST))
@@ -148,11 +148,13 @@ object IJPUtils {
     try {
       Desktop.getDesktop.browse(uri)
     } catch {
-      case ex@(_: IOException | _: URISyntaxException) =>
-        IJ.error("Open Link in Browser",
+      case ex @ (_: IOException | _: URISyntaxException) =>
+        IJ.error(
+          "Open Link in Browser",
           "Error following a link.\n" +
             "  " + uri.toString + "\n" +
-            ex.getMessage)
+            ex.getMessage
+        )
     }
   }
 
@@ -179,18 +181,19 @@ object IJPUtils {
             super.mouseExited(e)
             val cursor = _oldCursor match {
               case Some(c) => c
-              case None => new Cursor(Cursor.DEFAULT_CURSOR)
+              case None    => new Cursor(Cursor.DEFAULT_CURSOR)
             }
             logoLabel.setCursor(cursor)
           }
-        })
+        }
+      )
       logoLabel
     }
   }
 
   private def createTitleLabel(title: String): JLabel = {
     val titleLabel = new JLabel(title)
-    val font = titleLabel.getFont
+    val font       = titleLabel.getFont
     titleLabel.setFont(font.deriveFont(Font.BOLD, font.getSize * 2f))
     titleLabel
   }
