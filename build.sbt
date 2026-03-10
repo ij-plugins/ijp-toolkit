@@ -1,7 +1,7 @@
 name             := "ijp-toolkit"
 organization     := "net.sf.ij-plugins"
 organizationName := "IJ-Plugins"
-version          := "2.3.2"
+version          := "2.3.2.1-SNAPSHOT"
 
 homepage    := Some(url("https://github.com/ij-plugins/ijp-toolkit"))
 startYear   := Some(2002)
