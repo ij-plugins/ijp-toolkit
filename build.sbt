@@ -1,6 +1,7 @@
-name         := "ijp-toolkit"
-organization := "net.sf.ij-plugins"
-version      := "2.3.1.1-SNAPSHOT"
+name             := "ijp-toolkit"
+organization     := "net.sf.ij-plugins"
+organizationName := "IJ-Plugins"
+version          := "2.3.2"
 
 homepage    := Some(url("https://github.com/ij-plugins/ijp-toolkit"))
 startYear   := Some(2002)
@@ -17,6 +18,13 @@ description := "<html>" +
   "  <li>Segmentation - image segmentation through clustering, thresholding, and region growing.</li>" +
   "</ul>" +
   "</html>"
+organizationHomepage := Some(url("https://github.com/ij-plugins"))
+ThisBuild / scmInfo  := Option(
+  ScmInfo(
+    url("https://github.com/ij-plugins/ijp-toolkit"),
+    "scm:git@github.com:ij-plugins/ijp-toolkit.git"
+  )
+)
 
 scalaVersion := "3.3.7"
 
